@@ -4,7 +4,7 @@ spring:
 netty:
   port: 7777
 server:
-  port: 8777
+  port: 8765
 eureka:
   client:
     service-url:

@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: station-monitor-server
+  cloud:
+    config:
+      fail-fast: true
+      discovery:
+        enabled: true
+        service-id: config-server
+  profiles:
+    active: dev
+server:
+  port: 8765
+eureka:
+  client:
+    service-url:
+      defaultZone: http://peer1:8761/eureka/

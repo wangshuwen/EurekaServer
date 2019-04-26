@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding" addBOMForNewFiles="with NO BOM">
+    <file url="file://$PROJECT_DIR$/base" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/center-server" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/center-server/config-server" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/center-server/config-server" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/center-server/config-server-backups" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/center-server/eureka-server" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/center-server/eureka-server-backups" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/common" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/netty-service" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/netty-service/station-monitor-server" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/netty-service/terminal-monitor-server" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/netty-service/voice-monitor-server" charset="UTF-8" />
+  </component>
+</project>

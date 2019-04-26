@@ -7,3 +7,7 @@
  **config-server 8769**
  
  **config-server-backups 8770**
+ 
+  **station-monitor-server 8765**
+  
+  **kafka-sender-service  8766**

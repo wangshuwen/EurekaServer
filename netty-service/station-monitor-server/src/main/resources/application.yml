@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: station-monitor-server
+netty:
+  port: 7777
+server:
+  port: 8777
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+feign:
+  hystrix:
+    enabled: true #´ò¿ªÌí¼ÓÈÛ¶ÏÆ÷hystrix
+

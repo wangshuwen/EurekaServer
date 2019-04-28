@@ -1,4 +1,4 @@
-package com.cst.xinhe.common.utils.context;
+package com.cst.xinhe.base.context;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

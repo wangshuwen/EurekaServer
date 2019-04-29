@@ -15,13 +15,19 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @author: lifeng
  * @create: 2019-04-26 15:13
  **/
-@FeignClient(value = "kafka-sender-service",
+@FeignClient(value = "kafka-sender-service/",
         configuration = FeignConfig.class,
         fallback = KafkaClientFallback.class)
 public interface KafkaClient {
-    @PostMapping("v1/kafka/sendData")
+    @PostMapping("sendData")
     void sendData(@RequestParam String topic, @RequestBody RequestData requestData);
 
-    @PostMapping("v1/kafka/sendChatMsg")
+    @PostMapping("/sendChatMsg")
     void sendChatMsgData(@RequestParam String topic,@RequestBody ChatMsg chatMsg);
+
+    @PostMapping("sendSelfCheckResult")
+    void sendSelfCheckResult(String s, String toJSONString, Integer terminalPort);
+
+    @PostMapping("send")
+    void send(String topic, String obj,Integer port);
 }

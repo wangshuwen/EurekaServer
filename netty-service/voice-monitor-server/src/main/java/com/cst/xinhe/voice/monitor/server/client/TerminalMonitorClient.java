@@ -4,10 +4,7 @@ import com.cst.xinhe.common.netty.data.response.ResponseData;
 import com.cst.xinhe.voice.monitor.server.client.callback.TerminalMonitorFallback;
 import com.cst.xinhe.voice.monitor.server.client.config.FeignConfig;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @program: EurekaServer
@@ -18,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(value = "terminal-monitor-server",
         configuration = FeignConfig.class,
         fallback = TerminalMonitorFallback.class)
+@RequestMapping("terminal-monitor-server")
 public interface TerminalMonitorClient {
 
     /**

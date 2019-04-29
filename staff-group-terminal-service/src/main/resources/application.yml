@@ -1,0 +1,12 @@
+server:
+  port: 8772
+spring:
+  application:
+    name: staff-group-terminal-service
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+feign:
+  hystrix:
+    enabled: true

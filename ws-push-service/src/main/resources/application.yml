@@ -1,0 +1,13 @@
+server:
+  port: 8771
+feign:
+  hystrix:
+    enabled: true
+spring:
+  application:
+    name: ws-push-service
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka/
+

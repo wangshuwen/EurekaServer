@@ -1,12 +1,17 @@
 package com.cst.xinhe.terminal.monitor.server.handle;
 
 import com.alibaba.fastjson.JSON;
+import com.cst.xinhe.base.context.SpringContextUtil;
 import com.cst.xinhe.common.constant.ConstantValue;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
-import com.cst.xinhe.common.utils.context.SpringContextUtil;
+import com.cst.xinhe.persistence.dao.staff.StaffMapper;
+import com.cst.xinhe.persistence.dao.terminal.TerminalUpdateIpMapper;
+import com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp;
 import com.cst.xinhe.terminal.monitor.server.channel.ChannelMap;
+import com.cst.xinhe.terminal.monitor.server.process.ProcessVoice;
 import com.cst.xinhe.terminal.monitor.server.request.SingletonClient;
+import com.cst.xinhe.terminal.monitor.server.service.TerminalMonitorService;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler.Sharable;
@@ -17,6 +22,7 @@ import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -43,7 +49,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
      */
     private Logger log = LoggerFactory.getLogger(getClass());
 
-    private UpLoadService upLoadService;
+//    private UpLoadService upLoadService;
 
     private TerminalUpdateIpMapper terminalUpdateIpMapper;
 
@@ -51,9 +57,10 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
     private Map<String, Object> mapOfWs;
 
-    private ProducerService producerService;
+//    private ProducerService producerService;
 
-
+    @Autowired
+    TerminalMonitorService terminalMonitorService;
 //    private static NettyServerHandler nettyServerHandler;
 //
 //    //注入上传数据服务
@@ -73,17 +80,17 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     private ProcessVoice processVoice;
 
     //处理实时语音
-    private ProcessRealTimeVoice processRealTimeVoice;
+//    private ProcessRealTimeVoice processRealTimeVoice;
 
     public NettyServerHandler() {
-        this.upLoadService = SpringContextUtil.getBean(UpLoadServiceImpl.class);
+//        this.upLoadService = SpringContextUtil.getBean(UpLoadServiceImpl.class);
         this.terminalUpdateIpMapper = SpringContextUtil.getBean(TerminalUpdateIpMapper.class);
         this.staffMapper = SpringContextUtil.getBean(StaffMapper.class);
         this.mapOfWs = new HashMap<>();
-        this.producerService = SpringContextUtil.getBean(ProducerServiceImpl.class);
+//        this.producerService = SpringContextUtil.getBean(ProducerServiceImpl.class);
 
         this.processVoice = ProcessVoice.getProcessVoice();
-        this.processRealTimeVoice = ProcessRealTimeVoice.getProcessRealTimeVoice();
+//        this.processRealTimeVoice = ProcessRealTimeVoice.getProcessRealTimeVoice();
     }
 
     //注入Kafka
@@ -134,7 +141,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                         switch (ndName) {
                             case ConstantValue.MSG_BODY_NODE_NAME_SENSOR_DATA:
                                 log.info("气体信息");
-                                upLoadService.sendGasInfoToQueue(customMsg);
+                                //upLoadService.sendGasInfoToQueue(customMsg);
+                                terminalMonitorService.sendGasInfoToQueue(customMsg);
                                 //实时查询领导、员工、车辆的数量
                                 customMsg.setLength(34);
                                 customMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);
@@ -146,7 +154,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                                 log.info("返回气体确认结束");
                                 break;
                             case ConstantValue.MSG_BODY_NODE_NAME_SELFCHECK_RESULT:
-                                upLoadService.sendSelfCheckResult(customMsg);
+//                                upLoadService.sendSelfCheckResult(customMsg);
+                                terminalMonitorService.sendSelfCheckResult(customMsg);
                                 customMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);
                                 customMsg.setResult(ConstantValue.MSG_BODY_RESULT_SUCCESS);
                                 resp.setCustomMsg(customMsg);
@@ -154,7 +163,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                                 log.info("自检结果");
                                 break;
                             case ConstantValue.MSG_BODY_NODE_NAME_SOFTWARE_VERSION:
-                                upLoadService.sendSoftWareVersion(customMsg);
+                             //   upLoadService.sendSoftWareVersion(customMsg);
+                                terminalMonitorService.sendSoftWareVersion(customMsg);
                                 customMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);
                                 customMsg.setResult(ConstantValue.MSG_BODY_RESULT_SUCCESS);
                                 resp.setCustomMsg(customMsg);
@@ -162,7 +172,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                                 log.info("软件版本号");
                                 break;
                             case ConstantValue.MSG_BODY_NODE_NAME_HANDWARE_VERSION:
-                                upLoadService.sendHandWareVersion(customMsg);
+                          //      upLoadService.sendHandWareVersion(customMsg);
+                                terminalMonitorService.sendHandWareVersion(customMsg);
                                 customMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);
                                 customMsg.setResult(ConstantValue.MSG_BODY_RESULT_SUCCESS);
                                 customMsg.setLength(34);
@@ -177,15 +188,18 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                                 resp.setCustomMsg(customMsg);
                                 SingletonClient.getSingletonClient().sendCmd(resp);
                                 //更新IP
-                                upLoadService.sendUpLoadIp(customMsg);
+//                                upLoadService.sendUpLoadIp(customMsg);
+                                terminalMonitorService.sendUpLoadIp(customMsg);
                                 //数据分析页面
-                                upLoadService.sendTerminalInfoToQueue(customMsg);
+//                                upLoadService.sendTerminalInfoToQueue(customMsg);
+                                terminalMonitorService.sendTerminalInfoToQueue(customMsg);
                                 ProcessSettingGasLevel.getSingletonClient().sendMsg(customMsg); // 气体标准下发
                                 ProcessUploadFrequency.getSingletonProcessUploadFrequency().process(customMsg); // 设置终端的上传气体的频率
                                 log.info("更新IP");
                                 break;
                             case ConstantValue.MSG_BODY_NODE_NAME_MSG_READ_STATUS:
-                                upLoadService.sendUpdateVoiceStatus(customMsg);
+//                                upLoadService.sendUpdateVoiceStatus(customMsg);
+                                terminalMonitorService.sendUpdateVoiceStatus(customMsg);
                                 customMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);
                                 customMsg.setResult(ConstantValue.MSG_BODY_RESULT_SUCCESS);
                                 customMsg.setLength(34);
@@ -193,7 +207,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                                 // 终端更新已读状态
                                 break;
                             case ConstantValue.MSG_BODY_NODE_NAME_POWER_STATUS:
-                                upLoadService.sendPowerStatus(customMsg);
+//                                upLoadService.sendPowerStatus(customMsg);
+                                terminalMonitorService.sendPowerStatus(customMsg);
                                 customMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);
                                 customMsg.setResult(ConstantValue.MSG_BODY_RESULT_SUCCESS);
                                 customMsg.setLength(34);
@@ -219,10 +234,12 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                     case ConstantValue.MSG_HEADER_COMMAND_ID_SEARCH:    // 协议 查询
                         switch (ndName) {
                             case ConstantValue.MSG_BODY_NODE_NAME_CHECK_ONLINE: //  检测是否在线
-                                processRealTimeVoice.sendCheckOnline(customMsg);
+                                terminalMonitorService.checkSendCheckOnline(customMsg);
+//                                processRealTimeVoice.sendCheckOnline(customMsg);
                                 break;
                             case ConstantValue.MSG_BODY_NODE_NAME_REAL_TIME_CALL: // 发起呼叫
-                                processRealTimeVoice.sendCallInfo(customMsg);
+                                terminalMonitorService.sendCallInfo(customMsg);
+//                                processRealTimeVoice.sendCallInfo(customMsg);
                                 break;
                         }
                         break;
@@ -232,11 +249,13 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                                 // 检查在线情况
                                 break;
                             case ConstantValue.MSG_BODY_NODE_NAME_REAL_TIME_CALL:
-                                upLoadService.processResponse(customMsg);
+//                                upLoadService.processResponse(customMsg);
+                                terminalMonitorService.processResponse(customMsg);
                                 // 终端响应状态值处理已经接听
                                 break;
                             case ConstantValue.MSG_BODY_NODE_NAME_CONFIGURED:
-                                upLoadService.sendConfiguredResponse(customMsg);
+                                terminalMonitorService.sendConfiguredResponse(customMsg);
+//                                upLoadService.sendConfiguredResponse(customMsg);
                                 break;
                         }
 
@@ -317,20 +336,25 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                     switch (isPerson) {
                         case 0:
                             TerminalInfoProcess.staffSet.remove(staffId);
+                            terminalMonitorService.removeStaffSet(staffId);
                             break;
                         case 1:
                             TerminalInfoProcess.leaderSet.remove(staffId);
+                            terminalMonitorService.removeLeaderSet(staffId);
                             break;
                         case 2:
                             TerminalInfoProcess.outPersonSet.remove(staffId);
+                            terminalMonitorService.removeOutPersonSet(staffId);
                             break;
                         case 3:
                             TerminalInfoProcess.carSet.remove(staffId);
+                            terminalMonitorService.removeCarSet(staffId);
                             break;
                     }
                 }
                 //实时查询：数据推送到前端页面
                 TerminalInfoProcess.pushRtPersonData();
+                terminalMonitorService.pushRtPersonData();
 
             }
         });
@@ -344,11 +368,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         Integer staffId = (Integer) map.get("staff_id");
         mapOfWs.put("type", 2);
         mapOfWs.put("staffId", staffId);
-        try {
-            WSSiteServer.sendInfo(JSON.toJSONString(mapOfWs));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//            WSSiteServer.sendInfo(JSON.toJSONString(mapOfWs));
+            terminalMonitorService.sendInfoToWsServer(JSON.toJSONString(mapOfWs));
     }
 
     /**

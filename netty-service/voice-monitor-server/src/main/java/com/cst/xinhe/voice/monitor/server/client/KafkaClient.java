@@ -1,9 +1,8 @@
-package com.cst.xinhe.terminal.monitor.server.client;
+package com.cst.xinhe.voice.monitor.server.client;
 
 import com.cst.xinhe.common.netty.data.request.RequestData;
-import com.cst.xinhe.persistence.model.chat.ChatMsg;
-import com.cst.xinhe.terminal.monitor.server.client.callback.KafkaClientFallback;
-import com.cst.xinhe.terminal.monitor.server.client.config.FeignConfig;
+import com.cst.xinhe.voice.monitor.server.client.callback.KafkaClientFallback;
+import com.cst.xinhe.voice.monitor.server.client.config.FeignConfig;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,7 +20,4 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface KafkaClient {
     @PostMapping("v1/kafka/sendData")
     void sendData(@RequestParam String topic, @RequestBody RequestData requestData);
-
-    @PostMapping("v1/kafka/sendChatMsg")
-    void sendChatMsgData(@RequestParam String topic,@RequestBody ChatMsg chatMsg);
 }

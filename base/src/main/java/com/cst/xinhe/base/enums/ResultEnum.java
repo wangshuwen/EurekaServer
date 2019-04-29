@@ -51,7 +51,11 @@ public enum ResultEnum {
     STATION_CANT_SETTING_TWO_STATUS(142, "基站不能同时被设置为考勤和井口基站!"),
     STATION_FAILED_TO_ACQUIRE_NUMBER_OF_NEARBY_TERMINALS(143, "基站获取附近终端数量失败！"),
     STATION_IS_EXISTS(144, "基站ID已经存在！"),
-    TERMINAL_IS_EXISTS(145, "终端ID已经存在！")
+    TERMINAL_IS_EXISTS(145, "终端ID已经存在！"),
+    TerminalMonitorFallback(146, "服务向终端发送消息失败！"),
+    GET_CHANNEL_FAIL(147, "调用服务获取客户端数量失败！"),
+    SEND_TO_SERVER_CHAT_MSG_FAIL(148, "调用服务发送语音数据失败！"),
+    CALL_REMOTE_SERVER_FAIL(149, "调用远程服务失败！"),
     ;
 
     private Integer code;

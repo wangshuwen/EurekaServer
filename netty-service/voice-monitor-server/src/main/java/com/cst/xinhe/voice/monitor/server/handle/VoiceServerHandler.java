@@ -1,8 +1,11 @@
 package com.cst.xinhe.voice.monitor.server.handle;
 
 import com.alibaba.fastjson.JSON;
+import com.cst.xinhe.base.context.SpringContextUtil;
 import com.cst.xinhe.common.ws.WebSocketData;
 import com.cst.xinhe.voice.monitor.server.channel.VoiceChannelMap;
+import com.cst.xinhe.voice.monitor.server.ws.WSVoiceServer;
+import com.cst.xinhe.voice.monitor.server.ws.WSVoiceStatus;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
 import io.netty.handler.timeout.IdleState;
@@ -30,21 +33,22 @@ import java.util.Map;
 @Component
 public class VoiceServerHandler extends ChannelInboundHandlerAdapter {
 
-    private static VoiceServerHandler voiceServerHandler;
+//    private static VoiceServerHandler voiceServerHandler;
 
-    @Resource
+//    @Resource
     private WSVoiceServer wSVoiceServer;
 
-    @Resource
-    WSVoiceStatusServer wsVoiceStatusServer;
-    @Resource
-    StaffService staffService;
-    @Resource
-    TerminalUpdateIpMapper terminalUpdateIpMapper;
+//    @Resource
+    private WSVoiceStatus wsVoiceStatus;
     /**
      * 日志
      */
     private Logger log = LoggerFactory.getLogger(getClass());
+
+    public VoiceServerHandler() {
+        this.wSVoiceServer = SpringContextUtil.getBean(WSVoiceServer.class);
+        this.wsVoiceStatus = SpringContextUtil.getBean(WSVoiceStatus.class);
+    }
 
 
     //注入 上传数据服务
@@ -54,13 +58,13 @@ public class VoiceServerHandler extends ChannelInboundHandlerAdapter {
 //    @Resource
 //    private Client client;
 
-    @PostConstruct //通过@PostConstruct实现初始化bean之前进行的操作
-    public void init() {
-        voiceServerHandler = this;
-        voiceServerHandler.wSVoiceServer = this.wSVoiceServer;
-        voiceServerHandler.wsVoiceStatusServer = this.wsVoiceStatusServer;
-
-    }
+//    @PostConstruct //通过@PostConstruct实现初始化bean之前进行的操作
+//    public void init() {
+//        voiceServerHandler = this;
+//        voiceServerHandler.wSVoiceServer = this.wSVoiceServer;
+//        voiceServerHandler.wsVoiceStatusServer = this.wsVoiceStatusServer;
+//
+//    }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -71,7 +75,7 @@ public class VoiceServerHandler extends ChannelInboundHandlerAdapter {
        /* for (byte b : req) {
             System.out.printf(" 0x%02x", b);
         }*/
-        voiceServerHandler.wSVoiceServer.sendMessage(req);
+        wSVoiceServer.sendMessage(req);
         ReferenceCountUtil.release(msg);
     }
 
@@ -84,9 +88,9 @@ public class VoiceServerHandler extends ChannelInboundHandlerAdapter {
      **/
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        InetSocketAddress insocket = (InetSocketAddress) ctx.channel().remoteAddress();
-        String clientIP = insocket.getAddress().getHostAddress();
-        int port = insocket.getPort();
+        InetSocketAddress inSocket = (InetSocketAddress) ctx.channel().remoteAddress();
+        String clientIP = inSocket.getAddress().getHostAddress();
+        int port = inSocket.getPort();
         StringBuffer sb = new StringBuffer(clientIP);
         sb.append(":");
         sb.append(port);
@@ -98,7 +102,7 @@ public class VoiceServerHandler extends ChannelInboundHandlerAdapter {
         map.put("cmd", "2008");
         map.put("result", "11");
         map.put("ipPort", str);
-        voiceServerHandler.wsVoiceStatusServer.sendInfo(JSON.toJSONString(new WebSocketData(3, map)));
+        wsVoiceStatus.sendInfo(JSON.toJSONString(new WebSocketData(3, map)));
         log.info("语音[" + str + "] 加入session");
         log.info("当前实时语音流连接数量" + VoiceChannelMap.getChannelNum());
     }
@@ -112,9 +116,9 @@ public class VoiceServerHandler extends ChannelInboundHandlerAdapter {
      **/
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws IOException {
-        InetSocketAddress insocket = (InetSocketAddress) ctx.channel().remoteAddress();
-        String clientIP = insocket.getAddress().getHostAddress();
-        int port = insocket.getPort();
+        InetSocketAddress inSocket = (InetSocketAddress) ctx.channel().remoteAddress();
+        String clientIP = inSocket.getAddress().getHostAddress();
+        int port = inSocket.getPort();
         StringBuffer sb = new StringBuffer(clientIP);
         sb.append(":");
         sb.append(port);
@@ -134,7 +138,7 @@ public class VoiceServerHandler extends ChannelInboundHandlerAdapter {
         map.put("cmd", "2008");
         map.put("result", "99");
         map.put("ipPort", str);
-        voiceServerHandler.wsVoiceStatusServer.sendInfo(JSON.toJSONString(new WebSocketData(3, map)));
+        wsVoiceStatus.sendInfo(JSON.toJSONString(new WebSocketData(3, map)));
         log.info("语音[" + str + "] 已断开连接");
         VoiceChannelMap.removeChannelByName("channel");
         log.info("语音[" + str + "] 被移出session");
@@ -148,10 +152,10 @@ public class VoiceServerHandler extends ChannelInboundHandlerAdapter {
      * @auther lifeng
      **/
     @Override
-    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-        InetSocketAddress insocket = (InetSocketAddress) ctx.channel().remoteAddress();
-        String clientIP = insocket.getAddress().getHostAddress();
-        int port = insocket.getPort();
+    public void channelReadComplete(ChannelHandlerContext ctx) {
+        InetSocketAddress inSocket = (InetSocketAddress) ctx.channel().remoteAddress();
+        String clientIP = inSocket.getAddress().getHostAddress();
+        int port = inSocket.getPort();
         StringBuffer sb = new StringBuffer(clientIP);
         sb.append(":");
         sb.append(port);
@@ -160,7 +164,7 @@ public class VoiceServerHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+    public void handlerRemoved(ChannelHandlerContext ctx) {
         log.info("客户端已被移除");
 //        System.out.println("移除客户端");
     }
@@ -174,9 +178,9 @@ public class VoiceServerHandler extends ChannelInboundHandlerAdapter {
      **/
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        InetSocketAddress insocket = (InetSocketAddress) ctx.channel().remoteAddress();
-        String clientIP = insocket.getAddress().getHostAddress();
-        int port = insocket.getPort();
+        InetSocketAddress inSocket = (InetSocketAddress) ctx.channel().remoteAddress();
+        String clientIP = inSocket.getAddress().getHostAddress();
+        int port = inSocket.getPort();
         StringBuffer sb = new StringBuffer(clientIP);
         sb.append(":");
         sb.append(port);
@@ -218,9 +222,9 @@ public class VoiceServerHandler extends ChannelInboundHandlerAdapter {
      **/
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        InetSocketAddress insocket = (InetSocketAddress) ctx.channel().remoteAddress();
-        String clientIP = insocket.getAddress().getHostAddress();
-        int port = insocket.getPort();
+        InetSocketAddress inSocket = (InetSocketAddress) ctx.channel().remoteAddress();
+        String clientIP = inSocket.getAddress().getHostAddress();
+        int port = inSocket.getPort();
         StringBuffer sb = new StringBuffer(clientIP);
         sb.append(":");
         sb.append(port);

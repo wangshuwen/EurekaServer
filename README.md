@@ -10,4 +10,8 @@
  
   **station-monitor-server 8765**
   
-  **kafka-sender-service  8766**
+  **terminal-monitor-service  8766**
+   
+  **kafka-sender-service  8768**
+  
+  **voice-sender-service  8767**

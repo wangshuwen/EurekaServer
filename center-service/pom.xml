@@ -14,6 +14,12 @@
     <name>center-server</name>
     <description>Demo project for Spring Boot</description>
 
+    <modules>
+        <module>config-server</module>
+        <module>config-server-backups</module>
+        <module>eureka-server</module>
+        <module>eureka-server-backups</module>
+    </modules>
     <properties>
         <java.version>1.8</java.version>
         <spring-cloud.version>Greenwich.SR1</spring-cloud.version>

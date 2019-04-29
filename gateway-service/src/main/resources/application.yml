@@ -1,0 +1,22 @@
+eureka:
+  client :
+    serviceUrl:
+      defaultZone: http://127.0.0.1:8761/eureka/,http://127.0.0.1:8762/eureka/
+server:
+  port: 8443
+spring:
+  application:
+    name: service-zuul
+zuul:
+  routes:
+    hiapi:
+      path: /hiapi/**
+      serviceId: eureka-client
+      # 加了url指定到每一个服务，就不需要指定serviceId，不可以负载均衡
+      # url: http://localhost:8762
+    ribbonapi:
+      path: /ribbonapi/**
+      serviceId: eureka-ribbon-client
+    feignapi:
+      path: /feignapi/**
+      serviceId: eureka-feign-client

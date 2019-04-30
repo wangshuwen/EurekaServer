@@ -10,3 +10,4 @@
  ##**kafka-consumer-service:8773**
  ##**ws-push-service:8771**
  ##**staff-group-terminal-service:8772**
+ ##**gateway-service  8443**

@@ -9,14 +9,23 @@ spring:
     name: service-zuul
 zuul:
   routes:
-    hiapi:
-      path: /hiapi/**
-      serviceId: eureka-client
+    attendance:
+      path: /attendance/**
+      serviceId: attendance-service
       # 加了url指定到每一个服务，就不需要指定serviceId，不可以负载均衡
       # url: http://localhost:8762
-    ribbonapi:
-      path: /ribbonapi/**
-      serviceId: eureka-ribbon-client
-    feignapi:
-      path: /feignapi/**
-      serviceId: eureka-feign-client
+    base:
+      path: /base/**
+      serviceId: base-service
+    chat:
+      path: /chat/**
+      serviceId: chat-message-service
+    common:
+      path: /common/**
+      serviceId: common
+    gas:
+      path: /gas/**
+      serviceId: gas-service
+
+
+

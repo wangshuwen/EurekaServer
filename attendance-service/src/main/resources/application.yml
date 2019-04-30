@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 server:
   port: 8775
 spring:
@@ -10,3 +11,8 @@ eureka:
 feign:
   hystrix:
     enabled: true
+=======
+spring:
+  application:
+    name: attendance-service
+>>>>>>> 56316ad2da6b443878666a88c99198a60c8ee18e

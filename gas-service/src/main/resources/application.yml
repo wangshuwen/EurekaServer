@@ -1,0 +1,12 @@
+server:
+  port: 8774
+spring:
+  application:
+    name: gas-service
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8761
+feign:
+  hystrix:
+    enabled: true

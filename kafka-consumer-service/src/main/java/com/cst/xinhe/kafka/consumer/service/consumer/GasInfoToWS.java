@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.exception.RuntimeOtherException;
+import com.cst.xinhe.common.utils.array.ArrayQueue;
 import com.cst.xinhe.common.ws.WebSocketData;
 import com.cst.xinhe.persistence.dao.attendance.StaffAttendanceRealRuleMapper;
 import com.cst.xinhe.persistence.dao.rt_gas.RtGasInfoMapper;
@@ -48,7 +49,7 @@ import java.util.concurrent.Executors;
 public class GasInfoToWS {
 
     //存储更新基站 队列
-    public static Map<Integer,ArrayQueue<TerminalRoad>> attendanceMap=new HashMap<>();
+    public static Map<Integer, ArrayQueue<TerminalRoad>> attendanceMap=new HashMap<>();
     @Resource
     RtGasInfoWarnMapper rtGasInfoWarnMapper;
     @Resource

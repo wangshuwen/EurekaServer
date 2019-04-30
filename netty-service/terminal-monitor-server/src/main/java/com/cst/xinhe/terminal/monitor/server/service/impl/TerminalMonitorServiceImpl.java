@@ -6,19 +6,16 @@ import com.cst.xinhe.common.netty.data.response.ResponseData;
 import com.cst.xinhe.common.ws.WebSocketData;
 import com.cst.xinhe.persistence.model.lack_electric.LackElectric;
 import com.cst.xinhe.persistence.model.malfunction.Malfunction;
+import com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp;
 import com.cst.xinhe.persistence.vo.resp.GasLevelVO;
 import com.cst.xinhe.terminal.monitor.server.channel.ChannelMap;
-import com.cst.xinhe.terminal.monitor.server.client.KafkaClient;
-import com.cst.xinhe.terminal.monitor.server.client.VoiceMonitorServerClient;
-import com.cst.xinhe.terminal.monitor.server.client.WsPushServiceClient;
+import com.cst.xinhe.terminal.monitor.server.client.*;
 import com.cst.xinhe.terminal.monitor.server.request.SingletonClient;
 import com.cst.xinhe.terminal.monitor.server.service.TerminalMonitorService;
 import io.netty.channel.Channel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,6 +37,13 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
 
     @Autowired
     private WsPushServiceClient wsPushServiceClient;
+
+    @Autowired
+    private KafkaConsumerClient kafkaConsumerClient;
+
+    @Autowired
+    private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
+
 
     /**
      * 根据端口和Ip判断是否在线
@@ -81,11 +85,13 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
      */
     @Override
     public void sendCallInfo(RequestData customMsg) {
+
         voiceMonitorServerClient.sendCallInfo(customMsg);
     }
 
     @Override
     public void sendGasInfoToQueue(RequestData customMsg) {
+
         kafkaClient.send("gas_kafka.tut",JSON.toJSONString(customMsg),customMsg.getTerminalId());
     }
 
@@ -166,7 +172,8 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
         Integer port = customMsg.getTerminalPort();
         String ipPort=ip+":"+port;
         int terminalId = customMsg.getTerminalId();
-        Map<String, Object> staffInfo = staffService.findStaffIdByTerminalId(terminalId);
+//        Map<String, Object> staffInfo = staffService.findStaffIdByTerminalId(terminalId);
+        Map<String, Object> staffInfo = staffGroupTerminalServiceClient.findStaffIdByTerminalId(terminalId);
         customMsg.getTerminalIp();
         //定义map储存数据
         HashMap<String, Object> map = new HashMap<>();
@@ -184,12 +191,9 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
             map.put("result","88");
         }
 
-        try {
             String keyStr= JSON.toJSONString(new WebSocketData(3,map));
-            WSVoiceStatusServer.sendInfo(keyStr);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            voiceMonitorServerClient.sendInfoToWs(keyStr);
+            //WSVoiceStatusServer.sendInfo(keyStr);
     }
 
     @Override
@@ -209,26 +213,43 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
 
     @Override
     public void removeStaffSet(Integer staffId) {
-
+        kafkaConsumerClient.removeStaffSet(staffId);
     }
 
     @Override
     public void removeLeaderSet(Integer staffId) {
-
+        kafkaConsumerClient.removeLeaderSet(staffId);
     }
 
     @Override
     public void removeOutPersonSet(Integer staffId) {
-
+        kafkaConsumerClient.removeOutPersonSet(staffId);
     }
 
     @Override
     public void removeCarSet(Integer staffId) {
-
+        kafkaConsumerClient.removeCarSet(staffId);
     }
 
     @Override
     public void sendInfoToWsServer(String toJSONString) {
         wsPushServiceClient.sendWSSiteServer(toJSONString);
+    }
+
+    @Override
+    public void pushRtPersonData() {
+        kafkaConsumerClient.pushRtPersonData();
+    }
+
+    @Override
+    public TerminalUpdateIp findTerminalIdByIpAndPort(String terminalIp, int port) {
+
+        return staffGroupTerminalServiceClient.findTerminalIdByIpAndPort(terminalIp, port);
+    }
+
+    @Override
+    public Map<String, Object> selectStaffInfoByTerminalId(Integer terminalId) {
+
+        return staffGroupTerminalServiceClient.selectStaffInfoByTerminalId(terminalId);
     }
 }

@@ -12,4 +12,6 @@ public interface VoiceMonitorService {
     void checkSendCheckOnline(RequestData requestData);
 
     void sendCallInfo(RequestData requestData);
+
+    void sendInfoToWs(String keyStr);
 }

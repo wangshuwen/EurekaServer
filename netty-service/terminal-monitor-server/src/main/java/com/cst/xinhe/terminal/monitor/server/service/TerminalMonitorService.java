@@ -2,6 +2,7 @@ package com.cst.xinhe.terminal.monitor.server.service;
 
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
+import com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp;
 import com.cst.xinhe.persistence.vo.resp.GasLevelVO;
 
 import java.util.Map;
@@ -50,4 +51,10 @@ public interface TerminalMonitorService {
     void removeCarSet(Integer staffId);
 
     void sendInfoToWsServer(String toJSONString);
+
+    void pushRtPersonData();
+
+    TerminalUpdateIp findTerminalIdByIpAndPort(String terminalIp, int port);
+
+    Map<String, Object> selectStaffInfoByTerminalId(Integer terminalId);
 }

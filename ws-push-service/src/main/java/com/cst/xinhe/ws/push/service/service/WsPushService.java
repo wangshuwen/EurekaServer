@@ -10,4 +10,6 @@ public interface WsPushService {
     void sendWSServer(String jsonObject) throws IOException;
 
     void sendWSPersonNumberServer(String jsonObject) throws IOException;
+
+    void sendInfo(String jsonObject);
 }

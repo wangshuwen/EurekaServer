@@ -6,8 +6,12 @@ import com.cst.xinhe.common.netty.data.response.ResponseData;
 import com.cst.xinhe.voice.monitor.server.client.TerminalMonitorClient;
 import com.cst.xinhe.voice.monitor.server.process.ProcessRtVoice;
 import com.cst.xinhe.voice.monitor.server.service.VoiceMonitorService;
+import com.cst.xinhe.voice.monitor.server.ws.WSVoiceServer;
+import com.cst.xinhe.voice.monitor.server.ws.WSVoiceStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 
 import static com.cst.xinhe.voice.monitor.server.process.ProcessRtVoice.getRoomStatus;
 import static com.cst.xinhe.voice.monitor.server.process.ProcessRtVoice.isBusyLine;
@@ -42,5 +46,14 @@ public class VoiceMonitorServiceImpl implements VoiceMonitorService {
     @Override
     public void sendCallInfo(RequestData requestData) {
         ProcessRtVoice.getProcessRealTimeVoice().sendCallInfo(requestData);
+    }
+
+    @Override
+    public void sendInfoToWs(String keyStr) {
+        try {
+            WSVoiceStatus.sendInfo(keyStr);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

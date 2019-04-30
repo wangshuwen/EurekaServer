@@ -6,6 +6,7 @@ import com.cst.xinhe.terminal.monitor.server.client.callback.VoiceMonitorServerC
 import com.cst.xinhe.terminal.monitor.server.client.config.FeignConfig;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @FeignClient(value = "voice-monitor-server",
@@ -15,9 +16,12 @@ fallback = VoiceMonitorServerClientFallback.class)
 public interface VoiceMonitorServerClient {
 
     @PostMapping("checkSendCheckOnline")
-    void checkSendCheckOnline(RequestData customMsg);
+    void checkSendCheckOnline(@RequestBody RequestData customMsg);
 
 
     @PostMapping("sendCallInfo")
-    void sendCallInfo(RequestData customMsg);
+    void sendCallInfo(@RequestBody RequestData customMsg);
+
+    @PostMapping("sendInfoToWs")
+    void sendInfoToWs(@RequestBody String keyStr);
 }

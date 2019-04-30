@@ -3,7 +3,10 @@ package com.cst.xinhe.terminal.monitor.server.handle;
 import com.cst.xinhe.base.context.SpringContextUtil;
 import com.cst.xinhe.common.constant.ConstantValue;
 import com.cst.xinhe.common.netty.data.request.RequestData;
+import com.cst.xinhe.common.netty.data.response.ResponseData;
 import com.cst.xinhe.common.netty.utils.NettyDataUtils;
+import com.cst.xinhe.common.utils.SequenceIdGenerate;
+import com.cst.xinhe.terminal.monitor.server.client.StationPartitionServiceClient;
 import com.cst.xinhe.terminal.monitor.server.request.SingletonClient;
 
 /**
@@ -16,10 +19,13 @@ public class ProcessUploadFrequency {
 
     private volatile static ProcessUploadFrequency processUploadFrequency;
 
-    private BaseStationService baseStationService;
+//    private BaseStationService baseStationService;
+
+    private StationPartitionServiceClient stationPartitionServiceClient;
 
     public ProcessUploadFrequency() {
-        this.baseStationService = SpringContextUtil.getBean(BaseStationServiceImpl.class);
+     //   this.baseStationService = SpringContextUtil.getBean(BaseStationServiceImpl.class);
+        this.stationPartitionServiceClient = SpringContextUtil.getBean(StationPartitionServiceClient.class);
     }
 
     public static ProcessUploadFrequency getSingletonProcessUploadFrequency() {
@@ -37,8 +43,8 @@ public class ProcessUploadFrequency {
         // 获取基站的ID
         Integer stationId = customMsg.getStationId();
         // 根据基站的ID获取到应该的上传频率
-        double frequency = baseStationService.findFrequencyByStationId(stationId);
-
+      //  double frequency = baseStationService.findFrequencyByStationId(stationId);
+        double frequency  = stationPartitionServiceClient.findFrequencyByStationId(stationId);
         Integer f = (int)frequency;
 
 

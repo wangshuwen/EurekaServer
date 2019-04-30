@@ -1,0 +1,12 @@
+server:
+  port: 8775
+spring:
+  application:
+    name: attendance-service
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8761
+feign:
+  hystrix:
+    enabled: true

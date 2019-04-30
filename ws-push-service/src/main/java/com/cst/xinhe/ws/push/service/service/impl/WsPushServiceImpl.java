@@ -35,7 +35,7 @@ public class WsPushServiceImpl implements WsPushService {
 
     @Override
     public void sendWebsocketServer(String jsonObject) throws IOException {
-        websocketServer.sendMessage(jsonObject);
+        WebsocketServer.sendInfo(jsonObject);
     }
 
     @Override
@@ -46,11 +46,20 @@ public class WsPushServiceImpl implements WsPushService {
 
     @Override
     public void sendWSServer(String jsonObject) throws IOException {
-        wsServer.sendMessage(jsonObject);
+        WSServer.sendInfo(jsonObject);
     }
 
     @Override
     public void sendWSPersonNumberServer(String jsonObject) throws IOException {
-        wsPersonNumberServer.sendMessage(jsonObject);
+        WSPersonNumberServer.sendInfo(jsonObject);
+    }
+
+    @Override
+    public void sendInfo(String jsonObject) {
+        try {
+            WebsocketServer.sendInfo(jsonObject);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

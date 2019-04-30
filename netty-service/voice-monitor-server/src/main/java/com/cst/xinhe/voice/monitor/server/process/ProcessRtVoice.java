@@ -11,11 +11,11 @@ import com.cst.xinhe.persistence.dao.terminal_road.TerminalRoadMapper;
 import com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp;
 import com.cst.xinhe.persistence.model.terminal_road.TerminalRoad;
 import com.cst.xinhe.voice.monitor.server.channel.VoiceChannelMap;
+import com.cst.xinhe.voice.monitor.server.client.StaffGroupTerminalServiceClient;
+import com.cst.xinhe.voice.monitor.server.client.GasServiceClient;
 import com.cst.xinhe.voice.monitor.server.service.VoiceMonitorService;
 import com.cst.xinhe.voice.monitor.server.ws.WSVoiceStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.netty.channel.Channel;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -30,8 +30,6 @@ import java.util.Map;
  */
 public class ProcessRtVoice {
 
-
-
     private volatile static ProcessRtVoice processRealTimeVoice;
     //从配置文件获取ip前缀
     private static String ip_prefix;
@@ -45,17 +43,20 @@ public class ProcessRtVoice {
 //    private TerminalUpdateIpMapper terminalUpdateIpMapper = applicationContext.getBean(TerminalUpdateIpMapper.class);
 
     //    @Autowired
-    private TerminalService terminalService;
+//    private TerminalService terminalService;
     //    @Autowired
-    private StaffService staffService;
+//    private StaffService staffService;
     //    @Autowired
-    private RtGasInfoMapper rtGasInfoMapper;
+//    private RtGasInfoMapper rtGasInfoMapper;
 
     //    @Autowired
     private TerminalUpdateIpMapper terminalUpdateIpMapper;
     //    @Autowired
     private TerminalRoadMapper terminalRoadMapper;
 
+    private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
+
+    private GasServiceClient gasServiceClient;
 
     private VoiceMonitorService voiceMonitorService;
 //    @PostConstruct
@@ -66,12 +67,13 @@ public class ProcessRtVoice {
 //    }
 
     public ProcessRtVoice() {
-        this.terminalUpdateIpMapper = SpringContextUtil.getBean(TerminalUpdateIpMapper.class);
-        this.terminalService = SpringContextUtil.getBean(TerminalServiceImpl.class);
-        this.terminalRoadMapper = SpringContextUtil.getBean(TerminalRoadMapper.class);
-        this.rtGasInfoMapper = SpringContextUtil.getBean(RtGasInfoMapper.class);
-        this.staffService = SpringContextUtil.getBean(StaffService.class);
+//        this.terminalUpdateIpMapper = SpringContextUtil.getBean(TerminalUpdateIpMapper.class);
+//        this.terminalService = SpringContextUtil.getBean(TerminalServiceImpl.class);
+//        this.terminalRoadMapper = SpringContextUtil.getBean(TerminalRoadMapper.class);
+//        this.rtGasInfoMapper = SpringContextUtil.getBean(RtGasInfoMapper.class);
+//        this.staffService = SpringContextUtil.getBean(StaffService.class);
         this.voiceMonitorService = SpringContextUtil.getBean(VoiceMonitorService.class);
+        this.staffGroupTerminalServiceClient = SpringContextUtil.getBean(StaffGroupTerminalServiceClient.class);
     }
 
     public static ProcessRtVoice getProcessRealTimeVoice() {
@@ -166,19 +168,24 @@ public class ProcessRtVoice {
         map.put("ipPort", ipPort);
         map.put("result", "44");
         //TODO 根据IP查找人员ID 人员所在的部门分组，最近一次气体信息以及定位信息
-        TerminalUpdateIp terminalUpdateIp = terminalUpdateIpMapper.findTerminalIdByIpAndPort(ip, port);
+//        TerminalUpdateIp terminalUpdateIp = terminalUpdateIpMapper.findTerminalIdByIpAndPort(ip, port);
+        TerminalUpdateIp terminalUpdateIp = staffGroupTerminalServiceClient.findTerminalIdByIpAndPort(ip,port);
         if (terminalUpdateIp != null) {
             Integer terminalId = terminalUpdateIp.getTerminalNum();
             //员工信息
-            Map<String, Object> staffInfo = staffService.findStaffIdByTerminalId(terminalId);
+           // Map<String, Object> staffInfo = staffService.findStaffIdByTerminalId(terminalId);
+            Map<String, Object> staffInfo = staffGroupTerminalServiceClient.findStaffIdByTerminalId(terminalId);
             Integer staffId = (Integer) staffInfo.get("staff_id");
             //员工、部门、分组名称
-            HashMap<String, Object> nameInfo = staffService.getDeptAndGroupNameByStaffId(staffId);
+           // HashMap<String, Object> nameInfo = staffService.getDeptAndGroupNameByStaffId(staffId);
+            HashMap<String, Object> nameInfo = staffGroupTerminalServiceClient.getDeptAndGroupNameByStaffId(staffId);
             //气体信息
-            Map<String, Object> gasInfo = rtGasInfoMapper.selectGasInfoByTerminalLastTime(terminalId);
+//            Map<String, Object> gasInfo = rtGasInfoMapper.selectGasInfoByTerminalLastTime(terminalId);
+            Map<String, Object> gasInfo = gasServiceClient.selectGasInfoByTerminalLastTime(terminalId);
             Integer positionId = (Integer) gasInfo.get("position_id");
             //终端路线信息
-            TerminalRoad positionInfo = terminalRoadMapper.selectByPrimaryKey(positionId);
+//            TerminalRoad positionInfo = terminalRoadMapper.selectByPrimaryKey(positionId);
+            TerminalRoad positionInfo = gasServiceClient.selectRoadById(positionId);
             map.put("staffInfo", staffInfo);
             map.put("nameInfo", nameInfo);
             map.put("gasInfo", gasInfo);
@@ -204,12 +211,14 @@ public class ProcessRtVoice {
     public static void checkOnline(String staffId) {
 
         //根据员工id查询对应的ip和port
-        Integer terminalId = getProcessRealTimeVoice().terminalService.findTerminalInfoByStaffId(Integer.parseInt(staffId));
-        Map<String, Object> ipInfoMap = getProcessRealTimeVoice().terminalUpdateIpMapper.selectTerminalIpInfoByTerminalId(terminalId);
+//        Integer terminalId = getProcessRealTimeVoice().terminalService.findTerminalInfoByStaffId(Integer.parseInt(staffId));
+        Integer terminalId = getProcessRealTimeVoice().staffGroupTerminalServiceClient.findTerminalInfoByStaffId(Integer.parseInt(staffId));
+        Map<String, Object> ipInfoMap = getProcessRealTimeVoice().staffGroupTerminalServiceClient.selectTerminalIpInfoByTerminalId(terminalId);
         String terminalIp = (String) ipInfoMap.get("terminal_ip");
         Integer terminalPort = (Integer) ipInfoMap.get("terminal_port");
         String ipPort = ip_prefix + terminalIp + ":" + terminalPort;
-        Map<String, Object> staffInfo = getProcessRealTimeVoice().staffService.findStaffIdByTerminalId(terminalId);
+//        Map<String, Object> staffInfo = getProcessRealTimeVoice().staffService.findStaffIdByTerminalId(terminalId);
+        Map<String, Object> staffInfo = getProcessRealTimeVoice().staffGroupTerminalServiceClient.findStaffIdByTerminalId(terminalId);
         //定义map储存数据
         HashMap<String, Object> map = new HashMap<>();
         map.put("cmd", "2008");//2008表示发起呼叫

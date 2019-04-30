@@ -10,3 +10,5 @@
  ##**kafka-consumer-service:8773**
  ##**ws-push-service:8771**
  ##**staff-group-terminal-service:8772**
+ ##**gas-service:8774**
+ ##**attendance-service:8775**

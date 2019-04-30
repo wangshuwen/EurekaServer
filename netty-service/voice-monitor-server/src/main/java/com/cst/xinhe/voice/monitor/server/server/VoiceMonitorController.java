@@ -34,4 +34,10 @@ public class VoiceMonitorController {
         return ResultUtil.jsonToStringSuccess();
     }
 
+    @PostMapping("sendInfoToWs")
+    public String sendInfoToWs(@RequestBody String keyStr){
+        voiceMonitorService.sendInfoToWs(keyStr);
+        return ResultUtil.jsonToStringSuccess();
+    }
+
 }

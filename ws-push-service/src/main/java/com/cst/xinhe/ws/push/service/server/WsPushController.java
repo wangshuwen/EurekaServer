@@ -1,4 +1,4 @@
-package com.cst.xinhe.ws.push.service.controller;
+package com.cst.xinhe.ws.push.service.server;
 
 import com.cst.xinhe.base.result.ResultUtil;
 import com.cst.xinhe.ws.push.service.service.WsPushService;
@@ -17,7 +17,7 @@ import java.io.IOException;
  * @create: 2019-04-29 09:20
  **/
 @RestController
-@RequestMapping("ws/")
+@RequestMapping("ws-push-service/")
 public class WsPushController {
 
     @Autowired
@@ -44,6 +44,11 @@ public class WsPushController {
     @PostMapping("sendWSSiteServer")
     public String sendWSSiteServer(@RequestBody String jsonObject) throws IOException{
         wsPushService.sendWSSiteServer(jsonObject);
+        return ResultUtil.jsonToStringSuccess();
+    }
+    @PostMapping("sendInfo")
+    public String sendInfo(@RequestBody String jsonObject) throws IOException{
+        wsPushService.sendInfo(jsonObject);
         return ResultUtil.jsonToStringSuccess();
     }
 

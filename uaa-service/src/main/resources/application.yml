@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: uaa-service
+  datasource:
+    url: jdbc:mysql://192.168.1.182:3306/user_test?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+server:
+  port: 9999
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8761/erueka/

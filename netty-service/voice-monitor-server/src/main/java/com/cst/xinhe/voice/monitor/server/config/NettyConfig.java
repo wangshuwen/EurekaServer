@@ -29,7 +29,7 @@ public class NettyConfig {
     /**
      * 语音的端口号
      */
-    @Value("${netty.port2}")
+    @Value("${netty.port}")
     private int voice_port;
 
     public NettyConfig() {

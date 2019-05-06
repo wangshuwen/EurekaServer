@@ -1,5 +1,7 @@
 package com.cst.xinhe.voice.monitor.server.client.callback;
 
+import com.cst.xinhe.base.enums.ResultEnum;
+import com.cst.xinhe.base.result.ResultUtil;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.voice.monitor.server.client.KafkaClient;
 import org.slf4j.Logger;
@@ -18,5 +20,20 @@ public class KafkaClientFallback implements KafkaClient {
     @Override
     public void sendData(String topic, RequestData requestData) {
         logger.error("call remote kafka-sender-service service error");
+    }
+
+    @Override
+    public void sendChatMsgData(String topic, String chatMsg) {
+        logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
+    }
+
+    @Override
+    public void sendSelfCheckResult(String s, String toJSONString, Integer terminalPort) {
+        logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
+    }
+
+    @Override
+    public void send(String topic, String obj, Integer port) {
+        logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
     }
 }

@@ -60,4 +60,6 @@ public interface StaffService {
     List<Staff> selectStaffListByJobType(Integer jobType);
 
     List<Staff> selectStaffByLikeName(String staffName);
+
+    Map<Integer, List<Staff>> findStaffByTimeStandardIds(Integer[] ids);
 }

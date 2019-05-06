@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(value = "kafka-consumer-service",
 configuration = FeignConfig.class,
 fallback = KafkaConsumerClientFallback.class)
-@RequestMapping("kafka-consumer-service/")
+//@RequestMapping("kafka-consumer-service/")
 public interface KafkaConsumerClient {
 
     @PutMapping("removeCarSet")

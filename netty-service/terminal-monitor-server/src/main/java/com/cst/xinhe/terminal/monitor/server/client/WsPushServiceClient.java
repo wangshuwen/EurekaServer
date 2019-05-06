@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @FeignClient(value = "ws-push-service",configuration = FeignConfig.class,fallback = WsPushServiceFallback.class)
-@RequestMapping("ws/")
+//@RequestMapping("ws/")
 public interface WsPushServiceClient {
 
     @PostMapping("sendWSSiteServer")

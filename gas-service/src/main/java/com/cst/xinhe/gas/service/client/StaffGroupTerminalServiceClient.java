@@ -15,7 +15,7 @@ import java.util.Map;
 @FeignClient(value = "staff-group-terminal-service",
         configuration = FeignConfig.class,
         fallback = StaffGroupTerminalServiceClientFallback.class)
-@RequestMapping("staff-group-terminal-service")
+//@RequestMapping("staff-group-terminal-service")
 public interface StaffGroupTerminalServiceClient {
 
     @GetMapping("findStaffIdByTerminalId")

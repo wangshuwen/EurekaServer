@@ -33,12 +33,12 @@ import java.util.Map;
 @Component
 public class VoiceServerHandler extends ChannelInboundHandlerAdapter {
 
-//    private static VoiceServerHandler voiceServerHandler;
+    private static VoiceServerHandler voiceServerHandler;
 
-//    @Resource
+    @Resource
     private WSVoiceServer wSVoiceServer;
 
-//    @Resource
+    @Resource
     private WSVoiceStatus wsVoiceStatus;
     /**
      * 日志
@@ -46,8 +46,8 @@ public class VoiceServerHandler extends ChannelInboundHandlerAdapter {
     private Logger log = LoggerFactory.getLogger(getClass());
 
     public VoiceServerHandler() {
-        this.wSVoiceServer = SpringContextUtil.getBean(WSVoiceServer.class);
-        this.wsVoiceStatus = SpringContextUtil.getBean(WSVoiceStatus.class);
+//        this.wSVoiceServer = SpringContextUtil.getBean(WSVoiceServer.class);
+//        this.wsVoiceStatus = SpringContextUtil.getBean(WSVoiceStatus.class);
     }
 
 
@@ -58,13 +58,13 @@ public class VoiceServerHandler extends ChannelInboundHandlerAdapter {
 //    @Resource
 //    private Client client;
 
-//    @PostConstruct //通过@PostConstruct实现初始化bean之前进行的操作
-//    public void init() {
-//        voiceServerHandler = this;
-//        voiceServerHandler.wSVoiceServer = this.wSVoiceServer;
-//        voiceServerHandler.wsVoiceStatusServer = this.wsVoiceStatusServer;
-//
-//    }
+    @PostConstruct //通过@PostConstruct实现初始化bean之前进行的操作
+    public void init() {
+        voiceServerHandler = this;
+        voiceServerHandler.wSVoiceServer = this.wSVoiceServer;
+        voiceServerHandler.wsVoiceStatus = this.wsVoiceStatus;
+
+    }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {

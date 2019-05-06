@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @FeignClient(value = "terminal-monitor-server",
         configuration = FeignConfig.class,
         fallback = TerminalMonitorFallback.class)
-@RequestMapping("terminal-monitor-server")
+//@RequestMapping("terminal-monitor-server")
 public interface TerminalMonitorClient {
 
     /**

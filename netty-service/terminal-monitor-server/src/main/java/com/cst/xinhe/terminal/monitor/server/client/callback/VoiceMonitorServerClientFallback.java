@@ -23,4 +23,14 @@ public class VoiceMonitorServerClientFallback implements VoiceMonitorServerClien
     public void checkSendCheckOnline(RequestData customMsg) {
         logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
     }
+
+    @Override
+    public void sendCallInfo(RequestData customMsg) {
+        logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
+    }
+
+    @Override
+    public void sendInfoToWs(String keyStr) {
+        logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
+    }
 }

@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 public class StationPartitionServiceClientFallback implements StationPartitionServiceClient {
 
     Logger logger = LoggerFactory.getLogger(getClass());
+
     @Override
     public double findFrequencyByStationId(Integer stationId) {
         logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
@@ -29,4 +30,6 @@ public class StationPartitionServiceClientFallback implements StationPartitionSe
         logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
         return null;
     }
+
+
 }

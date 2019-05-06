@@ -22,7 +22,7 @@ import java.util.Map;
  * @create: 2019-04-29 10:46
  **/
 @RestController
-@RequestMapping("staff-group-terminal-service")
+//@RequestMapping("staff-group-terminal-service")
 public class StaffControllerServer {
 
     @Autowired
@@ -54,6 +54,10 @@ public class StaffControllerServer {
     @GetMapping("findStaffByTimeStandardId")
     public List<Staff> findStaffByTimeStandardId(@RequestParam Integer item){
         return staffService.findStaffByTimeStandardId(item);
+    }
+    @GetMapping("selectStaffJobByIds")
+    public Map<Integer, List<Staff>> findStaffByTimeStandardIds(@RequestParam Integer[] ids){
+        return staffService.findStaffByTimeStandardIds(ids);
     }
 
     @GetMapping("findAllStaffByGroupId")

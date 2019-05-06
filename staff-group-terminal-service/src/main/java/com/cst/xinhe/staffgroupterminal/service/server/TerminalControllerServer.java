@@ -18,7 +18,7 @@ import java.util.Map;
  * @create: 2019-04-29 10:46
  **/
 @RestController
-@RequestMapping("staff-group-terminal-service")
+//@RequestMapping("staff-group-terminal-service")
 public class TerminalControllerServer {
     @Autowired
     private StaffService staffService;

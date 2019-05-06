@@ -37,6 +37,11 @@ public class KafkaSenderServiceImpl implements KafkaSenderService {
 
     @Override
     public void sendByCount(String topic, String data, int count) {
+        kafkaTemplate.send(topic,partitions,count+ "",data);
+    }
 
+    @Override
+    public void sendChatMsgData(String topic, String chatMsg) {
+        kafkaTemplate.send(topic,partitions,partitions+ "",chatMsg);
     }
 }

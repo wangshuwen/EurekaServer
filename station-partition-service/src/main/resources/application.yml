@@ -1,0 +1,38 @@
+server:
+  port: 8776
+spring:
+  application:
+    name: station-partition-service
+  datasource:
+    druid:
+      url: jdbc:mysql://192.168.1.182:3306/zkxh_test1
+      username: root
+      password: 123456
+      db-type: com.alibaba.druid.pool.DruidDataSource
+      filter: stat
+      max-active: 20
+      initial-size: 1
+      max-wait: 60000
+      min-idle: 1
+      time-between-eviction-runs-millis: 6000
+      min-evictable-idle-time-millis: 300000
+      validation-query: select 'x'
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      pool-prepared-statements: true
+      max-open-prepared-statements: 20
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+feign:
+  hystrix:
+    enabled: true
+mybatis:
+  mapper-locations: com/cst/xinhe/persistence/dao/**/*.xml
+#  type-aliases-package: com.cst.xinhe.persistence.model
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: count=countSql

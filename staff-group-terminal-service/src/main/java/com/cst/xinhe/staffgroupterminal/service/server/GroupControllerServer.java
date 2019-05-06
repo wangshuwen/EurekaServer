@@ -18,7 +18,7 @@ import java.util.List;
  * @create: 2019-04-29 10:46
  **/
 @RestController
-@RequestMapping("staff-group-terminal-service/")
+//@RequestMapping("staff-group-terminal-service/")
 public class GroupControllerServer {
 
     @Autowired
@@ -40,6 +40,11 @@ public class GroupControllerServer {
     @GetMapping("getOneSonByParent")
     public List<StaffOrganization> getOneSonByParent(@RequestParam int i){
         return staffOrganizationService.getOneSonByParent(i);
+    }
+
+    @GetMapping("findSonIdsByDeptName")
+    public List<Integer> findSonIdsByDeptName(@RequestParam String keyWord){
+        return staffOrganizationService.findSonIdsByDeptName(keyWord);
     }
 
 

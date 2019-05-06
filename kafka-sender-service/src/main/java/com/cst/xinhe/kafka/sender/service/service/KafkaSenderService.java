@@ -9,4 +9,6 @@ public interface KafkaSenderService {
     void sendByPort(String topic, String obj,Integer port);
 
     void sendByCount(String topic,String data,int count );
+
+    void sendChatMsgData(String topic, String chatMsg);
 }

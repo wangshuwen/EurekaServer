@@ -1,5 +1,7 @@
 package com.cst.xinhe.terminal.monitor.server.utils;
 
+import com.cst.xinhe.common.utils.FileType;
+
 import java.io.File;
 import java.io.IOException;
 

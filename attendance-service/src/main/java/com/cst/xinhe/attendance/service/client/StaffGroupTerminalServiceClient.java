@@ -18,12 +18,11 @@ import java.util.Map;
 @FeignClient(value = "staff-group-terminal-service",
         configuration = FeignConfig.class,
         fallback = StaffGroupTerminalServiceClientFallback.class)
-@RequestMapping("staff-group-terminal-service/")
+//@RequestMapping(value = "staff-group-terminal-service")
 public interface StaffGroupTerminalServiceClient {
 
     @GetMapping("findStaffIdByTerminalId")
     Map<String, Object> findStaffIdByTerminalId(@RequestParam int terminalId);
-
 
     @GetMapping("findTerminalIdByIpAndPort")
     TerminalUpdateIp findTerminalIdByIpAndPort(@RequestParam String terminalIp, @RequestParam int port);
@@ -60,4 +59,7 @@ public interface StaffGroupTerminalServiceClient {
 
     @GetMapping("selectStaffJobById")
     StaffJob selectStaffJobByJobId(@RequestParam Integer jobId);
+
+    @GetMapping("findStaffByTimeStandardIds")
+    Map<Integer, List<Staff>> findStaffByTimeStandardIds(@RequestParam Integer[] ids);
 }

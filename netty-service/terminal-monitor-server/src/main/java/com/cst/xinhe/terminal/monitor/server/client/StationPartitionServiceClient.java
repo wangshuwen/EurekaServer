@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(value = "station-partition-service",
         configuration = FeignConfig.class,
         fallback = StationPartitionServiceClientFallback.class)
-@RequestMapping("station-partition-service")
+//@RequestMapping("station-partition-service")
 public interface StationPartitionServiceClient {
 
     @GetMapping("findFrequencyByStationId")

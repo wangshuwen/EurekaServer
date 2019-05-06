@@ -1,8 +1,8 @@
 package com.cst.xinhe.attendance.service.service.impl;
 
+import com.cst.xinhe.attendance.service.client.StaffGroupTerminalServiceClient;
 import com.cst.xinhe.attendance.service.service.AttendanceRulesGenerator;
 import com.cst.xinhe.attendance.service.service.AttendanceService;
-import com.cst.xinhe.attendance.service.service.StaffOrganizationService;
 import com.cst.xinhe.base.exception.ErrorCode;
 import com.cst.xinhe.base.exception.RuntimeServiceException;
 import com.cst.xinhe.common.utils.convert.DateConvert;
@@ -45,10 +45,10 @@ public class AttendanceServiceImpl implements AttendanceService, AttendanceRules
     @Resource
     private TimeStandardMapper timeStandardMapper;
     @Resource
-    AttendanceMapper attendanceMapper;
+    private AttendanceMapper attendanceMapper;
 
     @Resource
-    private StaffOrganizationService staffOrganizationService;
+    private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
 
     @Override
     public int addTimeStandardInfo(TimeStandardVO standardVO) throws ParseException {
@@ -151,7 +151,8 @@ public class AttendanceServiceImpl implements AttendanceService, AttendanceRules
     @Override
     public Page findAttendanceInfo(AttendanceParamsVO attendanceParamsVO) {
         if (null != attendanceParamsVO.getOrgId() && 0 != attendanceParamsVO.getOrgId()){
-            List<Integer> list = staffOrganizationService.findSonIdsByDeptId(attendanceParamsVO.getOrgId());
+//            List<Integer> list = staffOrganizationService.findSonIdsByDeptId(attendanceParamsVO.getOrgId());
+            List<Integer> list = staffGroupTerminalServiceClient.findSonIdsByDeptId(attendanceParamsVO.getOrgId());
             if (list != null && !list.isEmpty())
                 attendanceParamsVO.setStaffIdOfList(list);
         }

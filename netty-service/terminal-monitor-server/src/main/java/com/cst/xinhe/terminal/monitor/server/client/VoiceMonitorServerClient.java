@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @FeignClient(value = "voice-monitor-server",
 configuration = FeignConfig.class,
 fallback = VoiceMonitorServerClientFallback.class)
-@RequestMapping("voice-monitor-server")
+//@RequestMapping("voice-monitor-server")
 public interface VoiceMonitorServerClient {
 
     @PostMapping("checkSendCheckOnline")

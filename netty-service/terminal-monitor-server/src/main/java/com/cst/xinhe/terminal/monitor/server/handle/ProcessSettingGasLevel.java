@@ -13,7 +13,6 @@ import com.cst.xinhe.persistence.vo.resp.GasLevelVO;
 import com.cst.xinhe.terminal.monitor.server.request.SingletonClient;
 import com.cst.xinhe.terminal.monitor.server.service.TerminalMonitorService;
 import com.cst.xinhe.terminal.monitor.server.service.impl.TerminalMonitorServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;

@@ -10,9 +10,10 @@
  ##**kafka-consumer-service:8773**
  ##**ws-push-service:8771**
  ##**staff-group-terminal-service:8772**
-<<<<<<< HEAD
+ ##**station-partition-service:8776**
  ##**gas-service:8774**
  ##**attendance-service:8775**
-=======
- ##**gateway-service  8443**
->>>>>>> 56316ad2da6b443878666a88c99198a60c8ee18e
+ ##**gateway-service  8443** 
+ ##**chat-message-service  8777** 
+
+

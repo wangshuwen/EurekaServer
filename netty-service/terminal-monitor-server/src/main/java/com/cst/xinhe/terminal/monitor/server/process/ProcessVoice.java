@@ -3,6 +3,7 @@ package com.cst.xinhe.terminal.monitor.server.process;
 import com.alibaba.fastjson.JSON;
 import com.cst.xinhe.base.context.SpringContextUtil;
 import com.cst.xinhe.common.netty.data.request.RequestData;
+import com.cst.xinhe.common.utils.FileType;
 import com.cst.xinhe.common.utils.convert.DateConvert;
 import com.cst.xinhe.persistence.model.chat.ChatMsg;
 import com.cst.xinhe.terminal.monitor.server.client.KafkaClient;
@@ -11,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
@@ -30,25 +33,28 @@ public class ProcessVoice {
 
     private volatile static ProcessVoice processVoice;
 //    @Resource
+    @Resource
     private Constant constant;
 
 //    private UpLoadService upLoadService;
+    @Resource
     private KafkaClient kafkaClient;
 
     //    Client client = new Client();
 //    @Resource
 //    private Client client;
-//    @PostConstruct //通过@PostConstruct实现初始化bean之前进行的操作
-//    public void init() {
-//        processVoice = this;
-//        processVoice.upLoadService = this.upLoadService;
-////        processVoice.client = this.client;
-//    }
+    @PostConstruct //通过@PostConstruct实现初始化bean之前进行的操作
+    public void init() {
+        processVoice = this;
+        processVoice.constant = this.constant;
+        processVoice.kafkaClient = this.kafkaClient;
+//        processVoice.client = this.client;
+    }
 
     public ProcessVoice() {
 //        this.upLoadService = SpringContextUtil.getBean(UpLoadServiceImpl.class);
-        this.constant = SpringContextUtil.getBean(Constant.class);
-        this.kafkaClient = SpringContextUtil.getBean(KafkaClient.class);
+//        this.constant = SpringContextUtil.getBean(Constant.class);
+//        this.kafkaClient = SpringContextUtil.getBean(KafkaClient.class);
     }
 
     public static ProcessVoice getProcessVoice() {
@@ -130,7 +136,7 @@ public class ProcessVoice {
                     //存储序列号：时间+终端编号+序列号
                     chatMsg.setSequenceId(DateConvert.convert(postTime, 15)+terminalId+sequenceId);
 //                    upLoadService.sendVoice(chatMsg);
-                    kafkaClient.sendChatMsgData("", chatMsg);
+                    kafkaClient.sendChatMsgData("", JSON.toJSONString(chatMsg));
                     // chatMsgMapper.insert(chatMsg);
                     return real.toString();
                 } catch (IOException e) {

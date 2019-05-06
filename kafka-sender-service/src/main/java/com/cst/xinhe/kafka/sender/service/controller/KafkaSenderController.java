@@ -19,8 +19,23 @@ public class KafkaSenderController {
     @Autowired
     KafkaSenderService kafkaSenderService;
 
-    @PostMapping("kafka/sendData")
-    public void sender(@RequestParam String topic, @RequestBody RequestData requestData){
+    @PostMapping("kafka-sender-service/sendData")
+    public void sendData(@RequestParam String topic, @RequestBody RequestData requestData){
         kafkaSenderService.sendData(topic,requestData);
+    }
+
+    @PostMapping("kafka-sender-service/sendChatMsg")
+    public void sendChatMsgData(@RequestParam String topic,@RequestBody String chatMsg){
+        kafkaSenderService.sendChatMsgData(topic,chatMsg);
+    }
+
+    @PostMapping("kafka-sender-service/sendSelfCheckResult")
+    public void sendSelfCheckResult(@RequestParam String s,@RequestBody String toJSONString, @RequestParam Integer terminalPort){
+        kafkaSenderService.sendByPort(s,toJSONString,terminalPort);
+    }
+
+    @PostMapping("kafka-sender-service/send")
+    public void send(@RequestParam String topic, @RequestBody String obj,@RequestParam Integer port){
+        kafkaSenderService.sendByPort(topic,obj,port);
     }
 }

@@ -141,7 +141,7 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
 
     @Override
     public void sendUpLoadIp(RequestData customMsg) {
-        kafkaClient.send("updateIp.tut",JSON.toJSONString(customMsg),customMsg.getTerminalPort());;
+        kafkaClient.send("updateIp.tut",JSON.toJSONString(customMsg),customMsg.getTerminalPort());
     }
 
     @Override

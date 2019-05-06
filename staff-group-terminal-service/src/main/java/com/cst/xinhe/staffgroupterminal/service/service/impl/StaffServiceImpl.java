@@ -308,4 +308,18 @@ public class StaffServiceImpl implements StaffService {
         List<Staff> staffList = staffMapper.selectByExample(example);
         return staffList;
     }
+
+    @Override
+    public Map<Integer, List<Staff>> findStaffByTimeStandardIds(Integer[] ids) {
+        Map<Integer,List<Staff>> map = new HashMap<>();
+        for (Integer item: ids){
+            StaffExample staffExample = new StaffExample();
+            StaffExample.Criteria criteria = staffExample.createCriteria();
+            criteria.andTimeStandardIdEqualTo(item);
+            List<Staff> staffList = staffMapper.selectByExample(staffExample);
+            map.put(item,staffList);
+        }
+
+        return map;
+    }
 }

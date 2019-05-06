@@ -29,7 +29,7 @@ public class Swagger2Config {
                 .apiInfo(apiInfo())
                 .select()
                 //为当前包路径
-                .apis(RequestHandlerSelectors.basePackage("com.cst.xinhe"))
+                .apis(RequestHandlerSelectors.basePackage("com.cst.xinhe.*"))
                 .paths(PathSelectors.any())
                 .build();
     }

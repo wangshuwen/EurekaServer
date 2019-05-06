@@ -3,7 +3,7 @@ package com.cst.xinhe.kafka.consumer.service.consumer;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.cst.xinhe.common.ws.WebSocketData;
-import com.cst.xinhe.persistence.dao.chat.ChatMsgMapper;
+import com.cst.xinhe.kafka.consumer.service.client.*;
 import com.cst.xinhe.persistence.model.chat.ChatMsg;
 import com.cst.xinhe.persistence.model.rang_setting.RangSetting;
 import com.cst.xinhe.persistence.vo.resp.GasWSRespVO;
@@ -11,13 +11,12 @@ import com.cst.xinhe.persistence.vo.resp.VoiceWSRespVo;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.TopicPartition;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.io.IOException;
-import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -32,27 +31,46 @@ public class VoiceInfoProcess {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Resource
-    WebsocketServer websocketServer;
+//    @Resource
+//    WebsocketServer websocketServer;
 
     @Resource
-    private StaffService staffService;
+    private WsPushServiceClient wsPushServiceClient;
+
+//    @Resource
+//    private StaffService staffService;
 
     @Resource
-    private GasInfoService gasInfoService;
+    private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
+
+//    @Resource
+//    private GasInfoService gasInfoService;
 
     @Resource
-    private ChatMsgMapper chatMsgMapper;
+    private GasServiceClient gasServiceClient;
+
+//    @Resource
+//    private ChatMsgMapper chatMsgMapper;
 
     @Resource
-    private StaffTerminalRelationService staffTerminalRelationService;
-    @Resource
-    private RangSettingService rangSettingService;
-    @Resource
-    private Constant constant;
+    private ChatMsgServiceClient chatMsgServiceClient;
+
+//    @Resource
+//    private StaffTerminalRelationService staffTerminalRelationService;
+//    @Resource
+//    private RangSettingService rangSettingService;
 
     @Resource
-    KafkaSender kafkaSender;
+    private SystemServiceClient systemServiceClient;
+//    @Resource
+//    private Constant constant;
+
+    @Value("basePath")
+    String basePath;
+    @Value("webBaseUrl")
+    String webBaseUrl;
+//    @Resource
+//    KafkaSender kafkaSender;
 
     private static final String TOPIC = "voice.tut";
     private void process(String str){
@@ -78,7 +96,8 @@ public class VoiceInfoProcess {
         chatMsg.setPostMsg(postMsg);
         chatMsg.setStatus(status);
 
-        Map<String, Object> map = staffService.findStaffIdByTerminalId(terminalId);
+//        Map<String, Object> map = staffService.findStaffIdByTerminalId(terminalId);
+        Map<String, Object> map = staffGroupTerminalServiceClient.findStaffIdByTerminalId(terminalId);
         Integer staffId = (Integer) map.get("staff_id");
         chatMsg.setPostUserId(staffId);
         chatMsg.setReceiceUserId(1);
@@ -87,22 +106,26 @@ public class VoiceInfoProcess {
 //            StaffTerminalRelation staffTerminalRelation = staffTerminalRelationService.findNewRelationByTerminalId(terminalId);
 //            chatMsg.setTerminalId(staffTerminalRelation.getStaffTerminalRelationId());
         chatMsg.setTerminalId(terminalId);
-        chatMsgMapper.insertSelective(chatMsg);
-        GasWSRespVO staffInfo = staffService.findStaffNameByTerminalId(terminalId);
+//        chatMsgMapper.insertSelective(chatMsg);
+        chatMsgServiceClient.insertChatMsgSelective(chatMsg);
+//        GasWSRespVO staffInfo = staffService.findStaffNameByTerminalId(terminalId);
+        GasWSRespVO staffInfo = staffGroupTerminalServiceClient.findStaffNameByTerminalId(terminalId);
 
-        Map<String, Object> resultMap = staffService.findStaffGroupAndDeptByStaffId(staffInfo.getStaffId());
+//        Map<String, Object> resultMap = staffService.findStaffGroupAndDeptByStaffId(staffInfo.getStaffId());
+        Map<String, Object> resultMap = staffGroupTerminalServiceClient.findStaffGroupAndDeptByStaffId(staffInfo.getStaffId());
 
         GasWSRespVO gasWSRespVO = null;
         try {
-            gasWSRespVO = gasInfoService.findGasInfoByStaffIdAndTerminalId(terminalId);
-        } catch (ParseException e) {
+//            gasWSRespVO = gasInfoService.findGasInfoByStaffIdAndTerminalId(terminalId);
+            gasWSRespVO = gasServiceClient.findGasInfoByStaffIdAndTerminalId(terminalId);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         gasWSRespVO.setStaffId(staffInfo.getStaffId());
         gasWSRespVO.setStaffName(staffInfo.getStaffName());
         //TODO 封装WS 数据
 
-        String voiceUrl = postMsg.replace(constant.getBasePath(), constant.getWebBaseUrl());
+        String voiceUrl = postMsg.replace(basePath, webBaseUrl);
         VoiceWSRespVo voiceWSRespVo = new VoiceWSRespVo();
         voiceWSRespVo.setStaffId(gasWSRespVO.getStaffId());
         voiceWSRespVo.setStatus(status);
@@ -119,15 +142,18 @@ public class VoiceInfoProcess {
         voiceMap.put("code",1);//code=1,表示单条语音
 
         //发送铃声的url
-        List<RangSetting> rangs = rangSettingService.findRangByType(1);
+//        List<RangSetting> rangs = rangSettingService.findRangByType(1);
+        List<RangSetting> rangs = systemServiceClient.findRangByType(1);
+
         for (RangSetting rang : rangs) {
             if(rang.getStatus()==1){
                 voiceMap.put("url",rang.getUrl());
             }
         }
         try {
-            websocketServer.sendInfo(JSONObject.toJSONString(new WebSocketData(2,voiceMap)));
-        } catch (IOException e) {
+//            websocketServer.sendInfo(JSONObject.toJSONString(new WebSocketData(2,voiceMap)));
+            wsPushServiceClient.sendWebsocketServer(JSONObject.toJSONString(new WebSocketData(2,voiceMap)));
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

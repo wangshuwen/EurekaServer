@@ -4,7 +4,7 @@ package com.cst.xinhe.kafka.consumer.service.consumer;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.cst.xinhe.base.log.BaseLog;
-import com.cst.xinhe.persistence.dao.base_station.BaseStationMapper;
+import com.cst.xinhe.kafka.consumer.service.client.StationPartitionServiceClient;
 import com.cst.xinhe.persistence.model.base_station.BaseStation;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -24,8 +24,11 @@ import java.util.Optional;
 @Component
 public class ConfigResponse extends BaseLog {
 
+//    @Resource
+//    private BaseStationMapper baseStationMapper;
+
     @Resource
-    private BaseStationMapper baseStationMapper;
+    private StationPartitionServiceClient stationPartitionServiceClient;
 
     private static final String TOPIC = "configResp.tut";
    // @KafkaListener(id = "confRespToDB", topics = "configResp.tut")
@@ -71,6 +74,7 @@ public class ConfigResponse extends BaseLog {
         BaseStation baseStation = new BaseStation();
         baseStation.setBaseStationNum(stationNum);
         baseStation.setRemark("1");
-        baseStationMapper.updateByStationNumSelective(baseStation);
+
+        stationPartitionServiceClient.updateByStationNumSelective(baseStation);
     }
 }

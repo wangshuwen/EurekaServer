@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.cst.xinhe.base.log.BaseLog;
 import com.cst.xinhe.common.ws.WebSocketData;
+import com.cst.xinhe.kafka.consumer.service.client.ChatMsgServiceClient;
+import com.cst.xinhe.kafka.consumer.service.client.WsPushServiceClient;
 import com.cst.xinhe.persistence.dao.chat.ChatMsgMapper;
 import com.cst.xinhe.persistence.model.chat.ChatMsg;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -25,10 +27,14 @@ import java.util.concurrent.Executors;
 @Component
 public class UpdateVoiceReadStatus extends BaseLog {
 
-    @Resource
-    private ChatMsgMapper chatMsgMapper;
+//    @Resource
+//    private ChatMsgMapper chatMsgMapper;
 
-    private static ObjectMapper json = new ObjectMapper();
+    @Resource
+    private ChatMsgServiceClient chatMsgServiceClient;
+
+    @Resource
+    private WsPushServiceClient wsPushServiceClient;
 
     private static final String TOPIC = "updateVoiceReadStatus.tut";
 
@@ -55,17 +61,15 @@ public class UpdateVoiceReadStatus extends BaseLog {
                     seq_str.append(time).append(terminalId).append(seq);
                     chatMsg.setSequenceId(seq_str.toString());
 
-                    chatMsgMapper.updateChatMegStatusBySeqId(chatMsg);
-
+//                    chatMsgMapper.updateChatMegStatusBySeqId(chatMsg);
+                    chatMsgServiceClient.updateChatMegStatusBySeqId(chatMsg);
                     // TODO 通过WebSocket，发送到前端，该条语音已经被读取   {seqId}
                     HashMap<String, Object> map = new HashMap<>();
                     map.put("code",2);//code=2表示是已读未读
                     map.put("result", seq_str); //表示流水号唯一的ID
                     try {
-                        WebsocketServer.sendInfo(json.writeValueAsString(new WebSocketData(2, map)));
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
+                        wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(new WebSocketData(2, map)));
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }

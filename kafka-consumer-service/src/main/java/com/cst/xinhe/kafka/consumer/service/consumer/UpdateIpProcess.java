@@ -4,10 +4,14 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.cst.xinhe.base.exception.ErrorCode;
 import com.cst.xinhe.base.exception.RuntimeServiceException;
+import com.cst.xinhe.common.utils.array.ArrayQueue;
 import com.cst.xinhe.common.ws.WebSocketData;
+import com.cst.xinhe.kafka.consumer.service.client.AttendanceServiceClient;
+import com.cst.xinhe.kafka.consumer.service.client.StaffGroupTerminalServiceClient;
+import com.cst.xinhe.kafka.consumer.service.client.StationPartitionServiceClient;
+import com.cst.xinhe.kafka.consumer.service.client.WsPushServiceClient;
 import com.cst.xinhe.persistence.dao.attendance.StaffAttendanceRealRuleMapper;
 import com.cst.xinhe.persistence.dao.base_station.OfflineStationMapper;
-import com.cst.xinhe.persistence.dao.terminal.TerminalUpdateIpMapper;
 import com.cst.xinhe.persistence.model.attendance.Attendance;
 import com.cst.xinhe.persistence.model.attendance.StaffAttendanceRealRule;
 import com.cst.xinhe.persistence.model.base_station.OfflineStationExample;
@@ -21,7 +25,6 @@ import org.springframework.kafka.annotation.TopicPartition;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.io.IOException;
 import java.text.ParseException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -37,23 +40,34 @@ import java.util.concurrent.Executors;
 @Component
 public class UpdateIpProcess {
     //存储更新基站 队列
-    public static Map<Integer,ArrayQueue<TerminalUpdateIp>> attendanceMap = Collections.synchronizedMap(new HashMap<>());
+    public static Map<Integer, ArrayQueue<TerminalUpdateIp>> attendanceMap = Collections.synchronizedMap(new HashMap<>());
 
     private Map<String, Object> map;
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
+//    @Resource
+//    KafkaSender kafkaSender;
+//    @Resource
+//    StaffService staffService;
     @Resource
-    KafkaSender kafkaSender;
-    @Resource
-    StaffService staffService;
+    private WsPushServiceClient wsPushServiceClient;
 
     @Resource
-    TerminalUpdateIpMapper terminalUpdateIpMapper;
+    private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
+
+//    @Resource
+//    TerminalUpdateIpMapper terminalUpdateIpMapper;
+//    @Resource
+//    BaseStationService baseStationService;
+
     @Resource
-    BaseStationService baseStationService;
+    private StationPartitionServiceClient stationPartitionServiceClient;
+//    @Resource
+//    AttendanceService attendanceService;
+
     @Resource
-    AttendanceService attendanceService;
+    private AttendanceServiceClient attendanceServiceClient;
     @Resource
     StaffAttendanceRealRuleMapper staffAttendanceRealRuleMapper;
 
@@ -99,8 +113,8 @@ public class UpdateIpProcess {
          * @date 14:55 2018/10/19
          * @auther lifeng
          **/
-        terminalUpdateIpMapper.updateIpInfoByTerminalId(terminalUpdateIp);
-
+//        terminalUpdateIpMapper.updateIpInfoByTerminalId(terminalUpdateIp);
+        staffGroupTerminalServiceClient.updateIpInfoByTerminalId(terminalUpdateIp);
 
 
 
@@ -134,10 +148,12 @@ public class UpdateIpProcess {
 //            }
 
         //---------------------------员工考勤处理开始-------------------------
-        Map<String, Object> staffMap = staffService.findStaffIdByTerminalId(terminalId);
+//        Map<String, Object> staffMap = staffService.findStaffIdByTerminalId(terminalId);
+        Map<String, Object> staffMap = staffGroupTerminalServiceClient.findStaffIdByTerminalId(terminalId);
         Integer staffId = (Integer) staffMap.get("staff_id");
         // 根据ID 查找当前人的考勤标准，根据标准计算具体考勤情况
-        TimeStandardVO standard = attendanceService.getTimeStandardByStaffId(staffId);
+//        TimeStandardVO standard = attendanceService.getTimeStandardByStaffId(staffId);
+        TimeStandardVO standard = attendanceServiceClient.getTimeStandardByStaffId(staffId);
 //            StaffAttendanceRealRule staffAttendanceRealRule = attendanceService.findRulesTimeByStaffId(staffId);
 //            Date standStartTime = staffAttendanceRealRule.getRealRuleStartTime();
 //            Date standEndTime = staffAttendanceRealRule.getRealRuleEndTime();
@@ -150,8 +166,10 @@ public class UpdateIpProcess {
 //            Integer serious_late_time = standard.getSeriousLateTime();
 //            Integer leave_early_time =standard.getLeaveEarlyTime();
 //            Integer serious_leave_early_time = standard.getSeriousLeaveEarlyTime();
-        Map<String, Object> entryStation  = baseStationService.findBaseStationByType(1);
-        Map<String, Object> attendanceStation = baseStationService.findBaseStationByType(2);
+//        Map<String, Object> entryStation  = baseStationService.findBaseStationByType(1);
+        Map<String, Object> entryStation  = stationPartitionServiceClient.findBaseStationByType(1);
+//        Map<String, Object> attendanceStation = baseStationService.findBaseStationByType(2);
+        Map<String, Object> attendanceStation = stationPartitionServiceClient.findBaseStationByType(2);
 
         //井口基站编号
 //            DecimalFormat fmt = new DecimalFormat("##0.0");// 时间小数点后截取以为小数
@@ -216,7 +234,8 @@ public class UpdateIpProcess {
 //                                // 正常考勤情况
 //                                attendance.setBackup1("正常，提前上班" +  fmt.format(-first/60.0) + "小时");
 //                            }
-                    attendanceService.addAttendance(attendance);
+//                    attendanceService.addAttendance(attendance);
+                    attendanceServiceClient.addAttendance(attendance);
                 }
                 //下班
                 if(head.getStationId().equals(attendanceId)  && end.getStationId().equals(entryId)){
@@ -225,7 +244,8 @@ public class UpdateIpProcess {
 
                     //------------------------------------超时处理开始--------------------------------------
                     //下班，查看该员工是否超时，如果超时，推送前端，超时人数减1
-                    StaffAttendanceRealRule realRule = staffAttendanceRealRuleMapper.selectByPrimaryKey(staffId);
+//                    StaffAttendanceRealRule realRule = staffAttendanceRealRuleMapper.selectByPrimaryKey(staffId);
+                    StaffAttendanceRealRule realRule = attendanceServiceClient.findStaffAttendanceRealRuleById(staffId);
                     //员工下班，不再考勤
                     realRule.setIsAttendance(0);
                     realRule.setFinalTime(null);
@@ -237,8 +257,9 @@ public class UpdateIpProcess {
                         data.setType(1);
                         data.setData(-1);
                         try {
-                            WSPersonNumberServer.sendInfo(JSON.toJSONString(data));
-                        } catch (IOException e) {
+//                            WSPersonNumberServer.sendInfo(JSON.toJSONString(data));
+                            wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
 
@@ -251,14 +272,17 @@ public class UpdateIpProcess {
                         data.setType(2);
                         data.setData(-1);
                         try {
-                            WSPersonNumberServer.sendInfo(JSON.toJSONString(data));
-                        } catch (IOException e) {
+//                            WSPersonNumberServer.sendInfo(JSON.toJSONString(data));
+                            wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
-                    staffAttendanceRealRuleMapper.updateByPrimaryKeySelective(realRule);
+//                    staffAttendanceRealRuleMapper.updateByPrimaryKeySelective(realRule);
+                    attendanceServiceClient.updateStaffAttendanceRealRuleById(realRule);
                     //------------------------------------超时处理结束--------------------------------------
-                    Attendance attendance = attendanceService.findAttendanceByStaffIdAndEndTimeIsNull(staffId);
+//                    Attendance attendance = attendanceService.findAttendanceByStaffIdAndEndTimeIsNull(staffId);
+                    Attendance attendance = attendanceServiceClient.findAttendanceByStaffIdAndEndTimeIsNull(staffId);
                     if(attendance != null) {
                         attendance.setEndTime(head.getUpdateTime());
                         attendance.setOutOre(end.getUpdateTime());
@@ -295,7 +319,8 @@ public class UpdateIpProcess {
 //                                    attendance.setBackup2("加班" + fmt.format(-second/60.0) + "小时" );
 //                                }
                         //添加下班时间
-                        attendanceService.updateAttendance(attendance);
+//                        attendanceService.updateAttendance(attendance);
+                        attendanceServiceClient.updateAttendance(attendance);
                         Integer aid = attendance.getAttendanceId();
                         HandlingAttendanceRules.process(aid);
                     }
@@ -305,7 +330,8 @@ public class UpdateIpProcess {
         //------------------------员工考勤处理结束------------------------------
         //------------------------将下井总人数，未考勤人数推送前端页面开始--------------------------
         WebSocketData data = new WebSocketData();
-        List<HashMap<String, Object>> attendanceCount = staffAttendanceRealRuleMapper.getAttendanceStaff(null, null);
+//        List<HashMap<String, Object>> attendanceCount = staffAttendanceRealRuleMapper.getAttendanceStaff(null, null);
+        List<HashMap<String, Object>> attendanceCount = attendanceServiceClient.getAttendanceStaff(null, null);
         if(attendanceCount!=null&&attendanceCount.size()>0){
             data.setData(attendanceCount.size());
         }else{
@@ -314,18 +340,22 @@ public class UpdateIpProcess {
         data.setType(3);
 
         try {
-            WSPersonNumberServer.sendInfo(JSON.toJSONString(data));
-        } catch (IOException e) {
+//            WSPersonNumberServer.sendInfo(JSON.toJSONString(data));
+            wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         //本应该考勤，但未考勤总人数
         data.setType(4);
-        Integer count = staffAttendanceRealRuleMapper.getUnAttendanceDept(new Date(), null);
+//        Integer count = staffAttendanceRealRuleMapper.getUnAttendanceDept(new Date(), null);
+        Integer count = attendanceServiceClient.getUnAttendanceDept(new Date(), null);
+
         data.setData(count);
         try {
-            WSPersonNumberServer.sendInfo(JSON.toJSONString(data));
-        } catch (IOException e) {
+//            WSPersonNumberServer.sendInfo(JSON.toJSONString(data));
+            wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
+        } catch (Exception e) {
             e.printStackTrace();
         }
         //---------------------将下井总人数，未考勤人数推送前端页面结束--------------------------
@@ -460,7 +490,8 @@ public class UpdateIpProcess {
 //                logger.info("基站IP不存在，新增IP");
 //                terminalUpdateIpMapper.insertSelective(terminalUpdateIp);
                 /* }*/
-                terminalUpdateIpMapper.updateIpInfoByStationId(terminalUpdateIp);
+//                terminalUpdateIpMapper.updateIpInfoByStationId(terminalUpdateIp);
+                staffGroupTerminalServiceClient.updateIpInfoByStationId(terminalUpdateIp);
                 // 基站上线，在掉线统计表中，根据基站的ID移除该基站
                 OfflineStationExample offlineStationExample = new OfflineStationExample();
                 OfflineStationExample.Criteria criteria = offlineStationExample.createCriteria();
@@ -469,8 +500,9 @@ public class UpdateIpProcess {
                 map.put("offlineNum", count);
                 try {
                     System.out.println(map.get("offlineNum"));
-                    WebsocketServer.sendInfo(JSONObject.toJSONString(new WebSocketData(8, map)));
-                } catch (IOException e) {
+//                    WebsocketServer.sendInfo(JSONObject.toJSONString(new WebSocketData(8, map)));
+                    wsPushServiceClient.sendWebsocketServer(JSONObject.toJSONString(new WebSocketData(8, map)));
+                } catch (Exception e) {
                     throw new RuntimeServiceException(ErrorCode.SEND_WS_OFFLINE_STATION_ERROR);
                 }
             }
@@ -571,8 +603,8 @@ public class UpdateIpProcess {
                  * @date 14:55 2018/10/19
                  * @auther lifeng
                  **/
-                terminalUpdateIpMapper.updateIpInfoByTerminalId(terminalUpdateIp);
-
+//                terminalUpdateIpMapper.updateIpInfoByTerminalId(terminalUpdateIp);
+                staffGroupTerminalServiceClient.updateIpInfoByTerminalId(terminalUpdateIp);
 
 //        RequestData requestData = new RequestData();
 //        ResponseData responseData = new ResponseData();
@@ -604,10 +636,12 @@ public class UpdateIpProcess {
 //            }
 
                 //---------------------------员工考勤处理开始-------------------------
-                Map<String, Object> staffMap = staffService.findStaffIdByTerminalId(terminalId);
+//                Map<String, Object> staffMap = staffService.findStaffIdByTerminalId(terminalId);
+                Map<String, Object> staffMap = staffGroupTerminalServiceClient.findStaffIdByTerminalId(terminalId);
                 Integer staffId = (Integer) staffMap.get("staff_id");
                 // 根据ID 查找当前人的考勤标准，根据标准计算具体考勤情况
-              TimeStandardVO standard = attendanceService.getTimeStandardByStaffId(staffId);
+//              TimeStandardVO standard = attendanceService.getTimeStandardByStaffId(staffId);
+              TimeStandardVO standard = attendanceServiceClient.getTimeStandardByStaffId(staffId);
 //            StaffAttendanceRealRule staffAttendanceRealRule = attendanceService.findRulesTimeByStaffId(staffId);
 //            Date standStartTime = staffAttendanceRealRule.getRealRuleStartTime();
 //            Date standEndTime = staffAttendanceRealRule.getRealRuleEndTime();
@@ -620,8 +654,10 @@ public class UpdateIpProcess {
 //            Integer serious_late_time = standard.getSeriousLateTime();
 //            Integer leave_early_time =standard.getLeaveEarlyTime();
 //            Integer serious_leave_early_time = standard.getSeriousLeaveEarlyTime();
-                Map<String, Object> entryStation = baseStationService.findBaseStationByType(1);
-                Map<String, Object> attendanceStation = baseStationService.findBaseStationByType(2);
+//                Map<String, Object> entryStation = baseStationService.findBaseStationByType(1);
+                Map<String, Object> entryStation = stationPartitionServiceClient.findBaseStationByType(1);
+//                Map<String, Object> attendanceStation = baseStationService.findBaseStationByType(2);
+                Map<String, Object> attendanceStation = stationPartitionServiceClient.findBaseStationByType(2);
 
                 //井口基站编号
 //            DecimalFormat fmt = new DecimalFormat("##0.0");// 时间小数点后截取以为小数
@@ -686,7 +722,8 @@ public class UpdateIpProcess {
 //                                // 正常考勤情况
 //                                attendance.setBackup1("正常，提前上班" +  fmt.format(-first/60.0) + "小时");
 //                            }
-                            attendanceService.addAttendance(attendance);
+//                            attendanceService.addAttendance(attendance);
+                            attendanceServiceClient.addAttendance(attendance);
                         }
                         //下班
                         if (head.getStationId().equals(attendanceId) && end.getStationId().equals(entryId)) {
@@ -695,7 +732,8 @@ public class UpdateIpProcess {
 
                             //------------------------------------超时处理开始--------------------------------------
                             //下班，查看该员工是否超时，如果超时，推送前端，超时人数减1
-                            StaffAttendanceRealRule realRule = staffAttendanceRealRuleMapper.selectByPrimaryKey(staffId);
+//                            StaffAttendanceRealRule realRule = staffAttendanceRealRuleMapper.selectByPrimaryKey(staffId);
+                            StaffAttendanceRealRule realRule = attendanceServiceClient.findStaffAttendanceRealRuleById(staffId);
                             //员工下班，不再考勤
                             realRule.setIsAttendance(0);
                             realRule.setFinalTime(null);
@@ -707,8 +745,9 @@ public class UpdateIpProcess {
                                 data.setType(1);
                                 data.setData(-1);
                                 try {
-                                    WSPersonNumberServer.sendInfo(JSON.toJSONString(data));
-                                } catch (IOException e) {
+//                                    WSPersonNumberServer.sendInfo(JSON.toJSONString(data));
+                                    wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
 
@@ -721,14 +760,17 @@ public class UpdateIpProcess {
                                 data.setType(2);
                                 data.setData(-1);
                                 try {
-                                    WSPersonNumberServer.sendInfo(JSON.toJSONString(data));
-                                } catch (IOException e) {
+//                                    WSPersonNumberServer.sendInfo(JSON.toJSONString(data));
+                                    wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }
-                            staffAttendanceRealRuleMapper.updateByPrimaryKeySelective(realRule);
+//                            staffAttendanceRealRuleMapper.updateByPrimaryKeySelective(realRule);
+                            attendanceServiceClient.updateStaffAttendanceRealRuleById(realRule);
                             //------------------------------------超时处理结束--------------------------------------
-                            Attendance attendance = attendanceService.findAttendanceByStaffIdAndEndTimeIsNull(staffId);
+//                            Attendance attendance = attendanceService.findAttendanceByStaffIdAndEndTimeIsNull(staffId);
+                            Attendance attendance = attendanceServiceClient.findAttendanceByStaffIdAndEndTimeIsNull(staffId);
                             if (attendance != null) {
                                 attendance.setEndTime(head.getUpdateTime());
                                 attendance.setOutOre(end.getUpdateTime());
@@ -765,7 +807,8 @@ public class UpdateIpProcess {
 //                                    attendance.setBackup2("加班" + fmt.format(-second/60.0) + "小时" );
 //                                }
                                 //添加下班时间
-                                attendanceService.updateAttendance(attendance);
+//                                attendanceService.updateAttendance(attendance);
+                                attendanceServiceClient.updateAttendance(attendance);
                                 Integer aid = attendance.getAttendanceId();
                                 try {
                                     HandlingAttendanceRules.process(aid);
@@ -779,7 +822,8 @@ public class UpdateIpProcess {
                 //------------------------员工考勤处理结束------------------------------
                 //------------------------将下井总人数，未考勤人数推送前端页面开始--------------------------
                 WebSocketData data = new WebSocketData();
-                List<HashMap<String, Object>> attendanceCount = staffAttendanceRealRuleMapper.getAttendanceStaff(null, null);
+//                List<HashMap<String, Object>> attendanceCount = staffAttendanceRealRuleMapper.getAttendanceStaff(null, null);
+                List<HashMap<String, Object>> attendanceCount = attendanceServiceClient.getAttendanceStaff(null, null);
                 if (attendanceCount != null && attendanceCount.size() > 0) {
                     data.setData(attendanceCount.size());
                 } else {
@@ -788,18 +832,21 @@ public class UpdateIpProcess {
                 data.setType(3);
 
                 try {
-                    WSPersonNumberServer.sendInfo(JSON.toJSONString(data));
-                } catch (IOException e) {
+//                    WSPersonNumberServer.sendInfo(JSON.toJSONString(data));
+                    wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
                 //本应该考勤，但未考勤总人数
                 data.setType(4);
-                Integer count = staffAttendanceRealRuleMapper.getUnAttendanceDept(new Date(), null);
+//                Integer count = staffAttendanceRealRuleMapper.getUnAttendanceDept(new Date(), null);
+                Integer count = attendanceServiceClient.getUnAttendanceDept(new Date(), null);
                 data.setData(count);
                 try {
-                    WSPersonNumberServer.sendInfo(JSON.toJSONString(data));
-                } catch (IOException e) {
+//                    WSPersonNumberServer.sendInfo(JSON.toJSONString(data));
+                    wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 //---------------------将下井总人数，未考勤人数推送前端页面结束--------------------------

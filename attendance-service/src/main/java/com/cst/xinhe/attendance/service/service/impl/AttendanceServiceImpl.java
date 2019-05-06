@@ -268,4 +268,24 @@ public class AttendanceServiceImpl implements AttendanceService, AttendanceRules
     public Integer getSeriousTimeDept(List<Integer> deptIds) {
         return staffAttendanceRealRuleMapper.getSeriousTimeDept(deptIds);
     }
+
+    @Override
+    public StaffAttendanceRealRule findStaffAttendanceRealRuleById(Integer staffId) {
+        return staffAttendanceRealRuleMapper.selectByPrimaryKey(staffId);
+    }
+
+    @Override
+    public void updateStaffAttendanceRealRuleById(StaffAttendanceRealRule realRule) {
+        staffAttendanceRealRuleMapper.updateByPrimaryKeySelective(realRule);
+    }
+
+    @Override
+    public List<HashMap<String, Object>> getStaffAttendanceRealRuleMapperAttendanceStaff(Object o, Object o1) {
+        return staffAttendanceRealRuleMapper.getAttendanceStaff(o,o1);
+    }
+
+    @Override
+    public Integer getStaffAttendanceRealRuleMapperUnAttendanceDept(Date date, List<Integer> deptIds) {
+        return staffAttendanceRealRuleMapper.getUnAttendanceDept(date,deptIds);
+    }
 }

@@ -19,7 +19,32 @@ public class WsPushServiceClientFallback implements WsPushServiceClient {
     Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
-    public void sendInfo(String toJSONString) {
+    public String sendWebsocketServer(String jsonObject) {
         logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
+        return null;
+    }
+
+    @Override
+    public String sendWSPersonNumberServer(String jsonObject) {
+        logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
+        return null;
+    }
+
+    @Override
+    public String sendWSServer(String jsonObject) {
+        logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
+        return null;
+    }
+
+    @Override
+    public String sendWSSiteServer(String jsonObject) {
+        logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
+        return null;
+    }
+
+    @Override
+    public String sendInfo(String jsonObject) {
+        logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
+        return null;
     }
 }

@@ -12,4 +12,6 @@ public interface WsPushService {
     void sendWSPersonNumberServer(String jsonObject) throws IOException;
 
     void sendInfo(String jsonObject);
+
+    void sendWSBigDataServer(String jsonObject);
 }

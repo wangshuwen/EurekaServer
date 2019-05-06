@@ -148,4 +148,14 @@ public class TerminalServiceImpl implements TerminalService {
     public Map<String, Object> selectTerminalIpInfoByTerminalId(Integer terminalId) {
         return terminalUpdateIpMapper.selectTerminalIpInfoByTerminalId(terminalId);
     }
+
+    @Override
+    public void updateIpInfoByTerminalId(TerminalUpdateIp terminalUpdateIp) {
+        terminalUpdateIpMapper.updateIpInfoByTerminalId(terminalUpdateIp);
+    }
+
+    @Override
+    public void updateIpInfoByStationId(TerminalUpdateIp terminalUpdateIp) {
+        terminalUpdateIpMapper.updateIpInfoByStationId(terminalUpdateIp);
+    }
 }

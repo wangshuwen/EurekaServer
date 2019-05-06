@@ -3,9 +3,12 @@ package com.cst.xinhe.staffgroupterminal.service.server;
 import com.cst.xinhe.persistence.model.staff.Staff;
 import com.cst.xinhe.persistence.model.staff.StaffJob;
 import com.cst.xinhe.persistence.model.staff.StaffOrganization;
+import com.cst.xinhe.persistence.model.staff_terminal_relation.StaffTerminalRelation;
+import com.cst.xinhe.persistence.vo.resp.GasWSRespVO;
 import com.cst.xinhe.staffgroupterminal.service.service.StaffJobService;
 import com.cst.xinhe.staffgroupterminal.service.service.StaffOrganizationService;
 import com.cst.xinhe.staffgroupterminal.service.service.StaffService;
+import com.cst.xinhe.staffgroupterminal.service.service.StaffTerminalRelationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +36,9 @@ public class StaffControllerServer {
 
     @Autowired
     private StaffOrganizationService staffOrganizationService;
+
+    @Autowired
+    private StaffTerminalRelationService staffTerminalRelationService;
 
     @GetMapping("findStaffIdByTerminalId")
     public Map<String, Object> findStaffIdByTerminalId(@RequestParam Integer terminalId){
@@ -78,6 +84,26 @@ public class StaffControllerServer {
     @GetMapping("selectStaffJobByJobId")
     public StaffJob selectStaffJobByJobId(@RequestParam Integer jobId){
         return staffJobService.findJobById(jobId);
+    }
+
+    @GetMapping("findStaffNameByTerminalId")
+    public GasWSRespVO findStaffNameByTerminalId(@RequestParam Integer terminalId){
+        return staffService.findStaffNameByTerminalId(terminalId);
+    }
+
+    @GetMapping("findStaffNameByTerminalId")
+    public StaffTerminalRelation findNewRelationByTerminalId(@RequestParam Integer uploadId){
+        return staffTerminalRelationService.findNewRelationByTerminalId(uploadId);
+    }
+
+    @GetMapping("findStaffGroupAndDeptByStaffId")
+    public Map<String, Object> findStaffGroupAndDeptByStaffId(@RequestParam Integer staffId){
+        return staffService.findStaffGroupAndDeptByStaffId(staffId);
+    }
+
+    @GetMapping("findNewRelationByStaffId")
+    public StaffTerminalRelation findNewRelationByStaffId(@RequestParam Integer staffId){
+        return staffTerminalRelationService.findNewRelationByStaffId(staffId);
     }
 
 

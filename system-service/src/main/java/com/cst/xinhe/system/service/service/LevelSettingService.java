@@ -1,4 +1,4 @@
-package com.cst.xinhe.stationpartition.service.service;
+package com.cst.xinhe.system.service.service;
 
 import com.cst.xinhe.persistence.model.warn_level.GasStandard;
 import com.cst.xinhe.persistence.model.warn_level.GasWarnSetting;

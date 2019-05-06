@@ -15,5 +15,6 @@
  ##**attendance-service:8775**
  ##**gateway-service  8443** 
  ##**chat-message-service  8777** 
+ ##**system-service  8778** 
 
 

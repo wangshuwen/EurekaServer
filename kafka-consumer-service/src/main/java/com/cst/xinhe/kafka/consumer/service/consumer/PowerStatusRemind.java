@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.cst.xinhe.base.log.BaseLog;
 import com.cst.xinhe.common.ws.WebSocketData;
+import com.cst.xinhe.kafka.consumer.service.client.StaffGroupTerminalServiceClient;
+import com.cst.xinhe.kafka.consumer.service.client.WsPushServiceClient;
 import com.cst.xinhe.persistence.dao.lack_electric.LackElectricMapper;
 import com.cst.xinhe.persistence.model.lack_electric.LackElectric;
 import com.cst.xinhe.persistence.model.lack_electric.LackElectricExample;
@@ -31,10 +33,16 @@ public class PowerStatusRemind extends BaseLog {
     @Resource
     private LackElectricMapper lackElectricMapper;
 
+    @Resource
+    private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
+
+    @Resource
+    private WsPushServiceClient wsPushServiceClient;
+
     private Map<String, Object> map;
     ExecutorService fixedThreadPool = Executors.newFixedThreadPool(9);
-    @Resource
-    private StaffTerminalRelationService staffTerminalRelationService;
+//    @Resource
+//    private StaffTerminalRelationService staffTerminalRelationService;
 
     public PowerStatusRemind() {
         this.map = new HashMap<>();
@@ -65,7 +73,8 @@ public class PowerStatusRemind extends BaseLog {
 //            criteria.andLackTypeEqualTo(1);
         criteria.andUploadIdEqualTo(uploadId);
 
-        StaffTerminalRelation staffTerminalRelation = staffTerminalRelationService.findNewRelationByTerminalId(uploadId);
+//        StaffTerminalRelation staffTerminalRelation = staffTerminalRelationService.findNewRelationByTerminalId(uploadId);
+        StaffTerminalRelation staffTerminalRelation = staffGroupTerminalServiceClient.findNewRelationByTerminalId(uploadId);
 
         Integer relationId = staffTerminalRelation.getStaffTerminalRelationId();
 
@@ -82,8 +91,9 @@ public class PowerStatusRemind extends BaseLog {
         map.put("batteryAlarmValue", lackElectricMapper.selectByExample(lackElectricExample1).size());
 
         try {
-            WebsocketServer.sendInfo(JSON.toJSONString(new WebSocketData(6, map)));
-        } catch (IOException e) {
+//            WebsocketServer.sendInfo(JSON.toJSONString(new WebSocketData(6, map)));
+            wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(new WebSocketData(6, map)));
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -116,7 +126,8 @@ public class PowerStatusRemind extends BaseLog {
 //            criteria.andLackTypeEqualTo(1);
                 criteria.andUploadIdEqualTo(uploadId);
 
-                StaffTerminalRelation staffTerminalRelation = staffTerminalRelationService.findNewRelationByTerminalId(uploadId);
+//                StaffTerminalRelation staffTerminalRelation = staffTerminalRelationService.findNewRelationByTerminalId(uploadId);
+                StaffTerminalRelation staffTerminalRelation = staffGroupTerminalServiceClient.findNewRelationByTerminalId(uploadId);
 
                 Integer relationId = staffTerminalRelation.getStaffTerminalRelationId();
 
@@ -133,8 +144,9 @@ public class PowerStatusRemind extends BaseLog {
                 map.put("batteryAlarmValue", lackElectricMapper.selectByExample(lackElectricExample1).size());
 
                 try {
-                    WebsocketServer.sendInfo(JSON.toJSONString(new WebSocketData(6, map)));
-                } catch (IOException e) {
+//                    WebsocketServer.sendInfo(JSON.toJSONString(new WebSocketData(6, map)));
+                    wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(new WebSocketData(6, map)));
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

@@ -6,6 +6,9 @@ import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.exception.RuntimeOtherException;
 import com.cst.xinhe.common.utils.array.ArrayQueue;
 import com.cst.xinhe.common.ws.WebSocketData;
+import com.cst.xinhe.kafka.consumer.service.client.StaffGroupTerminalServiceClient;
+import com.cst.xinhe.kafka.consumer.service.client.WsPushServiceClient;
+import com.cst.xinhe.kafka.consumer.service.service.RSTL;
 import com.cst.xinhe.persistence.dao.terminal_road.TerminalRoadMapper;
 import com.cst.xinhe.persistence.model.terminal_road.TerminalRoad;
 import com.cst.xinhe.persistence.vo.resp.GasWSRespVO;
@@ -31,17 +34,26 @@ import java.util.concurrent.Executors;
  */
 @Component
 public class GasWarnInfoToWS {
+
+    Logger logger = LoggerFactory.getLogger(getClass());
+
     //存储更新基站 队列
     public static Map<Integer, ArrayQueue<TerminalRoad>> attendanceMap = new HashMap<>();
 
     @Resource
+    private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
+
+    @Resource
+    private WsPushServiceClient wsPushServiceClient;
+    @Resource
     RSTL rstl;
-    @Resource
-    private StaffService staffService;
-    @Resource
-    WSServer wsServer;
-    @Resource
-    private TerminalRoadMapper teminalRoadMapper;
+//    @Resource
+//    private StaffService staffService;
+
+//    @Resource
+//    WSServer wsServer;
+//    @Resource
+//    private TerminalRoadMapper teminalRoadMapper;
     @Resource
     private LevelDataService levelDataService;
     @Resource
@@ -52,7 +64,7 @@ public class GasWarnInfoToWS {
     ExecutorService fixedThreadPool3 = Executors.newFixedThreadPool(9);
     public static List<GasWSRespVO> list = new ArrayList<GasWSRespVO>();
 
-    Logger logger = LoggerFactory.getLogger(GasInfoToWS.class);
+
 
     /**
      * 监听kafka.tut 的 topic
@@ -105,7 +117,8 @@ public class GasWarnInfoToWS {
                 double rssi1 = rssiObj.getDouble("rssi1");
                 double rssi2 = rssiObj.getDouble("rssi2");
                 TerminalRoad road = rstl.locateConvert(terminalId, stationId1, stationId2, rssi1, rssi2);
-                GasWSRespVO staff = staffService.findStaffNameByTerminalId(terminalId);
+//                GasWSRespVO staff = staffService.findStaffNameByTerminalId(terminalId);
+                GasWSRespVO staff = staffGroupTerminalServiceClient.findStaffNameByTerminalId(terminalId);
                 road.setStaffId(staff.getStaffId());
                 //终端所连基站id
                 road.setStationId(stationId);

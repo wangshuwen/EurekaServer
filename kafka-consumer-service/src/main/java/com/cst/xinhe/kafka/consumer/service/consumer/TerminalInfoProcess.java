@@ -2,6 +2,9 @@ package com.cst.xinhe.kafka.consumer.service.consumer;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.cst.xinhe.kafka.consumer.service.client.AttendanceServiceClient;
+import com.cst.xinhe.kafka.consumer.service.client.StaffGroupTerminalServiceClient;
+import com.cst.xinhe.kafka.consumer.service.client.WsPushServiceClient;
 import com.cst.xinhe.persistence.dao.attendance.StaffAttendanceRealRuleMapper;
 import com.cst.xinhe.persistence.dao.staff.StaffMapper;
 import com.cst.xinhe.persistence.model.attendance.StaffAttendanceRealRule;
@@ -39,19 +42,28 @@ public class TerminalInfoProcess {
     public static Set<Integer> carSet= Collections.synchronizedSet(new HashSet());
 
     @Resource
-   private StaffMapper staffMapper;
-    @Resource
-    private AttendanceService attendanceService;
+    private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
 
     @Resource
-    private StaffAttendanceRealRuleMapper staffAttendanceRealRuleMapper;
+    private AttendanceServiceClient attendanceServiceClient;
 
-    private static  StaffAttendanceRealRuleMapper staffAttendanceRealRuleMapper1;
+    @Resource
+    private WsPushServiceClient wsPushServiceClient;
 
-    @PostConstruct
-    public void init() {
-        this.staffAttendanceRealRuleMapper1 = this.staffAttendanceRealRuleMapper;
-    }
+//    @Resource
+//    private StaffMapper staffMapper;
+//    @Resource
+//    private AttendanceService attendanceService;
+
+//    @Resource
+//    private StaffAttendanceRealRuleMapper staffAttendanceRealRuleMapper;
+//
+//    private static  StaffAttendanceRealRuleMapper staffAttendanceRealRuleMapper1;
+
+//    @PostConstruct
+//    public void init() {
+//        this.staffAttendanceRealRuleMapper1 = this.staffAttendanceRealRuleMapper;
+//    }
     ExecutorService fixedThreadPool = Executors.newFixedThreadPool(9);
 
     private static ObjectMapper json = new ObjectMapper();
@@ -65,13 +77,16 @@ public class TerminalInfoProcess {
         JSONObject jsonObject = JSON.parseObject(str);
         Integer terminalId = jsonObject.getInteger("terminalId");
         Integer stationId = jsonObject.getInteger("stationId");
-        Map<String, Object> map = staffMapper.selectStaffInfoByTerminalId(terminalId);
+//        Map<String, Object> map = staffMapper.selectStaffInfoByTerminalId(terminalId);
+        Map<String, Object> map = staffGroupTerminalServiceClient.selectStaffInfoByTerminalId(terminalId);
         Integer staffId = (Integer) map.get("staff_id");
 
         //记录员工加入考勤
-        StaffAttendanceRealRule realRule = staffAttendanceRealRuleMapper.selectByPrimaryKey(staffId);
+//        StaffAttendanceRealRule realRule = staffAttendanceRealRuleMapper.selectByPrimaryKey(staffId);
+        StaffAttendanceRealRule realRule = attendanceServiceClient.findStaffAttendanceRealRuleById(staffId);
         realRule.setIsAttendance(1);
-        staffAttendanceRealRuleMapper.updateByPrimaryKeySelective(realRule);
+//        staffAttendanceRealRuleMapper.updateByPrimaryKeySelective(realRule);
+        attendanceServiceClient.updateStaffAttendanceRealRuleById(realRule);
 
         //实时查询:人，车，领导
         Integer isPerson = (Integer) map.get("is_person");
@@ -110,13 +125,16 @@ public class TerminalInfoProcess {
                 JSONObject jsonObject = JSON.parseObject(str);
                 Integer terminalId = jsonObject.getInteger("terminalId");
                 Integer stationId = jsonObject.getInteger("stationId");
-                Map<String, Object> map = staffMapper.selectStaffInfoByTerminalId(terminalId);
+//                Map<String, Object> map = staffMapper.selectStaffInfoByTerminalId(terminalId);
+                Map<String, Object> map = staffGroupTerminalServiceClient.selectStaffInfoByTerminalId(terminalId);
                 Integer staffId = (Integer) map.get("staff_id");
 
                 //记录员工加入考勤
-                StaffAttendanceRealRule realRule = staffAttendanceRealRuleMapper.selectByPrimaryKey(staffId);
+//                StaffAttendanceRealRule realRule = staffAttendanceRealRuleMapper.selectByPrimaryKey(staffId);
+                StaffAttendanceRealRule realRule = attendanceServiceClient.findStaffAttendanceRealRuleById(staffId);
                 realRule.setIsAttendance(1);
-                staffAttendanceRealRuleMapper.updateByPrimaryKeySelective(realRule);
+//                staffAttendanceRealRuleMapper.updateByPrimaryKeySelective(realRule);
+                attendanceServiceClient.updateStaffAttendanceRealRuleById(realRule);
 
                 //实时查询:人，车，领导
                 Integer isPerson = (Integer) map.get("is_person");
@@ -221,7 +239,7 @@ public class TerminalInfoProcess {
             mapJson.put("data",dataMap);
             try {
                 String jsonStr= json.writeValueAsString(mapJson);
-                WSBigDataServer.sendInfo(jsonStr);
+//                WSBigDataServer.sendInfo(jsonStr);
 
             } catch (Exception e) {
                 e.printStackTrace();

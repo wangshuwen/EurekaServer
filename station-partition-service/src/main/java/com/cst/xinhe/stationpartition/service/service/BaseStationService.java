@@ -83,5 +83,6 @@ public interface BaseStationService {
 
     boolean checkBindStatus(Integer stationNum, Integer type);
 
+    void updateByStationNumSelective(BaseStation baseStation);
 }
 

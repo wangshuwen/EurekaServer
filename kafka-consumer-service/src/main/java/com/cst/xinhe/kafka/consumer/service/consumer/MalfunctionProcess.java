@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.cst.xinhe.base.log.BaseLog;
 import com.cst.xinhe.common.ws.WebSocketData;
+import com.cst.xinhe.kafka.consumer.service.client.StaffGroupTerminalServiceClient;
+import com.cst.xinhe.kafka.consumer.service.client.WsPushServiceClient;
 import com.cst.xinhe.persistence.dao.lack_electric.LackElectricMapper;
 import com.cst.xinhe.persistence.dao.malfunction.MalfunctionMapper;
 import com.cst.xinhe.persistence.model.lack_electric.LackElectric;
@@ -38,17 +40,23 @@ public class MalfunctionProcess extends BaseLog {
     @Resource
     private MalfunctionMapper malfunctionMapper;
 
-    @Resource
-    private TerminalService terminalService;
+//    @Resource
+//    private TerminalService terminalService;
 
     @Resource
-    private StaffService staffService;
+    private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
 
     @Resource
-    private StaffTerminalRelationService staffTerminalRelationService;
-    ExecutorService fixedThreadPool = Executors.newCachedThreadPool();
-    ExecutorService fixedThreadPool1 = Executors.newCachedThreadPool();
-    ExecutorService fixedThreadPool2 = Executors.newCachedThreadPool();
+    private WsPushServiceClient wsPushServiceClient;
+
+//    @Resource
+//    private StaffService staffService;
+//
+//    @Resource
+//    private StaffTerminalRelationService staffTerminalRelationService;
+    private ExecutorService fixedThreadPool = Executors.newCachedThreadPool();
+    private ExecutorService fixedThreadPool1 = Executors.newCachedThreadPool();
+    private ExecutorService fixedThreadPool2 = Executors.newCachedThreadPool();
 
     public MalfunctionProcess() {
         this.map = new HashMap<>();
@@ -77,26 +85,30 @@ public class MalfunctionProcess extends BaseLog {
         Date createTime = new Date();
         //终端自检，电量大于30，移除缺电提醒
         if(electric > 30){
-            LackElectricExample example = new LackElectricExample();
-            example.createCriteria().andUploadIdEqualTo(terminalId);
-            example.createCriteria().andLackTypeEqualTo(1);
-            lackElectricMapper.deleteByExample(example);
+            LackElectric lackElectric = new LackElectric();
+            lackElectric.setUploadId(terminalId);
+            lackElectric.setLackType(1);
+            staffGroupTerminalServiceClient.deleteLeLackElectricByLackElectric(lackElectric);
         } else {
-            LackElectricExample example = new LackElectricExample();
-            example.createCriteria().andUploadIdEqualTo(terminalId);
-            example.createCriteria().andLackTypeEqualTo(1);
+//            LackElectricExample example = new LackElectricExample();
+//            example.createCriteria().andUploadIdEqualTo(terminalId);
+//            example.createCriteria().andLackTypeEqualTo(1);
             LackElectric lackElectric = new LackElectric();
             lackElectric.setElectricValue(electric);
-            lackElectricMapper.updateByExampleSelective(lackElectric,example);
+            lackElectric.setUploadId(terminalId);
+            lackElectric.setLackType(1);
+//            lackElectricMapper.updateByExampleSelective(lackElectric,example);
+            staffGroupTerminalServiceClient.updateLackElectric(lackElectric);
         }
 
-        LackElectricExample lackElectricExample = new LackElectricExample();
 
-        map.put("batteryAlarmValue", lackElectricMapper.selectByExample(lackElectricExample).size());
+
+        map.put("batteryAlarmValue", staffGroupTerminalServiceClient.getLackElectricList().size());
 
         try {
-            WebsocketServer.sendInfo(JSON.toJSONString(new WebSocketData(6, map)));
-        } catch (IOException e) {
+//            WebsocketServer.sendInfo(JSON.toJSONString(new WebSocketData(6, map)));
+            wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(new WebSocketData(6, map)));
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -118,10 +130,12 @@ public class MalfunctionProcess extends BaseLog {
         malfunction.setElectric(electric);
         //判断上传的自检结果是否有异常的模块，如有异常则推送到客户端
 
-        Map<String, Object> map = staffService.findStaffIdByTerminalId(terminalId);
+//        Map<String, Object> map = staffService.findStaffIdByTerminalId(terminalId);
+        Map<String, Object> map = staffGroupTerminalServiceClient.findStaffIdByTerminalId(terminalId);
         Integer staffId = (Integer) map.get("staff_id");
 
-        StaffTerminalRelation staffTerminalRelation = staffTerminalRelationService.findNewRelationByStaffId(staffId);
+//        StaffTerminalRelation staffTerminalRelation = staffTerminalRelationService.findNewRelationByStaffId(staffId);
+        StaffTerminalRelation staffTerminalRelation = staffGroupTerminalServiceClient.findNewRelationByStaffId(staffId);
 
         malfunction.setTerminalId(staffTerminalRelation.getStaffTerminalRelationId());
 
@@ -133,8 +147,9 @@ public class MalfunctionProcess extends BaseLog {
                 int malfunctionValue  = ((Long)(malfunctionMapper.selectCountMalfunction().get("malfunctionCount"))).intValue();
                 // 查询数据推送
                 map.put("malfunctionValue",malfunctionValue);
-                WebsocketServer.sendInfo(JSONObject.toJSONString(new WebSocketData(4,map)));
-            } catch (IOException e) {
+//                WebsocketServer.sendInfo(JSONObject.toJSONString(new WebSocketData(4,map)));
+                wsPushServiceClient.sendWebsocketServer(JSONObject.toJSONString(new WebSocketData(4,map)));
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -168,26 +183,30 @@ public class MalfunctionProcess extends BaseLog {
                 Date createTime = new Date();
                 //终端自检，电量大于30，移除缺电提醒
                 if (electric > 30) {
-                    LackElectricExample example = new LackElectricExample();
-                    example.createCriteria().andUploadIdEqualTo(terminalId);
-                    example.createCriteria().andLackTypeEqualTo(1);
-                    lackElectricMapper.deleteByExample(example);
+
+                    LackElectric lackElectric  = new LackElectric();
+                    lackElectric.setUploadId(terminalId);
+                    lackElectric.setLackType(1);
+                    staffGroupTerminalServiceClient.deleteLeLackElectricByLackElectric(lackElectric);
                 } else {
-                    LackElectricExample example = new LackElectricExample();
-                    example.createCriteria().andUploadIdEqualTo(terminalId);
-                    example.createCriteria().andLackTypeEqualTo(1);
+//                    LackElectricExample example = new LackElectricExample();
+//                    example.createCriteria().andUploadIdEqualTo(terminalId);
+//                    example.createCriteria().andLackTypeEqualTo(1);
                     LackElectric lackElectric = new LackElectric();
                     lackElectric.setElectricValue(electric);
-                    lackElectricMapper.updateByExampleSelective(lackElectric, example);
+                    lackElectric.setUploadId(terminalId);
+                    lackElectric.setLackType(1);
+//                    lackElectricMapper.updateByExampleSelective(lackElectric, example);
+                    staffGroupTerminalServiceClient.updateLackElectric(lackElectric);
                 }
 
-                LackElectricExample lackElectricExample = new LackElectricExample();
 
-                map.put("batteryAlarmValue", lackElectricMapper.selectByExample(lackElectricExample).size());
+                map.put("batteryAlarmValue", staffGroupTerminalServiceClient.getLackElectricList().size());
 
                 try {
-                    WebsocketServer.sendInfo(JSON.toJSONString(new WebSocketData(6, map)));
-                } catch (IOException e) {
+//                    WebsocketServer.sendInfo(JSON.toJSONString(new WebSocketData(6, map)));
+                    wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(new WebSocketData(6, map)));
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -209,23 +228,26 @@ public class MalfunctionProcess extends BaseLog {
                 malfunction.setElectric(electric);
                 //判断上传的自检结果是否有异常的模块，如有异常则推送到客户端
 
-                Map<String, Object> map = staffService.findStaffIdByTerminalId(terminalId);
+//                Map<String, Object> map = staffService.findStaffIdByTerminalId(terminalId);
+                Map<String, Object> map = staffGroupTerminalServiceClient.findStaffIdByTerminalId(terminalId);
                 Integer staffId = (Integer) map.get("staff_id");
 
-                StaffTerminalRelation staffTerminalRelation = staffTerminalRelationService.findNewRelationByStaffId(staffId);
+//                StaffTerminalRelation staffTerminalRelation = staffTerminalRelationService.findNewRelationByStaffId(staffId);
+                StaffTerminalRelation staffTerminalRelation = staffGroupTerminalServiceClient.findNewRelationByStaffId(staffId);
 
                 malfunction.setTerminalId(staffTerminalRelation.getStaffTerminalRelationId());
 
-                malfunctionMapper.insertSelective(malfunction);
-
-
+//                malfunctionMapper.insertSelective(malfunction);
+                staffGroupTerminalServiceClient.addMalfunction(malfunction);
                 if (co2Error == 1 || coError == 1 || ch4Error == 1 || wifiError == 1 || voiceError == 1 || o2Error == 1 || tError == 1) {
                     try {
-                        int malfunctionValue = ((Long) (malfunctionMapper.selectCountMalfunction().get("malfunctionCount"))).intValue();
+//
+                        int malfunctionValue = ((Long) (staffGroupTerminalServiceClient.getCountMalfunction().get("malfunctionCount"))).intValue();
                         // 查询数据推送
                         map.put("malfunctionValue", malfunctionValue);
-                        WebsocketServer.sendInfo(JSONObject.toJSONString(new WebSocketData(4, map)));
-                    } catch (IOException e) {
+//                        WebsocketServer.sendInfo(JSONObject.toJSONString(new WebSocketData(4, map)));
+                        wsPushServiceClient.sendWebsocketServer(JSONObject.toJSONString(new WebSocketData(4, map)));
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }

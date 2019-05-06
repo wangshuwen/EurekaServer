@@ -62,4 +62,9 @@ public class WsPushServiceImpl implements WsPushService {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void sendWSBigDataServer(String jsonObject) {
+
+    }
 }

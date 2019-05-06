@@ -18,6 +18,7 @@ import com.cst.xinhe.persistence.vo.req.BaseStationBindingStandardVO;
 import com.cst.xinhe.persistence.vo.resp.BaseStationPositionVO;
 import com.cst.xinhe.stationpartition.service.client.StaffGroupTerminalServiceClient;
 import com.cst.xinhe.stationpartition.service.client.StationMonitorServerClient;
+import com.cst.xinhe.stationpartition.service.client.SystemServiceClient;
 import com.cst.xinhe.stationpartition.service.service.BaseStationService;
 import com.cst.xinhe.stationpartition.service.service.LevelSettingService;
 import com.cst.xinhe.stationpartition.service.service.OfflineStationService;
@@ -53,6 +54,9 @@ public class BaseStationController extends BaseController {
 
     @Resource
     private PartitionService partitionService;
+
+    @Resource
+    private SystemServiceClient systemServiceClient;
 
     @Resource
     private LevelSettingService levelSettingService;
@@ -136,6 +140,7 @@ public class BaseStationController extends BaseController {
             Integer standardId = (Integer) map.get("standardId");
             if (standardId != null) {
                 Map<String, Object> map1 = levelSettingService.getStandardNameByStandardId(standardId);
+                Map<String, Object> map1 = systemServiceClient.getStandardNameByStandardId(standardId);
                 if (map1 != null)
                     map.put("standardName", map1.get("standardName"));
             }

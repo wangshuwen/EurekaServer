@@ -329,5 +329,8 @@ public class BaseStationServiceImpl implements BaseStationService {
         return f;
     }
 
-
+    @Override
+    public void updateByStationNumSelective(BaseStation baseStation) {
+        baseStationMapper.updateByStationNumSelective(baseStation);
+    }
 }

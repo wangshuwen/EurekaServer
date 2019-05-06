@@ -7,6 +7,7 @@ import com.cst.xinhe.persistence.vo.req.TimeStandardVO;
 import com.github.pagehelper.Page;
 
 import java.text.ParseException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,4 +55,12 @@ public interface AttendanceService {
     Integer getOverTimeDept(List<Integer> deptIds);
 
     Integer getSeriousTimeDept(List<Integer> deptIds);
+
+    StaffAttendanceRealRule findStaffAttendanceRealRuleById(Integer staffId);
+
+    void updateStaffAttendanceRealRuleById(StaffAttendanceRealRule realRule);
+
+    List<HashMap<String, Object>> getStaffAttendanceRealRuleMapperAttendanceStaff(Object o, Object o1);
+
+    Integer getStaffAttendanceRealRuleMapperUnAttendanceDept(Date date, List<Integer> deptIds);
 }

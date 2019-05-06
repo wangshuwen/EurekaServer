@@ -51,4 +51,8 @@ public interface TerminalService {
     TerminalUpdateIp findTerminalIdByIpAndPort(String terminalIp, Integer port);
 
     Map<String, Object> selectTerminalIpInfoByTerminalId(Integer terminalId);
+
+    void updateIpInfoByTerminalId(TerminalUpdateIp terminalUpdateIp);
+
+    void updateIpInfoByStationId(TerminalUpdateIp terminalUpdateIp);
 }

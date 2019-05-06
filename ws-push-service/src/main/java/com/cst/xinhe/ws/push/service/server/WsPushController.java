@@ -2,11 +2,10 @@ package com.cst.xinhe.ws.push.service.server;
 
 import com.cst.xinhe.base.result.ResultUtil;
 import com.cst.xinhe.ws.push.service.service.WsPushService;
+import com.cst.xinhe.ws.push.service.ws.WSServer;
+import com.cst.xinhe.ws.push.service.ws.WSSiteServer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -17,7 +16,7 @@ import java.io.IOException;
  * @create: 2019-04-29 09:20
  **/
 @RestController
-@RequestMapping("ws-push-service/")
+//@RequestMapping("ws-push-service/")
 public class WsPushController {
 
     @Autowired
@@ -40,6 +39,11 @@ public class WsPushController {
         wsPushService.sendWSServer(jsonObject);
         return ResultUtil.jsonToStringSuccess();
     }
+    @PostMapping("sendWSBigDataServer")
+    public String sendWSBigDataServer(@RequestBody String jsonObject) throws IOException{
+        wsPushService.sendWSBigDataServer(jsonObject);
+        return ResultUtil.jsonToStringSuccess();
+    }
 
     @PostMapping("sendWSSiteServer")
     public String sendWSSiteServer(@RequestBody String jsonObject) throws IOException{
@@ -50,6 +54,32 @@ public class WsPushController {
     public String sendInfo(@RequestBody String jsonObject) throws IOException{
         wsPushService.sendInfo(jsonObject);
         return ResultUtil.jsonToStringSuccess();
+    }
+
+    @GetMapping("getWSSiteServerOrgId")
+    public Integer getOrgId(){
+
+        return WSSiteServer.orgId;
+    }
+
+
+
+    @GetMapping("getWSSiteServerZoneId")
+    public Integer getZoneId(){
+
+
+        return WSSiteServer.zoneId;
+    }
+
+
+    @GetMapping("getWSServerOrgId")
+    public Integer getWSServerOrgId(){
+        return WSServer.orgId;
+    }
+
+    @GetMapping("getWSServerZoneId")
+    public Integer getWSServerZoneId(){
+        return WSServer.zoneId;
     }
 
 

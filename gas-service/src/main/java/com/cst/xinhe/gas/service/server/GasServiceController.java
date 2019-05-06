@@ -2,12 +2,14 @@ package com.cst.xinhe.gas.service.server;
 
 import com.cst.xinhe.gas.service.service.GasInfoService;
 import com.cst.xinhe.persistence.model.terminal_road.TerminalRoad;
+import com.cst.xinhe.persistence.vo.resp.GasWSRespVO;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.text.ParseException;
 import java.util.Map;
 
 /**
@@ -17,7 +19,7 @@ import java.util.Map;
  * @create: 2019-04-30 15:46
  **/
 @RestController
-@RequestMapping("gas-service/")
+//@RequestMapping("gas-service/")
 public class GasServiceController {
 
     @Resource
@@ -31,5 +33,10 @@ public class GasServiceController {
     @GetMapping("selectRoadById")
     public TerminalRoad selectRoadById(Integer positionId){
         return gasInfoService.selectRoadById(positionId);
+    }
+
+    @GetMapping("findGasInfoByStaffIdAndTerminalId")
+    public GasWSRespVO findGasInfoByStaffIdAndTerminalId(@RequestParam Integer terminalId) throws ParseException {
+        return gasInfoService.findGasInfoByStaffIdAndTerminalId(terminalId);
     }
 }

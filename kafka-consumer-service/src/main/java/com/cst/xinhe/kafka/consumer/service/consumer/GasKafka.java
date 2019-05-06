@@ -7,8 +7,10 @@ import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.exception.RuntimeOtherException;
 import com.cst.xinhe.base.log.BaseLog;
 import com.cst.xinhe.common.netty.data.request.RequestData;
+import com.cst.xinhe.common.utils.array.ArrayQueue;
 import com.cst.xinhe.common.utils.convert.DateConvert;
 import com.cst.xinhe.common.ws.WebSocketData;
+import com.cst.xinhe.kafka.consumer.service.client.*;
 import com.cst.xinhe.kafka.consumer.service.service.RSTL;
 import com.cst.xinhe.persistence.dao.attendance.StaffAttendanceRealRuleMapper;
 import com.cst.xinhe.persistence.dao.rt_gas.GasPositionMapper;
@@ -55,71 +57,101 @@ import java.util.concurrent.Executors;
 @Component
 public class GasKafka extends BaseLog {
     //存储更新基站 队列
-    public static Map<Integer,ArrayQueue<TerminalRoad>> attendanceMap=new HashMap<>();
-    @Resource
-    StationStandardRelationMapper stationStandardRelationMapper;
-    @Resource
-    LevelSettingService levelSettingService;
-    @Resource
-    private PartitionService partitionService;
+    public static Map<Integer, ArrayQueue<TerminalRoad>> attendanceMap=new HashMap<>();
 
-    public static List<GasWSRespVO> list = new ArrayList<>();
+    @Resource
+    private SystemServiceClient systemServiceClient;
 
-    private static int gasNum=0;
+    @Resource
+    private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
 
-    private static List<GasPosition> gasPositions = Collections.synchronizedList(new ArrayList<>());
+    @Resource
+    private AttendanceServiceClient attendanceServiceClient;
+
+    @Resource
+    private StationPartitionServiceClient stationPartitionServiceClient;
+
+    @Resource
+    private WsPushServiceClient wsPushServiceClient;
+
+    @Resource
+    private GasServiceClient gasServiceClient;
+
 
     @Resource
     private WarningAreaMapper warningAreaMapper;
-    public static Set<Integer> overTimeSet= Collections.synchronizedSet(new HashSet());
-    public static Set<Integer> seriousTimeSet= Collections.synchronizedSet(new HashSet());
 
     @Resource
-    ProducerService producerService;
-    private Map<String, Object> map;
+    StationStandardRelationMapper stationStandardRelationMapper;
 
-    ObjectMapper json = new ObjectMapper();
-    @Resource
-    private StaffOrganizationService staffOrganizationService;
     @Resource
     private WarningAreaRecordMapper warningAreaRecordMapper;
-    @Resource
-    private BaseStationService baseStationService;
-
-    @Resource
-    private AttendanceService attendanceService;
 
     @Resource
     private StaffAttendanceRealRuleMapper staffAttendanceRealRuleMapper;
+
     @Resource
     RtGasInfoMapper rtGasInfoMapper;
 
     @Resource
-    private TerminalRoadMapper teminalRoadMapper;
+    GasPositionMapper gasPositionMapper;
+
+//    @Resource
+//    LevelSettingService levelSettingService;
+//    @Resource
+//    private PartitionService partitionService;
+
+    public static List<GasWSRespVO> list = new ArrayList<>();
+
+    private static int gasNum = 0;
+
+    private static List<GasPosition> gasPositions = Collections.synchronizedList(new ArrayList<>());
+
+
+    public static Set<Integer> overTimeSet= Collections.synchronizedSet(new HashSet());
+    public static Set<Integer> seriousTimeSet= Collections.synchronizedSet(new HashSet());
+
+//    @Resource
+//    ProducerService producerService;
+//    private Map<String, Object> map;
+
+//    ObjectMapper json = new ObjectMapper();
+//    @Resource
+//    private StaffOrganizationService staffOrganizationService;
+
+//    @Resource
+//    private BaseStationService baseStationService;
+
+//    @Resource
+//    private AttendanceService attendanceService;
+
+
+
+//    @Resource
+//    private TerminalRoadMapper teminalRoadMapper;
 
     //@Autowired
     //KafkaTemplate<String, Object> kafkaTemplate;
 
-    @Resource
-    KafkaSender kafkaSender;
+//    @Resource
+//    KafkaSender kafkaSender;
 
-    @Resource
-    StaffService staffService;
+//    @Resource
+//    StaffService staffService;
 
     private volatile boolean isWarn = false;
 
     @Resource
     RSTL rstl;
 
-    @Resource
-    GasPositionMapper gasPositionMapper;
 
-    @Resource
-    GasPositionWarnMapper gasPositionWarnMapper;
 
-    private static final String TOPIC = "gas_kafka.tut1";
+//    @Resource
+//    GasPositionWarnMapper gasPositionWarnMapper;
 
-    ExecutorService executorService = Executors.newCachedThreadPool();
+    private static final String TOPIC = "gas_kafka.tut";
+
+    private ExecutorService executorService = Executors.newCachedThreadPool();
     private void process(List<ConsumerRecord<?, ?>> records){
         executorService.execute(() -> {
             for (ConsumerRecord<?, ?> record : records) {
@@ -282,7 +314,8 @@ public class GasKafka extends BaseLog {
 
 
                     //----------------------------------以下是判断出入问题------------------------------------
-                    GasWSRespVO staff = staffService.findStaffNameByTerminalId(gasPosition.getTerminalId());
+//                    GasWSRespVO staff = staffService.findStaffNameByTerminalId(gasPosition.getTerminalId());
+                    GasWSRespVO staff = staffGroupTerminalServiceClient.findStaffNameByTerminalId(gasPosition.getTerminalId());
                     Integer staffId = staff.getStaffId();
                     gasPosition.setStaffId(staffId);
                     gasPosition.setStaffName(staff.getStaffName());
@@ -384,9 +417,11 @@ public class GasKafka extends BaseLog {
                         map.put("code", 2);
                         //查询报警人员的信息
                         String staffName = staff.getStaffName();
-                        Staff staff1 = staffService.findStaffById(staffId);
+//                        Staff staff1 = staffService.findStaffById(staffId);
+                        Staff staff1 = staffGroupTerminalServiceClient.findStaffById(staffId);
                         Integer groupId = staff1.getGroupId();
-                        String deptName = staffOrganizationService.getDeptNameByGroupId(groupId);
+//                        String deptName = staffOrganizationService.getDeptNameByGroupId(groupId);
+                        String deptName = staffGroupTerminalServiceClient.getDeptNameByGroupId(groupId);
                         HashMap<Object, Object> staffInfo = new HashMap<>();
                         staffInfo.put("staffId", staffId);
                         staffInfo.put("staffName", staffName);
@@ -396,16 +431,16 @@ public class GasKafka extends BaseLog {
                         long nd = 1000 * 24 * 60 * 60;
                         long nh = 1000 * 60 * 60;
                         long nm = 1000 * 60;
-                        long diff = realLong;
-                        long day = diff / nd;
-                        long hour = diff % nd / nh;
-                        long min = diff % nd % nh / nm;
+                        long day = realLong / nd;
+                        long hour = realLong % nd / nh;
+                        long min = realLong % nd % nh / nm;
                         staffInfo.put("timeLong", day + "天" + hour + "小时" + min + "分钟");
                         map.put("data", staffInfo);
                         data.setData(map);
                         try {
-                            WSPersonNumberServer.sendInfo(JSON.toJSONString(data));
-                        } catch (IOException e) {
+//                            WSPersonNumberServer.sendInfo(JSON.toJSONString(data));
+                            wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -415,11 +450,13 @@ public class GasKafka extends BaseLog {
 
     }
     //--------------------------------判断员工是否是出矿入矿,是否超时未上井---------------------------------
-    public void sendInOreAndOverTime(GasWSRespVO staff,TerminalRoad road,GasPosition gasPosition){
+    private void sendInOreAndOverTime(GasWSRespVO staff, TerminalRoad road, GasPosition gasPosition){
         Integer staffId = staff.getStaffId();
 
-        Map<String, Object> entryStation = baseStationService.findBaseStationByType(1);
-        Map<String, Object> attendanceStation = baseStationService.findBaseStationByType(2);
+//        Map<String, Object> entryStation = baseStationService.findBaseStationByType(1);
+        Map<String, Object> entryStation = stationPartitionServiceClient.findBaseStationByType(1);
+//        Map<String, Object> attendanceStation = baseStationService.findBaseStationByType(2);
+        Map<String, Object> attendanceStation = stationPartitionServiceClient.findBaseStationByType(2);
         //井口基站编号
         Integer entryId = (Integer) entryStation.get("baseStationNum");
         //考勤基站编号
@@ -460,7 +497,8 @@ public class GasKafka extends BaseLog {
 
         //---------------------------------------判断员工是否超时未上井开始------------------------------------
         StaffAttendanceRealRule realRule = staffAttendanceRealRuleMapper.selectByPrimaryKey(staffId);
-        TimeStandardVO standard = attendanceService.getTimeStandardByStaffId(staffId);
+//        TimeStandardVO standard = attendanceService.getTimeStandardByStaffId(staffId);
+        TimeStandardVO standard = attendanceServiceClient.getTimeStandardByStaffId(staffId);
         //超时时长
         Integer overTime = standard.getOverTime();
         //严重超时时长
@@ -491,9 +529,10 @@ public class GasKafka extends BaseLog {
                     realRule.setFinalTime(new Date());
                     staffAttendanceRealRuleMapper.updateByPrimaryKeySelective(realRule);
                     overTimeSet.add(staffId);
-                    WSPersonNumberServer.sendInfo(JSON.toJSONString(data));
+//                    WSPersonNumberServer.sendInfo(JSON.toJSONString(data));
+                    wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
                 }
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -509,8 +548,9 @@ public class GasKafka extends BaseLog {
                 realRule.setFinalTime(new Date());
                 staffAttendanceRealRuleMapper.updateByPrimaryKeySelective(realRule);
                 try {
-                    WSPersonNumberServer.sendInfo(JSON.toJSONString(data));
-                } catch (IOException e) {
+//                    WSPersonNumberServer.sendInfo(JSON.toJSONString(data));
+                    wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -523,10 +563,13 @@ public class GasKafka extends BaseLog {
         Integer stationId = gasPosition.getStationId();
 
         //--------------------------定位部门、区域筛选开始----------------------------------
-        Staff staff1=staffService.findStaffById(staffId);
+//        Staff staff1=staffService.findStaffById(staffId);
+        Staff staff1=staffGroupTerminalServiceClient.findStaffById(staffId);
         Integer groupId = staff1.getGroupId();
-        Integer orgId = WSSiteServer.orgId;
-        Integer zoneId = WSSiteServer.zoneId;
+//        Integer orgId = WSSiteServer.orgId;
+        Integer orgId = wsPushServiceClient.getWSSiteServerOrgId();
+//        Integer zoneId = WSSiteServer.zoneId;
+        Integer zoneId = wsPushServiceClient.getWSSiteServerZoneId();
         Map<String ,Object> map = new HashMap<>();
 
 
@@ -536,20 +579,23 @@ public class GasKafka extends BaseLog {
             try {
                 map.put("gasWSRespVO", gasWSRespVO);
                 map.put("type", 1);
-                WSSiteServer.sendInfo(JSON.toJSONString(map));
-            } catch (IOException e) {
+//                WSSiteServer.sendInfo(JSON.toJSONString(map));
+                wsPushServiceClient.sendWSSiteServer(JSON.toJSONString(map));
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         if(null != orgId && null == zoneId){
-            List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(orgId);
+//            List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(orgId);
+            List<Integer> deptIds = staffGroupTerminalServiceClient.findSonIdsByDeptId(orgId);
             for (Integer deptId : deptIds) {
                 if(groupId.equals(deptId)){
                     try {
                         map.put("gasWSRespVO", gasWSRespVO);
                         map.put("type", 1);
-                        WSSiteServer.sendInfo(JSON.toJSONString(map));
-                    } catch (IOException e) {
+//                        WSSiteServer.sendInfo(JSON.toJSONString(map));
+                        wsPushServiceClient.sendWSSiteServer(JSON.toJSONString(map));
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -557,25 +603,31 @@ public class GasKafka extends BaseLog {
         }
 
         if(null == orgId && null != zoneId){
-            List<Integer> zoneIds = partitionService.getSonIdsById(zoneId);
-            List<BaseStation> baseStations = baseStationService.findBaseStationByZoneIds(zoneIds);
+//            List<Integer> zoneIds = partitionService.getSonIdsById(zoneId);
+            List<Integer> zoneIds = stationPartitionServiceClient.getSonIdsById(zoneId);
+//            List<BaseStation> baseStations = baseStationService.findBaseStationByZoneIds(zoneIds);
+            List<BaseStation> baseStations = stationPartitionServiceClient.findBaseStationByZoneIds(zoneIds);
             for (BaseStation baseStation : baseStations) {
                 //该终端所连基站
                 if(stationId.equals(baseStation.getBaseStationNum())){
                     try {
                         map.put("gasWSRespVO", gasWSRespVO);
                         map.put("type", 1);
-                        WSSiteServer.sendInfo(JSON.toJSONString(map));
-                    } catch (IOException e) {
+//                        WSSiteServer.sendInfo(JSON.toJSONString(map));
+                        wsPushServiceClient.sendWSSiteServer(JSON.toJSONString(map));
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             }
         }
         if(null != orgId && null != zoneId){
-            List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(orgId);
-            List<Integer> zoneIds = partitionService.getSonIdsById(zoneId);
-            List<BaseStation> baseStations = baseStationService.findBaseStationByZoneIds(zoneIds);
+//            List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(orgId);
+            List<Integer> deptIds = staffGroupTerminalServiceClient.findSonIdsByDeptId(orgId);
+//            List<Integer> zoneIds = partitionService.getSonIdsById(zoneId);
+            List<Integer> zoneIds = stationPartitionServiceClient.getSonIdsById(zoneId);
+//            List<BaseStation> baseStations = baseStationService.findBaseStationByZoneIds(zoneIds);
+            List<BaseStation> baseStations = stationPartitionServiceClient.findBaseStationByZoneIds(zoneIds);
             for (Integer deptId : deptIds) {
                 for (BaseStation baseStation : baseStations) {
                     //该终端所连基站
@@ -583,8 +635,9 @@ public class GasKafka extends BaseLog {
                         try {
                             map.put("gasWSRespVO", gasWSRespVO);
                             map.put("type", 1);
-                            WSSiteServer.sendInfo(JSON.toJSONString(map));
-                        } catch (IOException e) {
+//                            WSSiteServer.sendInfo(JSON.toJSONString(map));
+                            wsPushServiceClient.sendWSSiteServer(JSON.toJSONString(map));
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -594,12 +647,13 @@ public class GasKafka extends BaseLog {
 
     }
 
-    public void gasFilter(GasWSRespVO staff,GasPosition gasPosition){
+    private void gasFilter(GasWSRespVO staff, GasPosition gasPosition){
         Integer stationId = gasPosition.getStationId();
         Integer staffId = staff.getStaffId();
 
 
-        Staff staff1 = staffService.findStaffById(staffId);
+//        Staff staff1 = staffService.findStaffById(staffId);
+        Staff staff1 = staffGroupTerminalServiceClient.findStaffById(staffId);
         Integer groupId = staff1.getGroupId();
         //--------------------------气体部门、区域筛选开始----------------------------------
         if (list.size() >= 10) {
@@ -613,7 +667,7 @@ public class GasKafka extends BaseLog {
             try {
                 jsonArray.addAll(list);
                 //气体故障推送:大数据页面
-                WSBigDataServer.sendInfo(json.writeValueAsString(mapJson));
+//                WSBigDataServer.sendInfo(json.writeValueAsString(mapJson));
 
 
 
@@ -621,24 +675,30 @@ public class GasKafka extends BaseLog {
                 //--------------------------气体部门、区域筛选开始----------------------------------
 
 
-                Integer orgIdGas = WSServer.orgId;
-                Integer zoneIdGas = WSServer.zoneId;
+//                Integer orgIdGas = WSServer.orgId;
+                Integer orgIdGas = wsPushServiceClient.getWSServerOrgId();
+//                Integer zoneIdGas = WSServer.zoneId;
+                Integer zoneIdGas = wsPushServiceClient.getWSServerZoneId();
 
 
                 if(null == orgIdGas && null == zoneIdGas){
                     try {
-                        WSServer.sendInfo(jsonArray.toJSONString());
-                    } catch (IOException e) {
+//                        WSServer.sendInfo(jsonArray.toJSONString());
+                        wsPushServiceClient.sendWSServer(jsonArray.toJSONString());
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
                 if(null != orgIdGas && null == zoneIdGas){
-                    List<Integer>   deptIds = staffOrganizationService.findSonIdsByDeptId(orgIdGas);
+//                    List<Integer>   deptIds = staffOrganizationService.findSonIdsByDeptId(orgIdGas);
+//                    List<Integer>   deptIds = staffOrganizationService.findSonIdsByDeptId(orgIdGas);
+                    List<Integer>   deptIds = staffGroupTerminalServiceClient.findSonIdsByDeptId(orgIdGas);
                     for (Integer deptId : deptIds) {
                         if(groupId.equals(deptId)){
                             try {
-                                WSServer.sendInfo(jsonArray.toJSONString());
-                            } catch (IOException e) {
+//                                WSServer.sendInfo(jsonArray.toJSONString());
+                                wsPushServiceClient.sendWSServer(jsonArray.toJSONString());
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
@@ -646,30 +706,37 @@ public class GasKafka extends BaseLog {
                 }
 
                 if(null == orgIdGas && null != zoneIdGas){
-                    List<Integer>  zoneIds = partitionService.getSonIdsById(zoneIdGas);
-                    List<BaseStation> baseStations    = baseStationService.findBaseStationByZoneIds(zoneIds);
+//                    List<Integer>  zoneIds = partitionService.getSonIdsById(zoneIdGas);
+                    List<Integer>  zoneIds = stationPartitionServiceClient.getSonIdsById(zoneIdGas);
+//                    List<BaseStation> baseStations    = baseStationService.findBaseStationByZoneIds(zoneIds);
+                    List<BaseStation> baseStations    = stationPartitionServiceClient.findBaseStationByZoneIds(zoneIds);
                     for (BaseStation baseStation : baseStations) {
                         //该终端所连基站
                         if(stationId.equals(baseStation.getBaseStationNum())){
                             try {
-                                WSServer.sendInfo(jsonArray.toJSONString());
-                            } catch (IOException e) {
+//                                WSServer.sendInfo(jsonArray.toJSONString());
+                                wsPushServiceClient.sendWSServer(jsonArray.toJSONString());
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
                     }
                 }
                 if(null != orgIdGas && null != zoneIdGas){
-                    List<Integer>   deptIds = staffOrganizationService.findSonIdsByDeptId(orgIdGas);
-                    List<Integer>  zoneIds = partitionService.getSonIdsById(zoneIdGas);
-                    List<BaseStation> baseStations    = baseStationService.findBaseStationByZoneIds(zoneIds);
+//                    List<Integer>   deptIds = staffOrganizationService.findSonIdsByDeptId(orgIdGas);
+                    List<Integer>   deptIds = staffGroupTerminalServiceClient.findSonIdsByDeptId(orgIdGas);
+//                    List<Integer>  zoneIds = partitionService.getSonIdsById(zoneIdGas);
+                    List<Integer>  zoneIds = stationPartitionServiceClient.getSonIdsById(zoneIdGas);
+//                    List<BaseStation> baseStations    = baseStationService.findBaseStationByZoneIds(zoneIds);
+                    List<BaseStation> baseStations    = stationPartitionServiceClient.findBaseStationByZoneIds(zoneIds);
                     for (Integer deptId : deptIds) {
                         for (BaseStation baseStation : baseStations) {
                             //该终端所连基站
                             if (stationId.equals(baseStation.getBaseStationNum()) && groupId.equals(deptId)) {
                                 try {
-                                    WSServer.sendInfo(jsonArray.toJSONString());
-                                } catch (IOException e) {
+//                                    WSServer.sendInfo(jsonArray.toJSONString());
+                                    wsPushServiceClient.sendWSServer(jsonArray.toJSONString());
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }
@@ -681,7 +748,7 @@ public class GasKafka extends BaseLog {
 
                 list.clear();
                 jsonArray.clear();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 throw new RuntimeOtherException(ResultEnum.WEBSOCKET_SEND_ERROR);
             }
@@ -689,11 +756,12 @@ public class GasKafka extends BaseLog {
     }
 
 
-    public void insertGas(RequestData requestData,UpLoadGasDto upLoadGasDto,GasPosition gasPosition){
+    private void insertGas(RequestData requestData, UpLoadGasDto upLoadGasDto, GasPosition gasPosition){
         StationStandardRelation stationStandardRelation = stationStandardRelationMapper.selectStandardByStationId(requestData.getStationId());
         if(null != stationStandardRelation){
             Integer standardId = stationStandardRelation.getStandardId();
-            GasLevelVO gasLevelVO = levelSettingService.getWarnLevelSettingByGasLevelId(standardId);
+//            GasLevelVO gasLevelVO = levelSettingService.getWarnLevelSettingByGasLevelId(standardId);
+            GasLevelVO gasLevelVO = systemServiceClient.getWarnLevelSettingByGasLevelId(standardId);
             //气体标准值
             GasStandard gasStandard = gasLevelVO.getGasStandard();
             Double ch4Standard = gasStandard.getCh4Standard();
@@ -773,7 +841,7 @@ public class GasKafka extends BaseLog {
 
             }
             gasNum++;
-            System.out.println("--------------------------已插入气体数量：-------------------------"+gasNum);
+            System.out.println("--------------------------已插入气体数量：-------------------------" + gasNum);
             gasPositions.add(gasPosition);
             if (gasPositions.size() > 200){
                 gasPositionMapper.insertGasPositions(gasPositions);

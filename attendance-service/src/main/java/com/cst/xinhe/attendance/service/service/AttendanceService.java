@@ -60,7 +60,7 @@ public interface AttendanceService {
 
     void updateStaffAttendanceRealRuleById(StaffAttendanceRealRule realRule);
 
-    List<HashMap<String, Object>> getStaffAttendanceRealRuleMapperAttendanceStaff(Object o, Object o1);
+    List<HashMap<String, Object>> getStaffAttendanceRealRuleMapperAttendanceStaff(List<Integer> deptIds, String staffName);
 
     Integer getStaffAttendanceRealRuleMapperUnAttendanceDept(Date date, List<Integer> deptIds);
 }

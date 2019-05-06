@@ -7,6 +7,7 @@ import com.cst.xinhe.base.exception.RuntimeOtherException;
 import com.cst.xinhe.common.utils.array.ArrayQueue;
 import com.cst.xinhe.common.ws.WebSocketData;
 import com.cst.xinhe.kafka.consumer.service.client.StaffGroupTerminalServiceClient;
+import com.cst.xinhe.kafka.consumer.service.client.SystemServiceClient;
 import com.cst.xinhe.kafka.consumer.service.client.WsPushServiceClient;
 import com.cst.xinhe.kafka.consumer.service.service.RSTL;
 import com.cst.xinhe.persistence.dao.terminal_road.TerminalRoadMapper;
@@ -45,6 +46,10 @@ public class GasWarnInfoToWS {
 
     @Resource
     private WsPushServiceClient wsPushServiceClient;
+
+    @Resource
+    private SystemServiceClient systemServiceClient;
+
     @Resource
     RSTL rstl;
 //    @Resource
@@ -54,10 +59,10 @@ public class GasWarnInfoToWS {
 //    WSServer wsServer;
 //    @Resource
 //    private TerminalRoadMapper teminalRoadMapper;
-    @Resource
-    private LevelDataService levelDataService;
-    @Resource
-    private BaseStationService baseStationService;
+//    @Resource
+//    private LevelDataService levelDataService;
+//    @Resource
+//    private BaseStationService baseStationService;
 
     ExecutorService fixedThreadPool1 = Executors.newFixedThreadPool(9);
     ExecutorService fixedThreadPool2 = Executors.newFixedThreadPool(9);
@@ -207,13 +212,15 @@ public class GasWarnInfoToWS {
                     contrastParameter = hFlag;
                 }
                 gasWSRespVO.setGasLevel(contrastParameter);
-                String url = levelDataService.findRangUrlByLevelDataId(contrastParameter);
+//                String url = levelDataService.findRangUrlByLevelDataId(contrastParameter);
+                String url = systemServiceClient.findRangUrlByLevelDataId(contrastParameter);
                 if (null != url && !"".equals(url)) {
                     gasWSRespVO.setRangUrl(url);
                 }
                 try {
-                    WebsocketServer.sendInfo(JSON.toJSONString(new WebSocketData(1, gasWSRespVO)));
-                } catch (IOException e) {
+//                    WebsocketServer.sendInfo(JSON.toJSONString(new WebSocketData(1, gasWSRespVO)));
+                    wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(new WebSocketData(1, gasWSRespVO)));
+                } catch (Exception e) {
                     throw new RuntimeOtherException(ResultEnum.WEBSOCKET_SEND_ERROR);
                 }
 //            list.add(gasWSRespVO);

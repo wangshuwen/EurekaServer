@@ -1,6 +1,7 @@
 package com.cst.xinhe.system.service.server;
 
 import com.cst.xinhe.persistence.model.rang_setting.RangSetting;
+import com.cst.xinhe.system.service.service.LevelDataService;
 import com.cst.xinhe.system.service.service.RangSettingService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,8 +21,18 @@ public class RangSettingServerController {
 
     @Resource
     private RangSettingService rangSettingService;
+
+    @Resource
+    private LevelDataService levelDataService;
+
     @GetMapping("findRangByType")
     public List<RangSetting> findRangByType(@RequestParam int i){
         return rangSettingService.findRangByType(i);
+    }
+
+
+    @GetMapping("findRangUrlByLevelDataId")
+    public String findRangUrlByLevelDataId(@RequestParam int contrastParameter){
+        return levelDataService.findRangUrlByLevelDataId(contrastParameter);
     }
 }

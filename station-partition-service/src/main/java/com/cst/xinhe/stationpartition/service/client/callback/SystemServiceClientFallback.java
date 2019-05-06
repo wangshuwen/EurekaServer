@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @program: EurekaServer
@@ -23,6 +24,13 @@ public class SystemServiceClientFallback implements SystemServiceClient {
     @Override
     public List<RangSetting> findRangByType(int i) {
         logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
+        return null;
+    }
+
+    @Override
+    public Map<String, Object> getStandardNameByStandardId(Integer standardId) {
+        logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
+
         return null;
     }
 }

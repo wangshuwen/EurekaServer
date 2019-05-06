@@ -108,4 +108,11 @@ public class StaffGroupTerminalServiceClientFallback implements StaffGroupTermin
         logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
         return null;
     }
+
+    @Override
+    public Map<String, Object> selectStationIpByStationId(Integer stationId) {
+        logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
+
+        return null;
+    }
 }

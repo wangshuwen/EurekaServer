@@ -91,4 +91,5 @@ public class TerminalControllerServer {
     public Map<String, Object> getCountMalfunction(){
         return malfunctionService.getCountMalfunction();
     }
+
 }

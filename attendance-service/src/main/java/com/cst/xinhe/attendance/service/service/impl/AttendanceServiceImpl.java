@@ -280,8 +280,8 @@ public class AttendanceServiceImpl implements AttendanceService, AttendanceRules
     }
 
     @Override
-    public List<HashMap<String, Object>> getStaffAttendanceRealRuleMapperAttendanceStaff(Object o, Object o1) {
-        return staffAttendanceRealRuleMapper.getAttendanceStaff(o,o1);
+    public List<HashMap<String, Object>> getStaffAttendanceRealRuleMapperAttendanceStaff(List<Integer> deptIds, String staffName) {
+        return staffAttendanceRealRuleMapper.getAttendanceStaff(deptIds,staffName);
     }
 
     @Override

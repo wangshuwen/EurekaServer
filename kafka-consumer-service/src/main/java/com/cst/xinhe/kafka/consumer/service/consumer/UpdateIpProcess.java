@@ -68,12 +68,13 @@ public class UpdateIpProcess {
 
     @Resource
     private AttendanceServiceClient attendanceServiceClient;
-    @Resource
-    StaffAttendanceRealRuleMapper staffAttendanceRealRuleMapper;
+//    @Resource
+//    StaffAttendanceRealRuleMapper staffAttendanceRealRuleMapper;
 
     @Resource
     OfflineStationMapper offlineStationMapper;
-    ExecutorService fixedThreadPool = Executors.newFixedThreadPool(9);
+
+    private ExecutorService fixedThreadPool = Executors.newFixedThreadPool(9);
 
     public UpdateIpProcess() {
         this.map = new HashMap<>();
@@ -252,7 +253,8 @@ public class UpdateIpProcess {
                     WebSocketData data = new WebSocketData();
                     //超时
                     if(realRule.getIsOverTime()!=null&&realRule.getIsOverTime()==1){
-                        GasInfoToWS.overTimeSet.remove(staffId);
+                        GasKafka.overTimeSet.remove(staffId);
+
                         realRule.setIsOverTime(0);
                         data.setType(1);
                         data.setData(-1);
@@ -267,7 +269,7 @@ public class UpdateIpProcess {
 
                     //严重超时
                     if(realRule.getIsSeriousTime()!=null&&realRule.getIsSeriousTime()==1){
-                        GasInfoToWS.seriousTimeSet.remove(staffId);
+                        GasKafka.seriousTimeSet.remove(staffId);
                         realRule.setIsSeriousTime(0);
                         data.setType(2);
                         data.setData(-1);
@@ -740,7 +742,7 @@ public class UpdateIpProcess {
                             WebSocketData data = new WebSocketData();
                             //超时
                             if (realRule.getIsOverTime() != null && realRule.getIsOverTime() == 1) {
-                                GasInfoToWS.overTimeSet.remove(staffId);
+                                GasKafka.overTimeSet.remove(staffId);
                                 realRule.setIsOverTime(0);
                                 data.setType(1);
                                 data.setData(-1);
@@ -755,7 +757,7 @@ public class UpdateIpProcess {
 
                             //严重超时
                             if (realRule.getIsSeriousTime() != null && realRule.getIsSeriousTime() == 1) {
-                                GasInfoToWS.seriousTimeSet.remove(staffId);
+                                GasKafka.seriousTimeSet.remove(staffId);
                                 realRule.setIsSeriousTime(0);
                                 data.setType(2);
                                 data.setData(-1);

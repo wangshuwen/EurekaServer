@@ -6,6 +6,7 @@ import com.cst.xinhe.gateway.service.UserService;
 import com.cst.xinhe.gateway.utils.RedisUtils;
 import com.cst.xinhe.persistence.vo.UserLoginVOReq;
 import com.cst.xinhe.persistence.vo.UserLoginVOResp;
+import com.netflix.zuul.context.RequestContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 
-
+import javax.servlet.http.HttpServletRequest;
 import java.util.UUID;
 
 /**
@@ -56,6 +57,23 @@ public class LoginController {
         }
 
         return  ResultUtil.jsonToStringError(ResultEnum.FAILED);
+    }
+
+    /**
+     * @param
+     * @return java.lang.String
+     * @description 用户推出登录
+     * @date 10:46 2018/9/7
+     * @auther lifeng
+     **/
+    @GetMapping("/logout")
+    public String logout() {
+        RequestContext ctx = RequestContext.getCurrentContext();
+        HttpServletRequest request = ctx.getRequest();
+        //获取认证名称
+        String Authname =request.getHeader("Authorization");
+        redisUtils.delete(Authname);
+        return ResultUtil.jsonToStringSuccess();
     }
 
 

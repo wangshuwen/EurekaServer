@@ -78,8 +78,11 @@ zuul:
       path: /gas/**
       serviceId: gas-service
     user:
-        path: /user/**
-        serviceId: service-zuul
+      path: /user/**
+      serviceId: service-zuul
+    login:
+      path: /login/**
+      serviceId: user-login
   prefix: /v1
   sensitive-headers: Access-Control-Allow-Origin
   ignored-headers: Access-Control-Allow-Origin,H-APP-Id,Token,APPToken

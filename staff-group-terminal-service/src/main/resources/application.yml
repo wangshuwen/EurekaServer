@@ -31,7 +31,7 @@ feign:
   hystrix:
     enabled: true
 mybatis:
-  mapper-locations: classpath:com/cst/xinhe/persistence/dao/*/*.xml
+  mapper-locations: classpath:com/cst/xinhe/persistence/dao/**/*.xml
 #  type-aliases-package: com.cst.xinhe.persistence.model
 pagehelper:
   helper-dialect: mysql

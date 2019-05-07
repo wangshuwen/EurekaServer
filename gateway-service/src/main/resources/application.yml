@@ -83,6 +83,9 @@ zuul:
   prefix: /v1
   sensitive-headers: Access-Control-Allow-Origin
   ignored-headers: Access-Control-Allow-Origin,H-APP-Id,Token,APPToken
+#  host:
+#    connect-timeout-millis: 10000
+#    socket-timeout-millis: 60000
 mybatis:
   mapper-locations: com/cst/xinhe/persistence/dao/*.*/*.xml
 #  type-aliases-package: com.cst.xinhe.persistence.model

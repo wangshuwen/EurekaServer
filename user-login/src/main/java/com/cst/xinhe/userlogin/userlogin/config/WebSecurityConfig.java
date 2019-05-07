@@ -1,5 +1,8 @@
-package com.cst.xinhe.userlogin.userlogin;
+package com.cst.xinhe.userlogin.userlogin.config;
 
+import com.cst.xinhe.base.enums.ResultEnum;
+import com.cst.xinhe.base.result.ResultUtil;
+import jdk.internal.org.objectweb.asm.tree.TryCatchBlockNode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
@@ -10,6 +13,9 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.HashMap;
 
 /**
  * @author wangshuwen
@@ -28,6 +34,7 @@ public class WebSecurityConfig extends WebMvcConfigurerAdapter{
         return new SecurityInterceptor();
     }
 
+    @Override
     public void addInterceptors(InterceptorRegistry registry) {
         InterceptorRegistration addInterceptor = registry.addInterceptor(getSecurityInterceptor());
 
@@ -48,9 +55,23 @@ public class WebSecurityConfig extends WebMvcConfigurerAdapter{
             if (session.getAttribute(SESSION_KEY) != null)
                 return true;
 
-            // 跳转登录
-            String url = "/login";
-            response.sendRedirect(url);
+
+
+            //未登陆，跳转到登陆页面
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/json; charset=utf-8");
+            PrintWriter out = null;
+            try {
+                out = response.getWriter();
+                out.append(ResultUtil.jsonToStringError(ResultEnum.IS_NOT_LOGIN));
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (out != null) {
+                    out.close();
+                }
+            }
+
             return false;
         }
     }

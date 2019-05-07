@@ -4,6 +4,7 @@ import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.result.ResultUtil;
 import com.cst.xinhe.gateway.service.UserService;
 import com.cst.xinhe.gateway.utils.RedisUtils;
+import com.cst.xinhe.gateway.vo.LoginVO;
 import com.cst.xinhe.persistence.vo.UserLoginVOReq;
 import com.cst.xinhe.persistence.vo.UserLoginVOResp;
 import com.netflix.zuul.context.RequestContext;
@@ -12,12 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.UUID;
@@ -41,12 +37,11 @@ public class LoginController {
 
     @PostMapping("/login")
     @ResponseBody
-    public String login( @RequestParam(name = "account")String account,
-                         @RequestParam(name = "passWord")String passWord) throws Exception {
+    public String login(@RequestBody LoginVO loginVO) {
 
         UserLoginVOReq user = new UserLoginVOReq();
-        user.setAccount(account);
-        user.setPassWord(passWord);
+        user.setAccount(loginVO.getAccount());
+        user.setPassWord(loginVO.getPassWord());
 
         UserLoginVOResp resp = userService.userLogin(user);
         if(resp!=null){

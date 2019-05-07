@@ -4,12 +4,12 @@ eureka:
       defaultZone: http://127.0.0.1:8761/eureka/,http://127.0.0.1:8762/eureka/
 server:
   port: 8443
-  ssl:
-    key-store: zkxh.keystore
-    #密钥库密码
-    key-store-password: 123456
-    keyStoreType: JKS
-    keyAlias: zkxh
+#  ssl:
+#    key-store: zkxh.keystore
+#    #密钥库密码
+#    key-store-password: 123456
+#    keyStoreType: JKS
+#    keyAlias: zkxh
 spring:
   application:
     name: service-zuul

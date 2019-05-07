@@ -1,0 +1,79 @@
+package com.cst.xinhe.gateway.controller;
+
+import com.cst.xinhe.base.enums.ResultEnum;
+import com.cst.xinhe.base.result.ResultUtil;
+import com.cst.xinhe.gateway.service.UserService;
+import com.cst.xinhe.gateway.utils.RedisUtils;
+import com.cst.xinhe.persistence.vo.UserLoginVOReq;
+import com.cst.xinhe.persistence.vo.UserLoginVOResp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+
+
+import java.util.UUID;
+
+/**
+ * @author wangshuwen
+ * @Description:
+ * @Date 2019/5/7/11:37
+ */
+@Controller
+public class LoginController {
+    private static final Logger log = LoggerFactory.getLogger(LoginController.class);
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private RedisUtils redisUtils;
+
+    @Value("${redis.expireTime}")
+    private Long expireTime;//token过期时间
+
+    @GetMapping("/login")
+    @ResponseBody
+    public String login( @RequestParam(name = "account")String account,
+                         @RequestParam(name = "passWord")String passWord) throws Exception {
+
+        UserLoginVOReq user = new UserLoginVOReq();
+        user.setAccount(account);
+        user.setPassWord(passWord);
+
+        UserLoginVOResp resp = userService.userLogin(user);
+        if(resp!=null){
+            String token = TokenStorage(user.getAccount());
+            resp.setToken(token);
+            log.info("登录成功,存储token");
+            return ResultUtil.jsonToStringSuccess(resp);
+        }
+
+        return  ResultUtil.jsonToStringError(ResultEnum.FAILED);
+    }
+
+
+    public String TokenStorage( String username) {
+        //生成token
+        String token = UUID.randomUUID().toString().replaceAll("-", "");
+        //存储redis里
+        System.out.println("token-----------------"+token);
+        redisUtils.set(token, username,expireTime);
+        return token;
+    }
+
+
+    @GetMapping("/hi")
+    @ResponseBody
+    public String hi( )  {
+        return  "hi  shuwen";
+    }
+
+
+
+}

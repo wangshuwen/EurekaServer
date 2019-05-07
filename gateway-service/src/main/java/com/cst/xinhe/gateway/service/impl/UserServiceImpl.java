@@ -27,14 +27,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserLoginVOResp userLogin(UserLoginVOReq userLoginVOReq) {
         UserLoginVOResp resp=null;
-
+/*
         String account = userLoginVOReq.getAccount();
         if("admin".equals(account)){
             resp=new UserLoginVOResp();
             resp.setAccount(account);
-        }
+        }*/
 
-       /* SysUserExample sysUserExample = new SysUserExample();
+        SysUserExample sysUserExample = new SysUserExample();
         sysUserExample.createCriteria().andSysAccountEqualTo(userLoginVOReq.getAccount());
         List<SysUser> list = sysUserMapper.selectByExample(sysUserExample);
         if(list!=null&&list.size()>0){
@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
             resp.setHeadimg(user.getSysHeadimg());
             resp.setLastLoginTime(user.getSysLastLoginTime());
             resp.setPhone(user.getSysPhonenumber());
-        }*/
+        }
 
 
         return resp;

@@ -132,7 +132,7 @@ public class GasInfoServiceImpl implements GasInfoService {
 
     /**
      * @param number 需要获取的气体数量
-     * @return java.util.List<com.zkxh.demo.vo.resp.GasWSRespVO>
+     * @return java.util.List<com.cst.xinhe.persistence.vo.resp.GasWSRespVO>
      * @description 获取最近上传气体信息数量 以时间倒序
      * @date 17:35 2018/10/26
      * @auther lifeng

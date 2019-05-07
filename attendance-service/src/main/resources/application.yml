@@ -1,8 +1,6 @@
 server:
   port: 8775
 spring:
-  application:
-    name: attendance-service
   data:
     elasticsearch:
       repositories:
@@ -28,6 +26,8 @@ spring:
       test-on-return: false
       pool-prepared-statements: true
       max-open-prepared-statements: 20
+  application:
+    name: attendance-service
 eureka:
   client:
     service-url:

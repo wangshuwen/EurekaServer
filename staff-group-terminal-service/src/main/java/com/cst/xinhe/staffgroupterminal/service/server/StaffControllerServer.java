@@ -91,7 +91,7 @@ public class StaffControllerServer {
         return staffService.findStaffNameByTerminalId(terminalId);
     }
 
-    @GetMapping("findStaffNameByTerminalId")
+    @GetMapping("findNewRelationByTerminalId")
     public StaffTerminalRelation findNewRelationByTerminalId(@RequestParam Integer uploadId){
         return staffTerminalRelationService.findNewRelationByTerminalId(uploadId);
     }

@@ -5,7 +5,6 @@ import com.cst.xinhe.staffgroupterminal.service.service.StaffOrganizationService
 import com.cst.xinhe.staffgroupterminal.service.service.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,6 +16,7 @@ import java.util.List;
  * @author: lifeng
  * @create: 2019-04-29 10:46
  **/
+
 @RestController
 //@RequestMapping("staff-group-terminal-service/")
 public class GroupControllerServer {

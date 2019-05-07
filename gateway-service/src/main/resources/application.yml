@@ -28,7 +28,7 @@ spring:
           max-open-prepared-statements: 20
   #配置redis数据库
   redis:
-    database: 0
+    database: 15
     host: 192.168.1.182
     port: 6379
     #    password: root
@@ -48,23 +48,35 @@ zuul:
     attendance:
       path: /attendance/**
       serviceId: attendance-service
+    staff-group-terminal:
+      path: /staff/**
+      serviceId: staff-group-terminal-service
+    station-partition:
+      path: /station/**
+      serviceId: station-partition-service
+    system-service:
+      path: /system/**
+      serviceId: system-service
       # 加了url指定到每一个服务，就不需要指定serviceId，不可以负载均衡
       # url: http://localhost:8762
-    base:
-      path: /base/**
-      serviceId: base-service
+#    base:
+#      path: /base/**
+#      serviceId: base-service
     chat:
       path: /chat/**
       serviceId: chat-message-service
-    common:
-      path: /common/**
-      serviceId: common
+#    common:
+#      path: /common/**
+#      serviceId: common
     gas:
       path: /gas/**
       serviceId: gas-service
     user:
         path: /user/**
         serviceId: service-zuul
+  prefix: /v1
+  sensitive-headers: Access-Control-Allow-Origin
+  ignored-headers: Access-Control-Allow-Origin,H-APP-Id,Token,APPToken
 mybatis:
   mapper-locations: com/cst/xinhe/persistence/dao/*.*/*.xml
 #  type-aliases-package: com.cst.xinhe.persistence.model

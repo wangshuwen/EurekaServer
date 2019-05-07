@@ -27,7 +27,7 @@ import java.util.Map;
  * @create: 2019-01-24 09:37
  **/
 @RestController
-@RequestMapping("timeStandard")
+@RequestMapping("timeStandard/")
 @Api(value = "TimeStandardController", tags = "考勤时间规则类")
 public class TimeStandardController {
 

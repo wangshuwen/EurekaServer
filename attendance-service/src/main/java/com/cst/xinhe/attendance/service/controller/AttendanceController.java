@@ -52,7 +52,7 @@ public class AttendanceController {
 
     @GetMapping("getInfoByParams")
     @ApiOperation("多条件查询考勤信息")
-    public String getAttendanceInfoByParams2332(
+    public String getAttendanceInfoByParams(
             @RequestParam(name = "page", defaultValue = "1", required = false)Integer startPage,
             @RequestParam(name = "limit", defaultValue = "10", required = false)Integer pageSize,
             @RequestParam(name = "staffName", required = false) String staffName,
@@ -84,43 +84,43 @@ public class AttendanceController {
     }
 
 
-
-    @GetMapping("getInfoByParams1111")
-    @ApiOperation("多条件查询考勤信息")
-    public String getAttendanceInfoByParams(
-            @RequestParam(name = "page", defaultValue = "1", required = false)Integer startPage,
-            @RequestParam(name = "limit", defaultValue = "10", required = false)Integer pageSize,
-            @RequestParam(name = "staffName", required = false) String staffName,
-            @RequestParam(name = "orgId", required = false) Integer orgId,
-            @RequestParam(name = "timeStandardId", required = false) Integer timeStandardId,
-            @RequestParam(name = "startTime", required = false) String startTime,
-            @RequestParam(name = "endTime", required = false) String endTime,
-            @RequestParam(name = "currentDate", required = false) String currentDate,
-            @RequestParam(name = "jobType", required = false)Integer jobType) throws ParseException {
-        AttendanceParamsVO attendanceParamsVO = new AttendanceParamsVO();
-        if (null != currentDate && !"".equals(currentDate) && !"0".equals(currentDate))
-            attendanceParamsVO.setCurrentDate(DateConvert.convertStringToDate(currentDate,10));
-        if (null != endTime && !"".equals(endTime) && !"0".equals(endTime))
-            attendanceParamsVO.setEndTime(DateConvert.convertStringToDate(endTime,10));
-        attendanceParamsVO.setJobType(jobType);
-        attendanceParamsVO.setOrgId(orgId);
-        attendanceParamsVO.setPageSize(pageSize);
-        attendanceParamsVO.setStartPage(startPage);
-        attendanceParamsVO.setTimeStandardId(timeStandardId);
-        attendanceParamsVO.setStaffName(staffName);
-        if (null != startTime && !"".equals(startTime) && !"0".equals(startTime))
-            attendanceParamsVO.setStartTime(DateConvert.convertStringToDate(startTime,10));
-        Page page = attendanceService.findAttendanceInfo(attendanceParamsVO);
-        List<AttendanceInfoVO> infoVOList = page.getResult();
-        for (AttendanceInfoVO attendanceInfoVO: infoVOList){
-            Integer t_orgId = attendanceInfoVO.getOrgId();
-            //String orgName = staffOrganizationService.getDeptNameByGroupId(t_orgId);
-            String orgName = staffGroupTerminalServiceClient.getDeptNameByGroupId(t_orgId);
-            attendanceInfoVO.setDeptName(orgName);
-        }
-        PageInfo pageInfo = new PageInfo(page);
-        return pageInfo.getSize() > 0 ? ResultUtil.jsonToStringSuccess(pageInfo):ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
-    }
+//
+//    @GetMapping("getInfoByParams1111")
+//    @ApiOperation("多条件查询考勤信息")
+//    public String getAttendanceInfoByParams(
+//            @RequestParam(name = "page", defaultValue = "1", required = false)Integer startPage,
+//            @RequestParam(name = "limit", defaultValue = "10", required = false)Integer pageSize,
+//            @RequestParam(name = "staffName", required = false) String staffName,
+//            @RequestParam(name = "orgId", required = false) Integer orgId,
+//            @RequestParam(name = "timeStandardId", required = false) Integer timeStandardId,
+//            @RequestParam(name = "startTime", required = false) String startTime,
+//            @RequestParam(name = "endTime", required = false) String endTime,
+//            @RequestParam(name = "currentDate", required = false) String currentDate,
+//            @RequestParam(name = "jobType", required = false)Integer jobType) throws ParseException {
+//        AttendanceParamsVO attendanceParamsVO = new AttendanceParamsVO();
+//        if (null != currentDate && !"".equals(currentDate) && !"0".equals(currentDate))
+//            attendanceParamsVO.setCurrentDate(DateConvert.convertStringToDate(currentDate,10));
+//        if (null != endTime && !"".equals(endTime) && !"0".equals(endTime))
+//            attendanceParamsVO.setEndTime(DateConvert.convertStringToDate(endTime,10));
+//        attendanceParamsVO.setJobType(jobType);
+//        attendanceParamsVO.setOrgId(orgId);
+//        attendanceParamsVO.setPageSize(pageSize);
+//        attendanceParamsVO.setStartPage(startPage);
+//        attendanceParamsVO.setTimeStandardId(timeStandardId);
+//        attendanceParamsVO.setStaffName(staffName);
+//        if (null != startTime && !"".equals(startTime) && !"0".equals(startTime))
+//            attendanceParamsVO.setStartTime(DateConvert.convertStringToDate(startTime,10));
+//        Page page = attendanceService.findAttendanceInfo(attendanceParamsVO);
+//        List<AttendanceInfoVO> infoVOList = page.getResult();
+//        for (AttendanceInfoVO attendanceInfoVO: infoVOList){
+//            Integer t_orgId = attendanceInfoVO.getOrgId();
+//            //String orgName = staffOrganizationService.getDeptNameByGroupId(t_orgId);
+//            String orgName = staffGroupTerminalServiceClient.getDeptNameByGroupId(t_orgId);
+//            attendanceInfoVO.setDeptName(orgName);
+//        }
+//        PageInfo pageInfo = new PageInfo(page);
+//        return pageInfo.getSize() > 0 ? ResultUtil.jsonToStringSuccess(pageInfo):ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
+//    }
 
     @GetMapping("getAttendanceDept")
     @ApiOperation("获取现在矿下考勤的员工的部门和每个部门的人数")

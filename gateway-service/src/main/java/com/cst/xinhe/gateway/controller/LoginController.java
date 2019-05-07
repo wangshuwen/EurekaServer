@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -37,7 +38,7 @@ public class LoginController {
     @Value("${redis.expireTime}")
     private Long expireTime;//token过期时间
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     @ResponseBody
     public String login( @RequestParam(name = "account")String account,
                          @RequestParam(name = "passWord")String passWord) throws Exception {
@@ -58,7 +59,7 @@ public class LoginController {
     }
 
 
-    public String TokenStorage( String username) {
+    private String TokenStorage(String username) {
         //生成token
         String token = UUID.randomUUID().toString().replaceAll("-", "");
         //存储redis里

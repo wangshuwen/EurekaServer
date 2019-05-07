@@ -1,3 +1,5 @@
+server:
+  port: 8769
 spring:
   cloud:
     config:
@@ -8,9 +10,7 @@ spring:
     active: native
   application:
     name: config-server
-server:
-  port: 8769
 eureka:
   client:
-    serviceUrl:
+    service-url:
       defaultZone: http://127.0.0.1:8761/eureka/

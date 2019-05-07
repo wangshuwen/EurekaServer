@@ -3,6 +3,7 @@ server:
 spring:
   application:
     name: staff-group-terminal-service
+    #配置redis数据库
   datasource:
     druid:
       url: jdbc:mysql://192.168.1.182:3306/zkxh_test1
@@ -25,12 +26,12 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://127.0.0.1:8761/eureka/
 feign:
   hystrix:
     enabled: true
 mybatis:
-  mapper-locations: com/cst/xinhe/persistence/dao/**/*.xml
+  mapper-locations: classpath:com/cst/xinhe/persistence/dao/*/*.xml
 #  type-aliases-package: com.cst.xinhe.persistence.model
 pagehelper:
   helper-dialect: mysql

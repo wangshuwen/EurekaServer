@@ -32,7 +32,7 @@ public interface GasInfoService {
     Page findGasInfoByStaffName(Integer gasFlag, String staffName, Integer startPage, Integer pageSize);
     /**
      * @param [terminalId] 终端Id
-     * @return com.zkxh.demo.vo.resp.GasWSRespVO
+     * @return com.cst.xinhe.persistence.vo.resp.GasWSRespVO
      * @description 通过终端ID 获取气体信息
      * @date 17:37 2018/10/26
      * @auther lifeng

@@ -47,7 +47,7 @@ public class AttendanceController {
     @Resource
     private EsAttendanceService esAttendanceService;
 
-    @Autowired
+    @Resource
     private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
 
     @GetMapping("getInfoByParams")

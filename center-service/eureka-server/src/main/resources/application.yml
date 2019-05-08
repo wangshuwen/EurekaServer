@@ -8,3 +8,9 @@ eureka:
     fetch-registry: false
     service-url:
       defaultZone: http://127.0.0.1:8762/eureka/
+#打印日志
+logging:
+  level:
+    #org.springframework.web: DEBUG
+    com.cst.xinhe.persistence.dao: DEBUG
+  config: classpath:logback-boot.xml

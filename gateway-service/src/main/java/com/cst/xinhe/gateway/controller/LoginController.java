@@ -37,7 +37,7 @@ public class LoginController {
 
     @PostMapping("/login")
     @ResponseBody
-    public String login(@RequestBody LoginVO loginVO) {
+    public String login( LoginVO loginVO) {
 
         UserLoginVOReq user = new UserLoginVOReq();
         user.setAccount(loginVO.getAccount());
@@ -66,8 +66,8 @@ public class LoginController {
         RequestContext ctx = RequestContext.getCurrentContext();
         HttpServletRequest request = ctx.getRequest();
         //获取认证名称
-        String Authname =request.getHeader("Authorization");
-        redisUtils.delete(Authname);
+        String AuthName =request.getHeader("Authorization");
+        redisUtils.delete(AuthName);
         return ResultUtil.jsonToStringSuccess();
     }
 

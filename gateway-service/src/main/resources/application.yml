@@ -130,8 +130,9 @@ pagehelper:
   helper-dialect: mysql
   reasonable: true
   support-methods-arguments: count=countSql
+#单位小时
 redis:
-  expireTime: 86400
+  expireTime: 12
 #打印日志
 logging:
   level:

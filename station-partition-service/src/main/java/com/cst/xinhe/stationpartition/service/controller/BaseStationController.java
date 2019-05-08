@@ -264,7 +264,7 @@ public class BaseStationController extends BaseController {
 
     @PutMapping("removeBaseStationFromMap")
     @ApiOperation(value = "在地图中移除已经绑定的基站信息", notes = "通过基站的ID ，取消绑定位置，不做实际的基站信息的删除")
-    public String bindingStationInfoByBaseStationId(@RequestParam Integer baseStationId) {
+    public String bindingStationInfoByBaseStationId(@RequestParam("baseStationId") Integer baseStationId) {
         BaseStation station = new BaseStation();
         station.setBaseStationId(baseStationId);
         station.setPositionX(null);
@@ -284,7 +284,7 @@ public class BaseStationController extends BaseController {
     @Transactional
     @DeleteMapping("delete")
     @ApiOperation(value = "批量删除基站信息", notes = "参数为id的数组，以逗号形式拼接")
-    public String deleteStationByIds(@RequestParam Integer[] ids) {
+    public String deleteStationByIds(@RequestParam("ids") Integer[] ids) {
         int len = ids.length;
         return baseStationService.deleteStationByIds(ids) == len ? ResultUtil.jsonToStringSuccess() : ResultUtil.jsonToStringError(ResultEnum.DELETE_STATION_ERROR);
     }
@@ -353,7 +353,7 @@ public class BaseStationController extends BaseController {
 
     @ApiOperation(value = "根据基站的ID绑定气体标准", notes = "基站的ID为数组，标准Id")
     @PostMapping("baseStationBindingStandard")
-    public String baseStationBindingStandard(@RequestParam(name = "baseStationIds") Integer[] baseStationIds, @RequestParam Integer standardId) {
+    public String baseStationBindingStandard(@RequestParam(name = "baseStationIds") Integer[] baseStationIds, @RequestParam("standardId") Integer standardId) {
         BaseStationBindingStandardVO baseStationBindingStandardVO = new BaseStationBindingStandardVO();
         baseStationBindingStandardVO.setBaseStationIds(baseStationIds);
         baseStationBindingStandardVO.setStandardId(standardId);
@@ -385,14 +385,14 @@ public class BaseStationController extends BaseController {
 
     @GetMapping("checkStationNumExist")
     @ApiOperation(value = "检测基站Id是否存在", notes = "检测ID如果存在返回成功200，否在显示提示信息")
-    public String checkStationNumExist(@RequestParam Integer stationNum){
+    public String checkStationNumExist(@RequestParam("stationNum") Integer stationNum){
         boolean f = baseStationService.checkStationExists(stationNum);
         return f? ResultUtil.jsonToStringError(ResultEnum.STATION_IS_EXISTS): ResultUtil.jsonToStringSuccess();
     }
 
     @ApiOperation(value = "对基站的上传频率做出配置")
     @PutMapping("settingFrequency")
-    public String uploadFrequency(@RequestParam Integer[] stationIds, Integer frequency){
+    public String uploadFrequency(@RequestParam("stationIds") Integer[] stationIds,@RequestParam("frequency") Integer frequency){
         int result = baseStationService.modifyBaseStationFrequency(stationIds,frequency);
         return stationIds.length == result ?ResultUtil.jsonToStringSuccess(): ResultUtil.jsonToStringError(ResultEnum.SETTING_STATION_UPLOAD_FREQUENCY_FAIL);
     }

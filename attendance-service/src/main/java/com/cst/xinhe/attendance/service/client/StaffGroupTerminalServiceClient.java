@@ -22,44 +22,44 @@ import java.util.Map;
 public interface StaffGroupTerminalServiceClient {
 
     @GetMapping("findStaffIdByTerminalId")
-    Map<String, Object> findStaffIdByTerminalId(@RequestParam int terminalId);
+    Map<String, Object> findStaffIdByTerminalId(@RequestParam("terminalId") int terminalId);
 
     @GetMapping("findTerminalIdByIpAndPort")
-    TerminalUpdateIp findTerminalIdByIpAndPort(@RequestParam String terminalIp, @RequestParam int port);
+    TerminalUpdateIp findTerminalIdByIpAndPort(@RequestParam("terminalIp") String terminalIp, @RequestParam("port") int port);
 
     @GetMapping("selectStaffInfoByTerminalId")
-    Map<String, Object> selectStaffInfoByTerminalId(@RequestParam Integer terminalId);
+    Map<String, Object> selectStaffInfoByTerminalId(@RequestParam("terminalId") Integer terminalId);
 
     @GetMapping("getDeptAndGroupNameByStaffId")
-    HashMap<String, Object> getDeptAndGroupNameByStaffId(@RequestParam Integer staffId);
+    HashMap<String, Object> getDeptAndGroupNameByStaffId(@RequestParam("staffId") Integer staffId);
 
     @GetMapping("findStaffById")
-    Staff findStaffById(@RequestParam Integer staffid);
+    Staff findStaffById(@RequestParam("staffid") Integer staffid);
 
     @GetMapping("getDeptNameByGroupId")
-    String getDeptNameByGroupId(@RequestParam Integer group_id);
+    String getDeptNameByGroupId(@RequestParam("group_id") Integer group_id);
 
     @GetMapping("getOneSonByParent")
-    List<StaffOrganization> getOneSonByParent(@RequestParam int i);
+    List<StaffOrganization> getOneSonByParent(@RequestParam("i") int i);
 
     @GetMapping("findSonIdsByDeptId")
-    List<Integer> findSonIdsByDeptId(@RequestParam Integer id);
+    List<Integer> findSonIdsByDeptId(@RequestParam("id") Integer id);
 
     @GetMapping("findStaffByTimeStandardId")
-    List<Staff> findStaffByTimeStandardId(@RequestParam Integer item);
+    List<Staff> findStaffByTimeStandardId(@RequestParam("item") Integer item);
 
     @GetMapping("findAllStaffByGroupId")
-    List<Integer> findAllStaffByGroupId(@RequestParam Integer deptId);
+    List<Integer> findAllStaffByGroupId(@RequestParam("deptId") Integer deptId);
 
     @GetMapping("selectStaffListByJobType")
-    List<Staff> selectStaffListByJobType(@RequestParam Integer jobType);
+    List<Staff> selectStaffListByJobType(@RequestParam("jobType") Integer jobType);
 
     @GetMapping("selectStaffByLikeName")
-    List<Staff> selectStaffByLikeName(@RequestParam String staffName);
+    List<Staff> selectStaffByLikeName(@RequestParam("staffName") String staffName);
 
     @GetMapping("selectStaffJobById")
-    StaffJob selectStaffJobByJobId(@RequestParam Integer jobId);
+    StaffJob selectStaffJobByJobId(@RequestParam("jobId") Integer jobId);
 
     @GetMapping("findStaffByTimeStandardIds")
-    Map<Integer, List<Staff>> findStaffByTimeStandardIds(@RequestParam Integer[] ids);
+    Map<Integer, List<Staff>> findStaffByTimeStandardIds(@RequestParam("ids") Integer[] ids);
 }

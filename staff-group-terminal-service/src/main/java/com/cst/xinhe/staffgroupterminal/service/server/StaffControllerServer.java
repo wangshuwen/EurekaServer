@@ -41,38 +41,38 @@ public class StaffControllerServer {
     private StaffTerminalRelationService staffTerminalRelationService;
 
     @GetMapping("findStaffIdByTerminalId")
-    public Map<String, Object> findStaffIdByTerminalId(@RequestParam Integer terminalId){
+    public Map<String, Object> findStaffIdByTerminalId(@RequestParam("terminalId") Integer terminalId){
         Map<String, Object> map = staffService.findStaffIdByTerminalId(terminalId);
         return map != null && !map.isEmpty()? map: null;
     }
 
     @GetMapping("selectStaffInfoByTerminalId")
-    public Map<String, Object> selectStaffInfoByTerminalId(@RequestParam Integer terminalId){
+    public Map<String, Object> selectStaffInfoByTerminalId(@RequestParam("terminalId") Integer terminalId){
         Map<String, Object> map = staffService.selectStaffInfoByTerminalId(terminalId);
         return map;
     }
 
     @GetMapping("findStaffById")
-    public Staff findStaffById(@RequestParam Integer staffid){
+    public Staff findStaffById(@RequestParam("staffid") Integer staffid){
         return staffService.findStaffById(staffid);
     }
 
     @GetMapping("findStaffByTimeStandardId")
-    public List<Staff> findStaffByTimeStandardId(@RequestParam Integer item){
+    public List<Staff> findStaffByTimeStandardId(@RequestParam("item") Integer item){
         return staffService.findStaffByTimeStandardId(item);
     }
     @GetMapping("selectStaffJobByIds")
-    public Map<Integer, List<Staff>> findStaffByTimeStandardIds(@RequestParam Integer[] ids){
+    public Map<Integer, List<Staff>> findStaffByTimeStandardIds(@RequestParam("ids") Integer[] ids){
         return staffService.findStaffByTimeStandardIds(ids);
     }
 
     @GetMapping("findAllStaffByGroupId")
-    public List<Integer> findAllStaffByGroupId(@RequestParam Integer deptId){
+    public List<Integer> findAllStaffByGroupId(@RequestParam("deptId") Integer deptId){
         return staffService.findAllStaffByGroupId(deptId);
     }
 
     @GetMapping("selectStaffListByJobType")
-    public List<Staff> selectStaffListByJobType(@RequestParam Integer jobType){
+    public List<Staff> selectStaffListByJobType(@RequestParam("jobType") Integer jobType){
         return staffService.selectStaffListByJobType(jobType);
     }
 
@@ -82,27 +82,27 @@ public class StaffControllerServer {
     }
 
     @GetMapping("selectStaffJobByJobId")
-    public StaffJob selectStaffJobByJobId(@RequestParam Integer jobId){
+    public StaffJob selectStaffJobByJobId(@RequestParam("jobId") Integer jobId){
         return staffJobService.findJobById(jobId);
     }
 
     @GetMapping("findStaffNameByTerminalId")
-    public GasWSRespVO findStaffNameByTerminalId(@RequestParam Integer terminalId){
+    public GasWSRespVO findStaffNameByTerminalId(@RequestParam("terminalId") Integer terminalId){
         return staffService.findStaffNameByTerminalId(terminalId);
     }
 
     @GetMapping("findNewRelationByTerminalId")
-    public StaffTerminalRelation findNewRelationByTerminalId(@RequestParam Integer uploadId){
+    public StaffTerminalRelation findNewRelationByTerminalId(@RequestParam("uploadId") Integer uploadId){
         return staffTerminalRelationService.findNewRelationByTerminalId(uploadId);
     }
 
     @GetMapping("findStaffGroupAndDeptByStaffId")
-    public Map<String, Object> findStaffGroupAndDeptByStaffId(@RequestParam Integer staffId){
+    public Map<String, Object> findStaffGroupAndDeptByStaffId(@RequestParam("staffId") Integer staffId){
         return staffService.findStaffGroupAndDeptByStaffId(staffId);
     }
 
     @GetMapping("findNewRelationByStaffId")
-    public StaffTerminalRelation findNewRelationByStaffId(@RequestParam Integer staffId){
+    public StaffTerminalRelation findNewRelationByStaffId(@RequestParam("staffId") Integer staffId){
         return staffTerminalRelationService.findNewRelationByStaffId(staffId);
     }
 

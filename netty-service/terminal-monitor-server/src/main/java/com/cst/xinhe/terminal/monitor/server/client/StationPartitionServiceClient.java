@@ -20,5 +20,5 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface StationPartitionServiceClient {
 
     @GetMapping("findFrequencyByStationId")
-    double findFrequencyByStationId(@RequestParam Integer stationId);
+    double findFrequencyByStationId(@RequestParam("stationId") Integer stationId);
 }

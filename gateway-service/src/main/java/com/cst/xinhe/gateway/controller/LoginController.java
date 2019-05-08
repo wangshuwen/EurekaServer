@@ -62,9 +62,9 @@ public class LoginController {
      * @auther lifeng
      **/
     @GetMapping("/logout")
-    public String logout() {
-        RequestContext ctx = RequestContext.getCurrentContext();
-        HttpServletRequest request = ctx.getRequest();
+    public String logout(HttpServletRequest request) {
+     /*   RequestContext ctx = RequestContext.getCurrentContext();
+        HttpServletRequest request = ctx.getRequest();*/
         //获取认证名称
         String AuthName =request.getHeader("Authorization");
         redisUtils.delete(AuthName);

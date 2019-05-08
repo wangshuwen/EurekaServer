@@ -26,27 +26,27 @@ public class StationPartitionServiceController {
     private PartitionService partitionService;
 
     @GetMapping("findFrequencyByStationId")
-    public double findFrequencyByStationId(@RequestParam Integer stationId){
+    public double findFrequencyByStationId(@RequestParam("stationId") Integer stationId){
         return baseStationService.findFrequencyByStationId(stationId);
     }
 
     @GetMapping("findBaseStationByNum")
-    public BaseStation findBaseStationByNum(@RequestParam Integer basestationid){
+    public BaseStation findBaseStationByNum(@RequestParam("basestationid") Integer basestationid){
         return baseStationService.findBaseStationByNum(basestationid);
     }
 
     @GetMapping("findBaseStationByType")
-    public Map<String, Object> findBaseStationByType(@RequestParam int i){
+    public Map<String, Object> findBaseStationByType(@RequestParam("i") int i){
         return baseStationService.findBaseStationByType(i);
     }
 
     @GetMapping("getSonIdsById")
-    public List<Integer> getSonIdsById(@RequestParam Integer zoneId){
+    public List<Integer> getSonIdsById(@RequestParam("zoneId") Integer zoneId){
         return partitionService.getSonIdsById(zoneId);
     }
 
     @PostMapping("findBaseStationByZoneIds")
-    public List<BaseStation> findBaseStationByZoneIds(@RequestBody List<Integer> zoneIds){
+    public List<BaseStation> findBaseStationByZoneIds(@RequestParam("zoneIds") List<Integer> zoneIds){
         return baseStationService.findBaseStationByZoneIds(zoneIds);
     }
 

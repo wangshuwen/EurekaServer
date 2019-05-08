@@ -79,7 +79,7 @@ public class TimeStandardController {
     }
 
     @DeleteMapping("deleteTimeStandard")
-    public String deleteTimeStandard(@RequestParam Integer[] ids){
+    public String deleteTimeStandard(@RequestParam("ids") Integer[] ids){
         int len = ids.length;
         if (len > 0){
             Map<Integer, List<Staff>> map = staffGroupTerminalServiceClient.findStaffByTimeStandardIds(ids);

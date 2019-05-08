@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -62,9 +63,9 @@ public class LoginController {
      * @auther lifeng
      **/
     @GetMapping("/logout")
-    public String logout() {
-        RequestContext ctx = RequestContext.getCurrentContext();
-        HttpServletRequest request = ctx.getRequest();
+    public String logout(HttpServletRequest request) {
+     /*   RequestContext ctx = RequestContext.getCurrentContext();
+        HttpServletRequest request = ctx.getRequest();*/
         //获取认证名称
         String Authname =request.getHeader("Authorization");
         redisUtils.delete(Authname);

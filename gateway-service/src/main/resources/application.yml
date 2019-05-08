@@ -4,12 +4,12 @@ eureka:
       defaultZone: http://127.0.0.1:8761/eureka/,http://127.0.0.1:8762/eureka/
 server:
   port: 8443
-#  ssl:
-#    key-store: zkxh.keystore
-#    #密钥库密码
-#    key-store-password: 123456
-#    keyStoreType: JKS
-#    keyAlias: zkxh
+  ssl:
+    key-store: zkxh.keystore
+    #密钥库密码
+    key-store-password: 123456
+    keyStoreType: JKS
+    keyAlias: zkxh
 spring:
   application:
     name: service-zuul
@@ -80,6 +80,8 @@ spring:
         # 连接池中的最小空闲连接
         min-idle: 200
 zuul:
+  sensitive-headers: Access-Control-Allow-Origin
+  ignored-headers: Access-Control-Allow-Origin,H-APP-Id,Token,APPToken
   routes:
     attendance:
       path: /attendance/**
@@ -94,10 +96,6 @@ zuul:
       path: /system/**
       serviceId: system-service
       # 加了url指定到每一个服务，就不需要指定serviceId，不可以负载均衡
-      # url: http://localhost:8762
-#    base:
-#      path: /base/**
-#      serviceId: base-service
     chat:
       path: /chat/**
       serviceId: chat-message-service
@@ -107,18 +105,10 @@ zuul:
     gas:
       path: /gas/**
       serviceId: gas-service
-    user:
-      path: /user/**
-      serviceId: service-zuul
-    login:
-      path: /login/**
-      serviceId: user-login
+#    user:
+#      path: /user/**
+#      serviceId: service-zuul
   prefix: /v1
-#  sensitive-headers: Access-Control-Allow-Origin
-#  ignored-headers: Access-Control-Allow-Origin,H-APP-Id,Token,APPToken
-#  host:
-#    connect-timeout-millis: 10000
-#    socket-timeout-millis: 60000
 mybatis:
   mapper-locations: com/cst/xinhe/persistence/dao/*/*.xml
   configuration:

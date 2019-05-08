@@ -1,13 +1,12 @@
-package com.cst.xinhe.gateway.controller;
+package com.cst.xinhe.system.service.controller;
 
 import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.result.ResultUtil;
-import com.cst.xinhe.gateway.service.UserService;
-import com.cst.xinhe.gateway.utils.RedisUtils;
-import com.cst.xinhe.gateway.vo.LoginVO;
 import com.cst.xinhe.persistence.vo.UserLoginVOReq;
 import com.cst.xinhe.persistence.vo.UserLoginVOResp;
-import com.netflix.zuul.context.RequestContext;
+import com.cst.xinhe.system.service.service.UserService;
+import com.cst.xinhe.system.service.utils.RedisUtils;
+import com.cst.xinhe.system.service.vo.LoginVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +22,11 @@ import java.util.UUID;
  * @Description:
  * @Date 2019/5/7/11:37
  */
-@Controller
+@RestController
 public class LoginController {
+
     private static final Logger log = LoggerFactory.getLogger(LoginController.class);
+
     @Autowired
     private UserService userService;
 
@@ -36,8 +37,7 @@ public class LoginController {
     private Long expireTime;//token过期时间
 
     @PostMapping("/login")
-    @ResponseBody
-    public String login( LoginVO loginVO) {
+    public String login(@RequestBody LoginVO loginVO) {
 
         UserLoginVOReq user = new UserLoginVOReq();
         user.setAccount(loginVO.getAccount());
@@ -80,14 +80,5 @@ public class LoginController {
         redisUtils.set(token, username,expireTime);
         return token;
     }
-
-
-    @GetMapping("/hi")
-    @ResponseBody
-    public String hi( )  {
-        return  "hi  shuwen";
-    }
-
-
 
 }

@@ -2,6 +2,23 @@ server:
   port: 8778
 rangBasePath: rangBasePath
 spring:
+  #配置redis数据库
+  redis:
+    database: 15
+    host: 192.168.1.182
+    port: 6379
+    #    password: root
+    timeout: 50000
+    jedis:
+      pool:
+        #连接池最大连接数（使用负值表示没有限制）
+        max-active: 5000
+        # 连接池中的最大空闲连接
+        max-idle: 500
+        # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: 5000
+        # 连接池中的最小空闲连接
+        min-idle: 200
   application:
     name: system-service
   datasource:
@@ -77,4 +94,6 @@ logging:
     #org.springframework.web: DEBUG
     com.cst.xinhe.persistence.dao: DEBUG
   config: classpath:logback-boot.xml
-
+#单位小时
+redis:
+  expireTime: 12

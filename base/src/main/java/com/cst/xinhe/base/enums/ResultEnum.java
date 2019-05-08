@@ -2,6 +2,8 @@ package com.cst.xinhe.base.enums;
 
 public enum ResultEnum {
     UNKNOW_ERROR(-100, "未知错误！"),
+    ACCESS_WITHOUT_PERMISSION(-101, "没权限访问！"),
+    TOKEN_INVALIDATION(-102, "令牌失效,请重新登录！"),
     NULL_POINT_ERROR(501, "空指针异常！"),
     SUCCESS(100, "处理成功！"),
     FAILED(101, "处理失败！"),

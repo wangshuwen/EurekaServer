@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class StationMonitorServerClientFallback implements StationMonitorServerClient {
 
-    Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger logger = LoggerFactory.getLogger(StationMonitorServerClientFallback.class);
 
     @Override
     public void sendCmd(ResponseData responseData) {

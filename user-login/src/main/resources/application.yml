@@ -1,9 +1,0 @@
-server:
-  port: 6868
-spring:
-  application:
-    name: user-login
-eureka:
-  client :
-    serviceUrl:
-      defaultZone: http://127.0.0.1:8761/eureka/,http://127.0.0.1:8762/eureka/

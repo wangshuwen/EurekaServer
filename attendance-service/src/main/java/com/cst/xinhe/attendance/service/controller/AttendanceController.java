@@ -122,6 +122,12 @@ public class AttendanceController {
 //        return pageInfo.getSize() > 0 ? ResultUtil.jsonToStringSuccess(pageInfo):ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
 //    }
 
+    @GetMapping("/hello")
+    public String hello(){
+        return "hello shuwen 123456";
+    }
+
+
     @GetMapping("getAttendanceDept")
     @ApiOperation("获取现在矿下考勤的员工的部门和每个部门的人数")
     public String getAttendanceDept(){

@@ -36,6 +36,11 @@ public class LoginController {
     @Value("${redis.expireTime}")
     private Long expireTime;//token过期时间
 
+    @GetMapping("/hi")
+    public String hi(){
+        return "hi";
+    }
+
     @PostMapping("/login")
     public String login(@RequestBody LoginVO loginVO) {
 

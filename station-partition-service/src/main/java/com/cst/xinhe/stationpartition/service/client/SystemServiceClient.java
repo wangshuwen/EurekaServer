@@ -16,8 +16,8 @@ import java.util.Map;
 public interface SystemServiceClient {
 
     @GetMapping("findRangByType")
-    List<RangSetting> findRangByType(@RequestParam int i);
+    List<RangSetting> findRangByType(@RequestParam("i") int i);
 
     @GetMapping("getStandardNameByStandardId")
-    Map<String, Object> getStandardNameByStandardId(@RequestParam Integer standardId);
+    Map<String, Object> getStandardNameByStandardId(@RequestParam("standardId") Integer standardId);
 }

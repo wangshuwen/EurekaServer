@@ -19,22 +19,22 @@ import java.util.Map;
 public interface StaffGroupTerminalServiceClient {
 
     @GetMapping("findStaffIdByTerminalId")
-    Map<String, Object> findStaffIdByTerminalId(@RequestParam int terminalId);
+    Map<String, Object> findStaffIdByTerminalId(@RequestParam("terminalId") int terminalId);
 
 
     @GetMapping("findTerminalIdByIpAndPort")
-    TerminalUpdateIp findTerminalIdByIpAndPort(@RequestParam String terminalIp, @RequestParam int port);
+    TerminalUpdateIp findTerminalIdByIpAndPort(@RequestParam("terminalIp") String terminalIp, @RequestParam("port") int port);
 
     @GetMapping("selectStaffInfoByTerminalId")
-    Map<String, Object> selectStaffInfoByTerminalId(@RequestParam Integer terminalId);
+    Map<String, Object> selectStaffInfoByTerminalId(@RequestParam("terminalId") Integer terminalId);
 
     @GetMapping("getDeptAndGroupNameByStaffId")
-    HashMap<String, Object> getDeptAndGroupNameByStaffId(@RequestParam Integer staffId);
+    HashMap<String, Object> getDeptAndGroupNameByStaffId(@RequestParam("staffId") Integer staffId);
 
     @GetMapping("findStaffById")
-    Staff findStaffById(@RequestParam Integer staffid);
+    Staff findStaffById(@RequestParam("staffid") Integer staffid);
 
     @GetMapping("getDeptNameByGroupId")
-    String getDeptNameByGroupId(@RequestParam Integer group_id);
+    String getDeptNameByGroupId(@RequestParam("group_id") Integer group_id);
 
 }

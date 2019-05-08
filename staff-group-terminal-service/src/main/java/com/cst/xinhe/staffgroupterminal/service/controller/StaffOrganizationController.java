@@ -43,7 +43,7 @@ public class StaffOrganizationController {
 
     @DeleteMapping("deleteStaffOrganization")
     @ApiOperation(value = "删除组织结构子节点", notes = "删除树节点")
-    public String deleteStaffOrganization(@RequestParam Integer id) {
+    public String deleteStaffOrganization(@RequestParam("id") Integer id) {
         List<Integer> orgIds = staffOrganizationService.findSonIdsByDeptId(id);
         if (orgIds != null && !orgIds.isEmpty()){
             int flag = 0;

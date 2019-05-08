@@ -19,10 +19,10 @@ import java.util.List;
 public interface AttendanceServiceClient {
 
     @GetMapping("getTimeStandardByStaffId")
-    TimeStandardVO getTimeStandardByStaffId(@RequestParam Integer staffId);
+    TimeStandardVO getTimeStandardByStaffId(@RequestParam("staffId") Integer staffId);
 
     @GetMapping("findStaffAttendanceRealRuleById")
-    StaffAttendanceRealRule findStaffAttendanceRealRuleById(@RequestParam Integer staffId);
+    StaffAttendanceRealRule findStaffAttendanceRealRuleById(@RequestParam("staffId") Integer staffId);
 
     @PutMapping("updateStaffAttendanceRealRuleById")
     void updateStaffAttendanceRealRuleById(@RequestBody StaffAttendanceRealRule realRule);
@@ -31,14 +31,14 @@ public interface AttendanceServiceClient {
     void addAttendance(@RequestBody Attendance attendance);
 
     @GetMapping("findAttendanceByStaffIdAndEndTimeIsNull")
-    Attendance findAttendanceByStaffIdAndEndTimeIsNull(@RequestParam Integer staffId);
+    Attendance findAttendanceByStaffIdAndEndTimeIsNull(@RequestParam("staffId") Integer staffId);
 
     @PutMapping("updateAttendance")
     void updateAttendance(@RequestBody Attendance attendance);
 
     @GetMapping("getAttendanceStaff")
-    List<HashMap<String, Object>> getAttendanceStaff(@RequestParam List<Integer> deptIds, @RequestParam String staffName);
+    List<HashMap<String, Object>> getAttendanceStaff(@RequestParam("deptIds") List<Integer> deptIds, @RequestParam("staffName") String staffName);
 
     @PostMapping("getUnAttendanceDept")
-    Integer getUnAttendanceDept(@RequestParam Date date, @RequestBody List<Integer> deptIds);
+    Integer getUnAttendanceDept(@RequestParam("date") Date date, @RequestBody List<Integer> deptIds);
 }

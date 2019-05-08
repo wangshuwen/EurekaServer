@@ -16,11 +16,11 @@ import java.util.List;
 public interface SystemServiceClient {
 
     @GetMapping("findRangByType")
-    List<RangSetting> findRangByType(@RequestParam int i);
+    List<RangSetting> findRangByType(@RequestParam("i") int i);
 
     @GetMapping("getWarnLevelSettingByGasLevelId")
-    GasLevelVO getWarnLevelSettingByGasLevelId(@RequestParam Integer standardId);
+    GasLevelVO getWarnLevelSettingByGasLevelId(@RequestParam("standardId") Integer standardId);
 
     @GetMapping("findRangUrlByLevelDataId")
-    String findRangUrlByLevelDataId(@RequestParam int contrastParameter);
+    String findRangUrlByLevelDataId(@RequestParam("contrastParameter") int contrastParameter);
 }

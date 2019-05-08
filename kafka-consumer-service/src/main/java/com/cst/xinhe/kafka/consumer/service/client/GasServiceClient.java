@@ -19,5 +19,5 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface GasServiceClient {
 
     @GetMapping("findGasInfoByStaffIdAndTerminalId")
-    GasWSRespVO findGasInfoByStaffIdAndTerminalId(@RequestParam Integer terminalId);
+    GasWSRespVO findGasInfoByStaffIdAndTerminalId(@RequestParam("terminalId") Integer terminalId);
 }

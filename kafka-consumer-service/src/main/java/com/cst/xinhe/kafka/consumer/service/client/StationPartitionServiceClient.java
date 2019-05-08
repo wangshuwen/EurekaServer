@@ -22,16 +22,16 @@ import java.util.Map;
 public interface StationPartitionServiceClient {
 
     @GetMapping("findFrequencyByStationId")
-    double findFrequencyByStationId(@RequestParam Integer stationId);
+    double findFrequencyByStationId(@RequestParam("stationId") Integer stationId);
 
     @GetMapping("findBaseStationByNum")
-    BaseStation findBaseStationByNum(@RequestParam Integer basestationid);
+    BaseStation findBaseStationByNum(@RequestParam("basestationid") Integer basestationid);
 
     @GetMapping("findBaseStationByType")
-    Map<String, Object> findBaseStationByType(@RequestParam int i);
+    Map<String, Object> findBaseStationByType(@RequestParam("i") int i);
 
     @GetMapping("getSonIdsById")
-    List<Integer> getSonIdsById(@RequestParam Integer zoneId);
+    List<Integer> getSonIdsById(@RequestParam("zoneId") Integer zoneId);
 
     @PostMapping("findBaseStationByZoneIds")
     List<BaseStation> findBaseStationByZoneIds(@RequestBody List<Integer> zoneIds);

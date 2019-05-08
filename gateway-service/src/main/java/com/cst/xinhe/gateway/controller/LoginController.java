@@ -38,11 +38,14 @@ public class LoginController {
 
     @PostMapping("/login")
     @ResponseBody
-    public String login(@RequestBody LoginVO loginVO) {
-
+    /*public String login(@RequestBody LoginVO loginVO) {*/
+    public String login(@RequestParam("account") String account,@RequestParam("passWord") String passWord) {
         UserLoginVOReq user = new UserLoginVOReq();
-        user.setAccount(loginVO.getAccount());
-        user.setPassWord(loginVO.getPassWord());
+        /*user.setAccount(loginVO.getAccount());
+        user.setPassWord(loginVO.getPassWord());*/
+
+        user.setAccount(account);
+        user.setPassWord(passWord);
 
         UserLoginVOResp resp = userService.userLogin(user);
         if(resp!=null){

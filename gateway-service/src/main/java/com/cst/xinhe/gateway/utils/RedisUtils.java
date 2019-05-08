@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * @author wangshuwen
  * @Description:
@@ -35,11 +37,12 @@ public class RedisUtils {
     public boolean set(final String key, String value,Long expireTime) {
         boolean result = false;
         try {
-            redisTemplate.opsForValue().set(key,value,expireTime);
+            redisTemplate.opsForValue().set(key,value,expireTime, TimeUnit.HOURS);
             result = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return result;
     }
 

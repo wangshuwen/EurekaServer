@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
  **/
 @FeignClient(value = "ws-push-service",
     configuration = FeignConfig.class,
-    fallback = WsPushServiceClientFallback.class)
+    fallback = WsPushServiceClientFallback.class,
+        url = "http://127.0.0.1:8779/")
 //@RequestMapping("ws-push-service/")
 public interface WsPushServiceClient {
 

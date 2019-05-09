@@ -1,6 +1,8 @@
 package com.cst.xinhe.gas.service.service.impl;
 
 import com.cst.xinhe.common.utils.convert.DateConvert;
+import com.cst.xinhe.gas.service.elasticsearch.entity.GasPositionEntity;
+import com.cst.xinhe.gas.service.elasticsearch.service.GasPositionService;
 import com.cst.xinhe.gas.service.service.TerminalRoadService;
 import com.cst.xinhe.persistence.dao.terminal_road.TerminalRoadMapper;
 import com.cst.xinhe.persistence.model.terminal_road.TerminalRoad;

@@ -7,10 +7,12 @@ import com.cst.xinhe.persistence.dao.terminal.StaffTerminalMapper;
 import com.cst.xinhe.persistence.dto.staff.StaffInfoDto;
 import com.cst.xinhe.persistence.model.staff.Staff;
 import com.cst.xinhe.persistence.model.staff.StaffExample;
+import com.cst.xinhe.persistence.model.staff.StaffJob;
 import com.cst.xinhe.persistence.model.staff_terminal_relation.StaffTerminalRelation;
 import com.cst.xinhe.persistence.model.staff_terminal_relation.StaffTerminalRelationExample;
 import com.cst.xinhe.persistence.vo.req.StaffInfoVO;
 import com.cst.xinhe.persistence.vo.resp.GasWSRespVO;
+import com.cst.xinhe.staffgroupterminal.service.service.StaffJobService;
 import com.cst.xinhe.staffgroupterminal.service.service.StaffOrganizationService;
 import com.cst.xinhe.staffgroupterminal.service.service.StaffService;
 import com.github.pagehelper.Page;
@@ -20,10 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @ClassName StaffServiceImpl
@@ -44,6 +43,9 @@ public class StaffServiceImpl implements StaffService {
 
     @Resource
     private StaffOrganizationService staffOrganizationService;
+
+    @Resource
+    private StaffJobService staffJobService;
 
     @Resource
     private StaffTerminalRelationMapper staffTerminalRelationMapper;
@@ -321,5 +323,40 @@ public class StaffServiceImpl implements StaffService {
         }
 
         return map;
+    }
+
+    @Override
+    public Map<Integer, List<Map<String, Object>>> findStaffNameAndGroupNameByStaffIds(List<Integer> params) {
+        Map<Integer, List<Map<String, Object>>> result = new HashMap<>();
+
+        List<Map<String, Object>> list = new ArrayList<>();
+
+        Map<String, Object> itemMap;
+        for (Integer item: params){
+            itemMap = new HashMap<>();
+            Staff staff = findStaffById(item);
+            itemMap.put("staff",staff);
+            StaffJob staffJob = staffJobService.findJobById(staff.getStaffJobId());
+            itemMap.put("StaffJob",staffJob);
+            list.add(itemMap);
+        }
+
+        return result;
+    }
+
+    @Override
+    public Map<Integer,Map<String,Object>> findGroupNameByIds(List<Integer> list1) {
+        Map<Integer, Map<String,Object> > result = new HashMap<>();
+        Map<String,Object> itemMap = new HashMap<>();
+        for (Integer item: list1){
+            Staff staff = staffMapper.selectByPrimaryKey(item);
+            if (null == staff)
+                continue;
+            itemMap.put("jobId",staff.getStaffJobId());
+            itemMap.put("staffName",staff.getStaffName());
+            itemMap.put("deptName",staffOrganizationService.getDeptNameByGroupId(staff.getGroupId()));
+            result.put(item,itemMap);
+        }
+        return result;
     }
 }

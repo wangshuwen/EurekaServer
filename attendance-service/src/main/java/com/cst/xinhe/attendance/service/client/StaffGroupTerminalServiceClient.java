@@ -63,4 +63,10 @@ public interface StaffGroupTerminalServiceClient {
 
     @GetMapping("findStaffByTimeStandardIds")
     Map<Integer, List<Staff>> findStaffByTimeStandardIds(@RequestParam("ids") Integer[] ids);
+
+    @GetMapping("findStaffNameAndGroupNameByStaffIds")
+    Map<Integer, List<Map<String, Object>>> findStaffNameAndGroupNameByStaffIds(@RequestParam List<Integer> list1);
+
+    @GetMapping("findGroupNameByStaffId")
+    Map<Integer,Map<String,Object>> findGroupNameByStaffId(@RequestParam List<Integer> list1);
 }

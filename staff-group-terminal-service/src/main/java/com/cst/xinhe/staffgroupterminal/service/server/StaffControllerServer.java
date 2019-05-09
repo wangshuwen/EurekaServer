@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
@@ -28,16 +29,16 @@ import java.util.Map;
 //@RequestMapping("staff-group-terminal-service")
 public class StaffControllerServer {
 
-    @Autowired
+    @Resource
     private StaffService staffService;
 
-    @Autowired
+    @Resource
     private StaffJobService staffJobService;
 
-    @Autowired
+    @Resource
     private StaffOrganizationService staffOrganizationService;
 
-    @Autowired
+    @Resource
     private StaffTerminalRelationService staffTerminalRelationService;
 
     @GetMapping("findStaffIdByTerminalId")
@@ -106,6 +107,14 @@ public class StaffControllerServer {
         return staffTerminalRelationService.findNewRelationByStaffId(staffId);
     }
 
+    @GetMapping("findStaffNameAndGroupNameByStaffIds")
+    public Map<Integer, List<Map<String, Object>>> findStaffNameAndGroupNameByStaffIds(@RequestParam List<Integer> list1){
+        return staffService.findStaffNameAndGroupNameByStaffIds(list1);
+    }
 
+    @GetMapping("findGroupNameByStaffId")
+    public Map<Integer,Map<String,Object>> findGroupNameByStaffId(@RequestParam List<Integer> list1){
+        return staffService.findGroupNameByIds(list1);
+    }
 
 }

@@ -62,4 +62,8 @@ public interface StaffService {
     List<Staff> selectStaffByLikeName(String staffName);
 
     Map<Integer, List<Staff>> findStaffByTimeStandardIds(Integer[] ids);
+
+    Map<Integer, List<Map<String, Object>>> findStaffNameAndGroupNameByStaffIds(List<Integer> list1);
+
+    Map<Integer,Map<String,Object>> findGroupNameByIds(List<Integer> list1);
 }

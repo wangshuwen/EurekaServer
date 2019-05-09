@@ -7,6 +7,7 @@ import com.cst.xinhe.attendance.service.elasticsrearch.entity.EsAttendanceEntity
 import com.cst.xinhe.attendance.service.elasticsrearch.service.EsAttendanceService;
 import com.cst.xinhe.persistence.dao.attendance.AttendanceMapper;
 import com.cst.xinhe.persistence.dao.attendance.TimeStandardMapper;
+import com.cst.xinhe.persistence.dao.base_station.BaseStationMapper;
 import com.cst.xinhe.persistence.dao.staff.StaffJobMapper;
 import com.cst.xinhe.persistence.dao.staff.StaffMapper;
 import com.cst.xinhe.persistence.model.attendance.TimeStandard;
@@ -14,6 +15,7 @@ import com.cst.xinhe.persistence.model.base_station.BaseStation;
 import com.cst.xinhe.persistence.model.staff.Staff;
 import com.cst.xinhe.persistence.model.staff.StaffJob;
 import com.cst.xinhe.persistence.vo.req.AttendanceParamsVO;
+import io.swagger.models.auth.In;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.sort.FieldSortBuilder;
@@ -26,7 +28,9 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @program: springboot_demo
@@ -55,6 +59,8 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
     @Resource
     private StaffJobMapper staffJobMapper;
 
+    @Resource
+    private BaseStationMapper baseStationMapper;
     @Resource
     private TimeStandardMapper timeStandardMapper;
 
@@ -135,7 +141,7 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
 //            example.createCriteria().andStaffJobIdEqualTo(jobType);
 //            List<Staff> staff = staffMapper.selectByExample(example);
             List<Staff> staff = staffGroupTerminalServiceClient.selectStaffListByJobType(jobType);
-            if(staff!=null&&staff.size()>0){
+            if(null != staff &&staff.size() > 0){
                 for (Staff staff1 : staff) {
                     builder.should(QueryBuilders.termQuery("staffid",staff1.getStaffId()));
                 }
@@ -165,25 +171,36 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
         Page<EsAttendanceEntity> page = attendanceRepository.search(nativeBuilder.build());
        // attendanceRepository.
         List<EsAttendanceEntity> list = page.getContent();
+        List<Integer> list1 = new ArrayList<>();
+        for (EsAttendanceEntity attendance : list) {
+            list1.add(attendance.getStaffid());
+        }
+
+        Map<Integer,Map<String,Object>> res = staffGroupTerminalServiceClient.findGroupNameByStaffId(list1);
 
 
         for (EsAttendanceEntity attendance : list) {
             Integer staffid = attendance.getStaffid();
             Integer basestationid = attendance.getBasestationid();
             Integer ruleid = attendance.getRuleid();
-
-//            Staff staff = staffService.findStaffById(staffid);
-            Staff staff = staffGroupTerminalServiceClient.findStaffById(staffid);
-            Integer jobId = staff.getStaffJobId();
-            Integer groupId = staff.getGroupId();
-            String staffName1 = staff.getStaffName();
+//            Staff staff = staffMapper.selectByPrimaryKey(staffid);
+//            Staff staff = res.get(staffid);
+//            Staff staff = staffGroupTerminalServiceClient.findStaffById(staffid);
+//            Integer jobId = staff.getStaffJobId();
+            Integer jobId = (Integer)res.get(staffid).get("jobId");
+//            Integer groupId = staff.getGroupId();
+//            Integer groupId = staff.getGroupId();
+//            String staffName1 = staff.getStaffName();
+            String staffName1 = (String) res.get(staffid).get("staffName");
             attendance.setStaffname(staffName1);
 //            String deptName = staffOrganizationService.getDeptNameByGroupId(groupId);
-            String deptName = staffGroupTerminalServiceClient.getDeptNameByGroupId(groupId);
+//            String deptName = staffGroupTerminalServiceClient.getDeptNameByGroupId(groupId);
+//            String deptName = staff.getStaffEmail();
+            String deptName = (String) res.get(staffid).get("deptName");
             attendance.setDeptname(deptName);
 //            BaseStation station = baseStationService.findBaseStationByNum(basestationid);
-            BaseStation station = stationPartitionServiceClient.findBaseStationByNum(basestationid);
-
+//            BaseStation station = stationPartitionServiceClient.findBaseStationByNum(basestationid);
+            BaseStation station = baseStationMapper.findBaseStationByNum(basestationid);
             TimeStandard timeStandard = timeStandardMapper.selectByPrimaryKey(ruleid);
             if(timeStandard!=null){
                 attendance.setTimestandardname(timeStandard.getTimeStandardName());
@@ -191,12 +208,13 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
             if(station!=null)
                 attendance.setStationname(station.getBaseStationName());
 
-//            StaffJob staffJob = staffJobMapper.selectByPrimaryKey(jobId);
-            StaffJob staffJob = staffGroupTerminalServiceClient.selectStaffJobByJobId(jobId);
+            StaffJob staffJob = staffJobMapper.selectByPrimaryKey(jobId);
+//            StaffJob staffJob = staffGroupTerminalServiceClient.selectStaffJobByJobId(jobId);
 
             if(staffJob!=null)
                 attendance.setJobname(staffJob.getJobName());
         }
+
         return page;
     }
 

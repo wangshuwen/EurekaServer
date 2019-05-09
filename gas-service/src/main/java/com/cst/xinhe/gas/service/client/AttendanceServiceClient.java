@@ -1,8 +1,8 @@
-package com.cst.xinhe.kafka.consumer.service.client;
+package com.cst.xinhe.gas.service.client;
 
 
-import com.cst.xinhe.kafka.consumer.service.client.callback.AttendanceServiceClientFallback;
-import com.cst.xinhe.kafka.consumer.service.client.config.FeignConfig;
+import com.cst.xinhe.gas.service.client.callback.AttendanceServiceClientFallback;
+import com.cst.xinhe.gas.service.client.config.FeignConfig;
 import com.cst.xinhe.persistence.model.attendance.Attendance;
 import com.cst.xinhe.persistence.model.attendance.StaffAttendanceRealRule;
 import com.cst.xinhe.persistence.vo.req.TimeStandardVO;

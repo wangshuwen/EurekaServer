@@ -16,5 +16,7 @@
  ##**gateway-service  8443** 
  ##**chat-message-service  8777** 
  ##**system-service  8778** 
+ ##**ws-push-http  8779** 
+ ##**voice-monitor-server-http  8780** 
 
 

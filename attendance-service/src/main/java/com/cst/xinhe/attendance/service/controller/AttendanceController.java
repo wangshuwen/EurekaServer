@@ -147,9 +147,9 @@ public class AttendanceController {
         }
         return !resultList.isEmpty() ? ResultUtil.jsonToStringSuccess(resultList) : ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
     }
-    @GetMapping("getUnAttendanceDept")
+    @GetMapping("getRtUnAttendanceDept")
     @ApiOperation("获取现在矿下未考勤的员工的部门和每个部门的人数")
-    public String getUnAttendanceDept(){
+    public String getRtUnAttendanceDept(){
         List<Map<String,Object>> resultList = new ArrayList<>();
 //        List<StaffOrganization> list= staffOrganizationService.getOneSonByParent(1);
         List<StaffOrganization> list= staffGroupTerminalServiceClient.getOneSonByParent(1);
@@ -211,9 +211,9 @@ public class AttendanceController {
 
 
 
-    @GetMapping("getAttendanceStaff")
+    @GetMapping("getRtAttendanceStaff")
     @ApiOperation("获取现在矿下考勤的所有员工")
-    public String getAttendanceStaff(
+    public String getRtAttendanceStaff(
             @RequestParam(name = "page", defaultValue = "1", required = false)Integer startPage,
             @RequestParam(name = "limit", defaultValue = "10", required = false)Integer pageSize,
             @RequestParam(name = "deptId", required = false)Integer deptId,

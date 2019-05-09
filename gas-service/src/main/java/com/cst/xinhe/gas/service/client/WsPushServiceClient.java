@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(value = "ws-push-service",
         configuration = FeignConfig.class,
         fallback = WsPushServiceFallback.class,
-        url = "http://127.0.0.1:8080/")
+        url = "http://127.0.0.1:8779/")
 //@RequestMapping("ws/")
 //@RequestMapping( produces = {"application/json;charset=UTF-8"})
 public interface WsPushServiceClient {

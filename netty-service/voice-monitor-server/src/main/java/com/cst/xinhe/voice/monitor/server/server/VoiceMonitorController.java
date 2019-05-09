@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @create: 2019-04-29 14:33
  **/
 @RestController
-@RequestMapping("voice-monitor-server/")
+//@RequestMapping("voice-monitor-server/")
 public class VoiceMonitorController {
 
     @Autowired

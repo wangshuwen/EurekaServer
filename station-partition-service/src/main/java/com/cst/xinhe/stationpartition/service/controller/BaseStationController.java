@@ -358,7 +358,7 @@ public class BaseStationController extends BaseController {
         baseStationBindingStandardVO.setBaseStationIds(baseStationIds);
         baseStationBindingStandardVO.setStandardId(standardId);
         boolean result = baseStationService.bindingLevelStandard(baseStationBindingStandardVO);
-        return result == true ? ResultUtil.jsonToStringSuccess() : ResultUtil.jsonToStringError(ResultEnum.BINDING_GAS_LEVEL_FAIL);
+        return result ? ResultUtil.jsonToStringSuccess() : ResultUtil.jsonToStringError(ResultEnum.BINDING_GAS_LEVEL_FAIL);
     }
 
     @ApiOperation(value = "获取所有的基站的名称和ID")

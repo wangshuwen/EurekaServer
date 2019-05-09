@@ -1,5 +1,11 @@
 server:
   port: 8774
+#  ssl:
+#    key-store: zkxh.keystore
+#    #密钥库密码
+#    key-store-password: 123456
+#    keyStoreType: JKS
+#    keyAlias: zkxh
 spring:
   application:
     name: gas-service
@@ -64,7 +70,7 @@ eureka:
       defaultZone: http://127.0.0.1:8761/eureka/
 feign:
   hystrix:
-    enabled: true
+    enabled: false
 mybatis:
   mapper-locations: com/cst/xinhe/persistence/dao/*/*.xml
   configuration:

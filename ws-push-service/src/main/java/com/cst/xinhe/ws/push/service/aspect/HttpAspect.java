@@ -1,4 +1,4 @@
-package com.cst.xinhe.gas.service.aspect;
+package com.cst.xinhe.ws.push.service.aspect;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -31,7 +31,7 @@ public class HttpAspect {
     private long startTimeMillis = 0; // 开始时间
     private long endTimeMillis = 0; // 结束时间
 
-    @Pointcut("execution(public * com.cst.xinhe.gas.service.controller.*.*(..))")
+    @Pointcut("execution(public * com.cst.xinhe.ws.push.service.server.*.*(..))")
     public void log() {
 
     }
@@ -83,6 +83,6 @@ public class HttpAspect {
             "(@annotation(org.springframework.web.bind.annotation.DeleteMapping))", returning = "object")
     public void doAfterReturning(Object object) {
         if (object != null)
-         LOGGER.info("response={}", object.toString());
+            LOGGER.info("response={}", object.toString());
     }
 }

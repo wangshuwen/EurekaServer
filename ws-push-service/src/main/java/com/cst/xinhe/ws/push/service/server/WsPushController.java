@@ -82,7 +82,26 @@ public class WsPushController {
         return WSServer.zoneId;
     }
 
+    @GetMapping("setOrdId")
+    public void setOrdId(@RequestParam Integer o){
+        WSServer.orgId = o;
+    }
+    @GetMapping("setZoneId")
+    public void setZoneId(@RequestParam Integer o){
+        WSServer.zoneId = o;
+    }
 
+
+    @GetMapping(value = "setOrgIdIsNull")
+    public void setOrgIdIsNull(){
+        WSServer.orgId = null;
+    }
+
+
+    @GetMapping(value = "setZoneIdIsNull")
+    public void setZoneIdIsNull(){
+        WSServer.zoneId = null;
+    }
 
 }
 

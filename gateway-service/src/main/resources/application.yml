@@ -128,7 +128,7 @@ hystrix:
           enabled: true
         isolation:
           thread:
-            timeoutInMilliseconds: 10000
+            timeoutInMilliseconds: 60000
 mybatis:
   mapper-locations: com/cst/xinhe/persistence/dao/*/*.xml
   configuration:

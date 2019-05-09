@@ -10,6 +10,7 @@ import com.cst.xinhe.persistence.model.warn_level.GasStandardExample;
 import com.cst.xinhe.persistence.model.warn_level.GasWarnSetting;
 import com.cst.xinhe.persistence.vo.resp.GasLevelVO;
 import com.cst.xinhe.system.service.service.LevelSettingService;
+import io.swagger.models.auth.In;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -118,5 +119,17 @@ public class LevelSettingServiceImpl implements LevelSettingService {
             result.put("standardName", standardName);
         }
         return result;
+    }
+
+    @Override
+    public Map<Integer, String> getStandardNameByStandardIds(Map<Integer, Integer> standardIds) {
+        Map<Integer, String > map = new HashMap<>();
+        for (Integer item : standardIds.keySet()){
+            GasStandard gasStandard = gasStandardMapper.selectByPrimaryKey(standardIds.get(item));
+            if (null != gasStandard){
+                map.put(item,gasStandard.getStandardName());
+            }
+        }
+        return map;
     }
 }

@@ -25,4 +25,6 @@ public interface LevelSettingService {
     GasLevelVO getWarnLevelSettingByGasLevelId(Integer standardId);
 
     Map<String, Object> getStandardNameByStandardId(Integer standardId);
+
+    Map<Integer, String> getStandardNameByStandardIds(Map<Integer, Integer> standardIds);
 }

@@ -133,17 +133,27 @@ public class BaseStationController extends BaseController {
 
         Page page = baseStationService.findBaseStationInfoByParams(startPage, pageSize, params);
         List<Map<String, Object>> result = page.getResult();
+
+        Map<Integer, Integer> standardIdList = new HashMap<>();
+
         for (Map<String, Object> map : result) {
             //拼接区域管理名称
-            map.put("zoneName", partitionService.geParentNamesById((Integer) map.get("zoneId")));
-            Integer standardId = (Integer) map.get("standardId");
-            if (standardId != null) {
-//                Map<String, Object> map1 = levelSettingService.getStandardNameByStandardId(standardId);
-                Map<String, Object> map1 = systemServiceClient.getStandardNameByStandardId(standardId);
-                if (map1 != null)
-                    map.put("standardName", map1.get("standardName"));
-            }
+            standardIdList.put((Integer)map.get("baseStationNum"),(Integer) map.get("standardId"));
         }
+
+        Map<Integer, String> map1 = systemServiceClient.getStandardNameByStandardIds(standardIdList);
+
+        for (Map<String, Object> map : result) {
+            map.put("zoneName", partitionService.geParentNamesById((Integer) map.get("zoneId")));
+
+            map.put("standardName", map1.get(map.get("baseStationNum")));
+        }
+//        if (null != standardId) {
+////                Map<String, Object> map1 = levelSettingService.getStandardNameByStandardId(standardId);
+//            Map<String, Object> map1 = systemServiceClient.getStandardNameByStandardId(standardId);
+//            if (null != map1)
+//                map.put("standardName", map1.get("standardName"));
+//        }
         PageInfo pageInfo = new PageInfo(page);
         return ResultUtil.jsonToStringSuccess(pageInfo);
     }

@@ -82,6 +82,7 @@ public class HttpAspect {
             "(@annotation(org.springframework.web.bind.annotation.PutMapping)) || " +
             "(@annotation(org.springframework.web.bind.annotation.DeleteMapping))", returning = "object")
     public void doAfterReturning(Object object) {
+        if (null != object)
         LOGGER.info("response={}", object.toString());
     }
 }

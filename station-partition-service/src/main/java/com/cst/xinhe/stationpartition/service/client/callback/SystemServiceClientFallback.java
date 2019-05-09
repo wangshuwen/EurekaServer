@@ -31,6 +31,14 @@ public class SystemServiceClientFallback implements SystemServiceClient {
     public Map<String, Object> getStandardNameByStandardId(Integer standardId) {
         logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
 
+
+        return null;
+    }
+
+    @Override
+    public Map<Integer, String> getStandardNameByStandardIds(Map<Integer, Integer> standardIdList) {
+
+        logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
         return null;
     }
 }

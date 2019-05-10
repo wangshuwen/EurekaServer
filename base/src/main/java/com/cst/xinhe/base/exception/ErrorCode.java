@@ -18,7 +18,7 @@ public enum ErrorCode {
     SEND_VOICE_FAIL(5005,"发送语音数据失败"),
     FIND_STATION_IP_FAIL(5006, "获取基站的IP地址失败！"),
     DATA_TYPE_IS_ERROR(5007, "解析到的数据类型不匹配！"),
-    SEND_INFO_TO_TERMINAL_FAIL(5007, "解析到的数据类型不匹配！"),
+    SEND_INFO_TO_TERMINAL_FAIL(5008, "解析到的数据类型不匹配！"),
     ;
 
     private int code;

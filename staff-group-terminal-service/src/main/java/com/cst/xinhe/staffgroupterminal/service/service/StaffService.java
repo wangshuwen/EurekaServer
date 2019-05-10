@@ -66,4 +66,6 @@ public interface StaffService {
     Map<Integer, List<Map<String, Object>>> findStaffNameAndGroupNameByStaffIds(List<Integer> list1);
 
     Map<Integer,Map<String,Object>> findGroupNameByIds(List<Integer> list1);
+
+    List<Map<String,Object>> findStaffByIds(List<Integer> staffIds);
 }

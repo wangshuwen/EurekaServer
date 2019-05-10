@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author wangshuwen
@@ -44,6 +46,20 @@ public class StaffOrganizationServiceImpl implements StaffOrganizationService {
     @Override
     public String getDeptNameByGroupId(Integer groupId) {
         return findAllById(groupId);
+    }
+
+    @Override
+    public List<Map<String,Object>> getDeptNameByGroupIds(List<Integer> groupIds) {
+        ArrayList<Map<String,Object>> list = new ArrayList<>();
+        for (Integer groupId : groupIds) {
+            String groupName = findAllById(groupId);
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("groupId",groupId);
+            map.put("groupName",groupName);
+            list.add(map);
+        }
+
+        return list;
     }
 
     @Override
@@ -86,6 +102,8 @@ public class StaffOrganizationServiceImpl implements StaffOrganizationService {
         example.createCriteria().andParentIdEqualTo(parentId);
         return staffOrganizationMapper.selectByExample(example);
     }
+
+
 
     /**
      * 方法实现说明

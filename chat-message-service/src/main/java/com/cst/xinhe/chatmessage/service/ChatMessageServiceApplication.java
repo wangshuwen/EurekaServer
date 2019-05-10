@@ -20,4 +20,5 @@ public class ChatMessageServiceApplication {
         SpringApplication.run(ChatMessageServiceApplication.class, args);
     }
 
+
 }

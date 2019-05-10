@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @program: EurekaServer
@@ -32,10 +33,16 @@ public class GroupControllerServer {
         return staffOrganizationService.getDeptNameByGroupId(group_id);
     }
 
+    @GetMapping("getDeptNameByGroupIds")
+    public List<Map<String,Object>> getDeptNameByGroupIds(@RequestParam("group_ids") List<Integer> group_ids){
+        return staffOrganizationService.getDeptNameByGroupIds(group_ids);
+    }
+
     @GetMapping("findSonIdsByDeptId")
     public List<Integer> findSonIdsByDeptId(@RequestParam Integer id){
         return staffOrganizationService.findSonIdsByDeptId(id);
     }
+
 
     @GetMapping("getOneSonByParent")
     public List<StaffOrganization> getOneSonByParent(@RequestParam int i){

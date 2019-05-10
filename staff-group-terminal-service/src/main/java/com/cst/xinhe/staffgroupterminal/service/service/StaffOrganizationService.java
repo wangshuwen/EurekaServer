@@ -4,6 +4,7 @@ package com.cst.xinhe.staffgroupterminal.service.service;
 import com.cst.xinhe.persistence.model.staff.StaffOrganization;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author wangshuwen
@@ -20,10 +21,13 @@ public interface StaffOrganizationService {
     Integer update(StaffOrganization staffOrganization);
 
     String getDeptNameByGroupId(Integer groupId);
+    List<Map<String,Object>> getDeptNameByGroupIds(List<Integer> group_ids);
 
     List<Integer> findSonIdsByDeptName(String DeptName);
 
     List<Integer> findSonIdsByDeptId(Integer deptId);
 
     List<StaffOrganization> getOneSonByParent(int i);
+
+
 }

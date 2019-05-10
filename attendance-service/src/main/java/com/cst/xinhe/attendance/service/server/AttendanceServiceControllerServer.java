@@ -60,8 +60,8 @@ public class AttendanceServiceControllerServer {
     }
 
     @PostMapping("getUnAttendanceDept")
-    public Integer getUnAttendanceDept(@RequestParam Date date, @RequestBody List<Integer> deptIds){
-        return attendanceService.getStaffAttendanceRealRuleMapperUnAttendanceDept(date, deptIds);
+    public Integer getUnAttendanceDept(@RequestParam Date date){
+        return attendanceService.getStaffAttendanceRealRuleMapperUnAttendanceDept(date, null);
     }
 
 

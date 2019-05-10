@@ -7,6 +7,8 @@ import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
 import com.cst.xinhe.kafka.consumer.service.client.TerminalMonitorClient;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.TopicPartition;
 import org.springframework.stereotype.Component;
@@ -26,7 +28,9 @@ import java.util.Optional;
  * @create: 2019-03-05 09:16
  **/
 @Component
-public class ProcessVoiceFile extends BaseLog {
+public class ProcessVoiceFile {
+
+    private static final Logger logger = LoggerFactory.getLogger(ProcessVoiceFile.class);
 
     @Resource
     private TerminalMonitorClient terminalMonitorClient;

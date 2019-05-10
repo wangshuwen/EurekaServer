@@ -41,5 +41,5 @@ public interface AttendanceServiceClient {
     List<HashMap<String, Object>> getAttendanceStaff();
 
     @PostMapping("getUnAttendanceDept")
-    Integer getUnAttendanceDept(@RequestParam("date") Date date, @RequestBody List<Integer> deptIds);
+    Integer getUnAttendanceDept(@RequestParam("date") Date date);
 }

@@ -70,7 +70,7 @@ public interface StaffGroupTerminalServiceClient {
     @GetMapping("findStaffNameByTerminalId")
     GasWSRespVO findStaffNameByTerminalId(@RequestParam("terminalId") Integer terminalId);
 
-    @GetMapping("findStaffNameByTerminalId")
+    @GetMapping("findNewRelationByTerminalId")
     StaffTerminalRelation findNewRelationByTerminalId(@RequestParam("uploadId") Integer uploadId);
 
     @GetMapping("findStaffGroupAndDeptByStaffId")

@@ -72,7 +72,7 @@ public class AttendanceServiceClientFallback implements AttendanceServiceClient 
     }
 
     @Override
-    public Integer getUnAttendanceDept(Date date, List<Integer> deptIds) {
+    public Integer getUnAttendanceDept(Date date) {
         logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
         return null;
     }

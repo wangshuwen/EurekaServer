@@ -67,6 +67,9 @@ public class UpdateIpProcess {
 //    AttendanceService attendanceService;
 
     @Resource
+    StaffAttendanceRealRuleMapper staffAttendanceRealRuleMapper;
+
+    @Resource
     private AttendanceServiceClient attendanceServiceClient;
 //    @Resource
 //    StaffAttendanceRealRuleMapper staffAttendanceRealRuleMapper;
@@ -350,8 +353,8 @@ public class UpdateIpProcess {
 
         //本应该考勤，但未考勤总人数
         data.setType(4);
-//        Integer count = staffAttendanceRealRuleMapper.getUnAttendanceDept(new Date(), null);
-        Integer count = attendanceServiceClient.getUnAttendanceDept(new Date(), null);
+        Integer count = staffAttendanceRealRuleMapper.getUnAttendanceDept(new Date(), null);
+//        Integer count = attendanceServiceClient.getUnAttendanceDept(new Date());
 
         data.setData(count);
         try {
@@ -734,9 +737,9 @@ public class UpdateIpProcess {
 
                 //本应该考勤，但未考勤总人数
                 data.setType(4);
-//                Integer count = staffAttendanceRealRuleMapper.getUnAttendanceDept(new Date(), null);
-                Integer count = attendanceServiceClient.getUnAttendanceDept(new Date(), null);
-                data.setData(count);
+                Integer count = staffAttendanceRealRuleMapper.getUnAttendanceDept(new Date(), null);
+//                Integer count = attendanceServiceClient.getUnAttendanceDept(new Date());
+//                data.setData(count);
                 try {
 //                    WSPersonNumberServer.sendInfo(JSON.toJSONString(data));
                     wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));

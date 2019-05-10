@@ -11,6 +11,8 @@ import com.cst.xinhe.persistence.model.chat.ChatMsg;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.TopicPartition;
 import org.springframework.stereotype.Component;
@@ -25,8 +27,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Component
-public class UpdateVoiceReadStatus extends BaseLog {
+public class UpdateVoiceReadStatus {
 
+    private static final Logger logger = LoggerFactory.getLogger(UpdateVoiceReadStatus.class);
 //    @Resource
 //    private ChatMsgMapper chatMsgMapper;
 

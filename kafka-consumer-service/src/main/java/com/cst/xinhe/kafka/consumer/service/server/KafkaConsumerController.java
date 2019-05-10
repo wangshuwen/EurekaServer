@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
  * @create: 2019-04-29 15:53
  **/
 @RestController
-@RequestMapping("kafka-consumer-service/")
+//@RequestMapping("kafka-consumer-service/")
 public class KafkaConsumerController {
 
     @Autowired

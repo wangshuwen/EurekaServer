@@ -1,5 +1,6 @@
 package com.cst.xinhe.station.monitor.server.service;
 
+import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
 
 /**
@@ -10,4 +11,6 @@ import com.cst.xinhe.common.netty.data.response.ResponseData;
  **/
 public interface StationMonitorServerService {
     void sendCmd(ResponseData responseData);
+
+    void wifiForkProcess(RequestData reqMsg);
 }

@@ -364,91 +364,17 @@ public class UpdateIpProcess {
     }
     @KafkaListener(groupId = "UpdateIpProcessTerminal", id = "UpdateIpProcessid0", topicPartitions = { @TopicPartition(topic = TOPIC, partitions = { "0" }) })
     public void sendUpdateIp0(List<ConsumerRecord<?, ?>> records) throws ParseException {
-//
-//        for (ConsumerRecord<?, ?> record : records) {
-//            Optional<?> kafkaMessage = Optional.ofNullable(record.value());
-//            logger.info("Received: " + record);
-//            if (kafkaMessage.isPresent()) {
-//                Object message = kafkaMessage.get();
-//                String str = (String) message;
-                //创建固定数量的线程池
-                    //executor.submit(new ProcessIpThread(str));
-
-                fixedThreadPool.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        processT(records);
-                    }
-                });
-//            }
-//        }
+                fixedThreadPool.execute(() -> processT(records));
     }
-//    class ProcessIpThread implements Runnable{
-//
-//        private String str = null;
-//        public ProcessIpThread(String str) {
-//            this.str = str;
-//        }
-//
-//        @Override
-//        public void run() {
-//            try {
-//                process(str);
-//            } catch (ParseException e) {
-//                e.printStackTrace();
-//            }
-//
-//        }
-//    }
     @KafkaListener(groupId = "UpdateIpProcessTerminal", id = "UpdateIpProcessid1", topicPartitions = { @TopicPartition(topic = TOPIC, partitions = { "1" }) })
     public void sendUpdateIp1(List<ConsumerRecord<?, ?>> records) throws ParseException{
-
-//        for (ConsumerRecord<?, ?> record : records) {
-//            Optional<?> kafkaMessage = Optional.ofNullable(record.value());
-//            logger.info("Received: " + record);
-//            if (kafkaMessage.isPresent()) {
-//                Object message = kafkaMessage.get();
-//                String str = (String) message;
-
-                fixedThreadPool.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        processT(records);
-                    }
-                });
-//            }
-//        }
+                fixedThreadPool.execute(() -> processT(records));
     }
     @KafkaListener(groupId = "UpdateIpProcessTerminal", id = "UpdateIpProcessid2", topicPartitions = { @TopicPartition(topic = TOPIC, partitions = { "2" }) })
     public void sendUpdateIp2(List<ConsumerRecord<?, ?>> records) throws ParseException {
-
-//        for (ConsumerRecord<?, ?> record : records) {
-//            Optional<?> kafkaMessage = Optional.ofNullable(record.value());
-//            logger.info("Received: " + record);
-//            if (kafkaMessage.isPresent()) {
-//                Object message = kafkaMessage.get();
-//                String str = (String) message;
-
-                fixedThreadPool.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        processT(records);
-                    }
-                });
-//            }
-//        }
+                fixedThreadPool.execute(() -> processT(records));
     }
 
-    /**
-     * 方法实现说明
-    * @author      wangshuwen
-    * @param null
-    * @description  基站ip进行更新操作
-    * @return
-    * @exception
-    * @date        2018/12/10 15:32
-    */
-//    @KafkaListener(id = "UpdateStationIpToDB", topics = "stationUpdateIp.tut")
     private static final String TOPIC1 = "stationUpdateIp.tut";
     private void process1(List<ConsumerRecord<?, ?>> records){
         for (ConsumerRecord<?, ?> record : records) {
@@ -513,56 +439,22 @@ public class UpdateIpProcess {
     @KafkaListener(groupId = "UpdateIpProcessStation", id = "id0", topicPartitions = { @TopicPartition(topic = TOPIC1, partitions = { "0" }) })
     public void sendStationUpdateIp0(List<ConsumerRecord<?, ?>> records) {
 
-//        for (ConsumerRecord<?, ?> record : records) {
-//            Optional<?> kafkaMessage = Optional.ofNullable(record.value());
-//            logger.info("Received: " + record);
-//            if (kafkaMessage.isPresent()) {
-//                Object message = kafkaMessage.get();
-//                String str = (String) message;
-
-                fixedThreadPool.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        process1(records);
-                    }
-                });
+                fixedThreadPool.execute(() -> process1(records));
 //            }
 //        }
     }
     @KafkaListener(groupId = "UpdateIpProcessStation", id = "id1", topicPartitions = { @TopicPartition(topic = TOPIC1, partitions = { "1" }) })
     public void sendStationUpdateIp1(List<ConsumerRecord<?, ?>> records) {
-//        for (ConsumerRecord<?, ?> record : records) {
-//            Optional<?> kafkaMessage = Optional.ofNullable(record.value());
-//            logger.info("Received: " + record);
-//            if (kafkaMessage.isPresent()) {
-//                Object message = kafkaMessage.get();
-//                String str = (String) message;
 
-                fixedThreadPool.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        process1(records);
-                    }
-                });
+                fixedThreadPool.execute(() -> process1(records));
 //            }
 //        }
     }
     @KafkaListener(groupId = "UpdateIpProcessStation", id = "id2", topicPartitions = { @TopicPartition(topic = TOPIC1, partitions = { "2" }) })
     public void sendStationUpdateIp2(List<ConsumerRecord<?, ?>> records) {
 
-//        for (ConsumerRecord<?, ?> record : records) {
-//            Optional<?> kafkaMessage = Optional.ofNullable(record.value());
-//            logger.info("Received: " + record);
-//            if (kafkaMessage.isPresent()) {
-//                Object message = kafkaMessage.get();
-//                String str = (String) message;
 
-                fixedThreadPool.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        process1(records);
-                    }
-                });
+                fixedThreadPool.execute(() -> process1(records));
 //            }
 //        }
     }

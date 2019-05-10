@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
  * @create: 2019-04-26 15:53
  **/
 @RestController
-@RequestMapping("v1/")
 public class KafkaSenderController {
 
     @Autowired

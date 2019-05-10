@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -52,6 +53,13 @@ public class StaffGroupTerminalServiceClientFallback implements StaffGroupTermin
         logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
         return null;
     }
+
+    @Override
+    public List<Map<String,Object>>  findStaffByIds(List<Integer> staffIds) {
+        logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
+        return null;
+    }
+
 
     @Override
     public String getDeptNameByGroupId(Integer group_id) {

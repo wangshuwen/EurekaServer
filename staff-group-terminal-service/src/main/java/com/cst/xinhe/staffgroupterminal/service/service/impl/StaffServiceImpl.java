@@ -18,6 +18,7 @@ import com.cst.xinhe.staffgroupterminal.service.service.StaffService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.elasticsearch.search.aggregations.metrics.percentiles.hdr.InternalHDRPercentileRanks;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -204,9 +205,11 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public HashMap<String, Object> getDeptAndGroupNameByStaffId(Integer staffId) {
         HashMap<String, Object> map = staffMapper.getDeptAndGroupNameByStaffId(staffId);
-        Integer groupId = (Integer) map.get("groupId");
-        String deptName = staffOrganizationService.getDeptNameByGroupId(groupId);
-        map.put("deptName",deptName);
+       if(map!=null&&map.size()>0){
+           Integer groupId = (Integer) map.get("groupId");
+           String deptName = staffOrganizationService.getDeptNameByGroupId(groupId);
+           map.put("deptName",deptName);
+       }
         return map;
     }
 
@@ -257,6 +260,23 @@ public class StaffServiceImpl implements StaffService {
     public Staff findStaffById(Integer staffId) {
         return staffMapper.selectByPrimaryKey(staffId);
     }
+    @Override
+    public List<Map<String, Object>> findStaffByIds(List<Integer> staffIds) {
+        List<Map<String, Object>> list = new ArrayList<>();
+        for (Integer staffId : staffIds) {
+            Staff staff = findStaffById(staffId);
+           if(staff!=null){
+               Map<String, Object> map = new HashMap<>();
+               map.put("staffId",staff.getStaffId());
+               map.put("staffName",staff.getStaffName());
+               list.add(map);
+           }
+        }
+
+
+        return list;
+    }
+
 
     @Override
     public List<Staff> findStaffByTimeStandardId(Integer item) {
@@ -359,4 +379,6 @@ public class StaffServiceImpl implements StaffService {
         }
         return result;
     }
+
+
 }

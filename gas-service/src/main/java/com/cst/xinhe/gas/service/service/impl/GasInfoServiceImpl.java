@@ -57,12 +57,36 @@ public class GasInfoServiceImpl implements GasInfoService {
 //                gasPositionWarnEntityList.getSize();
 //                System.out.println(gasPositionWarnEntityList.toString());
 
-                for (GasPositionEntity item : gasPositionList.getContent()) {
+        //根据员工id查找员工姓名
+        List<GasPositionEntity> content = gasPositionList.getContent();
+        List<Integer> staffIds = new ArrayList<>();
+        for (GasPositionEntity item : content) {
+            staffIds.add(item.getStaffid());
+        }
+
+        List<Map<String,Object>> staffMap = staffGroupTerminalServiceClient.findStaffByIds(staffIds);
+
+
+       /* for (GasPositionEntity item : gasPositionList.getContent()) {
                     Integer staffid = item.getStaffid();
                    // Staff staff = staffService.findStaffById(staffid);
                     Staff staff = staffGroupTerminalServiceClient.findStaffById(staffid);
                     item.setStaffname(staff.getStaffName());
+                }*/
+        for (GasPositionEntity item : content) {
+            for (Map<String, Object> staff : staffMap) {
+                Integer staffId = (Integer) staff.get("staffId");
+                if(item.getStaffid().equals(staffId)){
+                     staffName = (String) staff.get("staffName");
+                    item.setStaffname(staffName);
                 }
+
+            }
+        }
+
+
+
+
                 List<GasPositionEntity> list = page.getResult();
                 page.setPages(gasPositionList.getTotalPages());   // 总分页数
 

@@ -78,13 +78,33 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         Page page = PageHelper.startPage(startPage, pageSize);
         List<Map<String, Object>> list1 = chatMsgMapper.findChatList(keyWord, deptIds);
         List<Map<String,Object>> list = page.getResult();
+
+
+
         if(list!=null&&list.size()>0){
+            //封装groupId，查找groupName
+            List<Integer> groupIds = new ArrayList<>();
+            for (Map<String, Object> map : list) {
+                Integer groupId = (Integer) map.get("groupId");
+                groupIds.add(groupId);
+            }
+            //服务调用
+            List<Map<String, Object>> groupInfo = staffGroupTerminalServiceClient.getDeptNameByGroupIds(groupIds);
+
+
             for (Map<String, Object> map : list) {
                 Integer groupId = (Integer) map.get("groupId");
                 Integer staffId = (Integer) map.get("staffId");
 //                String deptName = staffOrganizationService.getDeptNameByGroupId(groupId);
-                String deptName = staffGroupTerminalServiceClient.getDeptNameByGroupId(groupId);
-                map.put("deptName",deptName);
+                for (Map<String, Object> group : groupInfo) {
+                    Integer group_Id= (Integer) group.get("groupId");
+                    if(group_Id.equals(groupId)){
+                        String groupName= (String) group.get("groupName");
+                        map.put("deptName",groupName);
+                    }
+                }
+
+
                 //查找未读的消息数目，用于显示在聊天列表上未读的消息个数
                 Integer count=chatMsgMapper.findUnReadCount(staffId);
 

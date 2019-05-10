@@ -13,4 +13,6 @@ public interface StationMonitorServerService {
     void sendCmd(ResponseData responseData);
 
     void wifiForkProcess(RequestData reqMsg);
+
+    void updateStationIp(RequestData reqMsg);
 }

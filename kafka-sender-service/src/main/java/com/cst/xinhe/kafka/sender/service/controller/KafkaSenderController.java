@@ -19,7 +19,7 @@ public class KafkaSenderController {
     KafkaSenderService kafkaSenderService;
 
     @PostMapping("kafka-sender-service/sendData")
-    public void sendData(@RequestParam String topic, @RequestBody RequestData requestData){
+    public void sendData(@RequestParam("topic") String topic, @RequestBody RequestData requestData){
         kafkaSenderService.sendData(topic,requestData);
     }
 

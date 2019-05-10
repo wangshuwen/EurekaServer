@@ -1,4 +1,4 @@
-package com.cst.xinhe.base.context;
+package com.cst.xinhe.kafka.consumer.service.context;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

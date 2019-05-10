@@ -85,7 +85,7 @@ public class RangSettingServiceImpl implements RangSettingService {
 
     @Override
     public Integer updateRangIdByLevelId(String jsonStr) {
-        Integer result=0;
+        Integer result = 0;
         JSONArray jsonArray = JSONArray.parseArray(jsonStr);
         for(int i=0;i<jsonArray.size();i++){
             Integer levelId = jsonArray.getJSONObject(i).getInteger("levelId");

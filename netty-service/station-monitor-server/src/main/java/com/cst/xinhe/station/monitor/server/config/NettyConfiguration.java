@@ -27,7 +27,7 @@ public class NettyConfiguration {
     /**
      * 日志
      */
-    private Logger log = LoggerFactory.getLogger(getClass());
+    private static final Logger log = LoggerFactory.getLogger(NettyConfiguration.class);
 
 
     /**

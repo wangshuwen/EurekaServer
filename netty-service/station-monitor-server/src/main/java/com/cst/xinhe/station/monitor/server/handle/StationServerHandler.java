@@ -1,11 +1,11 @@
 package com.cst.xinhe.station.monitor.server.handle;
 
-import com.cst.xinhe.base.context.SpringContextUtil;
 import com.cst.xinhe.common.constant.ConstantValue;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
 import com.cst.xinhe.station.monitor.server.channel.ChannelMap;
 import com.cst.xinhe.station.monitor.server.client.KafkaClient;
+import com.cst.xinhe.station.monitor.server.context.SpringContextUtil;
 import com.cst.xinhe.station.monitor.server.request.SingletonStationClient;
 import com.cst.xinhe.station.monitor.server.service.StationMonitorServerService;
 import io.netty.channel.ChannelFuture;
@@ -21,8 +21,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import java.net.InetSocketAddress;
 
 
@@ -41,22 +39,23 @@ public class StationServerHandler extends ChannelInboundHandlerAdapter {
      */
     private static final Logger log = LoggerFactory.getLogger(StationServerHandler.class);
 
+//    @Autowired
     private KafkaClient kafkaClient;
 
-    public StationServerHandler() {
-//        this.kafkaClient = (KafkaClient) SpringContextUtil.getBean("kafkaClient");
-    }
-    @PostConstruct
-    public void init(){
-        stationServerHandler = this;
-        stationServerHandler.kafkaClient = this.kafkaClient;
-    }
 
 
-
-    @Resource
+//    @Autowired
     private StationMonitorServerService stationMonitorServerService;
 
+    public StationServerHandler() {
+        this.kafkaClient = SpringContextUtil.getBean(KafkaClient.class);
+        this.stationMonitorServerService = SpringContextUtil.getBean(StationMonitorServerService.class);
+    }
+//    @PostConstruct
+//    public void init(){
+//        stationServerHandler = this;
+//        stationServerHandler.kafkaClient = this.kafkaClient;
+//    }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -96,7 +95,8 @@ public class StationServerHandler extends ChannelInboundHandlerAdapter {
                             case ConstantValue.MSG_BODY_NODE_NAME_UPDATE_IP:
                                 log.info("更新基站的IP");
 //                                upLoadService.sendStationUpLoadIp(reqMsg);
-                                stationServerHandler.kafkaClient.sendData("updateStationIp",reqMsg);
+//                                kafkaClient.sendData("updateStationIp",reqMsg);
+                                stationMonitorServerService.updateStationIp(reqMsg);
                                 reqMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);
                                 reqMsg.setResult(ConstantValue.MSG_BODY_RESULT_SUCCESS);
                                 resp.setCustomMsg(reqMsg);

@@ -2,8 +2,7 @@ package com.cst.xinhe.station.monitor.server.client.callback;
 
 import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.result.ResultUtil;
-import com.cst.xinhe.common.netty.data.request.RequestData;
-import com.cst.xinhe.station.monitor.server.client.KafkaClient;
+import com.cst.xinhe.station.monitor.server.client.WsPushServiceClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -12,31 +11,46 @@ import org.springframework.stereotype.Component;
  * @program: EurekaServer
  * @description:
  * @author: lifeng
- * @create: 2019-04-26 15:13
+ * @create: 2019-04-29 15:15
  **/
 @Component
-public class KafkaClientFallback implements KafkaClient {
+public class WsPushServiceFallback implements WsPushServiceClient {
 
-    private static Logger logger = LoggerFactory.getLogger(KafkaClientFallback.class);
+    private static final Logger logger = LoggerFactory.getLogger(WsPushServiceFallback.class);
 
     @Override
-    public void sendData(String topic, RequestData requestData) {
-        logger.error("call remote kafka-sender-service service error");
+    public void sendWSSiteServer(String jsonString) {
         logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
     }
 
     @Override
-    public void sendChatMsgData(String topic, String chatMsg) {
+    public void setOrgId(Integer o) {
+        logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
+
+    }
+
+    @Override
+    public void setZoneId(Integer o) {
+        logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
+
+    }
+
+    @Override
+    public void setOrgIdIsNull() {
+
         logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
     }
 
     @Override
-    public void sendSelfCheckResult(String s, String toJSONString, Integer terminalPort) {
+    public void setZoneIdIsNull() {
         logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
     }
 
+
     @Override
-    public void send(String topic, String obj, Integer port) {
+    public String sendWebsocketServer(String jsonObject) {
+
         logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
+        return null;
     }
 }

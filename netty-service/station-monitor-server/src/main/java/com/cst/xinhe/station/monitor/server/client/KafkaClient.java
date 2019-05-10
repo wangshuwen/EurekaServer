@@ -5,6 +5,7 @@ import com.cst.xinhe.station.monitor.server.client.callback.KafkaClientFallback;
 import com.cst.xinhe.station.monitor.server.client.config.FeignConfig;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;

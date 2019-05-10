@@ -37,8 +37,8 @@ public interface AttendanceServiceClient {
     @PutMapping("updateAttendance")
     void updateAttendance(@RequestBody Attendance attendance);
 
-    @GetMapping("getAttendanceStaff")
-    List<HashMap<String, Object>> getAttendanceStaff(@RequestParam("deptIds") List<Integer> deptIds, @RequestParam("staffName") String staffName);
+    @PostMapping("getAttendanceStaff")
+    List<HashMap<String, Object>> getAttendanceStaff();
 
     @PostMapping("getUnAttendanceDept")
     Integer getUnAttendanceDept(@RequestParam("date") Date date, @RequestBody List<Integer> deptIds);

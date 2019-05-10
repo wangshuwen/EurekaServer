@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
 import com.cst.xinhe.common.ws.WebSocketData;
+import com.cst.xinhe.persistence.dao.base_station.BaseStationMapper;
+import com.cst.xinhe.persistence.dao.staff.StaffMapper;
 import com.cst.xinhe.persistence.model.lack_electric.LackElectric;
 import com.cst.xinhe.persistence.model.malfunction.Malfunction;
 import com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp;
@@ -16,6 +18,7 @@ import io.netty.channel.Channel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,11 +32,17 @@ import java.util.Map;
 @Service
 public class TerminalMonitorServiceImpl implements TerminalMonitorService {
 
+    @Resource
+    private SystemServiceClient systemServiceClient;
+
     @Autowired
     private VoiceMonitorServerClient voiceMonitorServerClient;
 
     @Autowired
     private KafkaClient kafkaClient;
+
+    @Resource
+    private BaseStationMapper baseStationMapper;
 
     @Autowired
     private WsPushServiceClient wsPushServiceClient;
@@ -44,7 +53,8 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
     @Autowired
     private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
 
-
+    @Resource
+    private StaffMapper staffMapper;
     /**
      * 根据端口和Ip判断是否在线
      * @param ipPort
@@ -173,8 +183,10 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
         String ipPort=ip+":"+port;
         int terminalId = customMsg.getTerminalId();
 //        Map<String, Object> staffInfo = staffService.findStaffIdByTerminalId(terminalId);
-        Map<String, Object> staffInfo = staffGroupTerminalServiceClient.findStaffIdByTerminalId(terminalId);
-        customMsg.getTerminalIp();
+
+//        Map<String, Object> staffInfo = staffGroupTerminalServiceClient.findStaffIdByTerminalId(terminalId);
+        Map<String, Object> staffInfo = staffMapper.selectStaffInfoByTerminalId(terminalId);
+//        customMsg.getTerminalIp();
         //定义map储存数据
         HashMap<String, Object> map = new HashMap<>();
         map.put("cmd","2008");//2008表示发起呼叫
@@ -203,12 +215,17 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
 
     @Override
     public Map<String, Object> findStandardIdByStationNum(Integer stationNum) {
-        return null;
+
+//        baseStationService.findStandardIdByStationNum(stationNum);
+        Map<String, Object> params = new HashMap<>();
+        params.put("stationNum", stationNum);
+        return baseStationMapper.selectStandardIdByStationNum(params);
     }
 
     @Override
     public GasLevelVO getWarnLevelSettingByGasLevelId(Integer standardId) {
-        return null;
+
+        return systemServiceClient.getWarnLevelSettingByGasLevelId(standardId);
     }
 
     @Override

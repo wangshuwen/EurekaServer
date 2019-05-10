@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
  **/
 @FeignClient(value = "voice-monitor-server",
         configuration = FeignConfig.class,
-        fallback = VoiceMonitorServerClientFallBak.class)
+        fallback = VoiceMonitorServerClientFallBak.class,
+        url = "http://127.0.0.1:8767/")
 public interface VoiceMonitorServerClient {
 
     @RequestMapping()

@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(value = "kafka-consumer-service",
 configuration = FeignConfig.class,
-fallback = KafkaConsumerClientFallback.class)
+fallback = KafkaConsumerClientFallback.class,
+url = "http://127.0.0.1:8773/")
 //@RequestMapping("kafka-consumer-service/")
 public interface KafkaConsumerClient {
 

@@ -54,9 +54,9 @@ public class AttendanceServiceControllerServer {
         attendanceService.updateAttendance(attendance);
     }
 
-    @GetMapping("getAttendanceStaff")
-    public List<HashMap<String, Object>> getAttendanceStaff(@RequestParam List<Integer> deptIds, @RequestParam String staffName){
-        return attendanceService.getAttendanceStaff(deptIds,staffName);
+    @PostMapping("getAttendanceStaff")
+    public List<HashMap<String, Object>> getAttendanceStaff(){
+        return attendanceService.getAttendanceStaff(null,null);
     }
 
     @PostMapping("getUnAttendanceDept")

@@ -333,7 +333,7 @@ public class UpdateIpProcess {
         //------------------------将下井总人数，未考勤人数推送前端页面开始--------------------------
         WebSocketData data = new WebSocketData();
 //        List<HashMap<String, Object>> attendanceCount = staffAttendanceRealRuleMapper.getAttendanceStaff(null, null);
-        List<HashMap<String, Object>> attendanceCount = attendanceServiceClient.getAttendanceStaff(null, null);
+        List<HashMap<String, Object>> attendanceCount = attendanceServiceClient.getAttendanceStaff();
         if(attendanceCount!=null&&attendanceCount.size()>0){
             data.setData(attendanceCount.size());
         }else{
@@ -375,89 +375,89 @@ public class UpdateIpProcess {
                 fixedThreadPool.execute(() -> processT(records));
     }
 
-    private static final String TOPIC1 = "stationUpdateIp.tut";
-    private void process1(List<ConsumerRecord<?, ?>> records){
-        for (ConsumerRecord<?, ?> record : records) {
-            Optional<?> kafkaMessage = Optional.ofNullable(record.value());
-            logger.info("Received: " + record);
-            if (kafkaMessage.isPresent()) {
-                Object message = kafkaMessage.get();
-                String str = (String) message;
-                JSONObject jsonObject = JSON.parseObject(str);
-
-                String terminalIp = jsonObject.getString("terminalIp");
-                String stationIp = jsonObject.getString("stationIp");
-                Integer terminalId = jsonObject.getInteger("terminalId");
-                Integer stationId = jsonObject.getInteger("stationId");
-
-                Integer terminalPort = jsonObject.getInteger("terminalPort");
-                Integer stationPort = jsonObject.getInteger("stationPort");
-
-                TerminalUpdateIp terminalUpdateIp = new TerminalUpdateIp();
-                terminalUpdateIp.setStationId(stationId);
-                terminalUpdateIp.setStationIp(stationIp);
-                terminalUpdateIp.setTerminalIp(terminalIp);
-                terminalUpdateIp.setTerminalNum(terminalId);
-                terminalUpdateIp.setUpdateTime(new Date());
-                terminalUpdateIp.setStationPort(stationPort);
-                terminalUpdateIp.setTerminalPort(terminalPort);
-
-
-                /**
-                 * @description 根据terminalId 检查是否存在terminalId;
-                 *                  如果存在则更新
-                 *                  若不存在直接插入
-                 * @date 14:55 2018/10/19
-                 * @auther lifeng
-                 **/
-           /* boolean isExits = terminalUpdateIpMapper.checkStationIdIsNotExist(stationId);
-            if (isExits) {
-                logger.info("基站IP已存在，更新IP");
-
-            } else {*/
-//                logger.info("基站IP不存在，新增IP");
-//                terminalUpdateIpMapper.insertSelective(terminalUpdateIp);
-                /* }*/
-//                terminalUpdateIpMapper.updateIpInfoByStationId(terminalUpdateIp);
-                staffGroupTerminalServiceClient.updateIpInfoByStationId(terminalUpdateIp);
-                // 基站上线，在掉线统计表中，根据基站的ID移除该基站
-                OfflineStationExample offlineStationExample = new OfflineStationExample();
-                OfflineStationExample.Criteria criteria = offlineStationExample.createCriteria();
-                offlineStationMapper.deleteByPrimaryKey(stationId);
-                int count = offlineStationMapper.selectByExample(offlineStationExample).size();
-                map.put("offlineNum", count);
-                try {
-                    System.out.println(map.get("offlineNum"));
-//                    WebsocketServer.sendInfo(JSONObject.toJSONString(new WebSocketData(8, map)));
-                    wsPushServiceClient.sendWebsocketServer(JSONObject.toJSONString(new WebSocketData(8, map)));
-                } catch (Exception e) {
-                    throw new RuntimeServiceException(ErrorCode.SEND_WS_OFFLINE_STATION_ERROR);
-                }
-            }
-        }
-    }
-    @KafkaListener(groupId = "UpdateIpProcessStation", id = "id0", topicPartitions = { @TopicPartition(topic = TOPIC1, partitions = { "0" }) })
-    public void sendStationUpdateIp0(List<ConsumerRecord<?, ?>> records) {
-
-                fixedThreadPool.execute(() -> process1(records));
+//    private static final String TOPIC1 = "stationUpdateIp.tut";
+//    private void process1(List<ConsumerRecord<?, ?>> records){
+//        for (ConsumerRecord<?, ?> record : records) {
+//            Optional<?> kafkaMessage = Optional.ofNullable(record.value());
+//            logger.info("Received: " + record);
+//            if (kafkaMessage.isPresent()) {
+//                Object message = kafkaMessage.get();
+//                String str = (String) message;
+//                JSONObject jsonObject = JSON.parseObject(str);
+//
+//                String terminalIp = jsonObject.getString("terminalIp");
+//                String stationIp = jsonObject.getString("stationIp");
+//                Integer terminalId = jsonObject.getInteger("terminalId");
+//                Integer stationId = jsonObject.getInteger("stationId");
+//
+//                Integer terminalPort = jsonObject.getInteger("terminalPort");
+//                Integer stationPort = jsonObject.getInteger("stationPort");
+//
+//                TerminalUpdateIp terminalUpdateIp = new TerminalUpdateIp();
+//                terminalUpdateIp.setStationId(stationId);
+//                terminalUpdateIp.setStationIp(stationIp);
+//                terminalUpdateIp.setTerminalIp(terminalIp);
+//                terminalUpdateIp.setTerminalNum(terminalId);
+//                terminalUpdateIp.setUpdateTime(new Date());
+//                terminalUpdateIp.setStationPort(stationPort);
+//                terminalUpdateIp.setTerminalPort(terminalPort);
+//
+//
+//                /**
+//                 * @description 根据terminalId 检查是否存在terminalId;
+//                 *                  如果存在则更新
+//                 *                  若不存在直接插入
+//                 * @date 14:55 2018/10/19
+//                 * @auther lifeng
+//                 **/
+//           /* boolean isExits = terminalUpdateIpMapper.checkStationIdIsNotExist(stationId);
+//            if (isExits) {
+//                logger.info("基站IP已存在，更新IP");
+//
+//            } else {*/
+////                logger.info("基站IP不存在，新增IP");
+////                terminalUpdateIpMapper.insertSelective(terminalUpdateIp);
+//                /* }*/
+////                terminalUpdateIpMapper.updateIpInfoByStationId(terminalUpdateIp);
+//                staffGroupTerminalServiceClient.updateIpInfoByStationId(terminalUpdateIp);
+//                // 基站上线，在掉线统计表中，根据基站的ID移除该基站
+//                OfflineStationExample offlineStationExample = new OfflineStationExample();
+//                OfflineStationExample.Criteria criteria = offlineStationExample.createCriteria();
+//                offlineStationMapper.deleteByPrimaryKey(stationId);
+//                int count = offlineStationMapper.selectByExample(offlineStationExample).size();
+//                map.put("offlineNum", count);
+//                try {
+//                    System.out.println(map.get("offlineNum"));
+////                    WebsocketServer.sendInfo(JSONObject.toJSONString(new WebSocketData(8, map)));
+//                    wsPushServiceClient.sendWebsocketServer(JSONObject.toJSONString(new WebSocketData(8, map)));
+//                } catch (Exception e) {
+//                    throw new RuntimeServiceException(ErrorCode.SEND_WS_OFFLINE_STATION_ERROR);
+//                }
 //            }
 //        }
-    }
-    @KafkaListener(groupId = "UpdateIpProcessStation", id = "id1", topicPartitions = { @TopicPartition(topic = TOPIC1, partitions = { "1" }) })
-    public void sendStationUpdateIp1(List<ConsumerRecord<?, ?>> records) {
-
-                fixedThreadPool.execute(() -> process1(records));
-//            }
-//        }
-    }
-    @KafkaListener(groupId = "UpdateIpProcessStation", id = "id2", topicPartitions = { @TopicPartition(topic = TOPIC1, partitions = { "2" }) })
-    public void sendStationUpdateIp2(List<ConsumerRecord<?, ?>> records) {
-
-
-                fixedThreadPool.execute(() -> process1(records));
-//            }
-//        }
-    }
+//    }
+//    @KafkaListener(groupId = "UpdateIpProcessStation", id = "id0", topicPartitions = { @TopicPartition(topic = TOPIC1, partitions = { "0" }) })
+//    public void sendStationUpdateIp0(List<ConsumerRecord<?, ?>> records) {
+//
+//                fixedThreadPool.execute(() -> process1(records));
+////            }
+////        }
+//    }
+//    @KafkaListener(groupId = "UpdateIpProcessStation", id = "id1", topicPartitions = { @TopicPartition(topic = TOPIC1, partitions = { "1" }) })
+//    public void sendStationUpdateIp1(List<ConsumerRecord<?, ?>> records) {
+//
+//                fixedThreadPool.execute(() -> process1(records));
+////            }
+////        }
+//    }
+//    @KafkaListener(groupId = "UpdateIpProcessStation", id = "id2", topicPartitions = { @TopicPartition(topic = TOPIC1, partitions = { "2" }) })
+//    public void sendStationUpdateIp2(List<ConsumerRecord<?, ?>> records) {
+//
+//
+//                fixedThreadPool.execute(() -> process1(records));
+////            }
+////        }
+//    }
 
 
     private void processT(List<ConsumerRecord<?, ?>> records){
@@ -717,7 +717,7 @@ public class UpdateIpProcess {
                 //------------------------将下井总人数，未考勤人数推送前端页面开始--------------------------
                 WebSocketData data = new WebSocketData();
 //                List<HashMap<String, Object>> attendanceCount = staffAttendanceRealRuleMapper.getAttendanceStaff(null, null);
-                List<HashMap<String, Object>> attendanceCount = attendanceServiceClient.getAttendanceStaff(null, null);
+                List<HashMap<String, Object>> attendanceCount = attendanceServiceClient.getAttendanceStaff();
                 if (attendanceCount != null && attendanceCount.size() > 0) {
                     data.setData(attendanceCount.size());
                 } else {

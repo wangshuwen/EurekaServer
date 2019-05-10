@@ -166,7 +166,7 @@ public class TerminalInfoProcess {
     //    @Transactional
   //  @KafkaListener(id = "liveupdateData", topics = "terminalInfo.tut")
     @KafkaListener(groupId = "TerminalInfoProcess", id = "TerminalInfoProcessid0", topicPartitions = { @TopicPartition(topic = TOPIC, partitions = { "0" }) })
-    public void liveupdateData0(List<ConsumerRecord<?, ?>> records) {
+    public void liveUpdateData0(List<ConsumerRecord<?, ?>> records) {
 
 //        for (ConsumerRecord<?, ?> record : records) {
 //            Optional<?> kafkaMessage = Optional.ofNullable(record.value());
@@ -175,18 +175,13 @@ public class TerminalInfoProcess {
 //                Object message = kafkaMessage.get();
 //                String str = (String) message;
 
-                fixedThreadPool.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        processT(records);
-                    }
-                });
+                fixedThreadPool.execute(() -> processT(records));
 //            }
 //        }
     }
 
     @KafkaListener(groupId = "TerminalInfoProcess",id = "TerminalInfoProcessid1", topicPartitions = { @TopicPartition(topic = TOPIC, partitions = { "1" }) })
-    public void liveupdateData1(List<ConsumerRecord<?, ?>> records) {
+    public void liveUpdateData1(List<ConsumerRecord<?, ?>> records) {
 //        for (ConsumerRecord<?, ?> record : records) {
 //
 //            Optional<?> kafkaMessage = Optional.ofNullable(record.value());
@@ -195,18 +190,13 @@ public class TerminalInfoProcess {
 //                Object message = kafkaMessage.get();
 //                String str = (String) message;
 
-                fixedThreadPool.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        processT(records);
-                    }
-                });
+                fixedThreadPool.execute(() -> processT(records));
 //            }
 //        }
     }
 
     @KafkaListener(groupId = "TerminalInfoProcess",id = "TerminalInfoProcessid2", topicPartitions = { @TopicPartition(topic = TOPIC, partitions = { "2" }) })
-    public void liveupdateData2(List<ConsumerRecord<?, ?>> records) {
+    public void liveUpdateData2(List<ConsumerRecord<?, ?>> records) {
 //
 //        for (ConsumerRecord<?, ?> record : records) {
 //            Optional<?> kafkaMessage = Optional.ofNullable(record.value());
@@ -215,12 +205,7 @@ public class TerminalInfoProcess {
 //                Object message = kafkaMessage.get();
 //                String str = (String) message;
 
-                fixedThreadPool.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        processT(records);
-                    }
-                });
+                fixedThreadPool.execute(() -> processT(records));
 //            }
 //        }
     }

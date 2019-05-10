@@ -1,5 +1,7 @@
 package com.cst.xinhe.terminal.monitor.server.request;
 
+import com.cst.xinhe.base.exception.ErrorCode;
+import com.cst.xinhe.base.exception.RuntimeServiceException;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
 import com.cst.xinhe.terminal.monitor.server.channel.ChannelMap;
 import io.netty.channel.Channel;
@@ -50,8 +52,11 @@ public class SingletonClient {
         stringBuffer.append(t_ip).append(":").append(responseData.getCustomMsg().getTerminalPort());
         String ip = stringBuffer.toString();
         Channel channel = ChannelMap.getChannelByName(ip);
-        channel.writeAndFlush(responseData);
-
+        try {
+            channel.writeAndFlush(responseData);
+        } catch (Exception e){
+            throw new RuntimeServiceException(ErrorCode.SEND_INFO_TO_TERMINAL_FAIL);
+        }
         return 0;
     }
 

@@ -1,7 +1,6 @@
 package com.cst.xinhe.terminal.monitor.server.handle;
 
 
-import com.cst.xinhe.base.context.SpringContextUtil;
 import com.cst.xinhe.common.constant.ConstantValue;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
@@ -10,6 +9,7 @@ import com.cst.xinhe.common.utils.SequenceIdGenerate;
 import com.cst.xinhe.persistence.dto.warn_level_setting.GasWarnSettingDto;
 import com.cst.xinhe.persistence.model.warn_level.GasStandard;
 import com.cst.xinhe.persistence.vo.resp.GasLevelVO;
+import com.cst.xinhe.terminal.monitor.server.context.SpringContextUtil;
 import com.cst.xinhe.terminal.monitor.server.request.SingletonClient;
 import com.cst.xinhe.terminal.monitor.server.service.TerminalMonitorService;
 import com.cst.xinhe.terminal.monitor.server.service.impl.TerminalMonitorServiceImpl;

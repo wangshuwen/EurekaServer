@@ -1,15 +1,16 @@
 package com.cst.xinhe.terminal.monitor.server.handle;
 
 import com.alibaba.fastjson.JSON;
-import com.cst.xinhe.base.context.SpringContextUtil;
 import com.cst.xinhe.common.constant.ConstantValue;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
 import com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp;
 import com.cst.xinhe.terminal.monitor.server.channel.ChannelMap;
+import com.cst.xinhe.terminal.monitor.server.context.SpringContextUtil;
 import com.cst.xinhe.terminal.monitor.server.process.ProcessVoice;
 import com.cst.xinhe.terminal.monitor.server.request.SingletonClient;
 import com.cst.xinhe.terminal.monitor.server.service.TerminalMonitorService;
+import com.cst.xinhe.terminal.monitor.server.service.impl.TerminalMonitorServiceImpl;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler.Sharable;
@@ -58,6 +59,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
     @Autowired
     TerminalMonitorService terminalMonitorService;
+
+
 //    private static NettyServerHandler nettyServerHandler;
 //
 //    //注入上传数据服务
@@ -87,6 +90,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 //        this.producerService = SpringContextUtil.getBean(ProducerServiceImpl.class);
 
         this.processVoice = ProcessVoice.getProcessVoice();
+        this.terminalMonitorService = SpringContextUtil.getBean(TerminalMonitorServiceImpl.class);
 //        this.processRealTimeVoice = ProcessRealTimeVoice.getProcessRealTimeVoice();
     }
 

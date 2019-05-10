@@ -4,6 +4,7 @@ import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.station.monitor.server.client.callback.KafkaClientFallback;
 import com.cst.xinhe.station.monitor.server.client.config.FeignConfig;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,7 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
  **/
 @FeignClient(value = "kafka-sender-service",
         configuration = FeignConfig.class,
-        fallback = KafkaClientFallback.class)
+        fallback = KafkaClientFallback.class,
+url = "http://127.0.0.1:8768/")
 public interface KafkaClient {
     @PostMapping("kafka-sender-service/sendData")
     void sendData(@RequestParam("topic") String topic, @RequestBody RequestData requestData);

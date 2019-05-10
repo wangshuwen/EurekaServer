@@ -1,11 +1,13 @@
 package com.cst.xinhe.station.monitor.server.handle;
 
+import com.cst.xinhe.base.context.SpringContextUtil;
 import com.cst.xinhe.common.constant.ConstantValue;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
 import com.cst.xinhe.station.monitor.server.channel.ChannelMap;
 import com.cst.xinhe.station.monitor.server.client.KafkaClient;
 import com.cst.xinhe.station.monitor.server.request.SingletonStationClient;
+import com.cst.xinhe.station.monitor.server.service.StationMonitorServerService;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler.Sharable;
@@ -19,6 +21,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import java.net.InetSocketAddress;
 
 
@@ -30,16 +34,28 @@ import java.net.InetSocketAddress;
 @Sharable
 @Component
 public class StationServerHandler extends ChannelInboundHandlerAdapter {
+
+    private volatile static StationServerHandler stationServerHandler;
     /**
      * 日志
      */
-    private Logger log = LoggerFactory.getLogger(getClass());
+    private static final Logger log = LoggerFactory.getLogger(StationServerHandler.class);
+
+    private KafkaClient kafkaClient;
 
     public StationServerHandler() {
+//        this.kafkaClient = (KafkaClient) SpringContextUtil.getBean("kafkaClient");
+    }
+    @PostConstruct
+    public void init(){
+        stationServerHandler = this;
+        stationServerHandler.kafkaClient = this.kafkaClient;
     }
 
-    @Autowired
-    private KafkaClient kafkaClient;
+
+
+    @Resource
+    private StationMonitorServerService stationMonitorServerService;
 
 
     @Override
@@ -60,7 +76,7 @@ public class StationServerHandler extends ChannelInboundHandlerAdapter {
                         switch (ndName) {
                             case ConstantValue.MSG_BODY_NODE_NAME_SELFCHECK_RESULT:
 //                                upLoadService.sendSelfCheckResult(reqMsg);
-                                kafkaClient.sendData("",reqMsg);
+                                kafkaClient.sendData("selfCheckResultOfStation",reqMsg);
                                 reqMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);
                                 reqMsg.setResult(ConstantValue.MSG_BODY_RESULT_ERROR);
                                 resp.setCustomMsg(reqMsg);
@@ -69,18 +85,18 @@ public class StationServerHandler extends ChannelInboundHandlerAdapter {
                                 break;
                             case ConstantValue.MSG_BODY_NODE_NAME_SOFTWARE_VERSION:
 //                                upLoadService.sendSoftWareVersion(reqMsg);
-                                kafkaClient.sendData("",reqMsg);
+                                kafkaClient.sendData("softwareVersionOfStation",reqMsg);
                                 log.info("软件版本号");
                                 break;
                             case ConstantValue.MSG_BODY_NODE_NAME_HANDWARE_VERSION:
-                                kafkaClient.sendData("",reqMsg);
+                                kafkaClient.sendData("hardwareVersionOfStation",reqMsg);
 //                                upLoadService.sendHandWareVersion(reqMsg);
                                 log.info("硬件版本号");
                                 break;
                             case ConstantValue.MSG_BODY_NODE_NAME_UPDATE_IP:
                                 log.info("更新基站的IP");
 //                                upLoadService.sendStationUpLoadIp(reqMsg);
-                                kafkaClient.sendData("",reqMsg);
+                                stationServerHandler.kafkaClient.sendData("updateStationIp",reqMsg);
                                 reqMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);
                                 reqMsg.setResult(ConstantValue.MSG_BODY_RESULT_SUCCESS);
                                 resp.setCustomMsg(reqMsg);
@@ -89,7 +105,8 @@ public class StationServerHandler extends ChannelInboundHandlerAdapter {
                             case ConstantValue.MSG_BODY_NODE_NAME_MAC_STATION:
                                 log.info("基站WiFi探针搜索到基站");
 //                                upLoadService.sendUpLoadMacStation(reqMsg);
-                                kafkaClient.sendData("",reqMsg);
+//                                kafkaClient.sendData("wifiFork",reqMsg);
+                                stationMonitorServerService.wifiForkProcess(reqMsg);
                                 reqMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);
                                 reqMsg.setResult(ConstantValue.MSG_BODY_RESULT_SUCCESS);
                                 resp.setCustomMsg(reqMsg);

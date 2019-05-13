@@ -715,6 +715,9 @@
             <if test="endTime != null">
                 AND a.create_time &lt;= #{endTime}
             </if>
+          <if test="type != null">
+            AND a.type =#{type}
+          </if>
         </where>
     </select>
 

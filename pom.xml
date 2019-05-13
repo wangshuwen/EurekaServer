@@ -10,16 +10,28 @@
     <modules>
         <module>base</module>
         <module>common</module>
+        <module>persistence</module>
+        <module>attendance-service</module>
+        <module>center-service</module>
+        <module>gas-service</module>
         <module>netty-service</module>
+        <module>persistence</module>
         <module>center-service</module>
         <module>gateway-service</module>
         <module>kafka-consumer-service</module>
         <module>kafka-sender-service</module>
-        <module>persistence</module>
+        <module>system-service</module>
+        <module>staff-group-terminal-service</module>
+        <module>station-partition-service</module>
         <module>ws-push-service</module>
     </modules>
 
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-parent</artifactId>
+            <version>2.1.4.RELEASE</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -38,7 +50,16 @@
                         true
                     </fork>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
+
+
         </plugins>
     </build>
 </project>

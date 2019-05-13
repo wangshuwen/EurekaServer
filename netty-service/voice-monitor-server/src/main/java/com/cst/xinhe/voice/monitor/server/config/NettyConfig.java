@@ -8,10 +8,13 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.timeout.IdleStateHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * @program: EurekaServer
@@ -48,7 +51,7 @@ public class NettyConfig {
                 @Override
                 protected void initChannel(SocketChannel socketChannel) throws Exception {
                     ChannelPipeline pipe = socketChannel.pipeline();
-//                    pipe.addLast(new IdleStateHandler(20, 20, 40, TimeUnit.SECONDS));
+                    pipe.addLast(new IdleStateHandler(10, 10, 20, TimeUnit.SECONDS));
                     pipe.addLast(new StringEncoder());
                     pipe.addLast(new VoiceDataEncoder());
                     pipe.addLast(new VoiceServerHandler());

@@ -13,9 +13,10 @@ import org.springframework.cloud.netflix.hystrix.EnableHystrix;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-
+@EnableTransactionManagement
 @EnableSwagger2
 //@ComponentScan(basePackages={"com.cst.xinhe"})
 @MapperScan("com.cst.xinhe.persistence.dao")

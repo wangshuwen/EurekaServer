@@ -178,13 +178,13 @@ public class VoiceServerHandler extends ChannelInboundHandlerAdapter {
      **/
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        InetSocketAddress inSocket = (InetSocketAddress) ctx.channel().remoteAddress();
-        String clientIP = inSocket.getAddress().getHostAddress();
-        int port = inSocket.getPort();
-        StringBuffer sb = new StringBuffer(clientIP);
-        sb.append(":");
-        sb.append(port);
-        String str = sb.toString();
+//        InetSocketAddress inSocket = (InetSocketAddress) ctx.channel().remoteAddress();
+//        String clientIP = inSocket.getAddress().getHostAddress();
+//        int port = inSocket.getPort();
+//        StringBuffer sb = new StringBuffer(clientIP);
+//        sb.append(":");
+//        sb.append(port);
+//        String str = sb.toString();
         if (evt instanceof IdleStateEvent) {
             IdleStateEvent event = (IdleStateEvent) evt;
             if (event.state() == IdleState.READER_IDLE) {

@@ -18,4 +18,27 @@
         <module>persistence</module>
         <module>ws-push-service</module>
     </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <version>2.0.5.RELEASE</version>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+    <dependencyManagement></dependencyManagement>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <fork>
+                        true
+                    </fork>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

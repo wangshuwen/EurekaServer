@@ -105,7 +105,7 @@ public interface StaffTerminalMapper {
 
     Map<String, Object> selectStaffInfoMapByTerminal(Integer terminalId);
 
-    Integer selectTerminalIdByStaffId(Integer staffId);
+    Integer selectTerminalIdByStaffId(@Param("staffId") Integer staffId);
 
     //绑定
     Integer updateTerminalBinding(@Param("staffId") Integer staffId, @Param("terminalId") Integer terminalId);

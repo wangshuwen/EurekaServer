@@ -1,5 +1,7 @@
 package com.cst.xinhe.staffgroupterminal.service.server;
 
+import com.cst.xinhe.base.enums.ResultEnum;
+import com.cst.xinhe.base.result.ResultUtil;
 import com.cst.xinhe.persistence.model.lack_electric.LackElectric;
 import com.cst.xinhe.persistence.model.lack_electric.LackElectricExample;
 import com.cst.xinhe.persistence.model.malfunction.Malfunction;
@@ -50,7 +52,11 @@ public class TerminalControllerServer {
 
     @GetMapping("findTerminalInfoByStaffId")
     public Integer findTerminalInfoByStaffId(int parseInt){
-        return terminalService.findTerminalInfoByStaffId(parseInt);
+        Integer terminalId = terminalService.findTerminalInfoByStaffId(parseInt);
+        if(terminalId==null){
+            return 0;
+        }
+        return terminalId;
     }
 
     @GetMapping("selectTerminalIpInfoByTerminalId")

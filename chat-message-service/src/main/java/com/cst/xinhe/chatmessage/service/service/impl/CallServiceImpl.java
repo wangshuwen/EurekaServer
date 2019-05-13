@@ -153,7 +153,7 @@ public class CallServiceImpl implements CallService {
 
 //        Integer terminalId = terminalService.findTerminalInfoByStaffId(staffId);
         Integer terminalId = staffGroupTerminalServiceClient.findTerminalInfoByStaffId(staffId);
-        if (terminalId != null) {
+        if (terminalId != null&&terminalId!=0) {
 //            Map<String, Object> terminalInfo = terminalUpdateIpMapper.selectTerminalIpInfoByTerminalId(terminalId);
             Map<String, Object> terminalInfo =staffGroupTerminalServiceClient.selectStaffInfoByTerminalId(terminalId);
             if (terminalInfo != null && !terminalInfo.isEmpty()) {

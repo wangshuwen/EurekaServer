@@ -72,7 +72,7 @@ public interface StaffGroupTerminalServiceClient {
     List<Integer> findSonIdsByDeptName(@RequestParam("keyWord") String keyWord);
 
     @GetMapping("findTerminalInfoByStaffId")
-    Integer findTerminalInfoByStaffId(int parseInt);
+    Integer findTerminalInfoByStaffId(@RequestParam("parseInt") int parseInt);
 
     @GetMapping("selectTerminalIpInfoByTerminalId")
     Map<String, Object> selectTerminalIpInfoByTerminalId(Integer terminalId);

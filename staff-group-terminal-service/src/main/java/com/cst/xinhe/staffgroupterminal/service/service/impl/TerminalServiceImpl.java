@@ -73,7 +73,8 @@ public class TerminalServiceImpl implements TerminalService {
 
     @Override
     public Integer findTerminalInfoByStaffId(Integer staffId) {
-        return staffTerminalMapper.selectTerminalIdByStaffId(staffId);
+
+            return staffTerminalMapper.selectTerminalIdByStaffId(staffId);
     }
 
     @Override

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @program: EurekaServer
@@ -113,6 +114,20 @@ public class StaffGroupTerminalServiceClientFallback implements StaffGroupTermin
     public Map<String, Object> selectStationIpByStationId(Integer stationId) {
         logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
 
+        return null;
+    }
+
+    @Override
+    public Map<Integer, String> findGroupNameByGroupIds(Set<Integer> setOfGroupId) {
+
+        logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
+        return null;
+    }
+
+    @Override
+    public Map<Integer, String> findJobByJobId(Set<Integer> setOfJobId) {
+
+        logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
         return null;
     }
 }

@@ -8,12 +8,14 @@ import com.cst.xinhe.persistence.model.chat.ChatMsg;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 
+import com.sun.org.apache.bcel.internal.generic.NEW;
 import io.swagger.annotations.ApiOperation;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -101,9 +103,16 @@ public class ChatMsgController {
     }
 
 
+    Date date=new Date();
     @PostMapping("call/addChatRecord")
     @ApiOperation(value = "新增聊天列表，无聊天记录", notes = ".0")
     public String addChatRecord(@RequestBody ChatMsg chatMsg) {
+        long now = new Date().getTime();
+        //防止点击多次，多次添加
+        if(now-date.getTime()<1000){
+            return ResultUtil.jsonToStringSuccess();
+        }
+        date=new Date();
         Integer result = chatMsgService.addChatRecord(chatMsg);
         return result == 1 ? ResultUtil.jsonToStringSuccess() : ResultUtil.jsonToStringError(ResultEnum.FAILED);
     }

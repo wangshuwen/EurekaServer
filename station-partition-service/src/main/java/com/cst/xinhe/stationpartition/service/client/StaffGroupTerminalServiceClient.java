@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @FeignClient(value = "staff-group-terminal-service",
         configuration = FeignConfig.class,
@@ -66,4 +67,10 @@ public interface StaffGroupTerminalServiceClient {
 
     @GetMapping("selectStationIpByStationId")
     Map<String, Object> selectStationIpByStationId(@RequestParam("stationId") Integer stationId);
+
+    @GetMapping("findGroupNameByGroupIds")
+    Map<Integer, String> findGroupNameByGroupIds(@RequestParam("setOfGroupId")Set<Integer> setOfGroupId);
+
+    @GetMapping("findJobByJobId")
+    Map<Integer, String> findJobByJobId(@RequestParam("setOfJobId")Set<Integer> setOfJobId);
 }

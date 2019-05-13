@@ -1,6 +1,8 @@
 server:
   port: 8761
 eureka:
+  server:
+    peer-node-read-timeout-ms: 1000
   instance:
     hostname: eureka
   client:

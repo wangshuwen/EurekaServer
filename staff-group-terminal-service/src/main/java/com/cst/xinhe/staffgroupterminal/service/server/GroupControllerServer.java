@@ -1,6 +1,7 @@
 package com.cst.xinhe.staffgroupterminal.service.server;
 
 import com.cst.xinhe.persistence.model.staff.StaffOrganization;
+import com.cst.xinhe.staffgroupterminal.service.service.StaffJobService;
 import com.cst.xinhe.staffgroupterminal.service.service.StaffOrganizationService;
 import com.cst.xinhe.staffgroupterminal.service.service.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +9,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @program: EurekaServer
@@ -24,6 +28,9 @@ public class GroupControllerServer {
 
     @Autowired
     private StaffService staffService;
+
+    @Resource
+    private StaffJobService staffJobService;
 
     @Autowired
     private StaffOrganizationService staffOrganizationService;
@@ -54,5 +61,28 @@ public class GroupControllerServer {
         return staffOrganizationService.findSonIdsByDeptName(keyWord);
     }
 
+//    String groupName = staffOrganizationService.getDeptNameByGroupId(groupId);
+//    String groupName = groupNames.get(groupId);
+//                String jobName = staffJobService.findJobNameById(staffJobId);
+
+    @GetMapping("findGroupNameByGroupIds")
+    public Map<Integer, String> findGroupNameByGroupIds(@RequestParam("setOfGroupId") Set<Integer> setOfGroupId){
+        Map<Integer, String > map = new HashMap<>();
+        for (Integer item: setOfGroupId){
+            String name = staffOrganizationService.getDeptNameByGroupId(item);
+            map.put(item,name);
+        }
+        return map;
+    }
+
+    @GetMapping("findJobByJobId")
+    public Map<Integer, String> findJobByJobId(@RequestParam("setOfJobId")Set<Integer> setOfJobId){
+        Map<Integer, String > map = new HashMap<>();
+        for (Integer item: setOfJobId){
+            String name = staffJobService.findJobNameById(item);
+            map.put(item,name);
+        }
+        return map;
+    }
 
 }

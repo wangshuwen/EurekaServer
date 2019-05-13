@@ -16,7 +16,6 @@
         <module>kafka-consumer-service</module>
         <module>kafka-sender-service</module>
         <module>persistence</module>
-        <module>uaa-service</module>
         <module>ws-push-service</module>
     </modules>
 </project>

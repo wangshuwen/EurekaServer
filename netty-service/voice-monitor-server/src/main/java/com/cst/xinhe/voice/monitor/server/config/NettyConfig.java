@@ -27,7 +27,7 @@ public class NettyConfig {
     /**
      * 日志
      */
-    private Logger log = LoggerFactory.getLogger(getClass());
+    private static final Logger log = LoggerFactory.getLogger(NettyConfig.class);
 
     /**
      * 语音的端口号

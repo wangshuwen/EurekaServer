@@ -1,7 +1,6 @@
 package com.cst.xinhe.voice.monitor.server.handle;
 
 import com.alibaba.fastjson.JSON;
-import com.cst.xinhe.base.context.SpringContextUtil;
 import com.cst.xinhe.common.ws.WebSocketData;
 import com.cst.xinhe.voice.monitor.server.channel.VoiceChannelMap;
 import com.cst.xinhe.voice.monitor.server.ws.WSVoiceServer;

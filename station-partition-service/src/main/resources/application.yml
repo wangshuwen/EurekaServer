@@ -63,7 +63,7 @@ mybatis:
   mapper-locations: com/cst/xinhe/persistence/dao/*/*.xml
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-    cache-enabled: false
+#    cache-enabled: false
     default-statement-timeout: 3000
 #  type-aliases-package: com.cst.xinhe.persistence.model
 pagehelper:

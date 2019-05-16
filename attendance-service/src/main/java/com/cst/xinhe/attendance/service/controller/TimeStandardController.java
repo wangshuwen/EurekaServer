@@ -83,10 +83,12 @@ public class TimeStandardController {
         int len = ids.length;
         if (len > 0){
             Map<Integer, List<Staff>> map = staffGroupTerminalServiceClient.findStaffByTimeStandardIds(ids);
-            for (Integer key: map.keySet()){
-                List<Staff> staffList = map.get(key);
-                if (staffList != null && !staffList.isEmpty()){
-                    return ResultUtil.jsonToStringError(ResultEnum.DEL_TIME_STANDARD_FAIL);
+            if(map!=null&&map.size()>0){
+                for (Integer key: map.keySet()){
+                    List<Staff> staffList = map.get(key);
+                    if (staffList != null && !staffList.isEmpty()){
+                        return ResultUtil.jsonToStringError(ResultEnum.DEL_TIME_STANDARD_FAIL);
+                    }
                 }
             }
 //            for (Integer item: ids){

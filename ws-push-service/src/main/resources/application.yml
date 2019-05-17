@@ -1,13 +1,19 @@
 server:
-  port: 8762
+  port: 8771
+  ssl:
+      key-store: zkxh.keystore
+      #密钥库密码
+      key-store-password: 123456
+      keyStoreType: JKS
+      keyAlias: zkxh
+feign:
+  hystrix:
+    enabled: true
+spring:
+  application:
+    name: ws-push-service
 eureka:
-  server:
-    peer-node-read-timeout-ms: 1000
-  instance:
-    hostname: eureka
   client:
-    register-with-eureka: false
-    fetch-registry: false
     service-url:
       defaultZone: http://192.168.1.101:8761/eureka/
 #打印日志

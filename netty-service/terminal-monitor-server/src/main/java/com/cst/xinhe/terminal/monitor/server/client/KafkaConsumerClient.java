@@ -11,21 +11,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(value = "kafka-consumer-service",
 configuration = FeignConfig.class,
 fallback = KafkaConsumerClientFallback.class,
-url = "http://192.168.1.50:8773/")
+url = "http://127.0.0.1:8773/")
 //@RequestMapping("kafka-consumer-service/")
 public interface KafkaConsumerClient {
 
     @PutMapping("removeCarSet")
-    void removeCarSet(@RequestParam Integer staffId);
+    void removeCarSet(@RequestParam("staffId") Integer staffId);
 
     @PutMapping("removeOutPersonSet")
-    void removeOutPersonSet(@RequestParam Integer staffId);
+    void removeOutPersonSet(@RequestParam("staffId") Integer staffId);
 
     @PutMapping("removeLeaderSet")
-    void removeLeaderSet(@RequestParam Integer staffId);
+    void removeLeaderSet(@RequestParam("staffId") Integer staffId);
 
     @PutMapping("removeStaffSet")
-    void removeStaffSet(@RequestParam Integer staffId);
+    void removeStaffSet(@RequestParam("staffId") Integer staffId);
 
     @GetMapping("pushRtPersonData")
     void pushRtPersonData();

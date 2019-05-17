@@ -143,12 +143,15 @@ public class BaseStationController extends BaseController {
         }
 
         Map<Integer, String> map1 = systemServiceClient.getStandardNameByStandardIds(standardIdList);
+        if(map1!=null&&map1.size()>0){
+            for (Map<String, Object> map : result) {
+                map.put("zoneName", partitionService.geParentNamesById((Integer) map.get("zoneId")));
 
-        for (Map<String, Object> map : result) {
-            map.put("zoneName", partitionService.geParentNamesById((Integer) map.get("zoneId")));
-
-            map.put("standardName", map1.get(map.get("baseStationNum")));
+                map.put("standardName", map1.get(map.get("baseStationNum")));
+            }
         }
+
+
 //        if (null != standardId) {
 ////                Map<String, Object> map1 = levelSettingService.getStandardNameByStandardId(standardId);
 //            Map<String, Object> map1 = systemServiceClient.getStandardNameByStandardId(standardId);

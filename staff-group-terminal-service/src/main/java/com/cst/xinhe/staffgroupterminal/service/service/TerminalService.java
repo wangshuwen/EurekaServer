@@ -4,6 +4,7 @@ package com.cst.xinhe.staffgroupterminal.service.service;
 import com.cst.xinhe.persistence.model.terminal.StaffTerminal;
 import com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp;
 import com.github.pagehelper.Page;
+import io.swagger.models.auth.In;
 
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,7 @@ public interface TerminalService {
 
     List<StaffTerminal> getAllTerminal();
 
-    List<StaffTerminal> getNotBinDingTerminals();
+    Page<StaffTerminal> getNotBinDingTerminals(Integer pageNum, Integer pageSize, Integer terminalId);
 
     boolean unBind(Integer staffTerminalId);
 

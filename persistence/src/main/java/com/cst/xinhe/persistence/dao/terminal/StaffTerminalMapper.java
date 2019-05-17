@@ -101,7 +101,7 @@ public interface StaffTerminalMapper {
 
     List<StaffTerminal> selectAllTerminals();
 
-    List<StaffTerminal> getNotBinDingTerminals();
+    List<StaffTerminal> getNotBinDingTerminals(@Param("terminalId") Integer terminalId);
 
     Map<String, Object> selectStaffInfoMapByTerminal(Integer terminalId);
 

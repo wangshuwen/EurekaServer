@@ -534,11 +534,15 @@
         FROM staff_terminal
     </select>
 
-    <select id="getNotBinDingTerminals" resultMap="BaseResultMap">
+    <select id="getNotBinDingTerminals" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         SELECT
         <include refid="Base_Column_List"/>
         FROM staff_terminal
         WHERE staff_id IS NULL
+        <if test = "terminalId != null">
+            AND terminal_id LIKE CONCAT('%', #{terminalId}, '%')
+        </if>
+
     </select>
 
     <update id="updateTerminalBinding" parameterType="java.lang.Integer">

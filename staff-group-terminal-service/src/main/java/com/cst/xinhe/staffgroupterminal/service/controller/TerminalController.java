@@ -177,9 +177,13 @@ public class TerminalController {
 
     @ApiOperation(value = "获取所有未绑定终端", notes = "获取所有未绑定终端")
     @GetMapping("terminal/getNotBinDingTerminals")
-    public String getNotBinDingTerminals() {
-        List<StaffTerminal> list = terminalService.getNotBinDingTerminals();
-        return list.size() > 0 ? ResultUtil.jsonToStringSuccess(list) : ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
+    public String getNotBinDingTerminals(@RequestParam(name = "page") Integer startPage, @RequestParam(name = "limit") Integer pageSize,Integer terminalId) {
+
+        Page<StaffTerminal> list = terminalService.getNotBinDingTerminals(startPage,pageSize,terminalId);
+
+        PageInfo<StaffTerminal> pageInfo = new PageInfo<>(list);
+
+        return pageInfo.getSize() > 0 ? ResultUtil.jsonToStringSuccess(pageInfo) : ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
     }
 
 

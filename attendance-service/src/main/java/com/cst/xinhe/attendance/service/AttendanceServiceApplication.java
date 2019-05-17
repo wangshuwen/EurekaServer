@@ -27,12 +27,12 @@ public class AttendanceServiceApplication {
         SpringApplication.run(AttendanceServiceApplication.class, args);
     }
 
-    @Value("${foo}")
+   /* @Value("${foo}")
      String foo;
 
     @RequestMapping("/hi")
     public String hi(){
         return "hi  shuwen!!!!"+foo;
-    }
+    }*/
 
 }

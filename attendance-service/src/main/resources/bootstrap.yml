@@ -1,12 +1,22 @@
 server:
   port: 8775
 spring:
+  cloud:
+      config:
+        fail-fast: true
+        discovery:
+          enabled: true
+          service-id: config-server
+  application:
+      name: attendance-service
   data:
     elasticsearch:
       repositories:
         enabled: true
       cluster-name: elasticsearch
       cluster-nodes: 192.168.1.182:9300
+  profiles:
+      active: dev
   datasource:
     # 使用阿里的Druid连接池
     type: com.alibaba.druid.pool.DruidDataSource
@@ -56,12 +66,10 @@ spring:
         login-username: admin
         # 登录密码
         login-password: 123456
-  application:
-    name: attendance-service
 eureka:
   client:
     service-url:
-      defaultZone: http://192.168.1.47:8761/eureka/
+      defaultZone: http://192.168.1.101:8761/eureka
 feign:
   hystrix:
     enabled: true

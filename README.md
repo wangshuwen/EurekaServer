@@ -12,17 +12,24 @@
  ##**attendance-service:   192.168.1.106:8775**
  ##**station-partition-service:  192.168.1.106:8776**
  ##**chat-message-service:  192.168.1.106:8777**
- ##**system-service        192.168.1.106:8778** 
+ 
    
  
- 
+
  ##**voice-monitor-server-http  192.168.1.101:8780** 
-   ##**voice-sender-service:     192.168.1.101:8767**
- ##**gateway-service  :192.168.1.101:8443** 
+ ##**voice-sender-service:     192.168.1.101:8767**
+   
+   
+   
+ ##**system-service            192.168.1.101:8778** 
+ ##**gateway-service:          192.168.1.101:8443** 
+ ##**eureka-server:            192.168.1.101:8761**
+ ##**eureka-server-backups:    192.168.1.101:8762**
  
  
- ##**eureka-server:            192.168.1.47:8761**
- ##**eureka-server-backups:    192.168.1.47:8762**
+ 
+ 
+ 
  ##**kafka-sender-service:     192.168.1.47:8768**
  ##**station-monitor-server:   192.168.1.47:8765**
  

@@ -13,17 +13,17 @@ import java.util.Map;
 @FeignClient(value = "staff-group-terminal-service",
         configuration = FeignConfig.class,
         fallback = StaffGroupTerminalServiceClientFallback.class,
-        url = "http://192.168.1.106:8772/")
+        url = "http://127.0.0.1:8772/")
 //@RequestMapping("staff-group-terminal-service")
 public interface StaffGroupTerminalServiceClient {
 
     @GetMapping("findStaffIdByTerminalId")
-    Map<String, Object> findStaffIdByTerminalId(@RequestParam int terminalId);
+    Map<String, Object> findStaffIdByTerminalId(@RequestParam("terminalId") int terminalId);
 
 
     @GetMapping("findTerminalIdByIpAndPort")
-    TerminalUpdateIp findTerminalIdByIpAndPort(@RequestParam String terminalIp, @RequestParam int port);
+    TerminalUpdateIp findTerminalIdByIpAndPort(@RequestParam("terminalId") String terminalIp, @RequestParam("port") int port);
 
     @GetMapping("selectStaffInfoByTerminalId")
-    Map<String, Object> selectStaffInfoByTerminalId(@RequestParam Integer terminalId);
+    Map<String, Object> selectStaffInfoByTerminalId(@RequestParam("terminalId") Integer terminalId);
 }

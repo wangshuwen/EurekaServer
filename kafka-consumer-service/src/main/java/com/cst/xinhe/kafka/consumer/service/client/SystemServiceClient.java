@@ -13,7 +13,7 @@ import java.util.List;
 @FeignClient(value = "system-service",
         configuration = FeignConfig.class,
         fallback = SystemServiceClientFallback.class,
-        url = "http://192.168.1.106:8778/")
+        url = "http://192.168.1.101:8778/")
 public interface SystemServiceClient {
 
     @GetMapping("findRangByType")

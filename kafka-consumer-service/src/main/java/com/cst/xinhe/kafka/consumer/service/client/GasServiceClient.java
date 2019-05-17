@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(value = "gas-service",
         configuration = FeignConfig.class,
         fallback = GasServiceClientFallback.class,
-        url = "http://192.168.1.106:8774/")
+        url = "http://127.0.0.1:8774/")
 public interface GasServiceClient {
 
     @GetMapping("findGasInfoByStaffIdAndTerminalId")

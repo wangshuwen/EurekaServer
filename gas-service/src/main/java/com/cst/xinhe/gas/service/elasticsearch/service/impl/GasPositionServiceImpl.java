@@ -7,6 +7,7 @@ import com.cst.xinhe.gas.service.elasticsearch.service.GasPositionService;
 import com.cst.xinhe.persistence.dao.staff.StaffMapper;
 import com.cst.xinhe.persistence.model.staff.Staff;
 import com.cst.xinhe.persistence.model.staff.StaffExample;
+import com.cst.xinhe.persistence.model.terminal_road.TerminalRoad;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -48,8 +49,6 @@ public class GasPositionServiceImpl implements GasPositionService {
 
         BoolQueryBuilder builder = QueryBuilders.boolQuery();
         builder.must(QueryBuilders.termQuery("staffid",staffId));
-
-
 
         Iterable<GasPositionEntity> search = gasPositionRepository.search(builder);
         return search;
@@ -111,5 +110,50 @@ public class GasPositionServiceImpl implements GasPositionService {
 
         Page<GasPositionEntity> page = gasPositionRepository.search(nativeSearchQueryBuilder.build());
         return page;
+    }
+
+    @Override
+    public List<Map<String, Object>> findTerminalRoadByInOreTime(int staffId, Date inOreTime, Date startTime, Date endTime) {
+        List<Map<String, Object>> result = new ArrayList<>();
+        Map<String, Object> itemMap = null;
+        QueryBuilder queryBuilder = QueryBuilders.termQuery("staffid", staffId);
+        QueryBuilder queryBuilder0 = null;
+        QueryBuilder queryBuilder1 = null;
+        QueryBuilder queryBuilder2 = null;
+        if (null != inOreTime){
+            queryBuilder0 = QueryBuilders.rangeQuery("createtime").format("yyyy-MM-dd").gte(inOreTime);
+        }
+        if (null != startTime){
+            queryBuilder1 = QueryBuilders.rangeQuery("createtime").format("yyyy-MM-dd").gte(startTime);
+        }
+        if (null != endTime){
+            queryBuilder2 = QueryBuilders.rangeQuery("createtime").format("yyyy-MM-dd").lte(endTime);
+        }
+        NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withQuery(queryBuilder).withQuery(queryBuilder0).withQuery(queryBuilder1).withQuery(queryBuilder2).withFields("createtime","temppositionnname", "isore");
+        Iterable<GasPositionEntity> iterable = gasPositionRepository.search(searchQueryBuilder.build());
+        for (GasPositionEntity item: iterable){
+            itemMap = new HashMap<>();
+            itemMap.put("tempPositionName",item.getTemppositionname());
+            itemMap.put("isSore",item.getIsore());
+            itemMap.put("createTime",item.getCreatetime());
+            result.add(itemMap);
+        }
+
+        return result;
+    }
+
+    @Override
+    public TerminalRoad findNowSiteByStaffId(int staffId) {
+        TerminalRoad terminalRoad = new TerminalRoad();
+        SortBuilder sortBuilder = SortBuilders.fieldSort("createtime").order(SortOrder.DESC);
+        QueryBuilder queryBuilder = QueryBuilders.termQuery("staffid", staffId);
+        NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withQuery(queryBuilder).withSort(sortBuilder).withMinScore(1);
+        Iterable<GasPositionEntity> iterable = gasPositionRepository.search(searchQueryBuilder.build());
+        for (GasPositionEntity gasPositionEntity : iterable) {
+            terminalRoad.setPositionX(gasPositionEntity.getPositionx());
+            terminalRoad.setPositionY(gasPositionEntity.getPositiony());
+            terminalRoad.setPositionZ(gasPositionEntity.getPositionz());
+        }
+        return terminalRoad;
     }
 }

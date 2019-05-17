@@ -416,7 +416,7 @@
         SELECT createTime,temp_position_name as tempPositionName,is_ore AS isOre
         FROM terminal_road
         <where>
-            staff_id=#{staffId}  <!--and createTime > #{inOreTime}-->
+            staff_id =#{staffId}  <!--and createTime > #{inOreTime}-->
             <if  test="startTime!=null">
                 and    <![CDATA[ createTime > #{startTime}  ]]>
             </if>

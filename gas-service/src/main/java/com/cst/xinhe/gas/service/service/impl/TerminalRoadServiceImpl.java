@@ -7,6 +7,9 @@ import com.cst.xinhe.gas.service.service.TerminalRoadService;
 import com.cst.xinhe.persistence.dao.terminal_road.TerminalRoadMapper;
 import com.cst.xinhe.persistence.model.terminal_road.TerminalRoad;
 import com.github.pagehelper.Page;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -20,8 +23,8 @@ import java.util.*;
  */
 @Service
 public class TerminalRoadServiceImpl implements TerminalRoadService {
-    @Resource
-    private TerminalRoadMapper terminalRoadMapper;
+//    @Resource
+//    private TerminalRoadMapper terminalRoadMapper;
 
     @Resource
     private GasPositionService gasPositionService;
@@ -78,13 +81,18 @@ public class TerminalRoadServiceImpl implements TerminalRoadService {
 
     @Override
     public List<Map<String,Object>> findTerminalRoadByInOreTime(int staffId, Date inOreTime, Date startTime, Date endTime) {
+//        QueryBuilder queryBuilder = QueryBuilders.termQuery("staffid", staffId);
 
-        return terminalRoadMapper.findTerminalRoadByInOreTime(staffId,inOreTime,startTime,endTime);
+//        NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withQuery(queryBuilder);
+//        Iterable<GasPositionEntity> iterable = gasPositionRepository.search(searchQueryBuilder.build());
+//        Iterable<GasPositionEntity> iterable =
+//                terminalRoadMapper.findTerminalRoadByInOreTime(staffId,inOreTime,startTime,endTime) ;
+        return gasPositionService.findTerminalRoadByInOreTime(staffId,inOreTime,startTime,endTime);
     }
 
     @Override
     public TerminalRoad findNowSiteByStaffId(int staffId) {
-
-        return terminalRoadMapper.findNowSiteByStaffId(staffId);
+//        terminalRoadMapper.findNowSiteByStaffId(staffId);
+        return gasPositionService.findNowSiteByStaffId(staffId);
     }
 }

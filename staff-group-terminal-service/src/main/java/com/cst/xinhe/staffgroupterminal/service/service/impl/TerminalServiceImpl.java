@@ -42,8 +42,10 @@ public class TerminalServiceImpl implements TerminalService {
     }
 
     @Override
-    public List<StaffTerminal> getNotBinDingTerminals() {
-        return staffTerminalMapper.getNotBinDingTerminals();
+    public Page<StaffTerminal> getNotBinDingTerminals(Integer pageNum, Integer pageSize, Integer terminalId) {
+        Page<StaffTerminal> page = PageHelper.startPage(pageNum,pageSize);
+        List<StaffTerminal> list = staffTerminalMapper.getNotBinDingTerminals(terminalId);
+        return page;
     }
 
     @Override
@@ -53,7 +55,7 @@ public class TerminalServiceImpl implements TerminalService {
 //        staffTerminal.setStaffId(null);
 //        int i = staffTerminalMapper.updateByPrimaryKey(staffTerminal);
         int i = staffTerminalMapper.updateTerminalUnBinding(staffTerminalId);
-        return i == 1 ? true : false;
+        return i == 1;
     }
 
     @Override

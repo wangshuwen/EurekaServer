@@ -289,7 +289,7 @@
   </select>
 
   <select id="selectCountCoordinateByWarningAreaId" parameterType="java.lang.Integer" resultType="java.lang.Boolean">
-    SELECT COUNT(1)
+    SELECT COUNT(*)
     FROM coordinate
     WHERE warning_area_id = #{warningAreaId}
   </select>

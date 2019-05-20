@@ -848,7 +848,7 @@
   </update>
 
   <select id="selectCountStationByTypeAndId" parameterType="java.lang.Integer" resultType="java.lang.Boolean">
-    SELECT COUNT(1)
+    SELECT COUNT(*)
     FROM base_station
     WHERE type = #{type}
     AND base_station_num = #{stationNum}

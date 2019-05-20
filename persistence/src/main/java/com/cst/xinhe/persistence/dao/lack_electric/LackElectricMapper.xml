@@ -292,6 +292,9 @@
     where lack_electric_id = #{lackElectricId,jdbcType=INTEGER}
   </update>
 
+  <select id="selectIsReadCount" resultType="java.lang.Integer">
+    SELECT COUNT(*) FROM lack_electric
+  </select>
   <select id="findLackElectric" resultType="java.util.HashMap">
     select str.terminal_id AS terminalId,le.upload_time AS uploadTime,
     le.electric_value  AS electricValue,le.lack_type AS lackType,

@@ -125,14 +125,15 @@ public class WarningAreaServiceImpl implements WarningAreaService {
 
         WarningAreaExample example = new WarningAreaExample();
         WarningAreaExample.Criteria criteria = example.createCriteria();
-        if(type!=null&&type!=0)
+        if(null != type && 0 != type) {
             criteria.andWarningAreaTypeEqualTo(type);
+        }
 
-        if(name!=null&&!"".equals(name)){
+        if((name != null) && !"".equals(name)){
             criteria.andWarningAreaNameLike("%"+name+"%");
         }
 
-        if(areaId!=null){
+        if(null != areaId){
             criteria.andWarningAreaIdEqualTo(areaId);
         }
         Page page = PageHelper.startPage(startPage, pageSize);

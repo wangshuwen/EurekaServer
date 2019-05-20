@@ -52,9 +52,10 @@ public class LackElectricServiceImpl implements LackElectricService {
 
     @Override
     public Integer findLackElectricCount() {
-        LackElectricExample example = new LackElectricExample();
-        List<LackElectric> lackElectrics = lackElectricMapper.selectByExample(example);
-        return lackElectrics.size();
+//        LackElectricExample example = new LackElectricExample();
+//        List<LackElectric> lackElectrics = lackElectricMapper.selectByExample(example);
+        Integer count = lackElectricMapper.selectIsReadCount();
+        return count;
     }
 
     @Override

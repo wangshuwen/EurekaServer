@@ -97,4 +97,6 @@ public interface LackElectricMapper {
     int updateByPrimaryKey(LackElectric record);
 
     List<Map<String,Object>> findLackElectric(@Param("terminalId") Integer terminalId, @Param("staffName") String staffName);
+
+    Integer selectIsReadCount();
 }

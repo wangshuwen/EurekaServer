@@ -69,6 +69,9 @@ public class MyFilter extends ZuulFilter {
         if(url.contains("/logout")){
             return null;
         }
+        if(url.contains("/rangSetting/upload")){
+            return null;
+        }
        /* //过滤datacenter微服务
         if(url.contains("/gsa/rest/")){
             if(!url.contains("/MenuSystemTree")){

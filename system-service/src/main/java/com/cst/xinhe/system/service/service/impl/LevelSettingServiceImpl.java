@@ -59,7 +59,7 @@ public class LevelSettingServiceImpl implements LevelSettingService {
 
     @Override
     public int modifyStandard(GasStandard gasStandard) {
-        return gasStandardMapper.updateByPrimaryKey(gasStandard);
+        return gasStandardMapper.updateByPrimaryKeySelective(gasStandard);
     }
 
 

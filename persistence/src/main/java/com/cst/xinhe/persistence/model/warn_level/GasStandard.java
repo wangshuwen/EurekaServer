@@ -1,5 +1,7 @@
 package com.cst.xinhe.persistence.model.warn_level;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import java.util.Date;
 
 public class GasStandard {
@@ -37,6 +39,7 @@ public class GasStandard {
      *
      * @mbg.generated
      */
+
     private Date createTime;
 
     /**

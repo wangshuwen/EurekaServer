@@ -32,12 +32,12 @@ public class RangSettingController {
 //    @Resource
 //    private Constant constant;
 
-    @Value("rangBasePath")
+    @Value("${rangBasePath}")
     private String rangBasePath;
-    @RequestMapping("upload")
+    @PostMapping("upload")
     @ApiOperation(value = "上传铃声", notes = "上传铃声")
-    public String insert (@RequestParam("file") MultipartFile[] file, @RequestParam("type") Integer type,
-                          @RequestParam("name") String name, @RequestParam("url") String url, @RequestParam("userId") Integer userId
+    public String insert (@RequestParam("file") MultipartFile[] file, /*@RequestParam("type") Integer type,
+                          @RequestParam("name") String name,*/ @RequestParam("url") String url/*, @RequestParam("userId") Integer userId*/
     ) {
         if(file!=null) {
             //保存文件
@@ -45,8 +45,8 @@ public class RangSettingController {
             //文件夹名
             sb.append(url);
             //文件名
-            String filename = file[0].getOriginalFilename();
-            sb.append(File.separator).append(filename);
+           /* String filename = file[0].getOriginalFilename();
+            sb.append(File.separator).append(filename);*/
 
             File file1 = new File(sb.toString());
             //创建文件
@@ -59,13 +59,13 @@ public class RangSettingController {
                 e.printStackTrace();
             }
             //保存到数据库
-            RangSetting rangSetting = new RangSetting();
+           /* RangSetting rangSetting = new RangSetting();
             rangSetting.setStatus(0);
             rangSetting.setType(type);
             rangSetting.setName(name);
             rangSetting.setUserId(userId);
             rangSetting.setUrl(url+filename);
-            rangSettingService.add(rangSetting);
+            rangSettingService.add(rangSetting);*/
             return ResultUtil.jsonToStringSuccess();
         }
 

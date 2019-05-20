@@ -73,6 +73,9 @@ logging:
     com.cst.xinhe.persistence.dao: DEBUG
   config: classpath:logback-boot.xml
 eureka:
+  instance:
+    lease-expiration-duration-in-seconds: 2
+    lease-renewal-interval-in-seconds: 1
   client:
     service-url:
       defaultZone: http://192.168.1.101:8761/eureka/

@@ -1,4 +1,7 @@
 eureka:
+  instance:
+    lease-expiration-duration-in-seconds: 2
+    lease-renewal-interval-in-seconds: 1
   client :
     serviceUrl:
       defaultZone: http://192.168.1.101:8761/eureka/,http://192.168.1.101:8762/eureka/

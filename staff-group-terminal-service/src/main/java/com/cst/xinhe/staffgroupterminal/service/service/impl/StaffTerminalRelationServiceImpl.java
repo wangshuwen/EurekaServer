@@ -41,7 +41,10 @@ public class StaffTerminalRelationServiceImpl implements StaffTerminalRelationSe
         params.put("type", 1);
         params.put("staffId", staffId);
         List<StaffTerminalRelation> staffTerminalRelation = staffTerminalRelationMapper.findNewRelationByParams(params);
-        return staffTerminalRelation.get(0);
+        if(staffTerminalRelation!=null&&staffTerminalRelation.size()>0){
+            return staffTerminalRelation.get(0);
+        }
+            return null;
     }
 
     @Override

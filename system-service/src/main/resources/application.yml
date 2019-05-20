@@ -1,6 +1,6 @@
 server:
   port: 8778
-rangBasePath: rangBasePath
+rangBasePath: D:/idea/ideaProject/vue2/
 spring:
   #配置redis数据库
   redis:

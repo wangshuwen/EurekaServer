@@ -237,10 +237,14 @@ public class BaseStationController extends BaseController {
         if (result == null || result.isEmpty()){
             throw new RuntimeWebException(ErrorCode.FIND_STATION_IP_FAIL);
         }
-        if (!result.containsKey("station_ip")){
+      /*  if (!result.containsKey("station_ip")){
             throw new RuntimeWebException(ErrorCode.FIND_STATION_IP_FAIL);
         }
-        requestData.setStationIp(result.get("station_ip").toString());
+        requestData.setStationIp(result.get("station_ip").toString());*/
+        if (result.containsKey("station_ip")){
+            requestData.setStationIp(result.get("station_ip").toString());
+        }
+
         requestData.setSequenceId(SequenceIdGenerate.getSequenceId());
         responseData.setCustomMsg(requestData);
 //        BaseStation baseStation = new BaseStation();

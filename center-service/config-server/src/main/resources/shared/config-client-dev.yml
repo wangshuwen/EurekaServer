@@ -1,6 +1,6 @@
 server:
   port: 8775
-defaultZone1: http://192.168.1.101:8761/eureka/
+defaultZone1: http://127.0.0.1:8761/eureka/
 
 foo: foo version 1
 username: wangshuwen

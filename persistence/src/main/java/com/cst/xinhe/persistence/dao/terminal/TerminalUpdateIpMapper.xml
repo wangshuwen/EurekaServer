@@ -406,7 +406,7 @@
 <select id="selectStationIpByStationId" resultType="java.util.Map" parameterType="java.lang.Integer">
     SELECT *
     FROM terminal_update_ip
-    WHERE station_id = {#stationId}
+    WHERE station_id = #{stationId}
     AND terminal_num = 0
     AND terminal_ip = '0.0'
 </select>

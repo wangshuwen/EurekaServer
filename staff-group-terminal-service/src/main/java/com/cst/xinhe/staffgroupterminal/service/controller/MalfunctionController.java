@@ -39,9 +39,39 @@ public class MalfunctionController {
     @Resource
     private StaffTerminalRelationService staffTerminalRelationService;
 
+    @GetMapping("findMalfunctionInfoIsRead")
+    @ApiOperation(value = "获取所有故障信息", notes = "根据终端编号查找故障信息，没有终端编号则查找全部，做到分页查询")
+    public String getMalfunctionInfoByStatus(@RequestParam(name = "page", defaultValue = "1", required = false) Integer startPage,
+                               @RequestParam(name = "limit", defaultValue = "10", required = false) Integer pageSize,
+                               @RequestParam(name = "terminalId", defaultValue = "", required = false) Integer terminalId,
+                               @RequestParam(name = "status", defaultValue = "", required = false) Integer status) {
+
+        PageHelper.startPage(startPage, pageSize);
+        List<Malfunction> list = malfunctionService.findMalfunctionInfoByStatus1();
+        for (Malfunction malfunction : list) {
+            //根据终端id获取员工id
+            //去查找历史关联表
+            StaffTerminalRelation staffTerminalRelation = staffTerminalRelationService.findHistoryRelationById(malfunction.getTerminalId());
+            if (staffTerminalRelation != null) {
+                Integer staffId = staffTerminalRelation.getStaffId();
+                //根据员工id获取员工姓名，分组名称和部门名称
+                HashMap<String, Object> nameMap = staffService.getDeptAndGroupNameByStaffId(staffId);
+                if (nameMap != null) {
+                    malfunction.setStaffName((String) nameMap.get("staffName"));
+                    // malfunction.setGroupName((String)nameMap.get("deptName"));
+                    String deptName = staffOrganizationService.getDeptNameByGroupId((Integer) nameMap.get("groupId"));
+                    malfunction.setDeptName(deptName);
+                }
+            }
+        }
+        PageInfo<Malfunction> info = new PageInfo<>(list);
+        return info.getSize() > 0 ? ResultUtil.jsonToStringSuccess(info) : ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
+    }
+
+
     @GetMapping("findMalfunctionInfo")
     @ApiOperation(value = "获取所有故障信息", notes = "根据终端编号查找故障信息，没有终端编号则查找全部，做到分页查询")
-    public String getZonesInfo(@RequestParam(name = "page", defaultValue = "1", required = false) Integer startPage,
+    public String getMalfunctionInfo(@RequestParam(name = "page", defaultValue = "1", required = false) Integer startPage,
                                @RequestParam(name = "limit", defaultValue = "10", required = false) Integer pageSize,
                                @RequestParam(name = "terminalId", defaultValue = "", required = false) Integer terminalId,
                                @RequestParam(name = "status", defaultValue = "", required = false) Integer status) {

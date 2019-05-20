@@ -11,4 +11,6 @@ import com.cst.xinhe.persistence.vo.UserLoginVOResp;
  */
 public interface UserService {
      UserLoginVOResp userLogin(UserLoginVOReq userLoginVOReq);
+
+    boolean check(String account, String password);
 }

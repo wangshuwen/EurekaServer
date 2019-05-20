@@ -75,5 +75,5 @@ public interface StaffGroupTerminalServiceClient {
     Integer findTerminalInfoByStaffId(@RequestParam("parseInt") int parseInt);
 
     @GetMapping("selectTerminalIpInfoByTerminalId")
-    Map<String, Object> selectTerminalIpInfoByTerminalId(Integer terminalId);
+    Map<String, Object> selectTerminalIpInfoByTerminalId(@RequestParam("terminalId") Integer terminalId);
 }

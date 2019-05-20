@@ -99,4 +99,6 @@ public interface MalfunctionMapper {
     Map<String, Object> selectCountMalfunction();
 
     List<Malfunction> selectMalfunction(@Param("status") Integer status, @Param("terminalId") Integer terminalId);
+
+    List<Malfunction> findMalfunctionInfoByStatus1();
 }

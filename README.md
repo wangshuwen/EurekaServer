@@ -16,15 +16,15 @@
    
  
 
- ##**voice-monitor-server-http  192.168.1.101:8780** 
- ##**voice-sender-service:     192.168.1.101:8767**
+ ##**voice-monitor-server-http  127.0.0.1:8780** 
+ ##**voice-sender-service:     127.0.0.1:8767**
    
    
    
- ##**system-service            192.168.1.101:8778** 
- ##**gateway-service:          192.168.1.101:8443** 
- ##**eureka-server:            192.168.1.101:8761**
- ##**eureka-server-backups:    192.168.1.101:8762**
+ ##**system-service            127.0.0.1:8778** 
+ ##**gateway-service:          127.0.0.1:8443** 
+ ##**eureka-server:            127.0.0.1:8761**
+ ##**eureka-server-backups:    127.0.0.1:8762**
  
  
  

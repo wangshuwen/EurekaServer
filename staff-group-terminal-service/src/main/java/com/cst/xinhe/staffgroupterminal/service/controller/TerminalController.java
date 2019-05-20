@@ -54,6 +54,19 @@ public class TerminalController {
         return result == 1 ? ResultUtil.jsonToStringSuccess() : ResultUtil.jsonToStringError(ResultEnum.FAILED);
     }
 
+
+    @GetMapping("terminal/sendGetBatteryCmd")
+    public String sendGetRtBatteryCmd(@RequestParam(name = "terminalNum") Integer terminalNum) {
+        terminalService.sendGetRtBatteryCmd(terminalNum);
+        return ResultUtil.jsonToStringSuccess();
+    }
+
+    @GetMapping("terminal/getBattery")
+    public String getRtBattery(@RequestParam(name = "terminalNum") Integer terminalNum) {
+        Integer integer = terminalService.getRtBattery(terminalNum);
+        return null != integer ? ResultUtil.jsonToStringSuccess(integer) : ResultUtil.jsonToStringError(ResultEnum.RT_SELECT_TERMINAL_BATTERY_FAIL);
+    }
+
     @Transactional
     @ApiOperation(value = "终端信息删除", notes = "单个删除终端，")
     @DeleteMapping("terminal/delete/{terminalId}")
@@ -100,8 +113,9 @@ public class TerminalController {
        甲烷描述=123123, 声音描述=12312,
         wifi描述=123123, 电池描述=123}]
      */
+
     /**
-     * @description:    批量录入终端信息
+     * @description: 批量录入终端信息
      * @param: [list]
      * @return: java.lang.String
      * @author: lifeng
@@ -113,24 +127,41 @@ public class TerminalController {
         StaffTerminal staffTerminal;
         List<StaffTerminal> staffTerminals = new ArrayList<>();
         try {
-            for (Map<String, Object> item: list){
+            for (Map<String, Object> item : list) {
                 staffTerminal = new StaffTerminal();
-                Integer terminalId = (Integer) item.get("终端ID");
-                String version = item.get("型号版本编号").toString();
-                String hardware = item.get("硬件版本号").toString();
-                String coDesc = item.get("一氧化碳描述").toString();
-                String o2Desc = item.get("氧气描述").toString();
-                String ch4Desc = item.get("甲烷描述").toString();
-                String voiceDesc = item.get("声音描述").toString();
-                String wifiDesc = item.get("wifi描述").toString();
-                String powerDesc = item.get("电池描述").toString();
-
-                if (terminalId != null && terminalId != 0){
+                Integer terminalId = null;
+                if (item.containsKey("终端ID"))
+                    terminalId = (Integer) item.get("终端ID");
+                String version = "";
+                if (item.containsKey("型号版本编号"))
+                    version = item.get("型号版本编号").toString();
+                String hardware = "";
+                if (item.containsKey("硬件版本号"))
+                    hardware = item.get("硬件版本号").toString();
+                String coDesc = "";
+                if (item.containsKey("一氧化碳描述"))
+                    coDesc = item.get("一氧化碳描述").toString();
+                String o2Desc = "";
+                if (item.containsKey("氧气描述"))
+                    o2Desc = item.get("氧气描述").toString();
+                String ch4Desc = "";
+                if (item.containsKey("甲烷描述"))
+                    ch4Desc = item.get("甲烷描述").toString();
+                String voiceDesc = "";
+                if (item.containsKey("声音描述"))
+                    voiceDesc = item.get("声音描述").toString();
+                String wifiDesc = "";
+                if (item.containsKey("wifi描述"))
+                    wifiDesc = item.get("wifi描述").toString();
+                String powerDesc = "";
+                if (item.containsKey("电池描述"))
+                    powerDesc = item.get("电池描述").toString();
+                if (null != terminalId && terminalId != 0) {
                     staffTerminal.setTerminalId(terminalId);
                 }
                 staffTerminal.setSoftwareVersion(version);
 
-                if ("".equals(powerDesc) ||"".equals(wifiDesc) ||"".equals(version) ||"".equals(hardware)){
+                if ("".equals(powerDesc) || "".equals(wifiDesc) || "".equals(version) || "".equals(hardware)) {
                     return ResultUtil.jsonToStringError(ResultEnum.REQUEST_DATA_IS_NULL);
                 }
                 staffTerminal.setBattery(1);
@@ -158,13 +189,13 @@ public class TerminalController {
 
                 staffTerminals.add(staffTerminal);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeWebException(ErrorCode.DATA_TYPE_IS_ERROR);
         }
 
         int count = terminalService.addTerminals(staffTerminals);
 
-        return count == list.size()? ResultUtil.jsonToStringSuccess():ResultUtil.jsonToStringError(ResultEnum.FAILED);
+        return count == list.size() ? ResultUtil.jsonToStringSuccess() : ResultUtil.jsonToStringError(ResultEnum.FAILED);
     }
 
     @ApiOperation(value = "获取所有终端", notes = "获取终端")
@@ -177,9 +208,9 @@ public class TerminalController {
 
     @ApiOperation(value = "获取所有未绑定终端", notes = "获取所有未绑定终端")
     @GetMapping("terminal/getNotBinDingTerminals")
-    public String getNotBinDingTerminals(@RequestParam(name = "page") Integer startPage, @RequestParam(name = "limit") Integer pageSize,Integer terminalId) {
+    public String getNotBinDingTerminals(@RequestParam(name = "page") Integer startPage, @RequestParam(name = "limit") Integer pageSize, Integer terminalId) {
 
-        Page<StaffTerminal> list = terminalService.getNotBinDingTerminals(startPage,pageSize,terminalId);
+        Page<StaffTerminal> list = terminalService.getNotBinDingTerminals(startPage, pageSize, terminalId);
 
         PageInfo<StaffTerminal> pageInfo = new PageInfo<>(list);
 
@@ -199,7 +230,7 @@ public class TerminalController {
             return ResultUtil.jsonToStringError(ResultEnum.REQUEST_DATA_IS_NULL);
         }
         StaffTerminalRelation staffTerminalRelation = new StaffTerminalRelation();
-            //解除绑定
+        //解除绑定
         staffTerminalRelation.setTerminalId(staffTerminalId);
         staffTerminalRelationService.updateRelationToOld(staffTerminalRelation);
         flag = terminalService.unBind(staffTerminalId);
@@ -215,7 +246,7 @@ public class TerminalController {
     @PutMapping("terminal/binding/{staffId}")
     public String binding(@PathVariable(name = "staffId", required = false) Integer staffId, @RequestParam(name = "staffTerminalId", required = true) Integer staffTerminalId) {
         boolean flag;
-        if (staffId == null || staffTerminalId == null){
+        if (staffId == null || staffTerminalId == null) {
             return ResultUtil.jsonToStringError(ResultEnum.REQUEST_DATA_IS_NULL);
         }
         StaffTerminalRelation staffTerminalRelation = new StaffTerminalRelation();
@@ -223,7 +254,7 @@ public class TerminalController {
         staffTerminalRelation.setStaffId(staffId);
         staffTerminalRelation.setType(1);
         flag = terminalService.binding(staffId, staffTerminalId);
-        if (flag){
+        if (flag) {
             staffTerminalRelationService.insert(staffTerminalRelation);
         }
         return flag ? ResultUtil.jsonToStringSuccess() : ResultUtil.jsonToStringError(ResultEnum.FAILED);

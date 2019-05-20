@@ -19,6 +19,7 @@ public enum ErrorCode {
     FIND_STATION_IP_FAIL(5006, "获取基站的IP地址失败！"),
     DATA_TYPE_IS_ERROR(5007, "解析到的数据类型不匹配！"),
     SEND_INFO_TO_TERMINAL_FAIL(5008, "向终端发送信息失败！"),
+    TERMINAL_AND_STAFF_NOT_BINDING(5009, "终端与人员未绑定！"),
     ;
 
     private int code;

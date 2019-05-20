@@ -12,4 +12,6 @@ public interface CallService {
     String callStaffByStaffId(MultipartFile wavFile, Integer staffId, Integer userId);
 
     boolean pingTerminal(Integer staffId);
+
+    boolean pingTerminalByTerminalNum(Integer terminalNum);
 }

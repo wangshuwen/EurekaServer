@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 public interface WarningAreaRecordMapper {
     /**
@@ -96,7 +97,7 @@ public interface WarningAreaRecordMapper {
      */
     int updateByPrimaryKey(WarningAreaRecord record);
 
-    List<HashMap<String,Object>> findAreaRecordByAreaId(@Param("areaIdList") List<Integer> areaIdList, @Param("staffName") String staffName, @Param("deptIds") List<Integer> deptIds);
+    List<HashMap<String,Object>> findAreaRecordByAreaId(@Param("areaIdList") Set<Integer> areaIdList, @Param("staffName") String staffName, @Param("deptIds") List<Integer> deptIds);
 
     List<HashMap<String,Object>> findHistoryAreaRecord(@Param("areaId") Integer areaId, @Param("staffName") String staffName, @Param("deptIds") List<Integer> deptIds);
 

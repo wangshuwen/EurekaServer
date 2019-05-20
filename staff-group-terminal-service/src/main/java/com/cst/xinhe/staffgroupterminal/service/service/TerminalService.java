@@ -56,4 +56,8 @@ public interface TerminalService {
     void updateIpInfoByTerminalId(TerminalUpdateIp terminalUpdateIp);
 
     void updateIpInfoByStationId(TerminalUpdateIp terminalUpdateIp);
+
+    Integer getRtBattery(Integer terminalNum);
+
+    void sendGetRtBatteryCmd(Integer terminalNum);
 }

@@ -1,5 +1,6 @@
 package com.cst.xinhe.gas.service.service;
 
+import com.cst.xinhe.gas.service.elasticsearch.entity.GasPositionEntity;
 import com.cst.xinhe.persistence.model.terminal_road.TerminalRoad;
 import com.github.pagehelper.Page;
 
@@ -19,7 +20,7 @@ public interface TerminalRoadService {
 
     List<Map<String,Object>> findTerminalRoadByTime(int staffId, String currentTime) throws ParseException;
 
-    List<Map<String,Object>> findTerminalRoadByInOreTime(int staffId, Date inOre, Date startTime, Date endTime);
+    org.springframework.data.domain.Page<GasPositionEntity> findTerminalRoadByInOreTime(int staffId, Date inOre, Date startTime, Date endTime, Integer startPage, Integer pageSize);
 
     TerminalRoad findNowSiteByStaffId(int staffId);
 }

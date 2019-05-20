@@ -1,9 +1,13 @@
 package com.cst.xinhe.staffgroupterminal.service.service.impl;
 
+import com.cst.xinhe.common.constant.ConstantValue;
+import com.cst.xinhe.common.netty.data.request.RequestData;
+import com.cst.xinhe.common.netty.data.response.ResponseData;
 import com.cst.xinhe.persistence.dao.terminal.StaffTerminalMapper;
 import com.cst.xinhe.persistence.dao.terminal.TerminalUpdateIpMapper;
 import com.cst.xinhe.persistence.model.terminal.StaffTerminal;
 import com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp;
+import com.cst.xinhe.staffgroupterminal.service.client.TerminalMonitorClient;
 import com.cst.xinhe.staffgroupterminal.service.service.TerminalService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -29,6 +33,9 @@ public class TerminalServiceImpl implements TerminalService {
 
     @Resource
     private TerminalUpdateIpMapper terminalUpdateIpMapper;
+
+    @Resource
+    private TerminalMonitorClient terminalMonitorClient;
 
     @Override
     public StaffTerminal getTeminalByNum(Integer terminalId) {
@@ -160,5 +167,39 @@ public class TerminalServiceImpl implements TerminalService {
     @Override
     public void updateIpInfoByStationId(TerminalUpdateIp terminalUpdateIp) {
         terminalUpdateIpMapper.updateIpInfoByStationId(terminalUpdateIp);
+    }
+
+    @Override
+    public Integer getRtBattery(Integer terminalNum) {
+        return terminalMonitorClient.getBatteryByTerminalNum(terminalNum);
+    }
+
+    @Override
+    public void sendGetRtBatteryCmd(Integer terminalNum) {
+        RequestData requestData = new RequestData();
+        requestData.setType(ConstantValue.MSG_HEADER_FREAME_HEAD);
+        requestData.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_SEARCH);
+        requestData.setLength(34);
+        requestData.setNdName(ConstantValue.MSG_BODY_NODE_NAME_CHECK_POWER);
+        requestData.setResult(ConstantValue.MSG_BODY_RESULT_SUCCESS);
+        requestData.setTerminalId(terminalNum);
+        requestData.setStationId(0);
+        requestData.setStationIp("0.0");
+        requestData.setStationIp1(0);
+        requestData.setStationIp2(0);
+        requestData.setStationPort(0);
+        Map<String, Object> result = terminalUpdateIpMapper.selectTerminalIpInfoByTerminalId(terminalNum);
+        if (null != result){
+            String ip = (String)result.get("terminal_ip");
+            int ip1 = Integer.parseInt(ip.split("\\.")[0]);
+            int ip2 = Integer.parseInt(ip.split("\\.")[1]);
+            requestData.setTerminalIp(ip);
+            requestData.setTerminalPort((Integer) result.get("terminal_port"));
+            requestData.setTerminalIp1(ip1);
+            requestData.setTerminalIp2(ip2);
+        }
+        ResponseData responseData = new ResponseData();
+        responseData.setCustomMsg(requestData);
+        terminalMonitorClient.sendResponseData(responseData);
     }
 }

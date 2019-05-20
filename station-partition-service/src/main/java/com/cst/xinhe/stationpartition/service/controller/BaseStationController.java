@@ -93,10 +93,10 @@ public class BaseStationController extends BaseController {
     @GetMapping("findStationInfoByParams")
     @ApiOperation(value = "获取基站的信息通过多参数查询", notes = "params为多个参数")
     @ApiImplicitParams({
-            @ApiImplicitParam(dataType = "java.util.Date", name = "startTime", value = "开始时间", required = false),
-            @ApiImplicitParam(dataType = "java.util.Date", name = "endTime", value = "结束时间", required = false),
-            @ApiImplicitParam(dataType = "java.lang.Integer", name = "zoneId", value = "分站ID", required = false),
-            @ApiImplicitParam(dataType = "java.lang.Integer", name = "type", value = "基站类型", required = false)
+            @ApiImplicitParam(dataType = "java.util.Date", name = "startTime", value = "开始时间"),
+            @ApiImplicitParam(dataType = "java.util.Date", name = "endTime", value = "结束时间"),
+            @ApiImplicitParam(dataType = "java.lang.Integer", name = "zoneId", value = "分站ID"),
+            @ApiImplicitParam(dataType = "java.lang.Integer", name = "type", value = "基站类型")
     })
     public String findStationInfoByParams(@RequestParam(required = false) Map<String, Object> params,
                                           @RequestParam(name = "limit", defaultValue = "12", required = false) Integer pageSize,

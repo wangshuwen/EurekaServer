@@ -18,7 +18,7 @@ eureka:
     lease-renewal-interval-in-seconds: 1     #每间隔1s，向服务端发送一次心跳，证明自己依然”存活“
   client:
     service-url:
-      defaultZone: http://192.168.1.101:8761/eureka/
+      defaultZone: http://127.0.0.1:8761/eureka/
 #打印日志
 logging:
   level:

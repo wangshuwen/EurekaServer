@@ -1,9 +1,11 @@
 package com.cst.xinhe.gas.service.controller;
 
 
+import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.result.ResultUtil;
 import com.cst.xinhe.common.utils.convert.DateConvert;
 import com.cst.xinhe.gas.service.client.AttendanceServiceClient;
+import com.cst.xinhe.gas.service.elasticsearch.entity.GasPositionEntity;
 import com.cst.xinhe.gas.service.service.TerminalRoadService;
 import com.cst.xinhe.persistence.model.attendance.Attendance;
 import com.cst.xinhe.persistence.model.terminal_road.TerminalRoad;
@@ -76,7 +78,9 @@ public class TerminalRoadController {
     public String findTerminalRoadByInOreTime(
             @RequestParam(name ="staffId",required = false) Integer staffId,
             @RequestParam(name ="trackStartTime",required = false) String trackStartTime,
-            @RequestParam(name ="trackEndTime",required = false) String trackEndTime
+            @RequestParam(name ="trackEndTime",required = false) String trackEndTime,
+            @RequestParam(name = "limit",required = false,defaultValue = "12")Integer pageSize,
+            @RequestParam(name = "page",required = false,defaultValue = "1")Integer startPage
             ) {
 //        Attendance attendance = attendanceService.findAttendanceByStaffIdAndEndTimeIsNull(staffId);
         Attendance attendance = attendanceServiceClient.findAttendanceByStaffIdAndEndTimeIsNull(staffId);
@@ -97,8 +101,8 @@ public class TerminalRoadController {
                 e.printStackTrace();
             }
 
-        List<Map<String,Object>> list=terminalRoadService.findTerminalRoadByInOreTime(staffId, inOre, startTime, endTime);
-        return ResultUtil.jsonToStringSuccess(list);
+        org.springframework.data.domain.Page<GasPositionEntity> list=terminalRoadService.findTerminalRoadByInOreTime(staffId, inOre, startTime, endTime,startPage,pageSize);
+        return list.getSize() > 0 ?ResultUtil.jsonToStringSuccess(list): ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
     }
 
 

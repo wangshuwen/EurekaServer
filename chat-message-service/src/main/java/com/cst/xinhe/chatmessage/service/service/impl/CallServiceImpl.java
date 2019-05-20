@@ -215,4 +215,31 @@ public class CallServiceImpl implements CallService {
         }
         return false;
     }
+
+    @Override
+    public boolean pingTerminalByTerminalNum(Integer terminalNum) {
+        //        Integer terminalId = terminalService.findTerminalInfoByStaffId(staffId);
+//        Integer terminalNum = staffGroupTerminalServiceClient.findTerminalInfoByStaffId(staffId);
+        if (terminalNum != null&&terminalNum!=0) {
+//            Map<String, Object> terminalInfo = terminalUpdateIpMapper.selectTerminalIpInfoByTerminalId(terminalId);
+            Map<String, Object> terminalInfo =staffGroupTerminalServiceClient.selectTerminalIpInfoByTerminalId(terminalNum);
+            if (null != terminalInfo && !terminalInfo.isEmpty()) {
+                if (terminalInfo.containsKey("terminal_ip") && terminalInfo.containsKey("terminal_port")){
+                    String terminalIp = (String) terminalInfo.get("terminal_ip");
+                    Integer terminalPort = (Integer) terminalInfo.get("terminal_port");
+
+                    String terminalIps[] = terminalIp.split("\\.");
+                    Integer terminalIp1 = Integer.parseInt(terminalIps[0]);
+                    Integer terminalIp2 = Integer.parseInt(terminalIps[1]);
+                    StringBuffer ipPort = new StringBuffer();
+                    ipPort.append(terminalIp1).append(".").append(terminalIp2).append(":").append(terminalPort);
+                    boolean flag = terminalMonitorClient.getChanelByName(ipPort.toString());
+                    return flag;
+                }
+
+            }
+            return false;
+        }
+        return false;
+    }
 }

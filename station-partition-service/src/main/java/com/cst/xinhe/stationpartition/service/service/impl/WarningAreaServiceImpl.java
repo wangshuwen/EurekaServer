@@ -22,10 +22,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author wangshuwen
@@ -152,22 +149,23 @@ public class WarningAreaServiceImpl implements WarningAreaService {
 
     @Override
     public Page findAreaRecordByAreaId(Integer type, Integer areaId, Integer pageSize, Integer startPage, String staffName, Integer deptId) {
-        List<Integer> areaIdList=new ArrayList<>();
-        if(areaId!=null){
+        Set<Integer> areaIdList=new HashSet<>();
+        if(null != areaId){
             areaIdList.add(areaId);
         }
-        if(deptId==null){
+        if(null == deptId){
             deptId=0;
         }
 //        List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(deptId);
         List<Integer> deptIds = staffGroupTerminalServiceClient.findSonIdsByDeptId(deptId);
 
-        if(type!=null){
+        if(null != type){
             WarningAreaExample example = new WarningAreaExample();
             WarningAreaExample.Criteria criteria = example.createCriteria();
             criteria.andWarningAreaTypeEqualTo(type);
+            criteria.andWarningAreaIdEqualTo(areaId);
             List<WarningArea> areaList = warningAreaMapper.selectByExample(example);
-            if(areaList!=null&&areaList.size()>0){
+            if(null != areaList &&areaList.size()>0){
                 for (WarningArea warningArea : areaList) {
                     areaIdList.add(warningArea.getWarningAreaId());
                 }

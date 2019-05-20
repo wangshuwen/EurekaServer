@@ -113,7 +113,7 @@ public class GasPositionServiceImpl implements GasPositionService {
     }
 
     @Override
-    public List<Map<String, Object>> findTerminalRoadByInOreTime(int staffId, Date inOreTime, Date startTime, Date endTime) {
+    public Page<GasPositionEntity> findTerminalRoadByInOreTime(int staffId, Date inOreTime, Date startTime, Date endTime, Integer startPage, Integer pageSize) {
         List<Map<String, Object>> result = new ArrayList<>();
         Map<String, Object> itemMap = null;
         QueryBuilder queryBuilder = QueryBuilders.termQuery("staffid", staffId);
@@ -129,17 +129,18 @@ public class GasPositionServiceImpl implements GasPositionService {
         if (null != endTime){
             queryBuilder2 = QueryBuilders.rangeQuery("createtime").format("yyyy-MM-dd").lte(endTime);
         }
-        NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withQuery(queryBuilder).withQuery(queryBuilder0).withQuery(queryBuilder1).withQuery(queryBuilder2).withFields("createtime","temppositionnname", "isore");
-        Iterable<GasPositionEntity> iterable = gasPositionRepository.search(searchQueryBuilder.build());
-        for (GasPositionEntity item: iterable){
-            itemMap = new HashMap<>();
-            itemMap.put("tempPositionName",item.getTemppositionname());
-            itemMap.put("isSore",item.getIsore());
-            itemMap.put("createTime",item.getCreatetime());
-            result.add(itemMap);
-        }
-
-        return result;
+        Pageable pageable = new PageRequest(startPage,pageSize);
+        NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withPageable(pageable).withQuery(queryBuilder).withQuery(queryBuilder0).withQuery(queryBuilder1).withQuery(queryBuilder2).withFields("createtime","temppositionnname", "isore");
+        Page<GasPositionEntity> iterable = gasPositionRepository.search(searchQueryBuilder.build());
+//        for (GasPositionEntity item: iterable.getContent()){
+//            itemMap = new HashMap<>();
+//            itemMap.put("tempPositionName",item.getTemppositionname());
+//            itemMap.put("isSore",item.getIsore());
+//            itemMap.put("createTime",item.getCreatetime());
+//            result.add(itemMap);
+//        }
+//        return result;
+        return iterable;
     }
 
     @Override

@@ -12,6 +12,7 @@ import com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp;
 import com.cst.xinhe.persistence.vo.resp.GasLevelVO;
 import com.cst.xinhe.terminal.monitor.server.channel.ChannelMap;
 import com.cst.xinhe.terminal.monitor.server.client.*;
+import com.cst.xinhe.terminal.monitor.server.handle.NettyServerHandler;
 import com.cst.xinhe.terminal.monitor.server.request.SingletonClient;
 import com.cst.xinhe.terminal.monitor.server.service.TerminalMonitorService;
 import io.netty.channel.Channel;
@@ -268,5 +269,10 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
     public Map<String, Object> selectStaffInfoByTerminalId(Integer terminalId) {
 
         return staffGroupTerminalServiceClient.selectStaffInfoByTerminalId(terminalId);
+    }
+
+    @Override
+    public Integer getBatteryNumByTerminalNum(Integer terminalNum) {
+        return NettyServerHandler.battery.get(terminalNum);
     }
 }

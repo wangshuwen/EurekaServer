@@ -6,6 +6,7 @@ import com.cst.xinhe.persistence.model.user.SysUserExample;
 import com.cst.xinhe.persistence.vo.UserLoginVOReq;
 import com.cst.xinhe.persistence.vo.UserLoginVOResp;
 import com.cst.xinhe.system.service.service.UserService;
+import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -43,5 +44,23 @@ public class UserServiceImpl implements UserService {
 
         return resp;
 
+    }
+
+    @Override
+    public boolean check(String account, String password) {
+        SysUserExample sysUserExample = new SysUserExample();
+        SysUserExample.Criteria criteria = sysUserExample.createCriteria();
+        criteria.andSysAccountEqualTo(account);
+        List<SysUser> userList = sysUserMapper.selectByExample(sysUserExample);
+        if (userList != null && userList.size() == 1){
+            String pass = userList.get(0).getSysPassword();
+            Md5Hash md5Hash = new Md5Hash(password, account);
+            md5Hash = new Md5Hash(md5Hash);
+            if (pass.equals(md5Hash.toString())){
+                return true;
+            }
+            return false;
+        }
+        return false;
     }
 }

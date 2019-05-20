@@ -433,4 +433,12 @@
       OR ch4_error = 1 OR t_error = 1 OR h_error = 1 OR o2_error = 1)
     </where>
   </select>
+
+  <select id="findMalfunctionInfoByStatus1" resultMap="BaseResultMap">
+    SELECT *
+    FROM malfunction
+        WHERE status = 1
+      AND (wifi_error = 0 OR voice_error = 0 OR co_error = 0 OR co2_error = 0
+      OR ch4_error = 0 OR t_error = 0 OR h_error = 0 OR o2_error = 0)
+  </select>
 </mapper>

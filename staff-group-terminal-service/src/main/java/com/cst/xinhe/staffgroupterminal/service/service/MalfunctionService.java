@@ -25,4 +25,6 @@ public interface MalfunctionService {
     void addMalfunction(Malfunction malfunction);
 
     Map<String, Object> getCountMalfunction();
+
+    List<Malfunction> findMalfunctionInfoByStatus1();
 }

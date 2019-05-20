@@ -8,6 +8,7 @@ import com.cst.xinhe.chatmessage.service.service.CallService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -58,10 +59,20 @@ public class CallController {
     }
 
 
-    @ApiOperation(value = "对终端进行在线监检查", notes = "确定终端是否连接网络")
+    @ApiOperation(value = "根据人员Id对终端进行在线监检查", notes = "确定终端是否连接网络")
     @GetMapping("checkTerminalOnline")
-    public String checkTerminalIsNotOnline(Integer staffId) {
+    public String checkTerminalIsNotOnline(@RequestParam("staffId")Integer staffId) {
         boolean flag = callService.pingTerminal(staffId);
+        if (flag) {
+            return ResultUtil.jsonToStringSuccess();
+        }
+        return ResultUtil.jsonToStringError(ResultEnum.CHECK_ONLINE_FAIL);
+    }
+
+    @ApiOperation(value = "根据终端的ID对终端进行在线监检查", notes = "确定终端是否连接网络")
+    @GetMapping("checkTerminalOnlineByTerminalNum")
+    public String checkTerminalOnlineByTerminalNum(@RequestParam("terminalNum") Integer terminalNum) {
+        boolean flag = callService.pingTerminalByTerminalNum(terminalNum);
         if (flag) {
             return ResultUtil.jsonToStringSuccess();
         }

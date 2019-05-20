@@ -80,14 +80,14 @@ public class TerminalRoadServiceImpl implements TerminalRoadService {
     }
 
     @Override
-    public List<Map<String,Object>> findTerminalRoadByInOreTime(int staffId, Date inOreTime, Date startTime, Date endTime) {
+    public org.springframework.data.domain.Page<GasPositionEntity> findTerminalRoadByInOreTime(int staffId, Date inOreTime, Date startTime, Date endTime, Integer startPage, Integer pageSize) {
 //        QueryBuilder queryBuilder = QueryBuilders.termQuery("staffid", staffId);
 
 //        NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withQuery(queryBuilder);
 //        Iterable<GasPositionEntity> iterable = gasPositionRepository.search(searchQueryBuilder.build());
 //        Iterable<GasPositionEntity> iterable =
 //                terminalRoadMapper.findTerminalRoadByInOreTime(staffId,inOreTime,startTime,endTime) ;
-        return gasPositionService.findTerminalRoadByInOreTime(staffId,inOreTime,startTime,endTime);
+        return gasPositionService.findTerminalRoadByInOreTime(staffId,inOreTime,startTime,endTime,startPage,pageSize);
     }
 
     @Override

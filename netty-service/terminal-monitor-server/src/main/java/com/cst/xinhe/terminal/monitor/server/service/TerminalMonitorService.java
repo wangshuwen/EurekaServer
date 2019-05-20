@@ -57,4 +57,6 @@ public interface TerminalMonitorService {
     TerminalUpdateIp findTerminalIdByIpAndPort(String terminalIp, int port);
 
     Map<String, Object> selectStaffInfoByTerminalId(Integer terminalId);
+
+    Integer getBatteryNumByTerminalNum(Integer terminalNum);
 }

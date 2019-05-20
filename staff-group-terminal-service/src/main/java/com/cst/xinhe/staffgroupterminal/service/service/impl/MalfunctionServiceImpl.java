@@ -28,6 +28,15 @@ public class MalfunctionServiceImpl implements MalfunctionService {
     public int updateStatusById(Integer selfCheckId) {
         Malfunction malfunction = new Malfunction();
         malfunction.setSelfCheckId(selfCheckId);
+        malfunction.setCh4Error(0);
+        malfunction.setWifiError(0);
+        malfunction.setVoiceError(0);
+        malfunction.setCoError(0);
+        malfunction.setCo2Error(0);
+        malfunction.setCh4Error(0);
+        malfunction.settError(0);
+        malfunction.sethError(0);
+        malfunction.setO2Error(0);
         malfunction.setStatus(1);
         return malfunctionMapper.updateByPrimaryKeySelective(malfunction);
     }
@@ -60,5 +69,10 @@ public class MalfunctionServiceImpl implements MalfunctionService {
     @Override
     public Map<String, Object> getCountMalfunction() {
         return malfunctionMapper.selectCountMalfunction();
+    }
+
+    @Override
+    public List<Malfunction> findMalfunctionInfoByStatus1() {
+        return malfunctionMapper.findMalfunctionInfoByStatus1();
     }
 }

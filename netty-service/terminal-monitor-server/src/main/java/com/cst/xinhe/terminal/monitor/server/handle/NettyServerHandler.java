@@ -1,6 +1,8 @@
 package com.cst.xinhe.terminal.monitor.server.handle;
 
 import com.alibaba.fastjson.JSON;
+import com.cst.xinhe.base.exception.ErrorCode;
+import com.cst.xinhe.base.exception.RuntimeServiceException;
 import com.cst.xinhe.common.constant.ConstantValue;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
@@ -48,6 +50,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
      * 日志
      */
     private Logger log = LoggerFactory.getLogger(getClass());
+
+    public static final Map<Integer,Integer> battery = new HashMap<>();
 
 //    private UpLoadService upLoadService;
 
@@ -252,6 +256,9 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                         break;
                     case ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE:
                         switch (ndName) {
+                            case ConstantValue.MSG_BODY_NODE_NAME_CHECK_POWER:
+                                battery.put(customMsg.getTerminalId(),(int) customMsg.getBody()[0]);
+                                break;
                             case ConstantValue.MSG_BODY_NODE_NAME_CHECK_ONLINE:
                                 // 检查在线情况
                                 break;
@@ -329,7 +336,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             String terminalIp = split[2] + "." + split[3];
             TerminalUpdateIp terminalUpdateIp = terminalUpdateIpMapper.findTerminalIdByIpAndPort(terminalIp, port);
 //            TerminalUpdateIp terminalUpdateIp = terminalMonitorService.findTerminalIdByIpAndPort(terminalIp, port);
-            if (terminalUpdateIp != null) {
+            if (null != terminalUpdateIp) {
                 //掉线终端
                 processOfflineTerminalSendWs(terminalUpdateIp);
 
@@ -373,6 +380,9 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         Integer terminalId = terminalUpdateIp.getTerminalNum();
         //Map<String, Object> map = staffMapper.selectStaffInfoByTerminalId(terminalId);
         Map<String, Object> map = terminalMonitorService.selectStaffInfoByTerminalId(terminalId);
+        if (null == map){
+            throw new RuntimeServiceException(ErrorCode.TERMINAL_AND_STAFF_NOT_BINDING);
+        }
 //        Integer isPerson = (Integer) map.get("is_person");
         Integer staffId = (Integer) map.get("staff_id");
         mapOfWs.put("type", 2);

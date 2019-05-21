@@ -842,11 +842,14 @@ public class GasKafka extends BaseLog {
             }
             gasNum++;
             System.out.println("--------------------------已插入气体数量：-------------------------" + gasNum);
-            gasPositions.add(gasPosition);
+            //单条插入
+            gasPositionMapper.insert(gasPosition);
+            //批量插入
+            /*gasPositions.add(gasPosition);
             if (gasPositions.size() > 200){
                 gasPositionMapper.insertGasPositions(gasPositions);
                 gasPositions.clear();
-            }
+            }*/
 
             isWarn = false;
         }

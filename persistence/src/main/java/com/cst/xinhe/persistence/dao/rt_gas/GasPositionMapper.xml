@@ -728,7 +728,7 @@
     where gas_position_id = #{gasPositionId,jdbcType=BIGINT}
   </update>
 
-  <insert id="insertGasPositions" parameterType="java.util.List">
+  <!--<insert id="insertGasPositions" parameterType="java.util.List">
      insert into gas_position ( co, co_unit,
       ch4, ch4_unit, o2, o2_unit,
       co2, co2_unit, temperature,
@@ -756,5 +756,5 @@
       #{it.tempPositionName,jdbcType=VARCHAR}, #{it.isOre,jdbcType=INTEGER}, #{it.gasFlag,jdbcType=INTEGER}
       )
     </foreach>
-  </insert>
+  </insert>-->
 </mapper>

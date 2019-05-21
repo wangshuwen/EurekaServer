@@ -80,7 +80,7 @@ public class TerminalRoadServiceImpl implements TerminalRoadService {
     }
 
     @Override
-    public org.springframework.data.domain.Page<GasPositionEntity> findTerminalRoadByInOreTime(int staffId, Date inOreTime, Date startTime, Date endTime, Integer startPage, Integer pageSize) {
+    public org.springframework.data.domain.Page<GasPositionEntity> findTerminalRoadByInOreTime(int staffId, Date inOreTime, String startTime, String endTime, Integer startPage, Integer pageSize) {
 //        QueryBuilder queryBuilder = QueryBuilders.termQuery("staffid", staffId);
 
 //        NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withQuery(queryBuilder);

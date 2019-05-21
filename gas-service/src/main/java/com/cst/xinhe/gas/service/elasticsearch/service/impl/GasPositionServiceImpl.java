@@ -113,24 +113,26 @@ public class GasPositionServiceImpl implements GasPositionService {
     }
 
     @Override
-    public Page<GasPositionEntity> findTerminalRoadByInOreTime(int staffId, Date inOreTime, Date startTime, Date endTime, Integer startPage, Integer pageSize) {
+    public Page<GasPositionEntity> findTerminalRoadByInOreTime(int staffId, Date inOreTime, String startTime, String endTime, Integer startPage, Integer pageSize) {
         List<Map<String, Object>> result = new ArrayList<>();
         Map<String, Object> itemMap = null;
         QueryBuilder queryBuilder = QueryBuilders.termQuery("staffid", staffId);
-        QueryBuilder queryBuilder0 = null;
+//        QueryBuilder queryBuilder0 = null;
         QueryBuilder queryBuilder1 = null;
-        QueryBuilder queryBuilder2 = null;
-        if (null != inOreTime){
-            queryBuilder0 = QueryBuilders.rangeQuery("createtime").format("yyyy-MM-dd").gte(inOreTime);
+//        QueryBuilder queryBuilder2 = null;
+//        if (null != inOreTime){
+//            queryBuilder0 = QueryBuilders.rangeQuery("createtime").format("yyyy-MM-dd").gte(inOreTime);
+//        }
+        if (null != startTime && null != endTime && !"".equals(startTime) && !"".equals(endTime)){
+            queryBuilder1 = QueryBuilders.rangeQuery("createtime").format("yyyy-MM-dd").from(startTime).to(endTime);
+//            gte(startTime).lte(endTime);
         }
-        if (null != startTime){
-            queryBuilder1 = QueryBuilders.rangeQuery("createtime").format("yyyy-MM-dd").gte(startTime);
-        }
-        if (null != endTime){
-            queryBuilder2 = QueryBuilders.rangeQuery("createtime").format("yyyy-MM-dd").lte(endTime);
-        }
+//        if (null != endTime){
+//            queryBuilder2 = QueryBuilders.rangeQuery("createtime").format("yyyy-MM-dd").lte(endTime);
+//        }
+        FieldSortBuilder sortBuilder = SortBuilders.fieldSort("createtime").order(SortOrder.DESC);
         Pageable pageable = new PageRequest(startPage,pageSize);
-        NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withPageable(pageable).withQuery(queryBuilder).withQuery(queryBuilder0).withQuery(queryBuilder1).withQuery(queryBuilder2).withFields("createtime","temppositionnname", "isore");
+        NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withPageable(pageable).withQuery(queryBuilder).withQuery(queryBuilder1).withSort(sortBuilder).withFields("createtime","temppositionname", "isore");
         Page<GasPositionEntity> iterable = gasPositionRepository.search(searchQueryBuilder.build());
 //        for (GasPositionEntity item: iterable.getContent()){
 //            itemMap = new HashMap<>();

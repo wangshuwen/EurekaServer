@@ -237,33 +237,36 @@ public class MalfunctionProcess {
 
 //                Map<String, Object> map = staffService.findStaffIdByTerminalId(terminalId);
                 Map<String, Object> map = staffGroupTerminalServiceClient.findStaffIdByTerminalId(terminalId);
-                Integer staffId = (Integer) map.get("staff_id");
-                Map<String, Object> params = new HashMap<>();
+                if(map!=null&&map.size()>0){
+                    Integer staffId = (Integer) map.get("staff_id");
+                    Map<String, Object> params = new HashMap<>();
 //                params.put("type", 1);
 //                params.put("staffId", staffId);
 //                StaffTerminalRelation staffTerminalRelation = staffTerminalRelationMapper.findNewRelationByParams(params).get(0);
 
 //                StaffTerminalRelation staffTerminalRelation = staffTerminalRelationService.findNewRelationByStaffId(staffId);
 //                StaffTerminalRelation staffTerminalRelation =  staffTerminalRelation.get(0);
-                StaffTerminalRelation staffTerminalRelation = staffGroupTerminalServiceClient.findNewRelationByStaffId(staffId);
+                    StaffTerminalRelation staffTerminalRelation = staffGroupTerminalServiceClient.findNewRelationByStaffId(staffId);
 
-                malfunction.setTerminalId(staffTerminalRelation.getStaffTerminalRelationId());
+                    malfunction.setTerminalId(staffTerminalRelation.getStaffTerminalRelationId());
 
 //                malfunctionMapper.insertSelective(malfunction);
-                staffGroupTerminalServiceClient.addMalfunction(malfunction);
-                if (co2Error == 1 || coError == 1 || ch4Error == 1 || wifiError == 1 || voiceError == 1 || o2Error == 1 || tError == 1) {
-                    try {
+                    staffGroupTerminalServiceClient.addMalfunction(malfunction);
+                    if (co2Error == 1 || coError == 1 || ch4Error == 1 || wifiError == 1 || voiceError == 1 || o2Error == 1 || tError == 1) {
+                        try {
 //
-                        int malfunctionValue = (Integer) (staffGroupTerminalServiceClient.getCountMalfunction().get("malfunctionCount"));
+                            int malfunctionValue = (Integer) (staffGroupTerminalServiceClient.getCountMalfunction().get("malfunctionCount"));
 //                        long malfunctionValue = (Long) malfunctionMapper.selectCountMalfunction().get("malfunctionCount");
-                        // 查询数据推送
-                        map.put("malfunctionValue", malfunctionValue);
+                            // 查询数据推送
+                            map.put("malfunctionValue", malfunctionValue);
 //                        WebsocketServer.sendInfo(JSONObject.toJSONString(new WebSocketData(4, map)));
-                        wsPushServiceClient.sendWebsocketServer(JSONObject.toJSONString(new WebSocketData(4, map)));
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                            wsPushServiceClient.sendWebsocketServer(JSONObject.toJSONString(new WebSocketData(4, map)));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
+
             }
         }
     }

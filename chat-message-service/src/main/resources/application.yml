@@ -1,3 +1,4 @@
+ipPrefix: 192.168.
 server:
   port: 8777
 spring:

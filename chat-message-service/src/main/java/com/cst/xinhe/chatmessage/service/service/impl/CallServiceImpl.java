@@ -54,6 +54,9 @@ public class CallServiceImpl implements CallService {
     @Resource
     private KafkaClient kafkaClient;
 
+    @Value("${ipPrefix}")
+    private String ipPrefix;
+
     @Resource
     private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
 
@@ -164,7 +167,7 @@ public class CallServiceImpl implements CallService {
                     String terminalIps[] = terminalIp.split("\\.");
                     Integer terminalIp1 = Integer.parseInt(terminalIps[0]);
                     Integer terminalIp2 = Integer.parseInt(terminalIps[1]);
-                    StringBuffer ipPort = new StringBuffer();
+                    StringBuffer ipPort = new StringBuffer(ipPrefix);
                     ipPort.append(terminalIp1).append(".").append(terminalIp2).append(":").append(terminalPort);
 //                    Channel channel = ChannelMap.getChannelByName(ipPort.toString());
                     boolean flag = terminalMonitorClient.getChanelByName(ipPort.toString());
@@ -231,7 +234,7 @@ public class CallServiceImpl implements CallService {
                     String terminalIps[] = terminalIp.split("\\.");
                     Integer terminalIp1 = Integer.parseInt(terminalIps[0]);
                     Integer terminalIp2 = Integer.parseInt(terminalIps[1]);
-                    StringBuffer ipPort = new StringBuffer();
+                    StringBuffer ipPort = new StringBuffer(ipPrefix);
                     ipPort.append(terminalIp1).append(".").append(terminalIp2).append(":").append(terminalPort);
                     boolean flag = terminalMonitorClient.getChanelByName(ipPort.toString());
                     return flag;

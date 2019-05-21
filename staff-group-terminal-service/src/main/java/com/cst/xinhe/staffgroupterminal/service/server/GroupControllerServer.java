@@ -57,7 +57,7 @@ public class GroupControllerServer {
     }
 
     @GetMapping("findSonIdsByDeptName")
-    public List<Integer> findSonIdsByDeptName(@RequestParam String keyWord){
+    public List<Integer> findSonIdsByDeptName(@RequestParam("keyWord") String keyWord){
         return staffOrganizationService.findSonIdsByDeptName(keyWord);
     }
 

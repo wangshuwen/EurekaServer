@@ -27,11 +27,10 @@
  ##**eureka-server-backups:    127.0.0.1:8762**
  
  
+ ##**station-monitor-server:   192.168.1.50:8765**
  
  
- 
- ##**kafka-sender-service:     192.168.1.47:8768**
- ##**station-monitor-server:   192.168.1.47:8765**
+ ##**kafka-sender-service:     192.168.1.50:8768**
  
  ##**kafka-consumer-service:   192.168.1.50:8773**
  

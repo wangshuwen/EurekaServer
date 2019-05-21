@@ -42,7 +42,7 @@ public class MacStationController {
             ,@RequestParam(name = "startPage") Integer startPage
             ,@RequestParam(name = "pageSize") Integer pageSize){
         PageInfo<MacStation> pageInfo = macStationService.findPersonInfoByStation(stationId,startPage,pageSize);
-        return (pageInfo != null && !pageInfo.getList().isEmpty())? ResultUtil.jsonToStringSuccess(pageInfo): ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
+        return (null != pageInfo && !pageInfo.getList().isEmpty())? ResultUtil.jsonToStringSuccess(pageInfo): ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
     }
 
 }

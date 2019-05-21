@@ -83,9 +83,15 @@ spring:
         # 连接池中的最小空闲连接
         min-idle: 200
 zuul:
+  semaphore:
+    max-semaphores: 500
+  thread-pool:
+    use-separate-thread-pools: true
   host:
     connect-timeout-millis: 60000 #HTTP连接超时要比Hystrix的大
     socket-timeout-millis: 3000   #socket超时
+    max-per-route-connections: 20
+    max-total-connections: 200
   sensitive-headers: Access-Control-Allow-Origin
   ignored-headers: Access-Control-Allow-Origin,H-APP-Id,Token,APPToken
   routes:
@@ -128,6 +134,7 @@ ribbon:
   MaxAutoRetriesNextServer: 1  #切换实例的重试次数
   eureka:
     enabled: true
+#线程策略
 hystrix:
   command:
     default:
@@ -135,6 +142,9 @@ hystrix:
         timeout:
           enabled: true
         isolation:
+          strategy: SEMAPHORE
+          semaphore:
+            maxConcurrentRequests: 500
           thread:
             timeoutInMilliseconds: 150000
 mybatis:

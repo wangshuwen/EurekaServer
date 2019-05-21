@@ -77,6 +77,18 @@ public class WarningAreaServiceImpl implements WarningAreaService {
         return result;
     }
 
+
+    @Override
+    public Integer deleteCoordinate(Integer id) {
+
+        //删除坐标点
+        CoordinateExample example = new CoordinateExample();
+        example.createCriteria().andWarningAreaIdEqualTo(id);
+        Integer result = coordinateMapper.deleteByExample(example);
+        return result;
+    }
+
+
     @Override
     public Integer updateAreaInfo(WarningArea warningArea) {
         return warningAreaMapper.updateByPrimaryKeySelective(warningArea);
@@ -311,6 +323,7 @@ public class WarningAreaServiceImpl implements WarningAreaService {
 
         return warningAreaRecordMapper.findStaffNumByType(type);
     }
+
 
 
 

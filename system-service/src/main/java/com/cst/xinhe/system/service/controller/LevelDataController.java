@@ -37,7 +37,7 @@ public class LevelDataController {
     })
     public String getAllLevelDataByParams(@RequestParam(name = "id", required = false) Integer id, @RequestParam(name = "name", required = false) String name){
         Map<String, Object> map = new HashMap<>();
-        if (id != null && id != 0){
+        if (null != id && 0 != id){
             map.put("id", id);
         }
         if (null != name && !"".equals(name)){

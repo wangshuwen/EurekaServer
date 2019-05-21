@@ -65,7 +65,7 @@ public interface StaffGroupTerminalServiceClient {
     @GetMapping("selectStaffJobById")
     StaffJob selectStaffJobByJobId(@RequestParam("jobId") Integer jobId);
 
-    @GetMapping("selectStaffJobByIds")
+    @GetMapping("findStaffByTimeStandardIds")
     Map<Integer, List<Staff>> findStaffByTimeStandardIds(@RequestParam("ids") Integer[] ids);
 
     @GetMapping("findSonIdsByDeptName")

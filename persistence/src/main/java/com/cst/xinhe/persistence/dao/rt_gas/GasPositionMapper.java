@@ -97,4 +97,6 @@ public interface GasPositionMapper {
     int updateByPrimaryKey(GasPosition record);
 
     void insertGasPositions(@Param("gasPositions") List<GasPosition> gasPositions);
+
+    Integer insertSingleGas(GasPosition gasPosition);
 }

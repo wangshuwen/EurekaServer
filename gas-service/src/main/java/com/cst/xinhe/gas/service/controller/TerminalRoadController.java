@@ -7,6 +7,7 @@ import com.cst.xinhe.common.utils.convert.DateConvert;
 import com.cst.xinhe.gas.service.client.AttendanceServiceClient;
 import com.cst.xinhe.gas.service.elasticsearch.entity.GasPositionEntity;
 import com.cst.xinhe.gas.service.service.TerminalRoadService;
+import com.cst.xinhe.persistence.dao.attendance.AttendanceMapper;
 import com.cst.xinhe.persistence.model.attendance.Attendance;
 import com.cst.xinhe.persistence.model.terminal_road.TerminalRoad;
 import com.github.pagehelper.Page;
@@ -39,6 +40,9 @@ public class TerminalRoadController {
     @Resource
     private AttendanceServiceClient attendanceServiceClient;
 
+
+    @Resource
+    private AttendanceMapper attendanceMapper;
     @GetMapping("findTimeList")
     @ApiOperation(value = "获取员工id获取历史轨迹时间列表", notes = "根据员工id查询详细时间列表")
     public String findTimeList(
@@ -82,24 +86,23 @@ public class TerminalRoadController {
             @RequestParam(name = "limit",required = false,defaultValue = "12")Integer pageSize,
             @RequestParam(name = "page",required = false,defaultValue = "1")Integer startPage
             ) {
-//        Attendance attendance = attendanceService.findAttendanceByStaffIdAndEndTimeIsNull(staffId);
-        Attendance attendance = attendanceServiceClient.findAttendanceByStaffIdAndEndTimeIsNull(staffId);
-
+//        Attendance attendance = attendanceServiceClient.findAttendanceByStaffIdAndEndTimeIsNull(staffId);
+        Attendance attendance = attendanceMapper.findAttendanceByStaffIdAndEndTimeIsNull(staffId);
         Date inOre =null;
-        if(attendance!=null){
+        if(null != attendance){
             inOre = attendance.getInOre();
         }
-        Date startTime=null;
-        Date endTime=null;
+        String startTime = "";
+        String endTime = "";
 
-            try {
+//            try {
                 if (null != trackStartTime && !"".equals(trackStartTime) && !"0".equals(trackStartTime))
-                startTime = DateConvert.convertStringToDate(trackStartTime, 10);
+                startTime = trackStartTime;
                 if (null != trackEndTime && !"".equals(trackEndTime) && !"0".equals(trackEndTime))
-                endTime=DateConvert.convertStringToDate(trackEndTime,10);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+                endTime = trackEndTime;
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
 
         org.springframework.data.domain.Page<GasPositionEntity> list=terminalRoadService.findTerminalRoadByInOreTime(staffId, inOre, startTime, endTime,startPage,pageSize);
         return list.getSize() > 0 ?ResultUtil.jsonToStringSuccess(list): ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);

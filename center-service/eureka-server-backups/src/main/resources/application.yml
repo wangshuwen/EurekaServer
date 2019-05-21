@@ -4,6 +4,7 @@ eureka:
   server:
     peer-node-read-timeout-ms: 1000
     enable-self-preservation: false
+    eviction-interval-timer-in-ms: 5000
   instance:
     hostname: eureka
   client:

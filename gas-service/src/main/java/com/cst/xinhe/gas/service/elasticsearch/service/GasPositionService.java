@@ -16,7 +16,7 @@ public interface GasPositionService {
 
     Page<GasPositionEntity> searchGasPositionWarnInfoByStaffId(Integer gasFlag, String staffName, Integer startPage, Integer pageSize);
 
-    Page<GasPositionEntity> findTerminalRoadByInOreTime(int staffId, Date inOreTime, Date startTime, Date endTime, Integer startPage, Integer pageSize);
+    Page<GasPositionEntity> findTerminalRoadByInOreTime(int staffId, Date inOreTime, String startTime, String endTime, Integer startPage, Integer pageSize);
 
     TerminalRoad findNowSiteByStaffId(int staffId);
 }

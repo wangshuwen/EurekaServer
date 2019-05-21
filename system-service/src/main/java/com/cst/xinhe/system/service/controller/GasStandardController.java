@@ -34,8 +34,9 @@ public class GasStandardController {
 
     @ApiOperation(value = "添加标准")
     @PostMapping("addGasStandardInfo")
-    public String addGasStandardInfo(@RequestBody(required = true) GasStandard standard) {
+    public String addGasStandardInfo(@RequestBody GasStandard standard) {
         standard.setUserId(0);
+        standard.setCreateTime(new Date());
         int result = levelSettingService.addStandard(standard);
         return result == 1 ? ResultUtil.jsonToStringSuccess(): ResultUtil.jsonToStringError(ResultEnum.ADD_STANDARD_FAIL);
     }

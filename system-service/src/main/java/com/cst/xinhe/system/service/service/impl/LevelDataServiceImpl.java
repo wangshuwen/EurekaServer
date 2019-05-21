@@ -32,7 +32,7 @@ public class LevelDataServiceImpl implements LevelDataService {
         LevelDataExample example = new LevelDataExample();
         Integer id = (Integer) params.get("id");
         String levelName = (String) params.get("levelName");
-        if (id != null){
+        if (null != id){
             example.createCriteria().andIdEqualTo(id);
         }
         if (null != levelName && !"".equals(levelName)){

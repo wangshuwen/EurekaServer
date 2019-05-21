@@ -75,7 +75,7 @@ public class RangSettingServiceImpl implements RangSettingService {
     public List<LevelData> findRangByLevelDataId(Integer levelId) {
 
         LevelDataExample example = new LevelDataExample();
-        if(levelId!=null){
+        if(null != levelId){
             example.createCriteria().andIdEqualTo(levelId);
         }
         List<LevelData> list = levelDataMapper.selectByExample(example);

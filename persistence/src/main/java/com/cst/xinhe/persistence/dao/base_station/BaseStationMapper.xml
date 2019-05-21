@@ -709,10 +709,10 @@
             <!--&lt;if test="areaId != null and areaId != ''"&gt;
                 AND base_station.area_id = #{areaId}
             &lt;/if&gt;-->
-            <if test="startTime != null and startTime neq ''">
+            <if test="startTime != null ">
                 AND a.create_time &gt;= #{startTime}
             </if>
-            <if test="endTime != null and endTime neq ''">
+            <if test="endTime != null ">
                 AND a.create_time &lt;= #{endTime}
             </if>
           <if test="type != null and type neq ''">

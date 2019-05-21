@@ -115,12 +115,17 @@ zuul:
 #      path: /user/**
 #      serviceId: service-zuul
   prefix: /v1
+gas:
+  ribbon:
+    ConnectTimeout: 50000
+    ReadTimeout: 50000
 ribbon:
-  ReadTimeout: 60000
-  ConnectTimeout: 60000
-  SocketTimeout: 60000
-  MaxAutoRetries: 0
-  MaxAutoRetriesNextServer: 1
+  ReadTimeout: 50000 #请求处理的超时时间
+  ConnectTimeout: 50000 #请求连接的超时时间
+  OkToRetryOnAllOperations: false # 对所有的操作请求都进行重试，如果是get则可以，如果是post,put等操作没有实现幂等的情况下是很危险的，所以设置为false
+  SocketTimeout: 50000
+  MaxAutoRetries: 1 #最大重试次数，当Eureka中可以找到服务，但是服务连不上时将会重试
+  MaxAutoRetriesNextServer: 1  #切换实例的重试次数
   eureka:
     enabled: true
 hystrix:
@@ -131,7 +136,7 @@ hystrix:
           enabled: true
         isolation:
           thread:
-            timeoutInMilliseconds: 60000
+            timeoutInMilliseconds: 150000
 mybatis:
   mapper-locations: com/cst/xinhe/persistence/dao/*/*.xml
   configuration:

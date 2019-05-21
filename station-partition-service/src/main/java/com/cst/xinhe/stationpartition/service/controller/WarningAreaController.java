@@ -85,6 +85,15 @@ public class WarningAreaController {
     }
 
 
+    @ApiOperation(value = "删除点坐标，把区域设置由已设置变为未设置", notes = "通过ID删除")
+    @DeleteMapping("deleteCoordinate/{id}")
+    public String delete(@PathVariable("id") Integer id) {
+        Integer result=warningAreaService.deleteCoordinate(id);
+        return  ResultUtil.jsonToStringSuccess();
+    }
+
+
+
     @ApiOperation(value = "修改区域信息")
     @PutMapping("updateAreaInfo")
     public String updateAreaInfo(@RequestBody WarningArea  warningArea){

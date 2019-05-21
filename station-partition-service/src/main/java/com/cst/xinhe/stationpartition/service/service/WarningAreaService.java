@@ -47,4 +47,6 @@ public interface WarningAreaService {
     WarningAreaVO getAll();
 
     Integer findStaffNumByType(Integer type);
+
+    Integer deleteCoordinate(Integer id);
 }

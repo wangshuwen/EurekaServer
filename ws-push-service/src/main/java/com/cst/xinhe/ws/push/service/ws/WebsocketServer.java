@@ -16,7 +16,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @Description:
  * @Date 2019/1/18/9:24
  */
-@ServerEndpoint(value = "/webSocketServer")
+@ServerEndpoint(value = "/webSocketServer")//实时监控多项警报信息
 @Component
 public class WebsocketServer {
     private static final Logger log = LoggerFactory.getLogger(WebsocketServer.class);

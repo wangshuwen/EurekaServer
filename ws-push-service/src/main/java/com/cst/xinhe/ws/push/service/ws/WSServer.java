@@ -19,7 +19,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @Vserion v0.0.1
  */
 
-@ServerEndpoint(value = "/websocket")
+@ServerEndpoint(value = "/websocket") //实时气体的监控
 @Component
 public class WSServer {
     public static Integer orgId=null;

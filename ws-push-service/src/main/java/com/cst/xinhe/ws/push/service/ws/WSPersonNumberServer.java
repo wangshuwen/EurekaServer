@@ -17,7 +17,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @Vserion v0.0.1
  */
 
-@ServerEndpoint(value = "/WSPersonNumberServer")
+@ServerEndpoint(value = "/WSPersonNumberServer") //实时人数检测
 @Component
 public class WSPersonNumberServer {
 

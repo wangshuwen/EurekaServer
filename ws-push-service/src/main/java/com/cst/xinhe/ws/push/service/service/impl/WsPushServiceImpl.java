@@ -20,16 +20,6 @@ import java.io.IOException;
 @Service
 public class WsPushServiceImpl implements WsPushService {
 
-    @Autowired
-    private WebsocketServer websocketServer;
-
-    @Autowired
-    private WSPersonNumberServer wsPersonNumberServer;
-
-    @Autowired
-    private WSServer wsServer;
-
-
     public WsPushServiceImpl() {
     }
 

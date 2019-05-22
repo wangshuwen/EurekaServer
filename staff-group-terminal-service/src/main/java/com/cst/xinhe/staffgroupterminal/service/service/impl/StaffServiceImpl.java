@@ -176,7 +176,7 @@ public class StaffServiceImpl implements StaffService {
         Map<String, Object> resultMap = staffTerminalMapper.selectStaffNameByTerminalId(terminalId);
 
         GasWSRespVO gasWSRespVO = new GasWSRespVO();
-        if (resultMap!=null&&resultMap.size() > 0) {
+        if (null != resultMap &&resultMap.size() > 0) {
             Integer staffId = (Integer) resultMap.get("staff_id");
             String staffName = (String) resultMap.get("staff_name");
             Integer isPerson = (Integer) resultMap.get("is_person");

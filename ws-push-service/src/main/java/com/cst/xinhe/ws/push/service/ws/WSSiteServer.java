@@ -18,7 +18,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @DATE 2018/11/28 17:04
  * @Vserion v0.0.1
  */
-@ServerEndpoint(value = "/siteToWs")
+@ServerEndpoint(value = "/siteToWs") //实时检测定位信息
 @Component
 public class WSSiteServer {
     public static Integer orgId=null;

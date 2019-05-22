@@ -5,6 +5,7 @@ import com.cst.xinhe.gas.service.elasticsearch.entity.GasPositionEntity;
 import com.cst.xinhe.gas.service.elasticsearch.service.GasPositionService;
 import com.cst.xinhe.gas.service.service.GasInfoService;
 import com.cst.xinhe.persistence.dao.rt_gas.RtGasInfoMapper;
+import com.cst.xinhe.persistence.dao.staff.StaffMapper;
 import com.cst.xinhe.persistence.dao.terminal_road.TerminalRoadMapper;
 import com.cst.xinhe.persistence.model.staff.Staff;
 import com.cst.xinhe.persistence.model.terminal_road.TerminalRoad;
@@ -31,6 +32,9 @@ public class GasInfoServiceImpl implements GasInfoService {
     private RtGasInfoMapper rtGasInfoMapper;
 
     @Resource
+    private StaffMapper staffMapper;
+
+    @Resource
     private TerminalRoadMapper terminalRoadMapper;
 
 //    @Autowired
@@ -39,7 +43,7 @@ public class GasInfoServiceImpl implements GasInfoService {
 //    @Autowired
 //    private StaffService staffService;
 
-    @Autowired
+    @Resource
     private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
 
 
@@ -65,7 +69,7 @@ public class GasInfoServiceImpl implements GasInfoService {
         }
 
         List<Map<String,Object>> staffMap = staffGroupTerminalServiceClient.findStaffByIds(staffIds);
-
+//        staffMapper.selectByPrimaryKey(staffId);
 
        /* for (GasPositionEntity item : gasPositionList.getContent()) {
                     Integer staffid = item.getStaffid();
@@ -179,8 +183,8 @@ public class GasInfoServiceImpl implements GasInfoService {
             if (terminalRoad != null) {
                 gasWSRespVO.setTempRoadName(terminalRoad.getTempPositionName());
                 Integer staffId = terminalRoad.getStaffId();
-               // Staff staff = staffMapper.selectByPrimaryKey(staffId);
-                Staff staff = staffGroupTerminalServiceClient.findStaffById(staffId);
+                Staff staff = staffMapper.selectByPrimaryKey(staffId);
+//                Staff staff = staffGroupTerminalServiceClient.findStaffById(staffId);
                 if (staff != null) {
                     gasWSRespVO.setStaffId(staffId);
                     gasWSRespVO.setStaffName(staff.getStaffName());

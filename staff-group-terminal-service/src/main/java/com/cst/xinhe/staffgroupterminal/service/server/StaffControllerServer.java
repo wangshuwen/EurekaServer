@@ -67,7 +67,7 @@ public class StaffControllerServer {
     public List<Staff> findStaffByTimeStandardId(@RequestParam("item") Integer item){
         return staffService.findStaffByTimeStandardId(item);
     }
-    @GetMapping("selectStaffJobByIds")
+    @GetMapping("findStaffByTimeStandardIds")
     public Map<Integer, List<Staff>> findStaffByTimeStandardIds(@RequestParam("ids") Integer[] ids){
         return staffService.findStaffByTimeStandardIds(ids);
     }

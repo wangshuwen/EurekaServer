@@ -10,8 +10,13 @@ import com.cst.xinhe.kafka.consumer.service.client.AttendanceServiceClient;
 import com.cst.xinhe.kafka.consumer.service.client.StaffGroupTerminalServiceClient;
 import com.cst.xinhe.kafka.consumer.service.client.StationPartitionServiceClient;
 import com.cst.xinhe.kafka.consumer.service.client.WsPushServiceClient;
+import com.cst.xinhe.persistence.dao.attendance.AttendanceMapper;
 import com.cst.xinhe.persistence.dao.attendance.StaffAttendanceRealRuleMapper;
+import com.cst.xinhe.persistence.dao.attendance.TimeStandardMapper;
+import com.cst.xinhe.persistence.dao.base_station.BaseStationMapper;
 import com.cst.xinhe.persistence.dao.base_station.OfflineStationMapper;
+import com.cst.xinhe.persistence.dao.staff.StaffMapper;
+import com.cst.xinhe.persistence.dao.terminal.TerminalUpdateIpMapper;
 import com.cst.xinhe.persistence.model.attendance.Attendance;
 import com.cst.xinhe.persistence.model.attendance.StaffAttendanceRealRule;
 import com.cst.xinhe.persistence.model.base_station.OfflineStationExample;
@@ -44,7 +49,7 @@ public class UpdateIpProcess {
 
     private Map<String, Object> map;
 
-    Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger logger = LoggerFactory.getLogger(UpdateIpProcess.class);
 
 //    @Resource
 //    KafkaSender kafkaSender;
@@ -58,8 +63,8 @@ public class UpdateIpProcess {
 
 //    @Resource
 //    TerminalUpdateIpMapper terminalUpdateIpMapper;
-//    @Resource
-//    BaseStationService baseStationService;
+    @Resource
+    private BaseStationMapper baseStationMapper;
 
     @Resource
     private StationPartitionServiceClient stationPartitionServiceClient;
@@ -67,15 +72,27 @@ public class UpdateIpProcess {
 //    AttendanceService attendanceService;
 
     @Resource
+    private StaffMapper staffMapper;
+
+    @Resource
     StaffAttendanceRealRuleMapper staffAttendanceRealRuleMapper;
 
     @Resource
     private AttendanceServiceClient attendanceServiceClient;
+
+    @Resource
+    private TerminalUpdateIpMapper terminalUpdateIpMapper;
 //    @Resource
 //    StaffAttendanceRealRuleMapper staffAttendanceRealRuleMapper;
 
     @Resource
+    private TimeStandardMapper timeStandardMapper;
+
+    @Resource
     OfflineStationMapper offlineStationMapper;
+
+    @Resource
+    private AttendanceMapper attendanceMapper;
 
     private ExecutorService fixedThreadPool = Executors.newFixedThreadPool(9);
 
@@ -118,9 +135,9 @@ public class UpdateIpProcess {
          * @auther lifeng
          **/
 //        terminalUpdateIpMapper.updateIpInfoByTerminalId(terminalUpdateIp);
-        staffGroupTerminalServiceClient.updateIpInfoByTerminalId(terminalUpdateIp);
+//        staffGroupTerminalServiceClient.updateIpInfoByTerminalId(terminalUpdateIp);
 
-
+        terminalUpdateIpMapper.updateIpInfoByTerminalId(terminalUpdateIp);
 
 //        RequestData requestData = new RequestData();
 //        ResponseData responseData = new ResponseData();
@@ -153,11 +170,13 @@ public class UpdateIpProcess {
 
         //---------------------------员工考勤处理开始-------------------------
 //        Map<String, Object> staffMap = staffService.findStaffIdByTerminalId(terminalId);
-        Map<String, Object> staffMap = staffGroupTerminalServiceClient.findStaffIdByTerminalId(terminalId);
+//        Map<String, Object> staffMap = staffGroupTerminalServiceClient.findStaffIdByTerminalId(terminalId);
+        Map<String, Object> staffMap = staffMapper.selectStaffInfoByTerminalId(terminalId);
         Integer staffId = (Integer) staffMap.get("staff_id");
         // 根据ID 查找当前人的考勤标准，根据标准计算具体考勤情况
 //        TimeStandardVO standard = attendanceService.getTimeStandardByStaffId(staffId);
-        TimeStandardVO standard = attendanceServiceClient.getTimeStandardByStaffId(staffId);
+        TimeStandardVO standard =  timeStandardMapper.selectTimeStandardInfoByStaffId(staffId);
+//        TimeStandardVO standard = attendanceServiceClient.getTimeStandardByStaffId(staffId);
 //            StaffAttendanceRealRule staffAttendanceRealRule = attendanceService.findRulesTimeByStaffId(staffId);
 //            Date standStartTime = staffAttendanceRealRule.getRealRuleStartTime();
 //            Date standEndTime = staffAttendanceRealRule.getRealRuleEndTime();
@@ -171,9 +190,11 @@ public class UpdateIpProcess {
 //            Integer leave_early_time =standard.getLeaveEarlyTime();
 //            Integer serious_leave_early_time = standard.getSeriousLeaveEarlyTime();
 //        Map<String, Object> entryStation  = baseStationService.findBaseStationByType(1);
-        Map<String, Object> entryStation  = stationPartitionServiceClient.findBaseStationByType(1);
+//        Map<String, Object> entryStation  = stationPartitionServiceClient.findBaseStationByType(1);
+        Map<String, Object> entryStation  = baseStationMapper.selectBaseStationByType(1);
 //        Map<String, Object> attendanceStation = baseStationService.findBaseStationByType(2);
-        Map<String, Object> attendanceStation = stationPartitionServiceClient.findBaseStationByType(2);
+//        Map<String, Object> attendanceStation = stationPartitionServiceClient.findBaseStationByType(2);
+        Map<String, Object> attendanceStation = baseStationMapper.selectBaseStationByType(2);
 
         //井口基站编号
 //            DecimalFormat fmt = new DecimalFormat("##0.0");// 时间小数点后截取以为小数
@@ -239,7 +260,8 @@ public class UpdateIpProcess {
 //                                attendance.setBackup1("正常，提前上班" +  fmt.format(-first/60.0) + "小时");
 //                            }
 //                    attendanceService.addAttendance(attendance);
-                    attendanceServiceClient.addAttendance(attendance);
+//                    attendanceServiceClient.addAttendance(attendance);
+                    attendanceMapper.insertSelective(attendance);
                 }
                 //下班
                 if(head.getStationId().equals(attendanceId)  && end.getStationId().equals(entryId)){
@@ -283,12 +305,13 @@ public class UpdateIpProcess {
                             e.printStackTrace();
                         }
                     }
-//                    staffAttendanceRealRuleMapper.updateByPrimaryKeySelective(realRule);
-                    attendanceServiceClient.updateStaffAttendanceRealRuleById(realRule);
+                    staffAttendanceRealRuleMapper.updateByPrimaryKeySelective(realRule);
+//                    attendanceServiceClient.updateStaffAttendanceRealRuleById(realRule);
                     //------------------------------------超时处理结束--------------------------------------
 //                    Attendance attendance = attendanceService.findAttendanceByStaffIdAndEndTimeIsNull(staffId);
-                    Attendance attendance = attendanceServiceClient.findAttendanceByStaffIdAndEndTimeIsNull(staffId);
-                    if(attendance != null) {
+                    Attendance attendance = attendanceMapper.findAttendanceByStaffIdAndEndTimeIsNull(staffId);
+//                    Attendance attendance = attendanceServiceClient.findAttendanceByStaffIdAndEndTimeIsNull(staffId);
+                    if(null != attendance) {
                         attendance.setEndTime(head.getUpdateTime());
                         attendance.setOutOre(end.getUpdateTime());
 //                                Date rt_Time = new Date(); // 当前时间
@@ -325,7 +348,8 @@ public class UpdateIpProcess {
 //                                }
                         //添加下班时间
 //                        attendanceService.updateAttendance(attendance);
-                        attendanceServiceClient.updateAttendance(attendance);
+                        attendanceMapper.updateByPrimaryKeySelective(attendance);
+//                        attendanceServiceClient.updateAttendance(attendance);
                         Integer aid = attendance.getAttendanceId();
                         HandlingAttendanceRules.process(aid);
                     }
@@ -336,9 +360,9 @@ public class UpdateIpProcess {
         //------------------------将下井总人数，未考勤人数推送前端页面开始--------------------------
         WebSocketData data = new WebSocketData();
 //        List<HashMap<String, Object>> attendanceCount = staffAttendanceRealRuleMapper.getAttendanceStaff(null, null);
-        List<HashMap<String, Object>> attendanceCount = attendanceServiceClient.getAttendanceStaff();
-        if(attendanceCount!=null&&attendanceCount.size()>0){
-            data.setData(attendanceCount.size());
+        Long attendanceCount = attendanceServiceClient.getAttendanceStaffCount();
+        if(null != attendanceCount){
+            data.setData(attendanceCount);
         }else{
             data.setData(0);
         }
@@ -500,8 +524,8 @@ public class UpdateIpProcess {
                  * @date 14:55 2018/10/19
                  * @auther lifeng
                  **/
-//                terminalUpdateIpMapper.updateIpInfoByTerminalId(terminalUpdateIp);
-                staffGroupTerminalServiceClient.updateIpInfoByTerminalId(terminalUpdateIp);
+                terminalUpdateIpMapper.updateIpInfoByTerminalId(terminalUpdateIp);
+//                staffGroupTerminalServiceClient.updateIpInfoByTerminalId(terminalUpdateIp);
 
 //        RequestData requestData = new RequestData();
 //        ResponseData responseData = new ResponseData();
@@ -534,11 +558,13 @@ public class UpdateIpProcess {
 
                 //---------------------------员工考勤处理开始-------------------------
 //                Map<String, Object> staffMap = staffService.findStaffIdByTerminalId(terminalId);
-                Map<String, Object> staffMap = staffGroupTerminalServiceClient.findStaffIdByTerminalId(terminalId);
+//                Map<String, Object> staffMap = staffGroupTerminalServiceClient.findStaffIdByTerminalId(terminalId);
+                Map<String, Object> staffMap = staffMapper.selectStaffInfoByTerminalId(terminalId);
                 Integer staffId = (Integer) staffMap.get("staff_id");
                 // 根据ID 查找当前人的考勤标准，根据标准计算具体考勤情况
 //              TimeStandardVO standard = attendanceService.getTimeStandardByStaffId(staffId);
-              TimeStandardVO standard = attendanceServiceClient.getTimeStandardByStaffId(staffId);
+                TimeStandardVO standard =  timeStandardMapper.selectTimeStandardInfoByStaffId(staffId);
+//              TimeStandardVO standard = attendanceServiceClient.getTimeStandardByStaffId(staffId);
 //            StaffAttendanceRealRule staffAttendanceRealRule = attendanceService.findRulesTimeByStaffId(staffId);
 //            Date standStartTime = staffAttendanceRealRule.getRealRuleStartTime();
 //            Date standEndTime = staffAttendanceRealRule.getRealRuleEndTime();
@@ -620,7 +646,8 @@ public class UpdateIpProcess {
 //                                attendance.setBackup1("正常，提前上班" +  fmt.format(-first/60.0) + "小时");
 //                            }
 //                            attendanceService.addAttendance(attendance);
-                            attendanceServiceClient.addAttendance(attendance);
+//                            attendanceServiceClient.addAttendance(attendance);
+                            attendanceMapper.insertSelective(attendance);
                         }
                         //下班
                         if (head.getStationId().equals(attendanceId) && end.getStationId().equals(entryId)) {
@@ -720,9 +747,9 @@ public class UpdateIpProcess {
                 //------------------------将下井总人数，未考勤人数推送前端页面开始--------------------------
                 WebSocketData data = new WebSocketData();
 //                List<HashMap<String, Object>> attendanceCount = staffAttendanceRealRuleMapper.getAttendanceStaff(null, null);
-                List<HashMap<String, Object>> attendanceCount = attendanceServiceClient.getAttendanceStaff();
-                if (attendanceCount != null && attendanceCount.size() > 0) {
-                    data.setData(attendanceCount.size());
+                Long attendanceCount = attendanceServiceClient.getAttendanceStaffCount();
+                if (null != attendanceCount) {
+                    data.setData(attendanceCount);
                 } else {
                     data.setData(0);
                 }

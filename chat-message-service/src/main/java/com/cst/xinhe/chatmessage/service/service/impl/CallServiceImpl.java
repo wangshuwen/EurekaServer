@@ -12,6 +12,8 @@ import com.cst.xinhe.common.netty.utils.FileUtils;
 import com.cst.xinhe.common.utils.FileType;
 import com.cst.xinhe.common.utils.SequenceIdGenerate;
 import com.cst.xinhe.common.utils.convert.DateConvert;
+import com.cst.xinhe.persistence.dao.terminal.StaffTerminalMapper;
+import com.cst.xinhe.persistence.dao.terminal.TerminalUpdateIpMapper;
 import com.cst.xinhe.persistence.dto.voice.VoiceDto;
 import com.cst.xinhe.persistence.model.chat.ChatMsg;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,6 +50,9 @@ public class CallServiceImpl implements CallService {
     @Resource
     private ChatMessageService chatMsgService;
 
+    @Resource
+    private StaffTerminalMapper staffTerminalMapper;
+
 //    @Resource
 //    private KafkaSender kafkaSender;
 
@@ -63,6 +68,9 @@ public class CallServiceImpl implements CallService {
     @Resource
     private TerminalMonitorClient terminalMonitorClient;
 
+
+    @Resource
+    private TerminalUpdateIpMapper terminalUpdateIpMapper;
     @Value("webBaseUrl")
     public String webBaseUrl ;
     @Value("basePath")
@@ -73,7 +81,8 @@ public class CallServiceImpl implements CallService {
     @Override
     public String callStaffByStaffId(MultipartFile wavFile, Integer staffId, Integer userId) {
 //        Integer terminalId = terminalService.findTerminalInfoByStaffId(staffId);
-        Integer terminalId = staffGroupTerminalServiceClient.findTerminalInfoByStaffId(staffId);
+        Integer terminalId = staffTerminalMapper.selectTerminalIdByStaffId(staffId);
+//        Integer terminalId = staffGroupTerminalServiceClient.findTerminalInfoByStaffId(staffId);
         StringBuffer folderName = new StringBuffer(basePath);
         folderName.append(terminalId).append(File.separator);
         StringBuffer fileName = new StringBuffer(DateConvert.convert(new Date(), 15));
@@ -91,8 +100,8 @@ public class CallServiceImpl implements CallService {
         VoiceDto voiceDto = new VoiceDto();
 
 //        Map<String, Object> terminalInfo = terminalUpdateIpMapper.selectTerminalIpInfoByTerminalId(terminalId);
-        Map<String, Object> terminalInfo = staffGroupTerminalServiceClient.selectTerminalIpInfoByTerminalId(terminalId);
-
+//        Map<String, Object> terminalInfo = staffGroupTerminalServiceClient.selectTerminalIpInfoByTerminalId(terminalId);
+        Map<String, Object> terminalInfo = terminalUpdateIpMapper.selectTerminalIpInfoByTerminalId(terminalId);
         if (terminalInfo != null && !terminalInfo.isEmpty()) {
             String stationIp = (String) terminalInfo.get("station_ip");
 
@@ -155,10 +164,11 @@ public class CallServiceImpl implements CallService {
     public boolean pingTerminal(Integer staffId) {
 
 //        Integer terminalId = terminalService.findTerminalInfoByStaffId(staffId);
-        Integer terminalId = staffGroupTerminalServiceClient.findTerminalInfoByStaffId(staffId);
-        if (terminalId != null&&terminalId!=0) {
-//            Map<String, Object> terminalInfo = terminalUpdateIpMapper.selectTerminalIpInfoByTerminalId(terminalId);
-            Map<String, Object> terminalInfo =staffGroupTerminalServiceClient.selectStaffInfoByTerminalId(terminalId);
+//        Integer terminalId = staffGroupTerminalServiceClient.findTerminalInfoByStaffId(staffId);
+        Integer terminalId = staffTerminalMapper.selectTerminalIdByStaffId(staffId);
+        if (null != terminalId &&terminalId!=0) {
+            Map<String, Object> terminalInfo = terminalUpdateIpMapper.selectTerminalIpInfoByTerminalId(terminalId);
+//            Map<String, Object> terminalInfo =staffGroupTerminalServiceClient.selectStaffInfoByTerminalId(terminalId);
             if (terminalInfo != null && !terminalInfo.isEmpty()) {
                 if (terminalInfo.containsKey("terminal_ip") && terminalInfo.containsKey("terminal_port")){
                     String terminalIp = (String) terminalInfo.get("terminal_ip");
@@ -224,8 +234,8 @@ public class CallServiceImpl implements CallService {
         //        Integer terminalId = terminalService.findTerminalInfoByStaffId(staffId);
 //        Integer terminalNum = staffGroupTerminalServiceClient.findTerminalInfoByStaffId(staffId);
         if (terminalNum != null&&terminalNum!=0) {
-//            Map<String, Object> terminalInfo = terminalUpdateIpMapper.selectTerminalIpInfoByTerminalId(terminalId);
-            Map<String, Object> terminalInfo =staffGroupTerminalServiceClient.selectTerminalIpInfoByTerminalId(terminalNum);
+            Map<String, Object> terminalInfo = terminalUpdateIpMapper.selectTerminalIpInfoByTerminalId(terminalNum);
+//            Map<String, Object> terminalInfo =staffGroupTerminalServiceClient.selectTerminalIpInfoByTerminalId(terminalNum);
             if (null != terminalInfo && !terminalInfo.isEmpty()) {
                 if (terminalInfo.containsKey("terminal_ip") && terminalInfo.containsKey("terminal_port")){
                     String terminalIp = (String) terminalInfo.get("terminal_ip");

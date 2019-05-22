@@ -4,7 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.cst.xinhe.base.enums.ResultEnum;
+import com.cst.xinhe.base.exception.ErrorCode;
 import com.cst.xinhe.base.exception.RuntimeOtherException;
+import com.cst.xinhe.base.exception.RuntimeServiceException;
 import com.cst.xinhe.base.log.BaseLog;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.utils.array.ArrayQueue;
@@ -13,9 +15,12 @@ import com.cst.xinhe.common.ws.WebSocketData;
 import com.cst.xinhe.kafka.consumer.service.client.*;
 import com.cst.xinhe.kafka.consumer.service.service.RSTL;
 import com.cst.xinhe.persistence.dao.attendance.StaffAttendanceRealRuleMapper;
+import com.cst.xinhe.persistence.dao.attendance.TimeStandardMapper;
+import com.cst.xinhe.persistence.dao.base_station.BaseStationMapper;
 import com.cst.xinhe.persistence.dao.rt_gas.GasPositionMapper;
 import com.cst.xinhe.persistence.dao.rt_gas.GasPositionWarnMapper;
 import com.cst.xinhe.persistence.dao.rt_gas.RtGasInfoMapper;
+import com.cst.xinhe.persistence.dao.staff.StaffMapper;
 import com.cst.xinhe.persistence.dao.station_standard_relation.StationStandardRelationMapper;
 import com.cst.xinhe.persistence.dao.terminal_road.TerminalRoadMapper;
 import com.cst.xinhe.persistence.dao.warning_area.WarningAreaMapper;
@@ -77,6 +82,9 @@ public class GasKafka extends BaseLog {
     @Resource
     private GasServiceClient gasServiceClient;
 
+    @Resource
+    private BaseStationMapper baseStationMapper;
+
 
     @Resource
     private WarningAreaMapper warningAreaMapper;
@@ -92,6 +100,9 @@ public class GasKafka extends BaseLog {
 
     @Resource
     RtGasInfoMapper rtGasInfoMapper;
+
+    @Resource
+    TimeStandardMapper timeStandardMapper;
 
     @Resource
     GasPositionMapper gasPositionMapper;
@@ -125,6 +136,8 @@ public class GasKafka extends BaseLog {
 //    @Resource
 //    private AttendanceService attendanceService;
 
+    @Resource
+    private StaffMapper staffMapper;
 
 
 //    @Resource
@@ -418,7 +431,8 @@ public class GasKafka extends BaseLog {
                         //查询报警人员的信息
                         String staffName = staff.getStaffName();
 //                        Staff staff1 = staffService.findStaffById(staffId);
-                        Staff staff1 = staffGroupTerminalServiceClient.findStaffById(staffId);
+                        Staff staff1 = staffMapper.selectByPrimaryKey(staffId);
+//                        Staff staff1 = staffGroupTerminalServiceClient.findStaffById(staffId);
                         Integer groupId = staff1.getGroupId();
 //                        String deptName = staffOrganizationService.getDeptNameByGroupId(groupId);
                         String deptName = staffGroupTerminalServiceClient.getDeptNameByGroupId(groupId);
@@ -454,9 +468,11 @@ public class GasKafka extends BaseLog {
         Integer staffId = staff.getStaffId();
 
 //        Map<String, Object> entryStation = baseStationService.findBaseStationByType(1);
-        Map<String, Object> entryStation = stationPartitionServiceClient.findBaseStationByType(1);
+//        Map<String, Object> entryStation = stationPartitionServiceClient.findBaseStationByType(1);
+        Map<String, Object> entryStation = baseStationMapper.selectBaseStationByType(1);
 //        Map<String, Object> attendanceStation = baseStationService.findBaseStationByType(2);
-        Map<String, Object> attendanceStation = stationPartitionServiceClient.findBaseStationByType(2);
+        Map<String, Object> attendanceStation = baseStationMapper.selectBaseStationByType(2);
+//        Map<String, Object> attendanceStation = stationPartitionServiceClient.findBaseStationByType(2);
         //井口基站编号
         Integer entryId = (Integer) entryStation.get("baseStationNum");
         //考勤基站编号
@@ -498,7 +514,15 @@ public class GasKafka extends BaseLog {
         //---------------------------------------判断员工是否超时未上井开始------------------------------------
         StaffAttendanceRealRule realRule = staffAttendanceRealRuleMapper.selectByPrimaryKey(staffId);
 //        TimeStandardVO standard = attendanceService.getTimeStandardByStaffId(staffId);
-        TimeStandardVO standard = attendanceServiceClient.getTimeStandardByStaffId(staffId);
+//        TimeStandardVO standard = attendanceServiceClient.getTimeStandardByStaffId(staffId);
+        TimeStandardVO standard;
+        try {
+            standard =  timeStandardMapper.selectTimeStandardInfoByStaffId(staffId);
+        }catch (Exception e){
+            throw new RuntimeServiceException(ErrorCode.NO_BINDING_TIME_STANDARD);
+        }
+
+
         //超时时长
         Integer overTime = standard.getOverTime();
         //严重超时时长
@@ -564,7 +588,8 @@ public class GasKafka extends BaseLog {
 
         //--------------------------定位部门、区域筛选开始----------------------------------
 //        Staff staff1=staffService.findStaffById(staffId);
-        Staff staff1=staffGroupTerminalServiceClient.findStaffById(staffId);
+        Staff staff1 = staffMapper.selectByPrimaryKey(staffId);
+//        Staff staff1=staffGroupTerminalServiceClient.findStaffById(staffId);
         Integer groupId = staff1.getGroupId();
 //        Integer orgId = WSSiteServer.orgId;
         Integer orgId = wsPushServiceClient.getWSSiteServerOrgId();
@@ -653,7 +678,8 @@ public class GasKafka extends BaseLog {
 
 
 //        Staff staff1 = staffService.findStaffById(staffId);
-        Staff staff1 = staffGroupTerminalServiceClient.findStaffById(staffId);
+//        Staff staff1 = staffGroupTerminalServiceClient.findStaffById(staffId);
+        Staff staff1 = staffMapper.selectByPrimaryKey(staffId);
         Integer groupId = staff1.getGroupId();
         //--------------------------气体部门、区域筛选开始----------------------------------
         if (list.size() >= 10) {

@@ -288,4 +288,9 @@ public class AttendanceServiceImpl implements AttendanceService, AttendanceRules
     public Integer getStaffAttendanceRealRuleMapperUnAttendanceDept(Date date, List<Integer> deptIds) {
         return staffAttendanceRealRuleMapper.getUnAttendanceDept(date,deptIds);
     }
+
+    @Override
+    public Long getAttendanceStaffCount(List<Integer> deptIds, String staffName) {
+        return staffAttendanceRealRuleMapper.getAttendanceStaffCount(deptIds,staffName);
+    }
 }

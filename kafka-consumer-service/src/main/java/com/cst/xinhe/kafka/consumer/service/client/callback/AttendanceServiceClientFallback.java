@@ -65,7 +65,7 @@ public class AttendanceServiceClientFallback implements AttendanceServiceClient 
     }
 
     @Override
-    public List<HashMap<String, Object>> getAttendanceStaff() {
+    public Long getAttendanceStaffCount() {
         logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
 
         return null;

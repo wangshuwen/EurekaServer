@@ -325,6 +325,22 @@
     </where>
 
   </select>
+  <select id="getAttendanceStaffCount" resultType="java.lang.Long">
+    select COUNT(*)
+    from staff_attendance_real_rule r left join  staff s
+    on r.staff_id=s.staff_id
+    <where>
+      r.is_attendance=1
+      <if test="deptIds != null and deptIds.size()!=0">
+        And s.group_id in
+        <foreach  item="item" collection="deptIds" index="index"  open="(" separator="," close=")">#{item}</foreach>
+      </if>
+      <if test="staffName != null and staffName != ''">
+        AND s.staff_name LIKE CONCAT ( '%', #{staffName}, '%' )
+      </if>
+    </where>
+
+  </select>
   <select id="getUnAttendanceStaff" resultType="java.util.HashMap">
     select s.staff_id as staffId,s.staff_name as staffName,r.final_time as finalTime,s.group_id as groupId
     from staff_attendance_real_rule r left join  staff s

@@ -30,8 +30,9 @@ import java.util.concurrent.Executors;
 public class UpdateVoiceReadStatus {
 
     private static final Logger logger = LoggerFactory.getLogger(UpdateVoiceReadStatus.class);
-//    @Resource
-//    private ChatMsgMapper chatMsgMapper;
+
+    @Resource
+    private ChatMsgMapper chatMsgMapper;
 
     @Resource
     private ChatMsgServiceClient chatMsgServiceClient;
@@ -64,8 +65,8 @@ public class UpdateVoiceReadStatus {
                     seq_str.append(time).append(terminalId).append(seq);
                     chatMsg.setSequenceId(seq_str.toString());
 
-//                    chatMsgMapper.updateChatMegStatusBySeqId(chatMsg);
-                    chatMsgServiceClient.updateChatMegStatusBySeqId(chatMsg);
+                    chatMsgMapper.updateChatMegStatusBySeqId(chatMsg);
+//                    chatMsgServiceClient.updateChatMegStatusBySeqId(chatMsg);
                     // TODO 通过WebSocket，发送到前端，该条语音已经被读取   {seqId}
                     HashMap<String, Object> map = new HashMap<>();
                     map.put("code",2);//code=2表示是已读未读
@@ -83,7 +84,6 @@ public class UpdateVoiceReadStatus {
     @KafkaListener(id = "UpdateVoiceReadStatusid0", topicPartitions = { @TopicPartition(topic = TOPIC, partitions = { "0" }) })
     public void listen0(List<ConsumerRecord<?, ?>> records) {
         process(records);
-
     }
     @KafkaListener(id = "UpdateVoiceReadStatusid1", topicPartitions = { @TopicPartition(topic = TOPIC, partitions = { "1" }) })
     public void listen1(List<ConsumerRecord<?, ?>> records) {

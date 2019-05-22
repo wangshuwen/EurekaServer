@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.cst.xinhe.common.ws.WebSocketData;
 import com.cst.xinhe.kafka.consumer.service.client.*;
+import com.cst.xinhe.persistence.dao.chat.ChatMsgMapper;
 import com.cst.xinhe.persistence.model.chat.ChatMsg;
 import com.cst.xinhe.persistence.model.rang_setting.RangSetting;
 import com.cst.xinhe.persistence.vo.resp.GasWSRespVO;
@@ -49,8 +50,8 @@ public class VoiceInfoProcess {
     @Resource
     private GasServiceClient gasServiceClient;
 
-//    @Resource
-//    private ChatMsgMapper chatMsgMapper;
+    @Resource
+    private ChatMsgMapper chatMsgMapper;
 
     @Resource
     private ChatMsgServiceClient chatMsgServiceClient;
@@ -106,8 +107,8 @@ public class VoiceInfoProcess {
 //            StaffTerminalRelation staffTerminalRelation = staffTerminalRelationService.findNewRelationByTerminalId(terminalId);
 //            chatMsg.setTerminalId(staffTerminalRelation.getStaffTerminalRelationId());
         chatMsg.setTerminalId(terminalId);
-//        chatMsgMapper.insertSelective(chatMsg);
-        chatMsgServiceClient.insertChatMsgSelective(chatMsg);
+        chatMsgMapper.insertSelective(chatMsg);
+//        chatMsgServiceClient.insertChatMsgSelective(chatMsg);
 //        GasWSRespVO staffInfo = staffService.findStaffNameByTerminalId(terminalId);
         GasWSRespVO staffInfo = staffGroupTerminalServiceClient.findStaffNameByTerminalId(terminalId);
 

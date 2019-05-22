@@ -38,7 +38,7 @@ public class GasController {
     @Resource
     private GasInfoService gasInfoService;
 
-    @Autowired
+    @Resource
     private WsPushServiceClient wsPushServiceClient;
 
     @ApiOperation(value = "根据 员工姓名 查询环境信息 接口", notes = "根据员工姓名的进行模糊查询")

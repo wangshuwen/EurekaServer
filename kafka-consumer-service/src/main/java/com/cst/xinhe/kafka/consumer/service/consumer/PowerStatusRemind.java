@@ -138,7 +138,7 @@ public class PowerStatusRemind {
 
                 List<LackElectric> electricList = lackElectricMapper.selectByExample(lackElectricExample);
 
-                if (electricList != null && electricList.size() > 0) {
+                if (null != electricList && electricList.size() > 0) {
                     lackElectricMapper.updateByExampleSelective(lackElectric, lackElectricExample);
                 } else {
                     lackElectricMapper.insertSelective(lackElectric);

@@ -265,7 +265,7 @@ public class StaffServiceImpl implements StaffService {
         List<Map<String, Object>> list = new ArrayList<>();
         for (Integer staffId : staffIds) {
             Staff staff = findStaffById(staffId);
-           if(staff!=null){
+           if(null != staff){
                Map<String, Object> map = new HashMap<>();
                map.put("staffId",staff.getStaffId());
                map.put("staffName",staff.getStaffName());

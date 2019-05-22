@@ -23,8 +23,6 @@ public interface PartitionService {
 
     String geParentNamesById(Integer id);
 
-
-
     List<Integer> getSonIdsById(Integer id);
 
     Integer findRootPartition();

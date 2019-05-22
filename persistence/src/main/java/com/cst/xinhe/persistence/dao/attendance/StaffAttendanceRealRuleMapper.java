@@ -112,4 +112,6 @@ public interface StaffAttendanceRealRuleMapper {
     Integer getOverTimeDept(@Param("deptIds") List<Integer> deptIds);
 
     Integer getSeriousTimeDept(@Param("deptIds") List<Integer> deptIds);
+
+    Long getAttendanceStaffCount(@Param("deptIds") List<Integer> deptIds, @Param("staffName") String staffName);
 }

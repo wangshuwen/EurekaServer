@@ -7,6 +7,9 @@ eureka:
       defaultZone: http://127.0.0.1:8761/eureka/,http://127.0.0.1:8762/eureka/
 server:
   port: 8443
+  tomcat:
+    uri-encoding: UTF-8
+    max-threads: 2000
   ssl:
     key-store: zkxh.keystore
     #密钥库密码

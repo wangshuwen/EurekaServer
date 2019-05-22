@@ -58,6 +58,10 @@ public class AttendanceServiceControllerServer {
     public List<HashMap<String, Object>> getAttendanceStaff(){
         return attendanceService.getAttendanceStaff(null,null);
     }
+    @PostMapping("getAttendanceStaffCount")
+    public Long getAttendanceStaffCount(){
+        return attendanceService.getAttendanceStaffCount(null,null);
+    }
 
     @PostMapping("getUnAttendanceDept")
     public Integer getUnAttendanceDept(@RequestParam Date date){

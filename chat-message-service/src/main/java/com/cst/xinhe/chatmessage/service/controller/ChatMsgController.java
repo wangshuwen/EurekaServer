@@ -103,7 +103,7 @@ public class ChatMsgController {
     }
 
 
-    Date date=new Date();
+    private Date date=new Date();
     @PostMapping("call/addChatRecord")
     @ApiOperation(value = "新增聊天列表，无聊天记录", notes = ".0")
     public String addChatRecord(@RequestBody ChatMsg chatMsg) {

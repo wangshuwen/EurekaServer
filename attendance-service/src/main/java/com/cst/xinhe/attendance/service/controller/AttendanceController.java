@@ -7,8 +7,10 @@ import com.cst.xinhe.attendance.service.elasticsrearch.service.EsAttendanceServi
 import com.cst.xinhe.attendance.service.service.AttendanceService;
 import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.result.ResultUtil;
+import com.cst.xinhe.persistence.dao.staff.StaffOrganizationMapper;
 import com.cst.xinhe.persistence.model.attendance.Attendance;
 import com.cst.xinhe.persistence.model.staff.StaffOrganization;
+import com.cst.xinhe.persistence.model.staff.StaffOrganizationExample;
 import com.cst.xinhe.persistence.vo.req.AttendanceParamsVO;
 
 import com.github.pagehelper.Page;
@@ -46,6 +48,9 @@ public class AttendanceController {
     private EsAttendanceService esAttendanceService;
 
     @Resource
+    private StaffOrganizationMapper staffOrganizationMapper;
+
+    @Resource
     private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
 
     @GetMapping("getInfoByParams")
@@ -81,20 +86,16 @@ public class AttendanceController {
         return  ResultUtil.jsonToStringSuccess(page);
     }
 
-
-
-    @GetMapping("/hello")
-    public String hello(){
-        return "hello shuwen 123456";
-    }
-
-
     @GetMapping("getAttendanceDept")
     @ApiOperation("获取现在矿下考勤的员工的部门和每个部门的人数")
     public String getAttendanceDept(){
         List<Map<String,Object>> resultList = new ArrayList<>();
         //List<StaffOrganization> list = staffOrganizationService.getOneSonByParent(1);
-        List<StaffOrganization> list  = staffGroupTerminalServiceClient.getOneSonByParent(1);
+        StaffOrganizationExample example = new StaffOrganizationExample();
+        example.createCriteria().andParentIdEqualTo(1);
+
+        List<StaffOrganization> list  =  staffOrganizationMapper.selectByExample(example);
+//        List<StaffOrganization> list  = staffGroupTerminalServiceClient.getOneSonByParent(1);
         for (StaffOrganization org : list) {
            // List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(org.getId());
             List<Integer> deptIds = staffGroupTerminalServiceClient.findSonIdsByDeptId(org.getId());
@@ -113,7 +114,11 @@ public class AttendanceController {
     public String getRtUnAttendanceDept(){
         List<Map<String,Object>> resultList = new ArrayList<>();
 //        List<StaffOrganization> list= staffOrganizationService.getOneSonByParent(1);
-        List<StaffOrganization> list= staffGroupTerminalServiceClient.getOneSonByParent(1);
+        StaffOrganizationExample example = new StaffOrganizationExample();
+        example.createCriteria().andParentIdEqualTo(1);
+
+        List<StaffOrganization> list  =  staffOrganizationMapper.selectByExample(example);
+//        List<StaffOrganization> list= staffGroupTerminalServiceClient.getOneSonByParent(1);
         for (StaffOrganization org : list) {
 //            List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(org.getId());
             List<Integer> deptIds = staffGroupTerminalServiceClient.findSonIdsByDeptId(org.getId());
@@ -133,7 +138,11 @@ public class AttendanceController {
     public String getOverTimeDept(){
         List<Map<String,Object>> resultList = new ArrayList<>();
 //        List<StaffOrganization> list= staffOrganizationService.getOneSonByParent(1);
-        List<StaffOrganization> list= staffGroupTerminalServiceClient.getOneSonByParent(1);
+        StaffOrganizationExample example = new StaffOrganizationExample();
+        example.createCriteria().andParentIdEqualTo(1);
+
+        List<StaffOrganization> list  =  staffOrganizationMapper.selectByExample(example);
+        //        List<StaffOrganization> list= staffGroupTerminalServiceClient.getOneSonByParent(1);
         for (StaffOrganization org : list) {
 //            List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(org.getId());
             List<Integer> deptIds = staffGroupTerminalServiceClient.findSonIdsByDeptId(org.getId());
@@ -154,7 +163,11 @@ public class AttendanceController {
     public String getSeriousTimeDept(){
         List<Map<String,Object>> resultList = new ArrayList<>();
 //        List<StaffOrganization> list= staffOrganizationService.getOneSonByParent(1);
-        List<StaffOrganization> list= staffGroupTerminalServiceClient.getOneSonByParent(1);
+        StaffOrganizationExample example = new StaffOrganizationExample();
+        example.createCriteria().andParentIdEqualTo(1);
+
+        List<StaffOrganization> list  =  staffOrganizationMapper.selectByExample(example);
+        //        List<StaffOrganization> list= staffGroupTerminalServiceClient.getOneSonByParent(1);
         for (StaffOrganization org : list) {
 //            List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(org.getId());
             List<Integer> deptIds = staffGroupTerminalServiceClient.findSonIdsByDeptId(org.getId());
@@ -243,7 +256,7 @@ public class AttendanceController {
                                    @RequestParam(name = "limit", defaultValue = "10", required = false)Integer pageSize,
                                    @RequestParam(name = "deptId", required = false)Integer deptId,
                                    @RequestParam(name = "staffName",required = false) String staffName){
-        if(deptId==null){
+        if(null == deptId){
             deptId=0;
         }
 //        List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(deptId);

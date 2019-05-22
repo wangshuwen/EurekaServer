@@ -83,7 +83,7 @@ public class TimeStandardController {
         int len = ids.length;
         if (len > 0){
             Map<Integer, List<Staff>> map = staffGroupTerminalServiceClient.findStaffByTimeStandardIds(ids);
-            if(map!=null&&map.size()>0){
+            if(null != map &&map.size()>0){
                 for (Integer key: map.keySet()){
                     List<Staff> staffList = map.get(key);
                     if (staffList != null && !staffList.isEmpty()){

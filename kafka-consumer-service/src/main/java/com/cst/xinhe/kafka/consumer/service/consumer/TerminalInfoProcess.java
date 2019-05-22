@@ -50,13 +50,13 @@ public class TerminalInfoProcess {
     @Resource
     private WsPushServiceClient wsPushServiceClient;
 
-//    @Resource
-//    private StaffMapper staffMapper;
+    @Resource
+    private StaffMapper staffMapper;
 //    @Resource
 //    private AttendanceService attendanceService;
 
-//    @Resource
-//    private StaffAttendanceRealRuleMapper staffAttendanceRealRuleMapper;
+    @Resource
+    private StaffAttendanceRealRuleMapper staffAttendanceRealRuleMapper;
 //
 //    private static  StaffAttendanceRealRuleMapper staffAttendanceRealRuleMapper1;
 
@@ -78,15 +78,16 @@ public class TerminalInfoProcess {
         Integer terminalId = jsonObject.getInteger("terminalId");
         Integer stationId = jsonObject.getInteger("stationId");
 //        Map<String, Object> map = staffMapper.selectStaffInfoByTerminalId(terminalId);
-        Map<String, Object> map = staffGroupTerminalServiceClient.selectStaffInfoByTerminalId(terminalId);
+        Map<String, Object> map = staffMapper.selectStaffInfoByTerminalId(terminalId);
+//        Map<String, Object> map = staffGroupTerminalServiceClient.selectStaffInfoByTerminalId(terminalId);
         Integer staffId = (Integer) map.get("staff_id");
 
         //记录员工加入考勤
 //        StaffAttendanceRealRule realRule = staffAttendanceRealRuleMapper.selectByPrimaryKey(staffId);
         StaffAttendanceRealRule realRule = attendanceServiceClient.findStaffAttendanceRealRuleById(staffId);
         realRule.setIsAttendance(1);
-//        staffAttendanceRealRuleMapper.updateByPrimaryKeySelective(realRule);
-        attendanceServiceClient.updateStaffAttendanceRealRuleById(realRule);
+        staffAttendanceRealRuleMapper.updateByPrimaryKeySelective(realRule);
+//        attendanceServiceClient.updateStaffAttendanceRealRuleById(realRule);
 
         //实时查询:人，车，领导
         Integer isPerson = (Integer) map.get("is_person");
@@ -125,17 +126,16 @@ public class TerminalInfoProcess {
                 JSONObject jsonObject = JSON.parseObject(str);
                 Integer terminalId = jsonObject.getInteger("terminalId");
                 Integer stationId = jsonObject.getInteger("stationId");
-//                Map<String, Object> map = staffMapper.selectStaffInfoByTerminalId(terminalId);
-                Map<String, Object> map = staffGroupTerminalServiceClient.selectStaffInfoByTerminalId(terminalId);
+                Map<String, Object> map = staffMapper.selectStaffInfoByTerminalId(terminalId);
+//                Map<String, Object> map = staffGroupTerminalServiceClient.selectStaffInfoByTerminalId(terminalId);
                 Integer staffId = (Integer) map.get("staff_id");
 
                 //记录员工加入考勤
-//                StaffAttendanceRealRule realRule = staffAttendanceRealRuleMapper.selectByPrimaryKey(staffId);
-                StaffAttendanceRealRule realRule = attendanceServiceClient.findStaffAttendanceRealRuleById(staffId);
+                StaffAttendanceRealRule realRule = staffAttendanceRealRuleMapper.selectByPrimaryKey(staffId);
+//                StaffAttendanceRealRule realRule = attendanceServiceClient.findStaffAttendanceRealRuleById(staffId);
                 realRule.setIsAttendance(1);
-//                staffAttendanceRealRuleMapper.updateByPrimaryKeySelective(realRule);
-                attendanceServiceClient.updateStaffAttendanceRealRuleById(realRule);
-
+//                attendanceServiceClient.updateStaffAttendanceRealRuleById(realRule);
+                staffAttendanceRealRuleMapper.updateByPrimaryKeySelective(realRule);
                 //实时查询:人，车，领导
                 Integer isPerson = (Integer) map.get("is_person");
                 if (staffId != null) {
@@ -155,7 +155,6 @@ public class TerminalInfoProcess {
                     }
                 }
 
-
                 //实时查询：数据推送到前端页面
                 pushRtPersonData();
             }
@@ -167,47 +166,19 @@ public class TerminalInfoProcess {
   //  @KafkaListener(id = "liveupdateData", topics = "terminalInfo.tut")
     @KafkaListener(groupId = "TerminalInfoProcess", id = "TerminalInfoProcessid0", topicPartitions = { @TopicPartition(topic = TOPIC, partitions = { "0" }) })
     public void liveUpdateData0(List<ConsumerRecord<?, ?>> records) {
-
-//        for (ConsumerRecord<?, ?> record : records) {
-//            Optional<?> kafkaMessage = Optional.ofNullable(record.value());
-//            logger.info("Received: " + record);
-//            if (kafkaMessage.isPresent()) {
-//                Object message = kafkaMessage.get();
-//                String str = (String) message;
-
                 fixedThreadPool.execute(() -> processT(records));
-//            }
-//        }
     }
 
     @KafkaListener(groupId = "TerminalInfoProcess",id = "TerminalInfoProcessid1", topicPartitions = { @TopicPartition(topic = TOPIC, partitions = { "1" }) })
     public void liveUpdateData1(List<ConsumerRecord<?, ?>> records) {
-//        for (ConsumerRecord<?, ?> record : records) {
-//
-//            Optional<?> kafkaMessage = Optional.ofNullable(record.value());
-//            logger.info("Received: " + record);
-//            if (kafkaMessage.isPresent()) {
-//                Object message = kafkaMessage.get();
-//                String str = (String) message;
 
                 fixedThreadPool.execute(() -> processT(records));
-//            }
-//        }
     }
 
     @KafkaListener(groupId = "TerminalInfoProcess",id = "TerminalInfoProcessid2", topicPartitions = { @TopicPartition(topic = TOPIC, partitions = { "2" }) })
     public void liveUpdateData2(List<ConsumerRecord<?, ?>> records) {
-//
-//        for (ConsumerRecord<?, ?> record : records) {
-//            Optional<?> kafkaMessage = Optional.ofNullable(record.value());
-//            logger.info("Received: " + record);
-//            if (kafkaMessage.isPresent()) {
-//                Object message = kafkaMessage.get();
-//                String str = (String) message;
 
                 fixedThreadPool.execute(() -> processT(records));
-//            }
-//        }
     }
 
 

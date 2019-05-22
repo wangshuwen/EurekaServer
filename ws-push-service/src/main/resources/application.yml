@@ -7,8 +7,19 @@ server:
       keyStoreType: JKS
       keyAlias: zkxh
 feign:
+  compression:
+    request:
+      enabled: true
+      mime-types: text/html,application/xml,application/json
+      min-request-size: 2048
+    response:
+      enabled: true
   hystrix:
     enabled: true
+  httpclient:
+    enabled: true
+    max-connections: 200
+    max-connections-per-route: 50
 spring:
   application:
     name: ws-push-service

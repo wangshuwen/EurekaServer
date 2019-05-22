@@ -72,8 +72,19 @@ eureka:
     service-url:
       defaultZone: http://127.0.0.1:8761/eureka/
 feign:
+  compression:
+    request:
+      enabled: true
+      mime-types: text/html,application/xml,application/json
+      min-request-size: 2048
+    response:
+      enabled: true
   hystrix:
-    enabled: false
+    enabled: true
+  httpclient:
+    enabled: true
+    max-connections: 200
+    max-connections-per-route: 50
 mybatis:
   mapper-locations: com/cst/xinhe/persistence/dao/*/*.xml
   configuration:

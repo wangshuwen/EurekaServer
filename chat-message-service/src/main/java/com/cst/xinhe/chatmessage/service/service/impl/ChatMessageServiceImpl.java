@@ -71,17 +71,14 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     public Page findChatList(String keyWord, Integer startPage, Integer pageSize) {
         //通过部门名称，查询该部门下的所有子节点，返回部门ids
         List<Integer> deptIds=null;
-        if(keyWord!=null){
+        if(null != keyWord){
 //            deptIds = staffOrganizationService.findSonIdsByDeptName(keyWord);
             deptIds = staffGroupTerminalServiceClient.findSonIdsByDeptName(keyWord);
         }
         Page page = PageHelper.startPage(startPage, pageSize);
         List<Map<String, Object>> list1 = chatMsgMapper.findChatList(keyWord, deptIds);
         List<Map<String,Object>> list = page.getResult();
-
-
-
-        if(list!=null&&list.size()>0){
+        if(null != list &&list.size()>0){
             //封装groupId，查找groupName
             List<Integer> groupIds = new ArrayList<>();
             for (Map<String, Object> map : list) {

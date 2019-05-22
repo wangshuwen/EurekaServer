@@ -186,12 +186,31 @@ public class WarningAreaServiceImpl implements WarningAreaService {
 
         Page page = PageHelper.startPage(startPage, pageSize);
         List<HashMap<String,Object>> list = warningAreaRecordMapper.findAreaRecordByAreaId(areaIdList,staffName,deptIds);
+
+        //修改for循环远程服务调用
+        ArrayList<Integer> groupIds = new ArrayList<>();
+        for (HashMap<String, Object> map : list) {
+            Integer groupId = (Integer) map.get("groupId");
+            groupIds.add(groupId);
+        }
+        List<Map<String, Object>> stafflist = staffGroupTerminalServiceClient.getDeptNameByGroupIds(groupIds);
+
         for (HashMap<String, Object> map : list) {
             Date inTime = (Date) map.get("inTime");
             Integer groupId = (Integer) map.get("groupId");
+            if(stafflist!=null&&stafflist.size()>0){
+                for (Map<String,Object> stringObjectMap : stafflist) {
+                    Integer groupId1 = (Integer) stringObjectMap.get("groupId");
+                    if(groupId.equals(groupId1)){
+                        String groupName = (String) stringObjectMap.get("groupName");
+                        map.put("deptName",groupName);
+                    }
+
+                }
+            }
 //            String deptName = staffOrganizationService.getDeptNameByGroupId(groupId);
-            String deptName = staffGroupTerminalServiceClient.getDeptNameByGroupId(groupId);
-            map.put("deptName",deptName);
+            //String deptName = staffGroupTerminalServiceClient.getDeptNameByGroupId(groupId);
+
             //封装时长
             long nd = 1000 * 24 * 60 * 60;
             long nh = 1000 * 60 * 60;

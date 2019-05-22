@@ -41,6 +41,9 @@ public interface StaffGroupTerminalServiceClient {
     @GetMapping("getDeptNameByGroupId")
     String getDeptNameByGroupId(@RequestParam("group_id") Integer group_id);
 
+    @GetMapping("getDeptNameByGroupIds")
+    List<Map<String,Object>> getDeptNameByGroupIds(@RequestParam("group_ids") List<Integer> group_ids);
+
     @GetMapping("getOneSonByParent")
     List<StaffOrganization> getOneSonByParent(@RequestParam("i") int i);
 

@@ -1,8 +1,10 @@
 package com.cst.xinhe.stationpartition.service.service.impl;
 
 import com.cst.xinhe.persistence.dao.mac_station.MacStationMapper;
+import com.cst.xinhe.persistence.dao.staff.StaffJobMapper;
 import com.cst.xinhe.persistence.dao.terminal.StaffTerminalMapper;
 import com.cst.xinhe.persistence.model.mac_station.MacStation;
+import com.cst.xinhe.persistence.model.staff.StaffJob;
 import com.cst.xinhe.stationpartition.service.client.StaffGroupTerminalServiceClient;
 import com.cst.xinhe.stationpartition.service.service.MacStationService;
 import com.github.pagehelper.Page;
@@ -30,6 +32,8 @@ public class MacStationServiceImpl implements MacStationService {
 
     @Resource
     private StaffTerminalMapper staffTerminalMapper;
+
+    private StaffJobMapper staffJobMapper;
 
 //    @Resource
 //    private StaffOrganizationService staffOrganizationService;
@@ -75,7 +79,16 @@ public class MacStationServiceImpl implements MacStationService {
             }
         }
         Map<Integer, String> groupNames = staffGroupTerminalServiceClient.findGroupNameByGroupIds(setOfGroupId);
-        Map<Integer, String> jobNames = staffGroupTerminalServiceClient.findJobByJobId(setOfJobId);
+       // Map<Integer, String> jobNames = staffGroupTerminalServiceClient.findJobByJobId(setOfJobId);
+        //去除服务调用
+        Map<Integer, String > jobNames = new HashMap<>();
+        for (Integer item: setOfJobId){
+            StaffJob staffJob = staffJobMapper.selectByPrimaryKey(item);
+            if(staffJob!=null){
+                        jobNames.put(item,staffJob.getJobName());
+            }
+        }
+
         for (Object item: page.getResult()){
 //            Map<String, Object> map = terminalService.findTerminalAndPersonInfoByMac(((MacStation)item).getMac());
             Map<String, Object> map = staffTerminalMapper.selectTerminalAndPersonInfoByMac(((MacStation)item).getMac());

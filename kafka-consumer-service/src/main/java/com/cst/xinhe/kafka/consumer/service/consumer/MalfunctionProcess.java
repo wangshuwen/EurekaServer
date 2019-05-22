@@ -208,7 +208,7 @@ public class MalfunctionProcess {
                 }
 
 
-                map.put("batteryAlarmValue", staffGroupTerminalServiceClient.getLackElectricList().size());
+                map.put("batteryAlarmValue", staffGroupTerminalServiceClient.getLackElectricList());
 
                 try {
 //                    WebsocketServer.sendInfo(JSON.toJSONString(new WebSocketData(6, map)));

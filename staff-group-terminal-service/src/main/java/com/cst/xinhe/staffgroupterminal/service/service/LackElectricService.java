@@ -24,5 +24,5 @@ public interface LackElectricService {
 
     void updateLackElectric(LackElectric lackElectric);
 
-    List<LackElectric> getLackElectricList();
+    Long getLackElectricList();
 }

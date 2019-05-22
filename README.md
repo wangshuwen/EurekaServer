@@ -20,7 +20,7 @@
  
  ##**ws-push-service:  192.168.1.100:8771**
   ##**ws-push-http      192.168.1.100:8779**
- ##**voice-monitor-server-http  127.0.0.100:8780** 
+ ##**voice-monitor-server  127.0.0.100:8780** 
  ##**voice-sender-service:     127.0.0.100:8767**
  ##**station-monitor-server:   192.168.100.50:8765**
  

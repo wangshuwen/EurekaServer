@@ -79,8 +79,8 @@ public class LackElectricServiceImpl implements LackElectricService {
     }
 
     @Override
-    public List<LackElectric> getLackElectricList() {
+    public Long getLackElectricList() {
         LackElectricExample lackElectricExample = new LackElectricExample();
-        return lackElectricMapper.selectByExample(lackElectricExample);
+        return lackElectricMapper.countByExample(lackElectricExample);
     }
 }

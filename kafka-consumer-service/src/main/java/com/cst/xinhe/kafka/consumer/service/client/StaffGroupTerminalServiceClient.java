@@ -95,7 +95,7 @@ public interface StaffGroupTerminalServiceClient {
     void updateLackElectric(@RequestBody LackElectric lackElectric);
 
     @GetMapping("selectLackElectric")
-    List<LackElectric> getLackElectricList();
+    Long getLackElectricList();
 
     @GetMapping("getCountMalfunction")
     Map<String, Object> getCountMalfunction();

@@ -176,7 +176,7 @@ public class StaffGroupTerminalServiceClientFallback implements StaffGroupTermin
     }
 
     @Override
-    public List<LackElectric> getLackElectricList() {
+    public Long getLackElectricList() {
         logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
 
         return null;

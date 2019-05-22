@@ -144,7 +144,7 @@ public class PowerStatusRemind {
                     lackElectricMapper.insertSelective(lackElectric);
                 }
                 LackElectricExample lackElectricExample1 = new LackElectricExample();
-                map.put("batteryAlarmValue", lackElectricMapper.selectByExample(lackElectricExample1).size());
+                map.put("batteryAlarmValue", lackElectricMapper.countByExample(lackElectricExample1));
 
                 try {
 //                    WebsocketServer.sendInfo(JSON.toJSONString(new WebSocketData(6, map)));

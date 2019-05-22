@@ -89,7 +89,7 @@ public class TerminalControllerServer {
     }
 
     @GetMapping("selectLackElectric")
-    public List<LackElectric> getLackElectricList(){
+    public Long getLackElectricList(){
         return lackElectricService.getLackElectricList();
     }
 

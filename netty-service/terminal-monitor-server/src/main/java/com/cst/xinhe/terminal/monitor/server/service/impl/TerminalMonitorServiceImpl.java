@@ -6,6 +6,7 @@ import com.cst.xinhe.common.netty.data.response.ResponseData;
 import com.cst.xinhe.common.ws.WebSocketData;
 import com.cst.xinhe.persistence.dao.base_station.BaseStationMapper;
 import com.cst.xinhe.persistence.dao.staff.StaffMapper;
+import com.cst.xinhe.persistence.dao.terminal.TerminalUpdateIpMapper;
 import com.cst.xinhe.persistence.model.lack_electric.LackElectric;
 import com.cst.xinhe.persistence.model.malfunction.Malfunction;
 import com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp;
@@ -56,6 +57,9 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
 
     @Resource
     private StaffMapper staffMapper;
+
+    @Resource
+    private TerminalUpdateIpMapper terminalUpdateIpMapper;
     /**
      * 根据端口和Ip判断是否在线
      * @param ipPort
@@ -262,13 +266,15 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
     @Override
     public TerminalUpdateIp findTerminalIdByIpAndPort(String terminalIp, int port) {
 
-        return staffGroupTerminalServiceClient.findTerminalIdByIpAndPort(terminalIp, port);
+        /*return staffGroupTerminalServiceClient.findTerminalIdByIpAndPort(terminalIp, port);*/
+        return  terminalUpdateIpMapper.findTerminalIdByIpAndPort(terminalIp, port);
     }
 
     @Override
     public Map<String, Object> selectStaffInfoByTerminalId(Integer terminalId) {
 
-        return staffGroupTerminalServiceClient.selectStaffInfoByTerminalId(terminalId);
+       /* return staffGroupTerminalServiceClient.selectStaffInfoByTerminalId(terminalId);*/
+        return staffMapper.selectStaffInfoByTerminalId(terminalId);
     }
 
     @Override

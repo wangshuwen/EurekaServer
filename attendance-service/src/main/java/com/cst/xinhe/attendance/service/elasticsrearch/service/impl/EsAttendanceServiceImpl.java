@@ -174,7 +174,7 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
         }
 
         Map<Integer,Map<String,Object>> res = staffGroupTerminalServiceClient.findGroupNameByStaffId(list1);
-
+        List<EsAttendanceEntity> list_remove = new ArrayList<>();
 
         for (EsAttendanceEntity attendance : list) {
             Integer staffid = attendance.getStaffid();
@@ -182,7 +182,7 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
             Integer ruleid = attendance.getRuleid();
             Map<String, Object> obj = res.get(staffid);
             if (null == obj) {
-                list.remove(attendance);
+                list_remove.add(attendance);
                 continue;
             }
 //            Staff staff = staffMapper.selectByPrimaryKey(staffid);
@@ -217,6 +217,8 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
                 attendance.setJobname(staffJob.getJobName());
         }
 
+        //把f要移除的对象放在list_remove中，统一移除
+        list.remove(list_remove);
         return page;
     }
 

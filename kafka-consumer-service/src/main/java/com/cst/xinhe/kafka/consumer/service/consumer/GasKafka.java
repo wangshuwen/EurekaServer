@@ -610,20 +610,20 @@ public class GasKafka extends BaseLog {
                             //推送警告气体
                             // 判断等级，根据等级查找url
                             int contrastParameter = 0;
-                            if (gasPosition.getCh4Unit() > contrastParameter) {
-                                contrastParameter = gasPosition.getCh4Unit();
+                            if (gasInfoWarn.getCh4Flag() > contrastParameter) {
+                                contrastParameter = gasInfoWarn.getCh4Flag();
                             }
-                            if (gasPosition.getCoUnit() > contrastParameter) {
-                                contrastParameter = gasPosition.getCoUnit();
+                            if (gasInfoWarn.getCoFlag() > contrastParameter) {
+                                contrastParameter = gasInfoWarn.getCoFlag();
                             }
-                            if (gasPosition.getO2Unit() > contrastParameter) {
-                                contrastParameter = gasPosition.getO2Unit();
+                            if (gasInfoWarn.getO2Flag() > contrastParameter) {
+                                contrastParameter = gasInfoWarn.getO2Flag();
                             }
-                            if (gasPosition.getTemperatureUnit() > contrastParameter) {
-                                contrastParameter = gasPosition.getTemperatureUnit();
+                            if (gasInfoWarn.gettFlag() > contrastParameter) {
+                                contrastParameter = gasInfoWarn.gettFlag();
                             }
-                            if (gasPosition.getHumidityUnit() > contrastParameter) {
-                                contrastParameter = gasPosition.getHumidityUnit();
+                            if (gasInfoWarn.gethFlag() > contrastParameter) {
+                                contrastParameter = gasInfoWarn.gethFlag();
                             }
                             gasWSRespVO.setGasLevel(contrastParameter);
 //                String url = levelDataService.findRangUrlByLevelDataId(contrastParameter);
@@ -632,17 +632,10 @@ public class GasKafka extends BaseLog {
                                 gasWSRespVO.setRangUrl(url);
                             }
                             try {
-//                    WebsocketServer.sendInfo(JSON.toJSONString(new WebSocketData(1, gasWSRespVO)));
                                 wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(new WebSocketData(1, gasWSRespVO)));
                             } catch (Exception e) {
                                 throw new RuntimeOtherException(ResultEnum.WEBSOCKET_SEND_ERROR);
                             }
-
-
-
-
-
-
 
                         }else{
                             gasPosition.setGasFlag(0);

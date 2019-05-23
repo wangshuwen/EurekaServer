@@ -41,9 +41,9 @@ public interface GasInfoService {
 
     List<GasWSRespVO> findGasInfoLastTenRecords(int number);
 
-    HashMap<String,Object> findRecentlyGasInfoByStaffId(Integer staffId);
+    Map<String,Object> findRecentlyGasInfoByStaffId(Integer staffId);
 
     Map<String, Object> selectGasInfoByTerminalLastTime(Integer terminalId);
 
-    TerminalRoad selectRoadById(Integer positionId);
+//    TerminalRoad selectRoadById(Integer positionId);
 }

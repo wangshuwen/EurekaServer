@@ -30,10 +30,10 @@ public class GasServiceController {
         return gasInfoService.selectGasInfoByTerminalLastTime(terminalId);
     }
 
-    @GetMapping("selectRoadById")
-    public TerminalRoad selectRoadById(Integer positionId){
-        return gasInfoService.selectRoadById(positionId);
-    }
+//    @GetMapping("selectRoadById")
+//    public TerminalRoad selectRoadById(Integer positionId){
+//        return gasInfoService.selectRoadById(positionId);
+//    }
 
     @GetMapping("findGasInfoByStaffIdAndTerminalId")
     public GasWSRespVO findGasInfoByStaffIdAndTerminalId(@RequestParam Integer terminalId) throws ParseException {

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @program: EurekaServer
@@ -118,7 +119,7 @@ public class StaffControllerServer {
     }
 
     @GetMapping("findGroupNameByStaffId")
-    public Map<Integer,Map<String,Object>> findGroupNameByStaffId(@RequestParam List<Integer> list1){
+    public Map<Integer,Map<String,Object>> findGroupNameByStaffId(@RequestParam Set<Integer> list1){
         return staffService.findGroupNameByIds(list1);
     }
 

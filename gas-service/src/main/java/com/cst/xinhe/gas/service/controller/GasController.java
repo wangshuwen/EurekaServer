@@ -20,6 +20,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName GasController
@@ -71,15 +72,13 @@ public class GasController {
                 return ResultUtil.jsonToStringSuccess(list);
             }
         }
-        System.out.println("查找最近气体ID");
-
         return ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
     }
 
     @ApiOperation(value = "根据员工id获取最近的一条气体信息", notes = "根据员工id获取最近的气体信息")
     @GetMapping("findRecentlyGasInfoByStaffId/{staffId}")
     public String findRecentlyGasInfoByStaffId(@PathVariable(name = "staffId") Integer staffId) {
-       HashMap<String,Object> gasInfo= gasInfoService.findRecentlyGasInfoByStaffId(staffId);
+        Map<String,Object> gasInfo= gasInfoService.findRecentlyGasInfoByStaffId(staffId);
        if (gasInfo != null && !gasInfo.isEmpty()){
            return ResultUtil.jsonToStringSuccess(gasInfo);
        }

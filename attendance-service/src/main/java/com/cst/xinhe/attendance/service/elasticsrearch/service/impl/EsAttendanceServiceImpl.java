@@ -27,9 +27,7 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @program: springboot_demo
@@ -170,7 +168,7 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
         Page<EsAttendanceEntity> page = attendanceRepository.search(nativeBuilder.build());
        // attendanceRepository.
         List<EsAttendanceEntity> list = page.getContent();
-        List<Integer> list1 = new ArrayList<>();
+        Set<Integer> list1 = new HashSet<>();
         for (EsAttendanceEntity attendance : list) {
             list1.add(attendance.getStaffid());
         }
@@ -182,11 +180,16 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
             Integer staffid = attendance.getStaffid();
             Integer basestationid = attendance.getBasestationid();
             Integer ruleid = attendance.getRuleid();
+            Map<String, Object> obj = res.get(staffid);
+            if (null == obj) {
+                list.remove(attendance);
+                continue;
+            }
 //            Staff staff = staffMapper.selectByPrimaryKey(staffid);
 //            Staff staff = res.get(staffid);
 //            Staff staff = staffGroupTerminalServiceClient.findStaffById(staffid);
 //            Integer jobId = staff.getStaffJobId();
-            Integer jobId = (Integer)res.get(staffid).get("jobId");
+            Integer jobId = (Integer)obj.get("jobId");
 //            Integer groupId = staff.getGroupId();
 //            Integer groupId = staff.getGroupId();
 //            String staffName1 = staff.getStaffName();

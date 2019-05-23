@@ -159,4 +159,109 @@ public class GasPositionServiceImpl implements GasPositionService {
         }
         return terminalRoad;
     }
+
+    @Override
+    public Map<String, Object> selectGasInfoByTerminalLastTime(Integer terminalId) {
+        SortBuilder sortBuilder = SortBuilders.fieldSort("terminalrealtime").order(SortOrder.DESC);
+        QueryBuilder queryBuilder = QueryBuilders.termQuery("terminalid", terminalId);
+
+        NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withQuery(queryBuilder).withSort(sortBuilder).withMinScore(1);
+
+        Map<String, Object> result = new HashMap<>();
+        Iterable<GasPositionEntity> iterable = gasPositionRepository.search(searchQueryBuilder.build());
+        for (GasPositionEntity gasPositionEntity : iterable) {
+            result.put("terminal_real_time", gasPositionEntity.getTerminalrealtime());
+            result.put("co",gasPositionEntity.getCo());
+            result.put("co_unit",gasPositionEntity.getCounit());
+            result.put("co2",gasPositionEntity.getCo2());
+            result.put("co2_unit",gasPositionEntity.getCo2unit());
+            result.put("ch4",gasPositionEntity.getCh4());
+            result.put("ch4_unit",gasPositionEntity);
+            result.put("o2",gasPositionEntity.getO2());
+            result.put("o2_unit",gasPositionEntity.getO2unit());
+            result.put("humidity_unit",gasPositionEntity.getHumidityunit());
+            result.put("humidity",gasPositionEntity.getHumidity());
+            result.put("temperature",gasPositionEntity.getTemperature());
+            result.put("temperature_unit", gasPositionEntity.getTemperatureunit());
+        }
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> findRecentlyGasInfoByStaffId(Integer staffId) {
+        SortBuilder sortBuilder = SortBuilders.fieldSort("gaspositionid").order(SortOrder.DESC);
+        QueryBuilder queryBuilder = QueryBuilders.termQuery("staffid", staffId);
+
+        NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withQuery(queryBuilder).withSort(sortBuilder).withMinScore(1);
+
+        Map<String, Object> result = new HashMap<>();
+        Iterable<GasPositionEntity> iterable = gasPositionRepository.search(searchQueryBuilder.build());
+        for (GasPositionEntity gasPositionEntity : iterable) {
+//            result.put("terminal_real_time", gasPositionEntity.getTerminalrealtime());
+            result.put("co",gasPositionEntity.getCo());
+//            result.put("co_unit",gasPositionEntity.getCounit());
+            result.put("co2",gasPositionEntity.getCo2());
+//            result.put("co2_unit",gasPositionEntity.getCo2unit());
+            result.put("ch4",gasPositionEntity.getCh4());
+//            result.put("ch4_unit",gasPositionEntity);
+            result.put("o2",gasPositionEntity.getO2());
+//            result.put("o2_unit",gasPositionEntity.getO2unit());
+//            result.put("humidity_unit",gasPositionEntity.getHumidityunit());
+            result.put("humidity",gasPositionEntity.getHumidity());
+            result.put("temperature",gasPositionEntity.getTemperature());
+//            result.put("temperature_unit", gasPositionEntity.getTemperatureunit());
+        }
+//         <select id="findRecentlyGasInfoByStaffId" resultType="java.util.HashMap">
+//                SELECT *  FROM rt_gas_info r
+//        left join staff_terminal s on r.terminal_id = s.terminal_id
+//        left join terminal_road t on r.position_id = t.terminal_road_id
+//        where s.staff_id = #{staffId}
+//        order by rt_gas_info_id desc limit 1
+//                </select>
+        return result;
+    }
+
+    @Override
+    public List<Map<String, Object>> selectGasInfoLastTenData(int number) {
+        SortBuilder sortBuilder = SortBuilders.fieldSort("gaspositionid").order(SortOrder.DESC);
+
+        NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withSort(sortBuilder).withMinScore(number);
+
+        Map<String, Object> result;
+        List<Map<String, Object>> list = new ArrayList<>();
+        Iterable<GasPositionEntity> iterable = gasPositionRepository.search(searchQueryBuilder.build());
+        for (GasPositionEntity gasPositionEntity : iterable) {
+            result = new HashMap<>();
+            result.put("rtGasInfoId", gasPositionEntity.getGaspositionid());
+            result.put("staff_id", gasPositionEntity.getStaffid());
+            result.put("terminal_real_time", gasPositionEntity.getTerminalrealtime());
+            result.put("co",gasPositionEntity.getCo());
+            result.put("co_unit",gasPositionEntity.getCounit());
+            result.put("co2",gasPositionEntity.getCo2());
+            result.put("co2_unit",gasPositionEntity.getCo2unit());
+            result.put("temppositionname",gasPositionEntity.getTemppositionname());
+            result.put("ch4",gasPositionEntity.getCh4());
+            result.put("field_3",gasPositionEntity.getField3());
+            result.put("field_3_unit",gasPositionEntity.getField3unit());
+            result.put("ch4_unit",gasPositionEntity);
+            result.put("o2",gasPositionEntity.getO2());
+            result.put("o2_unit",gasPositionEntity.getO2unit());
+            result.put("humidity_unit",gasPositionEntity.getHumidityunit());
+            result.put("humidity",gasPositionEntity.getHumidity());
+            result.put("temperature",gasPositionEntity.getTemperature());
+            result.put("temperature_unit", gasPositionEntity.getTemperatureunit());
+            result.put("create_time", gasPositionEntity.getCreatetime());
+            result.put("terminal_id", gasPositionEntity.getTerminalid());
+            list.add(result);
+        }
+//         <select id="selectGasInfoLastTenData" resultType="java.util.HashMap">
+//                SELECT  a.rt_gas_info_id AS rtGasInfoId,  a.co,  a.co_unit,  a.ch4,  a.ch4_unit,  a.o2,  a.o2_unit,  a.co2,  a.co2_unit,  a.temperature,
+//                a.temperature_unit,  a.humidity,  a.humidity_unit,  a.field_3,  a.field_3_unit,  a.create_time,  a.terminal_id,
+//                a.station_id,  a.terminal_ip,  a.station_ip,  a.terminal_real_time,  a.info_type,  a.sequence_id,
+//                a.position_id
+//        FROM rt_gas_info a
+//        ORDER BY a.rt_gas_info_id DESC LIMIT #{number}
+//    </select>
+        return list;
+    }
 }

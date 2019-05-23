@@ -47,16 +47,15 @@ public class GasInfoServiceImpl implements GasInfoService {
     private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
 
 
-
     @Autowired
     private GasPositionService gasPositionService;
 
     @Override
     public Page findGasInfoByStaffName(Integer gasFlag, String staffName, Integer startPage, Integer pageSize) {
 
-              Page page = new Page();
-                //todo es分页查询
-                org.springframework.data.domain.Page<GasPositionEntity> gasPositionList = gasPositionService.searchGasPositionWarnInfoByStaffId(gasFlag,staffName, startPage, pageSize);
+        Page page = new Page();
+        //todo es分页查询
+        org.springframework.data.domain.Page<GasPositionEntity> gasPositionList = gasPositionService.searchGasPositionWarnInfoByStaffId(gasFlag, staffName, startPage, pageSize);
 //                gasPositionWarnEntityList.getContent(); //分页内的数据
 //                gasPositionWarnEntityList.getSize();
 //                System.out.println(gasPositionWarnEntityList.toString());
@@ -68,7 +67,9 @@ public class GasInfoServiceImpl implements GasInfoService {
             staffIds.add(item.getStaffid());
         }
 
-        List<Map<String,Object>> staffMap = staffGroupTerminalServiceClient.findStaffByIds(staffIds);
+        // 根据员工的ID查询所有staff ，如果staff Id 存在，才有staffName
+        List<Map<String, Object>> staffMap = staffGroupTerminalServiceClient.findStaffByIds(staffIds);
+
 //        staffMapper.selectByPrimaryKey(staffId);
 
        /* for (GasPositionEntity item : gasPositionList.getContent()) {
@@ -80,8 +81,8 @@ public class GasInfoServiceImpl implements GasInfoService {
         for (GasPositionEntity item : content) {
             for (Map<String, Object> staff : staffMap) {
                 Integer staffId = (Integer) staff.get("staffId");
-                if(item.getStaffid().equals(staffId)){
-                     staffName = (String) staff.get("staffName");
+                if (item.getStaffid().equals(staffId)) {
+                    staffName = (String) staff.get("staffName");
                     item.setStaffname(staffName);
                 }
 
@@ -89,21 +90,19 @@ public class GasInfoServiceImpl implements GasInfoService {
         }
 
 
+        List<GasPositionEntity> list = page.getResult();
+        page.setPages(gasPositionList.getTotalPages());   // 总分页数
 
+        System.out.println("总共条数： " + gasPositionList.getTotalElements());
+        page.setTotal(gasPositionList.getTotalElements()); // 总共条数
+        page.setPageNum(startPage);
+        page.setPageSize(pageSize);
 
-                List<GasPositionEntity> list = page.getResult();
-                page.setPages(gasPositionList.getTotalPages());   // 总分页数
-
-                System.out.println("总共条数： " + gasPositionList.getTotalElements());
-                page.setTotal(gasPositionList.getTotalElements()); // 总共条数
-                page.setPageNum(startPage);
-                page.setPageSize(pageSize);
-
-                list.clear();
-                list.addAll(gasPositionList.getContent());    // 总共数据
-                page.setPageNum(gasPositionList.getNumber()); //当前页数
-                System.out.println("当前页数： " + gasPositionList.getPageable().toString());
-                System.out.println("总分页数： " + gasPositionList.getTotalPages());
+        list.clear();
+        list.addAll(gasPositionList.getContent());    // 总共数据
+        page.setPageNum(gasPositionList.getNumber()); //当前页数
+        System.out.println("当前页数： " + gasPositionList.getPageable().toString());
+        System.out.println("总分页数： " + gasPositionList.getTotalPages());
 //                lists = rtGasInfoMapper.selectGasRoadByStaffId();
 
         /*} else {
@@ -133,8 +132,8 @@ public class GasInfoServiceImpl implements GasInfoService {
 
     @Override
     public GasWSRespVO findGasInfoByStaffIdAndTerminalId(Integer terminalId) throws ParseException {
-        Map<String, Object> map = rtGasInfoMapper.selectGasInfoByTerminalLastTime(terminalId);
-
+//        Map<String, Object> map = rtGasInfoMapper.selectGasInfoByTerminalLastTime(terminalId);
+        Map<String, Object> map = gasPositionService.selectGasInfoByTerminalLastTime(terminalId);
 //
 //        rt_gas_info_id, co, co_unit, ch4, ch4_unit, o2, o2_unit, co2, co2_unit, temperature,
 //                temperature_unit, humidity, humidity_unit, field_3, field_3_unit, create_time, terminal_id,
@@ -170,41 +169,29 @@ public class GasInfoServiceImpl implements GasInfoService {
         Integer zoneId = WSSiteServer.zoneId;*/
 
         //多表查询改为单表查询
-        List<Map<String, Object>> maps = rtGasInfoMapper.selectGasInfoLastTenData(number);
+//        List<Map<String, Object>> maps = rtGasInfoMapper.selectGasInfoLastTenData(number);
+        List<Map<String, Object>> maps = gasPositionService.selectGasInfoLastTenData(number);
         List<GasWSRespVO> list = Collections.synchronizedList(new ArrayList<>());
         GasWSRespVO gasWSRespVO = null;
-
-
+        Set<Integer> set = new HashSet<>();
+        for (Map<String, Object> item : maps) {
+            set.add((Integer) item.get("staff_id"));
+        }
+        Map<Integer, Map<String, Object>> res = staffGroupTerminalServiceClient.findGroupNameByStaffId(set);
+//        staffGroupTerminalServiceClient.getDeptNameByGroupId(group_id);
         for (Map<String, Object> item : maps) {
             gasWSRespVO = new GasWSRespVO();
-
-            Integer positionId = (Integer) item.get("position_id");
-            TerminalRoad terminalRoad = terminalRoadMapper.selectByPrimaryKey(positionId);
-            if (terminalRoad != null) {
-                gasWSRespVO.setTempRoadName(terminalRoad.getTempPositionName());
-                Integer staffId = terminalRoad.getStaffId();
-                Staff staff = staffMapper.selectByPrimaryKey(staffId);
-//                Staff staff = staffGroupTerminalServiceClient.findStaffById(staffId);
-                if (staff != null) {
-                    gasWSRespVO.setStaffId(staffId);
-                    gasWSRespVO.setStaffName(staff.getStaffName());
-                    Integer group_id = staff.getGroupId();
-                   /* //部门筛选
-                    if(orgId!=null){
-                        List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(orgId);
-                       if(!deptIds.contains(group_id)){
-                           //如果当前部门id不在id集合中，停止本次循环，继续下次循环
-                           continue;
-                       }
-                    }*/
-
-
-                   // String deptName = staffOrganizationService.getDeptNameByGroupId(group_id);
-                    String deptName = staffGroupTerminalServiceClient.getDeptNameByGroupId(group_id);
-                    gasWSRespVO.setDeptName(deptName);
-                }
+            Staff staff = staffMapper.selectByPrimaryKey((Integer) item.get("staff_id"));
+//              Staff staff = staffGroupTerminalServiceClient.findStaffById(staffId);
+            if (null == staff) {
+                continue;
             }
+            gasWSRespVO.setStaffName(staff.getStaffName());
+            gasWSRespVO.setDeptName((String) res.get(staff.getStaffId()).get("deptName"));
 
+
+            gasWSRespVO.setStaffId((Integer) item.get("staff_id"));
+            gasWSRespVO.setTempRoadName((String) item.get("temppositionname"));
             gasWSRespVO.setRtGasInfoId((Integer) item.get("rtGasInfoId"));
             gasWSRespVO.setRt((Date) item.get("terminal_real_time"));
             gasWSRespVO.setCo((double) item.get("co"));
@@ -221,72 +208,30 @@ public class GasInfoServiceImpl implements GasInfoService {
             gasWSRespVO.setTemperature((double) item.get("temperature"));
             gasWSRespVO.setTemperature_type((Integer) item.get("temperature_unit"));
 
-
             gasWSRespVO.setSequenceId((Integer) item.get("sequence_id"));
             gasWSRespVO.setCreateTime((Date) item.get("create_time"));
-            //gasWSRespVO.setTempRoadName((String)item.get("tempPositionName"));
 
 
             list.add(gasWSRespVO);
         }
-
-
-
-
-      /*  List<Map<String, Object>> maps = rtGasInfoMapper.selectGasInfoLastTenRecords(number);
-
-
-
-        List<GasWSRespVO> list = Collections.synchronizedList(new ArrayList<>());
-        GasWSRespVO gasWSRespVO = null;
-        for (Map<String, Object> item : maps) {
-            gasWSRespVO = new GasWSRespVO();
-            gasWSRespVO.setRtGasInfoId((Integer) item.get("rtGasInfoId"));
-            gasWSRespVO.setRt((Date) item.get("terminal_real_time"));
-            gasWSRespVO.setCo((double) item.get("co"));
-            gasWSRespVO.setCo_type((Integer) item.get("co_unit"));
-            gasWSRespVO.setCo2((double) item.get("co2"));
-            gasWSRespVO.setCo2_type((Integer) item.get("co2_unit"));
-            gasWSRespVO.setCh4((double) item.get("ch4"));
-            gasWSRespVO.setCh4_type((Integer) item.get("ch4_unit"));
-            gasWSRespVO.setO2((double) item.get("o2"));
-            gasWSRespVO.setStaffId((Integer) item.get("staff_id"));
-            gasWSRespVO.setO2_type((Integer) item.get("o2_unit"));
-            gasWSRespVO.setHumidity_type((Integer) item.get("humidity_unit"));
-            gasWSRespVO.setHumidity((double) item.get("humidity"));
-            gasWSRespVO.setTemperature((double) item.get("temperature"));
-            gasWSRespVO.setTemperature_type((Integer) item.get("temperature_unit"));
-//            Integer terminalId = (Integer) item.get("terminalId");
-//            Map<String, Object> result = staffService.findStaffIdByTerminalId(terminalId);
-//            staff.staff_id, staff_number, staff_name, staff_sex, staff_birthday, staff_id_card, staff_wedlock,
-//                    staff_email, staff_address, staff_phone, staff_job_id, staff_native_place, staff_type_id,
-//                    is_person, staff.create_time, group_id
-
-            gasWSRespVO.setStaffName((String) item.get("staff_name"));
-            gasWSRespVO.setSequenceId((Integer) item.get("sequence_id"));
-            gasWSRespVO.setCreateTime((Date) item.get("create_time"));
-            gasWSRespVO.setTempRoadName((String)item.get("tempPositionName"));
-//            gasWSRespVO.setStaffNumber((String) result.get("staff_number"));
-           Integer group_id= (Integer)item.get("group_id");
-            String deptName = staffOrganizationService.getDeptNameByGroupId(group_id);
-            gasWSRespVO.setDeptName(deptName);
-            list.add(gasWSRespVO);
-        }*/
         return list;
     }
 
     @Override
-    public HashMap<String, Object> findRecentlyGasInfoByStaffId(Integer staffId) {
-        return rtGasInfoMapper.findRecentlyGasInfoByStaffId(staffId);
+    public Map<String, Object> findRecentlyGasInfoByStaffId(Integer staffId) {
+//        return rtGasInfoMapper.findRecentlyGasInfoByStaffId(staffId);
+        return gasPositionService.findRecentlyGasInfoByStaffId(staffId);
     }
 
     @Override
     public Map<String, Object> selectGasInfoByTerminalLastTime(Integer terminalId) {
-        return rtGasInfoMapper.selectGasInfoByTerminalLastTime(terminalId);
+//        return rtGasInfoMapper.selectGasInfoByTerminalLastTime(terminalId);
+        return gasPositionService.selectGasInfoByTerminalLastTime(terminalId);
     }
 
-    @Override
-    public TerminalRoad selectRoadById(Integer positionId) {
-        return terminalRoadMapper.selectByPrimaryKey(positionId);
-    }
+//    @Override
+//    public TerminalRoad selectRoadById(Integer positionId) {
+//        return terminalRoadMapper.selectByPrimaryKey(positionId);
+//        return gasPositionService.selectByPrimaryKey(positionId);
+//    }
 }

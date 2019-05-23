@@ -365,7 +365,7 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public Map<Integer,Map<String,Object>> findGroupNameByIds(List<Integer> list1) {
+    public Map<Integer,Map<String,Object>> findGroupNameByIds(Set<Integer> list1) {
         Map<Integer, Map<String,Object> > result = new HashMap<>();
         Map<String,Object> itemMap = new HashMap<>();
         for (Integer item: list1){

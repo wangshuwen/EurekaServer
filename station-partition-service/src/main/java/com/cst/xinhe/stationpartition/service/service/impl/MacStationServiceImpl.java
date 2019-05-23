@@ -33,6 +33,7 @@ public class MacStationServiceImpl implements MacStationService {
     @Resource
     private StaffTerminalMapper staffTerminalMapper;
 
+    @Resource
     private StaffJobMapper staffJobMapper;
 
 //    @Resource

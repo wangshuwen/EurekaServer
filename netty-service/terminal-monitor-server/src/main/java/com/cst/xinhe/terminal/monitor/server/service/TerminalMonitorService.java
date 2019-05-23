@@ -59,4 +59,6 @@ public interface TerminalMonitorService {
     Map<String, Object> selectStaffInfoByTerminalId(Integer terminalId);
 
     Integer getBatteryNumByTerminalNum(Integer terminalNum);
+
+    void checkTempSendListAndToSend(RequestData customMsg);
 }

@@ -172,7 +172,7 @@ public class GasInfoServiceImpl implements GasInfoService {
 //        List<Map<String, Object>> maps = rtGasInfoMapper.selectGasInfoLastTenData(number);
         List<Map<String, Object>> maps = gasPositionService.selectGasInfoLastTenData(number);
         List<GasWSRespVO> list = Collections.synchronizedList(new ArrayList<>());
-        GasWSRespVO gasWSRespVO = null;
+        GasWSRespVO gasWSRespVO;
         Set<Integer> set = new HashSet<>();
         for (Map<String, Object> item : maps) {
             set.add((Integer) item.get("staff_id"));
@@ -192,7 +192,7 @@ public class GasInfoServiceImpl implements GasInfoService {
 
             gasWSRespVO.setStaffId((Integer) item.get("staff_id"));
             gasWSRespVO.setTempRoadName((String) item.get("temppositionname"));
-            gasWSRespVO.setRtGasInfoId((Integer) item.get("rtGasInfoId"));
+            gasWSRespVO.setRtGasInfoId((Long) item.get("rtGasInfoId"));
             gasWSRespVO.setRt((Date) item.get("terminal_real_time"));
             gasWSRespVO.setCo((double) item.get("co"));
             gasWSRespVO.setCo_type((Integer) item.get("co_unit"));

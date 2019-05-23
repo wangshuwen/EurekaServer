@@ -34,7 +34,7 @@ import java.util.concurrent.Executors;
 @Component
 public class TerminalInfoProcess {
 
-    Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger logger = LoggerFactory.getLogger(TerminalInfoProcess.class);
 
     public static Set<Integer> staffSet= Collections.synchronizedSet(new HashSet());
     public static Set<Integer> leaderSet= Collections.synchronizedSet(new HashSet());

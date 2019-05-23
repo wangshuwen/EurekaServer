@@ -44,6 +44,8 @@ import com.cst.xinhe.persistence.vo.resp.GasLevelVO;
 import com.cst.xinhe.persistence.vo.resp.GasWSRespVO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.TopicPartition;
 import org.springframework.stereotype.Component;
@@ -60,7 +62,9 @@ import java.util.concurrent.Executors;
  * @Date 2019/4/24/11:05
  */
 @Component
-public class GasKafka extends BaseLog {
+public class GasKafka  {
+
+    private static final Logger logger = LoggerFactory.getLogger(GasKafka.class);
     //存储更新基站 队列
     public static Map<Integer, ArrayQueue<TerminalRoad>> attendanceMap=new HashMap<>();
 

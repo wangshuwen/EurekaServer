@@ -5,8 +5,11 @@ import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
 import com.cst.xinhe.common.ws.WebSocketData;
 import com.cst.xinhe.persistence.dao.base_station.BaseStationMapper;
+import com.cst.xinhe.persistence.dao.chat.TemporarySendListMapper;
 import com.cst.xinhe.persistence.dao.staff.StaffMapper;
 import com.cst.xinhe.persistence.dao.terminal.TerminalUpdateIpMapper;
+import com.cst.xinhe.persistence.dto.voice.VoiceDto;
+import com.cst.xinhe.persistence.model.chat.TemporarySendList;
 import com.cst.xinhe.persistence.model.lack_electric.LackElectric;
 import com.cst.xinhe.persistence.model.malfunction.Malfunction;
 import com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp;
@@ -16,6 +19,7 @@ import com.cst.xinhe.terminal.monitor.server.client.*;
 import com.cst.xinhe.terminal.monitor.server.handle.NettyServerHandler;
 import com.cst.xinhe.terminal.monitor.server.request.SingletonClient;
 import com.cst.xinhe.terminal.monitor.server.service.TerminalMonitorService;
+import com.cst.xinhe.terminal.monitor.server.utils.SequenceIdGenerate;
 import io.netty.channel.Channel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +27,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -51,6 +56,9 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
 
     @Autowired
     private KafkaConsumerClient kafkaConsumerClient;
+
+    @Resource
+    private TemporarySendListMapper temporarySendListMapper;
 
     @Autowired
     private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
@@ -280,5 +288,36 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
     @Override
     public Integer getBatteryNumByTerminalNum(Integer terminalNum) {
         return NettyServerHandler.battery.get(terminalNum);
+    }
+
+    @Override
+    public void checkTempSendListAndToSend(RequestData customMsg) {
+        Integer terminalId = customMsg.getTerminalId();
+        List<TemporarySendList> list =  temporarySendListMapper.checkWaitingForDataToBeSent(terminalId);
+        if (null != list && !list.isEmpty()){
+            for (TemporarySendList temporarySendList: list) {
+                //todo 发送数据
+
+                //待发送的音频URL
+                String voiceUrl = temporarySendList.getVoiceUrl();
+                // 发送队列
+
+                VoiceDto voiceDto = new VoiceDto();
+                voiceDto.setUserId(0);
+                voiceDto.setVoiceUrl(voiceUrl);
+                voiceDto.setSeqId(SequenceIdGenerate.getSequenceId());
+                voiceDto.setStationId(customMsg.getStationId());
+                voiceDto.setStationIp1(customMsg.getStationIp1());
+                voiceDto.setStationIp2(customMsg.getStationIp2());
+                voiceDto.setTerminalId(terminalId);
+                voiceDto.setTerminalPort(customMsg.getTerminalPort());
+                voiceDto.setStationPort(customMsg.getStationPort());
+                voiceDto.setTerminalIp1(customMsg.getTerminalIp1());
+                voiceDto.setTerminalIp2(customMsg.getTerminalIp2());
+                voiceDto.setTerminalIp(customMsg.getTerminalIp());
+                kafkaClient.send("voiceSender.tut", JSON.toJSONString(voiceDto), customMsg.getTerminalPort());
+                temporarySendListMapper.updateTemporarySendListIsSend(temporarySendList.getTemporarySendListId());
+            }
+        }
     }
 }

@@ -1,10 +1,13 @@
-package com.cst.xinhe.chatmessage.service.client;
+package com.cst.xinhe.stationpartition.service.client;
 
-import com.cst.xinhe.chatmessage.service.client.callback.TerminalMonitorFallback;
-import com.cst.xinhe.chatmessage.service.client.config.FeignConfig;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
+import com.cst.xinhe.stationpartition.service.client.callback.TerminalMonitorFallback;
+import com.cst.xinhe.stationpartition.service.client.config.FeignConfig;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @program: EurekaServer
@@ -33,8 +36,7 @@ public interface TerminalMonitorClient {
      * @return
      */
     @GetMapping("/getChannelByIpPort")
-    Boolean getChanelByName(@RequestParam("ipPort") String ipPort);
-
+    Boolean getChanelByName(@RequestParam String ipPort);
 
     @GetMapping("getSequenceId")
     Integer getSequenceId();

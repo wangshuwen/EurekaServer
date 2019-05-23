@@ -2,13 +2,10 @@ package com.cst.xinhe.terminal.monitor.server.server;
 
 import com.cst.xinhe.base.result.ResultUtil;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
-import com.cst.xinhe.common.utils.SequenceIdGenerate;
 import com.cst.xinhe.terminal.monitor.server.service.TerminalMonitorService;
+import com.cst.xinhe.terminal.monitor.server.utils.SequenceIdGenerate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @program: EurekaServer
@@ -39,5 +36,10 @@ public class TerminalMonitorController {
     @RequestMapping("getBatteryByTerminalNum")
     public Integer getBattery(@RequestParam Integer terminalNum){
         return terminalMonitorService.getBatteryNumByTerminalNum(terminalNum);
+    }
+
+    @GetMapping("getSequenceId")
+    public Integer getSequenceId(){
+        return SequenceIdGenerate.getSequenceId();
     }
 }

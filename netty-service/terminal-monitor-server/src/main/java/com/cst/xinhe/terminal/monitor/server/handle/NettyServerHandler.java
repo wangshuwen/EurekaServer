@@ -204,6 +204,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                                 //数据分析页面
 //                                upLoadService.sendTerminalInfoToQueue(customMsg);
                                 terminalMonitorService.sendTerminalInfoToQueue(customMsg);
+                                //发送待发送数据
+                                terminalMonitorService.checkTempSendListAndToSend(customMsg);
                                 ProcessSettingGasLevel.getSingletonClient().sendMsg(customMsg); // 气体标准下发
                                 ProcessUploadFrequency.getSingletonProcessUploadFrequency().process(customMsg); // 设置终端的上传气体的频率
                                 log.info("更新IP");

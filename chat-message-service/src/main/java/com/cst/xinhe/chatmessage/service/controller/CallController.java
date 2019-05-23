@@ -37,17 +37,10 @@ public class CallController {
     @PostMapping("staff/call")
     @ApiOperation(value = "对终端进行语音对讲", notes = "通过语音数据和矿下员工ID 进行语音对讲")
     public String callStaff(MultipartFile wavFile, Integer staffId) {
-//        Object sysUser = SecurityUtils.getSubject().getPrincipal();
-//        ClazzUtil clazzUtil = new ClazzUtil();
-//        Integer userId = (Integer) clazzUtil.getFieldValueByName("sysUserid", sysUser);
-        if (wavFile != null && staffId != null) {
-//           result = callService.callStaffByStaffId(wavFile,staffId,userId);
-//           return result ? ResultUtil.jsonToStringSuccess(): ResultUtil.jsonToStringError(ResultEnum.SEND_VOICE_ERROR);
-//            callService.callStaffByStaffId(wavFile, staffId, userId);
-//            默认是0;
+        if (null != wavFile && null != staffId) {
             try {
                 String res = callService.callStaffByStaffId(wavFile, staffId, 0);
-                if (res != null){
+                if (null != res){
                     return ResultUtil.jsonToStringSuccess(res);
                 }
             }catch (Exception e){

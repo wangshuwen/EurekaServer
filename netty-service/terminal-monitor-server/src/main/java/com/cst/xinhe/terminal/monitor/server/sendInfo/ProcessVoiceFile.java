@@ -1,11 +1,10 @@
-package com.cst.xinhe.kafka.consumer.service.consumer;
+package com.cst.xinhe.terminal.monitor.server.sendInfo;
 
 import com.alibaba.fastjson.JSONObject;
-import com.cst.xinhe.base.log.BaseLog;
 import com.cst.xinhe.common.constant.ConstantValue;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
-import com.cst.xinhe.kafka.consumer.service.client.TerminalMonitorClient;
+import com.cst.xinhe.terminal.monitor.server.request.SingletonClient;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -32,20 +30,13 @@ public class ProcessVoiceFile {
 
     private static final Logger logger = LoggerFactory.getLogger(ProcessVoiceFile.class);
 
-    @Resource
-    private TerminalMonitorClient terminalMonitorClient;
 
     private static final String TOPIC = "voiceSender.tut";
 
     private void process(String str_msg){
-//        if (kafkaMessage.isPresent()) {
-//            Object msg = kafkaMessage.get();
-//            String str_msg = msg.toString();
             JSONObject jsonObject = JSONObject.parseObject(str_msg);
 
             String voiceUrl = jsonObject.getString("voiceUrl");
-//            Integer staffId = jsonObject.getInteger("staffId");
-//            Integer userId = jsonObject.getInteger("userId");
             Integer seqId = jsonObject.getInteger("seqId");
             Integer stationId = jsonObject.getInteger("stationId");
             Integer stationIp1 = jsonObject.getInteger("stationIp1");
@@ -61,9 +52,9 @@ public class ProcessVoiceFile {
             ResponseData responseData = new ResponseData();
 
             RequestData requestData = new RequestData();
-            responseData.setCode((byte) 0x55);
+            responseData.setCode(ConstantValue.MSG_BODY_RESULT_SUCCESS);
             requestData.setType(ConstantValue.MSG_HEADER_FREAME_HEAD);
-            requestData.setCmd((byte) (ConstantValue.MSG_HEADER_COMMAND_ID_SEND_VOICE));
+            requestData.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_SEND_VOICE);
             requestData.setLength(548);
             requestData.setStationId(stationId);
             requestData.setStationIp1(stationIp1);
@@ -108,8 +99,8 @@ public class ProcessVoiceFile {
                     System.out.println("\n发送的语音数据： " + requestData.toString());
                     System.out.println("\n===========================");
                     responseData.setCustomMsg(requestData);
-//                    SingletonClient.getSingletonClient().sendCmd(responseData);
-                    terminalMonitorClient.sendResponseData(responseData);
+                    SingletonClient.getSingletonClient().sendCmd(responseData);
+//                    terminalMonitorClient.sendResponseData(responseData);
                     try {
                         Thread.sleep((long) 15);
                     } catch (InterruptedException e) {
@@ -127,8 +118,8 @@ public class ProcessVoiceFile {
                 requestData.setBody(b);
                 responseData.setCustomMsg(requestData);
 
-//                SingletonClient.getSingletonClient().sendCmd(responseData);
-                terminalMonitorClient.sendResponseData(responseData);
+                SingletonClient.getSingletonClient().sendCmd(responseData);
+//                terminalMonitorClient.sendResponseData(responseData);
 //            long end = System.currentTimeMillis();
 //            System.out.println("时间差：" + (int)(end - start));
                 System.out.println("\n发送的第 " + i + " 个语音包");

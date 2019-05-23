@@ -4,10 +4,10 @@ import com.cst.xinhe.common.constant.ConstantValue;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
 import com.cst.xinhe.common.netty.utils.NettyDataUtils;
-import com.cst.xinhe.common.utils.SequenceIdGenerate;
 import com.cst.xinhe.terminal.monitor.server.client.StationPartitionServiceClient;
 import com.cst.xinhe.terminal.monitor.server.context.SpringContextUtil;
 import com.cst.xinhe.terminal.monitor.server.request.SingletonClient;
+import com.cst.xinhe.terminal.monitor.server.utils.SequenceIdGenerate;
 
 /**
  * @program: demo

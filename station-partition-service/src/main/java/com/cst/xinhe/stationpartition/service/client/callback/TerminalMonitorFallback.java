@@ -1,9 +1,9 @@
-package com.cst.xinhe.chatmessage.service.client.callback;
+package com.cst.xinhe.stationpartition.service.client.callback;
 
 import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.result.ResultUtil;
-import com.cst.xinhe.chatmessage.service.client.TerminalMonitorClient;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
+import com.cst.xinhe.stationpartition.service.client.TerminalMonitorClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -32,6 +32,7 @@ public class TerminalMonitorFallback implements TerminalMonitorClient {
 
     @Override
     public Integer getSequenceId() {
+
         logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
         return null;
     }

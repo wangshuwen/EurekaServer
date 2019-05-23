@@ -36,7 +36,7 @@ import java.util.concurrent.Executors;
 @Component
 public class GasWarnInfoToWS {
 
-    Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger logger = LoggerFactory.getLogger(GasWarnInfoToWS.class);
 
     //存储更新基站 队列
     public static Map<Integer, ArrayQueue<TerminalRoad>> attendanceMap = new HashMap<>();

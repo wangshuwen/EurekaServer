@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @create: 2019-05-05 10:35
  **/
 public interface CallService {
+
     String callStaffByStaffId(MultipartFile wavFile, Integer staffId, Integer userId);
 
     boolean pingTerminal(Integer staffId);

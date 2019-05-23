@@ -29,11 +29,11 @@ import java.util.List;
 @RestController
 public class ChatMsgController {
 
-    @Value("webBaseUrl")
+    @Value("${constant.webBaseUrl}")
     public String webBaseUrl ;
-    @Value("basePath")
+    @Value("${constant.basePath}")
     public String basePath ;
-    @Value("rangBasePath")
+    @Value("${constant.rangBasePath}")
     public String rangBasePath ;
 
     @Resource

@@ -7,6 +7,8 @@ import com.cst.xinhe.base.log.BaseLog;
 import com.cst.xinhe.kafka.consumer.service.client.StationPartitionServiceClient;
 import com.cst.xinhe.persistence.model.base_station.BaseStation;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.TopicPartition;
 import org.springframework.stereotype.Component;
@@ -22,8 +24,9 @@ import java.util.Optional;
  * @version 1.0
  */
 @Component
-public class ConfigResponse extends BaseLog {
+public class ConfigResponse {
 
+    private static final Logger logger = LoggerFactory.getLogger(ConfigResponse.class);
 //    @Resource
 //    private BaseStationMapper baseStationMapper;
 

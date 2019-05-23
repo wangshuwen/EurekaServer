@@ -247,7 +247,7 @@ public class GasPositionServiceImpl implements GasPositionService {
     public List<Map<String, Object>> selectGasInfoLastTenData(int number) {
         SortBuilder sortBuilder = SortBuilders.fieldSort("gaspositionid").order(SortOrder.DESC);
 
-        NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withSort(sortBuilder).withMinScore(number);
+        NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withSort(sortBuilder);
 
         Map<String, Object> result;
         List<Map<String, Object>> list = new ArrayList<>();
@@ -265,7 +265,7 @@ public class GasPositionServiceImpl implements GasPositionService {
             result.put("ch4",gasPositionEntity.getCh4());
             result.put("field_3",gasPositionEntity.getField3());
             result.put("field_3_unit",gasPositionEntity.getField3unit());
-            result.put("ch4_unit",gasPositionEntity);
+            result.put("ch4_unit",gasPositionEntity.getCh4unit());
             result.put("o2",gasPositionEntity.getO2());
             result.put("o2_unit",gasPositionEntity.getO2unit());
             result.put("humidity_unit",gasPositionEntity.getHumidityunit());
@@ -274,6 +274,7 @@ public class GasPositionServiceImpl implements GasPositionService {
             result.put("temperature_unit", gasPositionEntity.getTemperatureunit());
             result.put("create_time", gasPositionEntity.getCreatetime());
             result.put("terminal_id", gasPositionEntity.getTerminalid());
+            result.put("sequence_id", gasPositionEntity.getSequenceid());
             list.add(result);
         }
 //         <select id="selectGasInfoLastTenData" resultType="java.util.HashMap">

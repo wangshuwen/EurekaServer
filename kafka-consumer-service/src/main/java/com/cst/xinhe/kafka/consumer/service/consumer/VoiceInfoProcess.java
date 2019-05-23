@@ -30,7 +30,7 @@ import java.util.*;
 @Component
 public class VoiceInfoProcess {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger logger = LoggerFactory.getLogger(VoiceInfoProcess.class);
 
 //    @Resource
 //    WebsocketServer websocketServer;

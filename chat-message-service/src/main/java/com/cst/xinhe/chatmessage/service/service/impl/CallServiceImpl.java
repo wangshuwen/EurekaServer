@@ -10,12 +10,13 @@ import com.cst.xinhe.chatmessage.service.service.ChatMessageService;
 import com.cst.xinhe.chatmessage.service.util.IpAddr;
 import com.cst.xinhe.common.netty.utils.FileUtils;
 import com.cst.xinhe.common.utils.FileType;
-import com.cst.xinhe.common.utils.SequenceIdGenerate;
 import com.cst.xinhe.common.utils.convert.DateConvert;
+import com.cst.xinhe.persistence.dao.chat.TemporarySendListMapper;
 import com.cst.xinhe.persistence.dao.terminal.StaffTerminalMapper;
 import com.cst.xinhe.persistence.dao.terminal.TerminalUpdateIpMapper;
 import com.cst.xinhe.persistence.dto.voice.VoiceDto;
 import com.cst.xinhe.persistence.model.chat.ChatMsg;
+import com.cst.xinhe.persistence.model.chat.TemporarySendList;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -71,11 +72,15 @@ public class CallServiceImpl implements CallService {
 
     @Resource
     private TerminalUpdateIpMapper terminalUpdateIpMapper;
-    @Value("webBaseUrl")
+
+    @Resource
+    private TemporarySendListMapper temporarySendListMapper;
+
+    @Value("${constant.webBaseUrl}")
     public String webBaseUrl ;
-    @Value("basePath")
+    @Value("${constant.basePath}")
     public String basePath ;
-    @Value("rangBasePath")
+    @Value("${constant.rangBasePath}")
     public String rangBasePath ;
 
     @Override
@@ -86,7 +91,7 @@ public class CallServiceImpl implements CallService {
         StringBuffer folderName = new StringBuffer(basePath);
         folderName.append(terminalId).append(File.separator);
         StringBuffer fileName = new StringBuffer(DateConvert.convert(new Date(), 15));
-        Integer seq = SequenceIdGenerate.getSequenceId();
+        Integer seq = terminalMonitorClient.getSequenceId();
         fileName.append(terminalId).append(seq);
         FileUtils.createFile(folderName.toString(), fileName.toString(), FileType.WAV);
         File sendFile = new File(folderName.toString() + fileName.toString() + "." + FileType.WAV);
@@ -104,17 +109,11 @@ public class CallServiceImpl implements CallService {
         Map<String, Object> terminalInfo = terminalUpdateIpMapper.selectTerminalIpInfoByTerminalId(terminalId);
         if (terminalInfo != null && !terminalInfo.isEmpty()) {
             String stationIp = (String) terminalInfo.get("station_ip");
-
             String stationIps[] = stationIp.split("\\.");
-
-
             Integer stationIp1 = Integer.parseInt(stationIps[0]);
             Integer stationIp2 = Integer.parseInt(stationIps[1]);
 
-
             String terminalIp = (String) terminalInfo.get("terminal_ip");
-
-
             String terminalIps[] = terminalIp.split("\\.");
             Integer terminalIp1 = Integer.parseInt(terminalIps[0]);
             Integer terminalIp2 = Integer.parseInt(terminalIps[1]);
@@ -133,13 +132,30 @@ public class CallServiceImpl implements CallService {
             voiceDto.setStationIp2(stationIp2);
             voiceDto.setTerminalId(terminalId);
             voiceDto.setTerminalPort(terminalPort);
+            if (null == stationPort)
+                stationPort = new Integer(0);
             voiceDto.setStationPort(stationPort);
             voiceDto.setTerminalIp1(terminalIp1);
             voiceDto.setTerminalIp2(terminalIp2);
             voiceDto.setTerminalIp(terminalIp);
 
 //            kafkaSender.send(voiceDto, "voiceSender.tut");
-            kafkaClient.send("voiceSender.tut", JSON.toJSONString(voiceDto), terminalPort);
+
+
+//            terminalMonitorClient.sendUrl(voiceDto); //发送 URL
+            StringBuffer ipPort = new StringBuffer(ipPrefix);
+            ipPort.append(terminalIp1).append(".").append(terminalIp2).append(":").append(terminalPort);
+            boolean flag = terminalMonitorClient.getChanelByName(ipPort.toString());
+            if (flag){
+                kafkaClient.send("voiceSender.tut", JSON.toJSONString(voiceDto), terminalPort);
+            }else {
+                TemporarySendList temporarySendList = new TemporarySendList();
+                temporarySendList.setType(0);
+                temporarySendList.setCreateTime(new Date());
+                temporarySendList.setTerminalId(terminalId);
+                temporarySendList.setVoiceUrl(realUrl);
+                temporarySendListMapper.insert(temporarySendList);
+            }
             ChatMsg chatMsg = new ChatMsg();
             chatMsg.setTerminalId(terminalId);
             chatMsg.setSequenceId(seq.toString());

@@ -5,13 +5,14 @@ import com.cst.xinhe.common.constant.ConstantValue;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
 import com.cst.xinhe.common.netty.utils.NettyDataUtils;
-import com.cst.xinhe.common.utils.SequenceIdGenerate;
 import com.cst.xinhe.stationpartition.service.client.StationMonitorServerClient;
-import com.cst.xinhe.stationpartition.service.client.callback.StationMonitorServerClientFallback;
+import com.cst.xinhe.stationpartition.service.client.TerminalMonitorClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  * @author wangshuwen
@@ -21,7 +22,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class BaseStationSettingController {
 
-    @Autowired
+
+
+    @Resource
+    private TerminalMonitorClient terminalMonitorClient;
+
+    @Resource
     StationMonitorServerClient stationMonitorServerClient;
     @GetMapping("/setting")
     public String settingBaseStation(@RequestParam("ip") String ip, @RequestParam("network") String network) {
@@ -32,7 +38,7 @@ public class BaseStationSettingController {
         requestData.setType(ConstantValue.MSG_HEADER_FREAME_HEAD);
         requestData.setLength(42);
         requestData.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_CONTROL);
-        requestData.setSequenceId(SequenceIdGenerate.getSequenceId());
+        requestData.setSequenceId(terminalMonitorClient.getSequenceId());
         requestData.setNdName(8198);
         requestData.setTerminalIp("1.1");
         requestData.setStationIp("1.1");

@@ -1,4 +1,4 @@
-package com.cst.xinhe.common.utils;
+package com.cst.xinhe.terminal.monitor.server.utils;
 
 import java.util.Calendar;
 

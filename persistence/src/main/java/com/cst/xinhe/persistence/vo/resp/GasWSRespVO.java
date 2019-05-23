@@ -29,7 +29,7 @@ public class GasWSRespVO implements Serializable,Cloneable {
         return new GasWSRespVO();
     }
 
-    private Integer rtGasInfoId;
+    private Long rtGasInfoId;
 
     private Integer gasLevel;
 
@@ -139,13 +139,14 @@ public class GasWSRespVO implements Serializable,Cloneable {
         this.rangUrl = rangUrl;
     }
 
-    public Integer getRtGasInfoId() {
+    public Long getRtGasInfoId() {
         return rtGasInfoId;
     }
 
-    public void setRtGasInfoId(Integer rtGasInfoId) {
+    public void setRtGasInfoId(Long rtGasInfoId) {
         this.rtGasInfoId = rtGasInfoId;
     }
+
 
     //TODO 定位信息
 

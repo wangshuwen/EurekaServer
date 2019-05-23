@@ -8,7 +8,6 @@ import com.cst.xinhe.base.result.ResultUtil;
 import com.cst.xinhe.common.constant.ConstantValue;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
-import com.cst.xinhe.common.utils.SequenceIdGenerate;
 import com.cst.xinhe.common.utils.convert.DateConvert;
 import com.cst.xinhe.common.utils.string.StringUtils;
 import com.cst.xinhe.persistence.dao.terminal.TerminalUpdateIpMapper;
@@ -19,6 +18,7 @@ import com.cst.xinhe.persistence.vo.resp.BaseStationPositionVO;
 import com.cst.xinhe.stationpartition.service.client.StaffGroupTerminalServiceClient;
 import com.cst.xinhe.stationpartition.service.client.StationMonitorServerClient;
 import com.cst.xinhe.stationpartition.service.client.SystemServiceClient;
+import com.cst.xinhe.stationpartition.service.client.TerminalMonitorClient;
 import com.cst.xinhe.stationpartition.service.service.BaseStationService;
 import com.cst.xinhe.stationpartition.service.service.OfflineStationService;
 import com.cst.xinhe.stationpartition.service.service.PartitionService;
@@ -47,6 +47,9 @@ import java.util.*;
 @RequestMapping("station/")
 @Api(value = "BaseStationController", tags = {"基站基础信息操作"})
 public class BaseStationController extends BaseController {
+
+    @Resource
+    private TerminalMonitorClient terminalMonitorClient;
 
     @Resource
     private BaseStationService baseStationService;
@@ -188,7 +191,7 @@ public class BaseStationController extends BaseController {
 
 
             flag = baseStationService.checkStationExists(baseStationNum);
-            if (flag == false) {
+            if (!flag) {
                 result = baseStationService.addBaseStation(station);
             } else {
                 return ResultUtil.jsonToStringError(ResultEnum.BASE_STATION_NUM_EXIST);
@@ -245,7 +248,7 @@ public class BaseStationController extends BaseController {
             requestData.setStationIp(result.get("station_ip").toString());
         }
 
-        requestData.setSequenceId(SequenceIdGenerate.getSequenceId());
+        requestData.setSequenceId(terminalMonitorClient.getSequenceId());
         responseData.setCustomMsg(requestData);
 //        BaseStation baseStation = new BaseStation();
         station.setRemark("0");

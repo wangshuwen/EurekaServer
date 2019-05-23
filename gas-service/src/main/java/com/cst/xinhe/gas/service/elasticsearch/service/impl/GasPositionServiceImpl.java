@@ -18,8 +18,12 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.ScrolledPage;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -41,8 +45,12 @@ public class GasPositionServiceImpl implements GasPositionService {
     @Resource
     private StaffMapper staffMapper;
 
+
     @Resource
     ElasticsearchTemplate elasticsearchTemplate;
+    /*@Resource
+    private EsManager esManager;*/
+
     @Override
     public Iterable<GasPositionEntity> findTimeFlag(Integer startPage, Integer pageSize, Integer staffId) {
 
@@ -105,9 +113,23 @@ public class GasPositionServiceImpl implements GasPositionService {
         }
 
 
+
+
+
+      /*  SearchQuery query = new NativeSearchQuery(builder);
+        query.setPageable(pageable);
+
+
+        Page<GasPositionEntity> page = elasticsearchTemplate.startScroll(500000, query, GasPositionEntity.class);
+
+        for (int i = 0; i < startPage - 1; i++) {
+            elasticsearchTemplate.continueScroll(((ScrolledPage) page).getScrollId(), 500000, GasPositionEntity.class);
+           }*/
+
+
+
         FieldSortBuilder sortBuilder = SortBuilders.fieldSort("gaspositionid").order(SortOrder.ASC);
         NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder().withSort(sortBuilder).withQuery(builder).withPageable(pageable);
-
         Page<GasPositionEntity> page = gasPositionRepository.search(nativeSearchQueryBuilder.build());
         return page;
     }

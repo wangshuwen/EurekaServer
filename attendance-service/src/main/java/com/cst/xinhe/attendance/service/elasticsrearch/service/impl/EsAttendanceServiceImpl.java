@@ -23,6 +23,7 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 
@@ -69,6 +70,9 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
 
     @Resource
     private StationPartitionServiceClient stationPartitionServiceClient;
+
+    @Resource
+    private ElasticsearchTemplate elasticsearchTemplate;
     /**
      * 根据员工ID，查询所有的员工信息
      * @return
@@ -80,6 +84,8 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
       /*  QueryBuilders.prefixQuery("name","*");
         QueryBuilders.regexpQuery("name","*");*/
         Integer orgId = attendanceParamsVO.getOrgId();
+
+
 
 
         String currentDate = attendanceParamsVO.getCurrentDate1();

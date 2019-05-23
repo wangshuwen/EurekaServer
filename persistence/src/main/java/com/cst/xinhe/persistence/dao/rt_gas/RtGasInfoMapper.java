@@ -104,7 +104,7 @@ public interface RtGasInfoMapper {
 
     List<Map<String, Object>> selectGasInfoLastTenRecords(int number);
 
-    HashMap<String,Object> selectAllGasFaultNum();
+//    HashMap<String,Object> selectAllGasFaultNum();
 
     HashMap<String,Object> findRecentlyGasInfoByStaffId(Integer staffId);
 

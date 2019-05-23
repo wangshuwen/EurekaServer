@@ -9,6 +9,7 @@ import com.github.pagehelper.Page;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @ClassName StaffService
@@ -65,7 +66,7 @@ public interface StaffService {
 
     Map<Integer, List<Map<String, Object>>> findStaffNameAndGroupNameByStaffIds(List<Integer> list1);
 
-    Map<Integer,Map<String,Object>> findGroupNameByIds(List<Integer> list1);
+    Map<Integer,Map<String,Object>> findGroupNameByIds(Set<Integer> list1);
 
     List<Map<String,Object>> findStaffByIds(List<Integer> staffIds);
 }

@@ -611,10 +611,10 @@ public class GasKafka extends BaseLog {
 
                     if (list.size() >= 10) {
                         JSONArray jsonArray = new JSONArray();
-                        HashMap<String,Object> gasNumMap=rtGasInfoMapper.selectAllGasFaultNum();
-                        HashMap<String, Object> mapJson = new HashMap<>();
-                        mapJson.put("code",2);
-                        mapJson.put("data",gasNumMap);
+//                        HashMap<String,Object> gasNumMap=rtGasInfoMapper.selectAllGasFaultNum();
+//                        HashMap<String, Object> mapJson = new HashMap<>();
+//                        mapJson.put("code",2);
+//                        mapJson.put("data",gasNumMap);
 
 
                         try {

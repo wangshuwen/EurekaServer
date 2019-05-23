@@ -261,7 +261,6 @@ public class GasWarnInfoToWS {
     }
     @KafkaListener(groupId = "GasWarnInfoToWS", id = "GasWarnInfoToWSid1", topicPartitions = { @TopicPartition(topic = TOPIC, partitions = { "1" }) })
     public void listen1(List<ConsumerRecord<?, ?>> records) {
-
 //        for (ConsumerRecord<?, ?> record : records) {
 //            Optional<?> kafkaMessage = Optional.ofNullable(record.value());
 //            logger.info("Received: " + record);

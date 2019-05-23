@@ -529,6 +529,142 @@ public class GasKafka extends BaseLog {
                     //封装插入数据库
 
                     //警告气体插入警告气体表
+                    //根据系统气体等级标准划分，判断气体是不是警报气体
+                    //查找气体标准id
+                    StationStandardRelation stationStandardRelation = stationStandardRelationMapper.selectStandardByStationId(requestData.getStationId());
+                    if(null != stationStandardRelation){
+                        Integer standardId = stationStandardRelation.getStandardId();
+                        GasLevelVO gasLevelVO = systemServiceClient.getWarnLevelSettingByGasLevelId(standardId);
+                        //气体标准值
+                        GasStandard gasStandard = gasLevelVO.getGasStandard();
+                        Double ch4Standard = gasStandard.getCh4Standard();
+                        Double coStandard = gasStandard.getCoStandard();
+                        Double o2Standard = gasStandard.getO2Standard();
+                        Double hStandard = gasStandard.gethStandard();
+                        Double tStandard = gasStandard.gettStandard();
+
+                        //实际气体值
+                        GasInfo gasInfoWarn = upLoadGasDto.getGasInfo();
+                        double ch4 = gasPosition.getCh4();
+                        double co = gasPosition.getCo();
+                        double o2 = gasPosition.getO2();
+                        double h = gasPosition.getHumidity();
+                        double t = gasPosition.getTemperature();
+
+
+                        //气体警报等级规则
+                        //判断ch4气体等级
+                        List<GasWarnSettingDto> ch4WarnSettingDto = gasLevelVO.getCh4WarnSettingDto();
+                        for (GasWarnSettingDto gasWarnSettingDto : ch4WarnSettingDto) {
+                            Double multiple = gasWarnSettingDto.getMultiple();
+                            if(ch4>=(multiple*ch4Standard)){
+                                //警报等级大的会把等级小的覆盖掉（已排序根据multiple）
+                                gasInfoWarn.setCh4Flag(gasWarnSettingDto.getLevelDataId());
+                                isWarn=true;
+                            }
+                        }
+                        //判断co气体等级
+                        List<GasWarnSettingDto> coWarnSettingDto=gasLevelVO.getCoWarnSettingDto();
+                        for (GasWarnSettingDto gasWarnSettingDto : coWarnSettingDto) {
+                            Double multiple = gasWarnSettingDto.getMultiple();
+                            if(co>=(multiple*coStandard)){
+                                gasInfoWarn.setCoFlag(gasWarnSettingDto.getLevelDataId());
+                                isWarn=true;
+                            }
+                        }
+                        //判断湿度等级
+                        List<GasWarnSettingDto> hWarnSettingDto=gasLevelVO.gethWarnSettingDto();
+                        for (GasWarnSettingDto gasWarnSettingDto : hWarnSettingDto) {
+                            Double multiple = gasWarnSettingDto.getMultiple();
+                            if(h>=(multiple*hStandard)){
+                                gasInfoWarn.sethFlag(gasWarnSettingDto.getLevelDataId());
+                                isWarn=true;
+                            }
+                        }
+                        //判断O2气体等级
+                        List<GasWarnSettingDto> O2WarnSettingDto=gasLevelVO.getO2WarnSettingDto();
+                        for (GasWarnSettingDto gasWarnSettingDto : O2WarnSettingDto) {
+                            Double multiple = gasWarnSettingDto.getMultiple();
+                            if(o2>=(multiple*o2Standard)){
+                                gasInfoWarn.setO2Flag(gasWarnSettingDto.getLevelDataId());
+                                isWarn=true;
+                            }
+                        }
+                        //判断温度气体等级
+                        List<GasWarnSettingDto> tWarnSettingDto= gasLevelVO.gettWarnSettingDto();
+                        for (GasWarnSettingDto gasWarnSettingDto : tWarnSettingDto) {
+                            Double multiple = gasWarnSettingDto.getMultiple();
+                            if(t>=(multiple*tStandard)){
+                                gasInfoWarn.settFlag(gasWarnSettingDto.getLevelDataId());
+                                isWarn=true;
+                            }
+                        }
+
+                        gasInfoWarn.setCo2Flag(0);
+
+                        if(isWarn) {
+                            gasPosition.setGasFlag(1);
+                            gasInfoWarn.setIsWarn(true);
+                            upLoadGasDto.setGasInfo(gasInfoWarn);
+
+                            //推送警告气体
+                            // 判断等级，根据等级查找url
+                            int contrastParameter = 0;
+                            if (gasPosition.getCh4Unit() > contrastParameter) {
+                                contrastParameter = gasPosition.getCh4Unit();
+                            }
+                            if (gasPosition.getCoUnit() > contrastParameter) {
+                                contrastParameter = gasPosition.getCoUnit();
+                            }
+                            if (gasPosition.getO2Unit() > contrastParameter) {
+                                contrastParameter = gasPosition.getO2Unit();
+                            }
+                            if (gasPosition.getTemperatureUnit() > contrastParameter) {
+                                contrastParameter = gasPosition.getTemperatureUnit();
+                            }
+                            if (gasPosition.getHumidityUnit() > contrastParameter) {
+                                contrastParameter = gasPosition.getHumidityUnit();
+                            }
+                            gasWSRespVO.setGasLevel(contrastParameter);
+//                String url = levelDataService.findRangUrlByLevelDataId(contrastParameter);
+                            String url = systemServiceClient.findRangUrlByLevelDataId(contrastParameter);
+                            if (null != url && !"".equals(url)) {
+                                gasWSRespVO.setRangUrl(url);
+                            }
+                            try {
+//                    WebsocketServer.sendInfo(JSON.toJSONString(new WebSocketData(1, gasWSRespVO)));
+                                wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(new WebSocketData(1, gasWSRespVO)));
+                            } catch (Exception e) {
+                                throw new RuntimeOtherException(ResultEnum.WEBSOCKET_SEND_ERROR);
+                            }
+
+
+
+
+
+
+
+                        }else{
+                            gasPosition.setGasFlag(0);
+                            gasInfoWarn.setIsWarn(false);
+                            upLoadGasDto.setGasInfo(gasInfoWarn);// 发送队列插入
+                        }
+                        gasNum++;
+                        System.out.println("--------------------------已插入气体数量：-------------------------"+gasNum);
+                       /* gasPositions.add(gasPosition);
+                        if (gasPositions.size() > 200){
+                            gasPositionMapper.insertGasPositions(gasPositions);
+                            gasPositions.clear();
+                        }*/
+                        Integer insert = gasPositionMapper.insertSingleGas(gasPosition);
+
+                        isWarn = false;
+                    }
+
+
+
+
+
 
 
                     //--------------------------定位部门、区域筛选开始----------------------------------
@@ -611,23 +747,16 @@ public class GasKafka extends BaseLog {
 
                     if (list.size() >= 10) {
                         JSONArray jsonArray = new JSONArray();
-//                        HashMap<String,Object> gasNumMap=rtGasInfoMapper.selectAllGasFaultNum();
-//                        HashMap<String, Object> mapJson = new HashMap<>();
-//                        mapJson.put("code",2);
-//                        mapJson.put("data",gasNumMap);
+
 
 
                         try {
                             jsonArray.addAll(list);
-                            //气体故障推送:大数据页面
-//                            WSBigDataServer.sendInfo(json.writeValueAsString(mapJson));
 
                             //--------------------------气体部门、区域筛选开始----------------------------------
-//                            Integer orgIdGas = WSServer.orgId;
-//                            Integer zoneIdGas = WSServer.zoneId;
 
                             Integer orgIdGas = wsPushServiceClient.getWSSiteServerOrgId();
-//        Integer zoneId = WSSiteServer.zoneId;
+
                             Integer zoneIdGas = wsPushServiceClient.getWSSiteServerZoneId();
                             if(null == orgIdGas && null == zoneIdGas){
                                 try {
@@ -696,138 +825,6 @@ public class GasKafka extends BaseLog {
                             e.printStackTrace();
                             throw new RuntimeOtherException(ResultEnum.WEBSOCKET_SEND_ERROR);
                         }
-                    }
-
-                    //根据系统气体等级标准划分，判断气体是不是警报气体
-                    //查找气体标准id
-                    StationStandardRelation stationStandardRelation = stationStandardRelationMapper.selectStandardByStationId(requestData.getStationId());
-                    if(null != stationStandardRelation){
-                        Integer standardId = stationStandardRelation.getStandardId();
-                        GasLevelVO gasLevelVO = systemServiceClient.getWarnLevelSettingByGasLevelId(standardId);
-                        //气体标准值
-                        GasStandard gasStandard = gasLevelVO.getGasStandard();
-                        Double ch4Standard = gasStandard.getCh4Standard();
-                        Double coStandard = gasStandard.getCoStandard();
-                        Double o2Standard = gasStandard.getO2Standard();
-                        Double hStandard = gasStandard.gethStandard();
-                        Double tStandard = gasStandard.gettStandard();
-
-                        //实际气体值
-                        GasInfo gasInfoWarn = upLoadGasDto.getGasInfo();
-                        double ch4 = gasPosition.getCh4();
-                        double co = gasPosition.getCo();
-                        double o2 = gasPosition.getO2();
-                        double h = gasPosition.getHumidity();
-                        double t = gasPosition.getTemperature();
-
-
-                        //气体警报等级规则
-                        //判断ch4气体等级
-                        List<GasWarnSettingDto> ch4WarnSettingDto = gasLevelVO.getCh4WarnSettingDto();
-                        for (GasWarnSettingDto gasWarnSettingDto : ch4WarnSettingDto) {
-                            Double multiple = gasWarnSettingDto.getMultiple();
-                            if(ch4>=(multiple*ch4Standard)){
-                                //警报等级大的会把等级小的覆盖掉（已排序根据multiple）
-                                gasInfoWarn.setCh4Flag(gasWarnSettingDto.getLevelDataId());
-                                isWarn=true;
-                            }
-                        }
-                        //判断co气体等级
-                        List<GasWarnSettingDto> coWarnSettingDto=gasLevelVO.getCoWarnSettingDto();
-                        for (GasWarnSettingDto gasWarnSettingDto : coWarnSettingDto) {
-                            Double multiple = gasWarnSettingDto.getMultiple();
-                            if(co>=(multiple*coStandard)){
-                                gasInfoWarn.setCoFlag(gasWarnSettingDto.getLevelDataId());
-                                isWarn=true;
-                            }
-                        }
-                        //判断湿度等级
-                        List<GasWarnSettingDto> hWarnSettingDto=gasLevelVO.gethWarnSettingDto();
-                        for (GasWarnSettingDto gasWarnSettingDto : hWarnSettingDto) {
-                            Double multiple = gasWarnSettingDto.getMultiple();
-                            if(h>=(multiple*hStandard)){
-                                gasInfoWarn.sethFlag(gasWarnSettingDto.getLevelDataId());
-                                isWarn=true;
-                            }
-                        }
-                        //判断O2气体等级
-                        List<GasWarnSettingDto> O2WarnSettingDto=gasLevelVO.getO2WarnSettingDto();
-                        for (GasWarnSettingDto gasWarnSettingDto : O2WarnSettingDto) {
-                            Double multiple = gasWarnSettingDto.getMultiple();
-                            if(o2>=(multiple*o2Standard)){
-                                gasInfoWarn.setO2Flag(gasWarnSettingDto.getLevelDataId());
-                                isWarn=true;
-                            }
-                        }
-                        //判断温度气体等级
-                        List<GasWarnSettingDto> tWarnSettingDto= gasLevelVO.gettWarnSettingDto();
-                        for (GasWarnSettingDto gasWarnSettingDto : tWarnSettingDto) {
-                            Double multiple = gasWarnSettingDto.getMultiple();
-                            if(t>=(multiple*tStandard)){
-                                gasInfoWarn.settFlag(gasWarnSettingDto.getLevelDataId());
-                                isWarn=true;
-                            }
-                        }
-
-                        gasInfoWarn.setCo2Flag(0);
-
-                        if(isWarn) {
-                           /* GasPositionWarn gasPositionWarn = GasPositionWarn.getInstance();
-                            gasPositionWarn.setCh4(gasPosition.getCh4());
-                            gasPositionWarn.setCh4Unit(gasPosition.getCh4Unit());
-                            gasPositionWarn.setCo(gasPosition.getCo());
-                            gasPositionWarn.setCoUnit(gasPosition.getCoUnit());
-                            gasPositionWarn.setO2(gasPosition.getO2());
-                            gasPositionWarn.setO2Unit(gasPosition.getO2Unit());
-                            gasPositionWarn.setHumidity(gasPosition.getHumidity());
-                            gasPositionWarn.setHumidityUnit(gasPosition.getHumidityUnit());
-                            gasPositionWarn.setTemperature(gasPosition.getTemperature());
-                            gasPositionWarn.setTemperatureUnit(gasPosition.getTemperatureUnit());
-                            gasPositionWarn.setTerminalId(gasPosition.getTerminalId());
-                            gasPositionWarn.setTerminalIp(gasPositionWarn.getStationIp());
-                            gasPositionWarn.setTempPositionName(gasPosition.getTempPositionName());
-                            gasPositionWarn.setCreateTime(gasPosition.getCreateTime());
-                            gasPositionWarn.setInfoType(gasPosition.getInfoType());
-                            gasPositionWarn.setIsOre(gasPosition.getIsOre());
-                            gasPositionWarn.setWifiStrength1(gasPosition.getWifiStrength1());
-                            gasPositionWarn.setWifiStrength2(gasPosition.getWifiStrength2());
-                            gasPositionWarn.setTerminalRealTime(gasPosition.getTerminalRealTime());
-                            gasPositionWarn.setCreateTime(gasPosition.getCreateTime());
-                            gasPositionWarn.setSequenceId(gasPosition.getSequenceId());
-                            gasPositionWarn.setPositionX(gasPosition.getPositionX());
-                            gasPositionWarn.setPositionY(gasPosition.getPositionY());
-                            gasPositionWarn.setPositionZ(gasPosition.getPositionZ());
-                            gasPositionWarn.setStaffId(gasPosition.getStaffId());
-                            gasPositionWarn.setStationId(gasPosition.getStationId());
-                            gasPositionWarn.setTerminalIp(gasPosition.getTerminalIp());
-                            gasPositionWarn.setStationIp(gasPosition.getStationIp());
-                            gasPositionWarn.setStationId1(gasPosition.getStationId1());
-                            gasPositionWarn.setStationId2(gasPosition.getStationId2());
-                            gasPositionWarn.setIsOre(gasPosition.getIsOre());*/
-                            gasPosition.setGasFlag(1);
-//                        gasPositionWarn.setGasPositionId(GetUUID.getUuidReplace());
-                            // gasPositionWarnMapper.insert(gasPositionWarn); //发送队列插入
-                            gasInfoWarn.setIsWarn(true);
-                            upLoadGasDto.setGasInfo(gasInfoWarn);
-//                        producerService.send("warn_kafka.tut", JSON.toJSONString(upLoadGasDto), requestData.getTerminalPort());
-                        }else{
-                            gasPosition.setGasFlag(0);
-                            gasInfoWarn.setIsWarn(false);
-//                        gasPosition.setGasPositionId(GetUUID.getUuidReplace());
-                            upLoadGasDto.setGasInfo(gasInfoWarn);// 发送队列插入
-//                        producerService.send("kafka.tut", JSON.toJSONString(upLoadGasDto), requestData.getTerminalPort());
-
-                        }
-                        gasNum++;
-                        System.out.println("--------------------------已插入气体数量：-------------------------"+gasNum);
-                       /* gasPositions.add(gasPosition);
-                        if (gasPositions.size() > 200){
-                            gasPositionMapper.insertGasPositions(gasPositions);
-                            gasPositions.clear();
-                        }*/
-                        Integer insert = gasPositionMapper.insertSingleGas(gasPosition);
-
-                        isWarn = false;
                     }
                 }
             }

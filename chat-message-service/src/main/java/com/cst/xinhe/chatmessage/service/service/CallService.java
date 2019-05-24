@@ -1,5 +1,6 @@
 package com.cst.xinhe.chatmessage.service.service;
 
+import com.cst.xinhe.persistence.model.chat.ChatMsg;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -10,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
  **/
 public interface CallService {
 
-    String callStaffByStaffId(MultipartFile wavFile, Integer staffId, Integer userId);
+    ChatMsg callStaffByStaffId(MultipartFile wavFile, Integer staffId, Integer userId);
 
     boolean pingTerminal(Integer staffId);
 

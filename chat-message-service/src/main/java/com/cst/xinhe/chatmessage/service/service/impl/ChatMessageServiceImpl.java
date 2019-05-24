@@ -132,6 +132,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     public Integer updateMsgStatus(String seqId) {
         ChatMsg chatMsg = new ChatMsg();
         chatMsg.setSequenceId(seqId);
+//        chatMsg.setStatus(true);
         return chatMsgMapper.updateChatMegStatusBySeqId(chatMsg);
     }
 

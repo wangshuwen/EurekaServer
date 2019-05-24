@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @FeignClient(value = "station-monitor-server",
     configuration = FeignConfig.class,
     fallback = StationMonitorServerClientFallback.class,
-        url = "http://192.168.1.100:8765/")
+        url = "http://127.0.0.1:8765/")
 //@RequestMapping("station-monitor-server")
 public interface StationMonitorServerClient {
 

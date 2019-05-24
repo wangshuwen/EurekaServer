@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(value = "terminal-monitor-server",
         configuration = FeignConfig.class,
         fallback = TerminalMonitorFallback.class,
-        url = "http://192.168.1.50:8766/")
+        url = "http://127.0.0.1:8766/")
 //@RequestMapping("terminal-monitor-server")
 public interface TerminalMonitorClient {
 

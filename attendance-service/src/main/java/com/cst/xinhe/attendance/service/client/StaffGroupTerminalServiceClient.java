@@ -52,6 +52,8 @@ public interface StaffGroupTerminalServiceClient {
 
     @GetMapping("findAllStaffByGroupId")
     List<Integer> findAllStaffByGroupId(@RequestParam("deptId") Integer deptId);
+    @GetMapping("findAllStaffByGroupIds")
+    List<Integer> findAllStaffByGroupIds(List<Integer> deptIds);
 
     @GetMapping("selectStaffListByJobType")
     List<Staff> selectStaffListByJobType(@RequestParam("jobType") Integer jobType);
@@ -70,4 +72,6 @@ public interface StaffGroupTerminalServiceClient {
 
     @GetMapping("findGroupNameByStaffId")
     Map<Integer,Map<String,Object>> findGroupNameByStaffId(@RequestParam("list1") Set<Integer> list1);
+
+
 }

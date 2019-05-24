@@ -28,7 +28,7 @@ public interface TerminalMonitorClient {
      * @return
      */
     @PostMapping("/sendResponseData")
-    String sendResponseData(@RequestBody ResponseData responseData);
+    String sendResponseData(@RequestBody() ResponseData responseData);
 
     /**
      * 若存在IP和端口，则返回true
@@ -36,7 +36,7 @@ public interface TerminalMonitorClient {
      * @return
      */
     @GetMapping("/getChannelByIpPort")
-    Boolean getChanelByName(@RequestParam String ipPort);
+    Boolean getChanelByName(@RequestParam("ipPort") String ipPort);
 
     @GetMapping("getSequenceId")
     Integer getSequenceId();

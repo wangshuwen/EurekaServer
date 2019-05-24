@@ -78,6 +78,11 @@ public class StaffControllerServer {
         return staffService.findAllStaffByGroupId(deptId);
     }
 
+    @GetMapping("findAllStaffByGroupIds")
+    public List<Integer> findAllStaffByGroupIds(@RequestParam("deptIds") List<Integer> deptIds){
+        return staffService.findAllStaffByGroupIds(deptIds);
+    }
+
     @GetMapping("selectStaffListByJobType")
     public List<Staff> selectStaffListByJobType(@RequestParam("jobType") Integer jobType){
         return staffService.selectStaffListByJobType(jobType);

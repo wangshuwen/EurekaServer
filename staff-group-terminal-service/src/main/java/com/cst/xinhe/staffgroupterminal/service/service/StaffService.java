@@ -43,6 +43,7 @@ public interface StaffService {
     List<Integer> findAllStaffByDeptId(Integer deptId);
 
     List<Integer> findAllStaffByGroupId(Integer groupId);
+    List<Integer> findAllStaffByGroupIds(List<Integer> deptIds);
 
     void updateBindingBaseStation(List<Integer> ids);
 
@@ -69,4 +70,6 @@ public interface StaffService {
     Map<Integer,Map<String,Object>> findGroupNameByIds(Set<Integer> list1);
 
     List<Map<String,Object>> findStaffByIds(List<Integer> staffIds);
+
+
 }

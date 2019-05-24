@@ -214,6 +214,8 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
                attendance.setDeptname(deptName);
 //            BaseStation station = baseStationService.findBaseStationByNum(basestationid);
 //            BaseStation station = stationPartitionServiceClient.findBaseStationByNum(basestationid);
+           }
+
                BaseStation station = baseStationMapper.findBaseStationByNum(basestationid);
                TimeStandard timeStandard = timeStandardMapper.selectByPrimaryKey(ruleid);
                if(timeStandard!=null){
@@ -222,7 +224,7 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
                if(station!=null)
                    attendance.setStationname(station.getBaseStationName());
 
-           }
+
 
 
 

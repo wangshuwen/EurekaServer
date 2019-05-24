@@ -238,6 +238,19 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
+    public List<Integer> findAllStaffByGroupIds(List<Integer> deptIds) {
+        List<Integer> list = new ArrayList<>();
+
+        for (Integer deptId : deptIds) {
+
+            List<Integer> staffIds = staffMapper.selectStaffIdsByGroupId(deptId);
+            list.addAll(staffIds);
+        }
+
+        return list;
+    }
+
+    @Override
     public void updateBindingBaseStation(List<Integer> ids) {
         Staff staff = new Staff();
         for (Integer item : ids) {

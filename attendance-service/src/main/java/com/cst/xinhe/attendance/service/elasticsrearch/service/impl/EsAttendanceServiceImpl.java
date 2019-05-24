@@ -99,21 +99,18 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
             Boolean flag=true;
 //            List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(orgId);
             List<Integer> deptIds = staffGroupTerminalServiceClient.findSonIdsByDeptId(orgId);
-            for (Integer deptId : deptIds) {
-//                List<Integer> staffids = staffService.findAllStaffByGroupId(deptId);
-                List<Integer> staffids = staffGroupTerminalServiceClient.findAllStaffByGroupId(deptId);
-                if(staffids!=null&&staffids.size()>0){
-                    for (Integer staffid : staffids) {
-                        builder.should(QueryBuilders.termQuery("staffid",staffid));
-                    }
-                    flag=false;
+            List<Integer> staffids =staffGroupTerminalServiceClient.findAllStaffByGroupIds(deptIds);
+            if(staffids!=null&&staffids.size()>0){
+                for (Integer staffid : staffids) {
+                    builder.should(QueryBuilders.termQuery("staffid",staffid));
                 }
+                flag=false;
             }
+               // List<Integer> staffids = staffGroupTerminalServiceClient.findAllStaffByGroupId(deptId);
             if(flag){
                 builder.must(QueryBuilders.termQuery("staffid",0));
             }
         }
-
         if(currentDate!=null&&!"0".equals(currentDate)){
            /* Calendar c = Calendar.getInstance();
             try {

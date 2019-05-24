@@ -11,7 +11,7 @@ eureka:
     register-with-eureka: false
     fetch-registry: false
     service-url:
-      defaultZone: http://127.0.0.1:8761/eureka/
+      defaultZone: http://192.168.1.101:8761/eureka/
 #打印日志
 logging:
   level:

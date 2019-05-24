@@ -15,7 +15,7 @@ import java.util.Map;
 @FeignClient(value = "system-service",
         configuration = FeignConfig.class,
         fallback = SystemServiceClientFallback.class,
-        url = "http://127.0.0.1:8778/")
+        url = "http://192.168.1.101:8778/")
 public interface SystemServiceClient {
 
     @GetMapping("findRangByType")

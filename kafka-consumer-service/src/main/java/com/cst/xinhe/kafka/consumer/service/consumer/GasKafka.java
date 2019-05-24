@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.cst.xinhe.base.enums.ResultEnum;
-import com.cst.xinhe.base.exception.ErrorCode;
 import com.cst.xinhe.base.exception.RuntimeOtherException;
-import com.cst.xinhe.base.exception.RuntimeServiceException;
-import com.cst.xinhe.base.log.BaseLog;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.utils.array.ArrayQueue;
 import com.cst.xinhe.common.utils.convert.DateConvert;
@@ -18,11 +15,14 @@ import com.cst.xinhe.persistence.dao.attendance.StaffAttendanceRealRuleMapper;
 import com.cst.xinhe.persistence.dao.attendance.TimeStandardMapper;
 import com.cst.xinhe.persistence.dao.base_station.BaseStationMapper;
 import com.cst.xinhe.persistence.dao.rt_gas.GasPositionMapper;
-import com.cst.xinhe.persistence.dao.rt_gas.GasPositionWarnMapper;
 import com.cst.xinhe.persistence.dao.rt_gas.RtGasInfoMapper;
 import com.cst.xinhe.persistence.dao.staff.StaffMapper;
+import com.cst.xinhe.persistence.dao.staff.StaffOrganizationMapper;
 import com.cst.xinhe.persistence.dao.station_standard_relation.StationStandardRelationMapper;
-import com.cst.xinhe.persistence.dao.terminal_road.TerminalRoadMapper;
+import com.cst.xinhe.persistence.dao.terminal.StaffTerminalMapper;
+import com.cst.xinhe.persistence.dao.warn_level.GasStandardMapper;
+import com.cst.xinhe.persistence.dao.warn_level.GasWarnSettingMapper;
+import com.cst.xinhe.persistence.dao.warn_level.LevelDataMapper;
 import com.cst.xinhe.persistence.dao.warning_area.WarningAreaMapper;
 import com.cst.xinhe.persistence.dao.warning_area.WarningAreaRecordMapper;
 import com.cst.xinhe.persistence.dto.GasInfo;
@@ -33,6 +33,8 @@ import com.cst.xinhe.persistence.model.attendance.StaffAttendanceRealRule;
 import com.cst.xinhe.persistence.model.base_station.BaseStation;
 import com.cst.xinhe.persistence.model.rt_gas.GasPosition;
 import com.cst.xinhe.persistence.model.staff.Staff;
+import com.cst.xinhe.persistence.model.staff.StaffOrganization;
+import com.cst.xinhe.persistence.model.staff.StaffOrganizationExample;
 import com.cst.xinhe.persistence.model.station_standard_relation.StationStandardRelation;
 import com.cst.xinhe.persistence.model.terminal_road.TerminalRoad;
 import com.cst.xinhe.persistence.model.warn_level.GasStandard;
@@ -42,7 +44,6 @@ import com.cst.xinhe.persistence.model.warning_area.WarningAreaRecordExample;
 import com.cst.xinhe.persistence.vo.req.TimeStandardVO;
 import com.cst.xinhe.persistence.vo.resp.GasLevelVO;
 import com.cst.xinhe.persistence.vo.resp.GasWSRespVO;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +52,6 @@ import org.springframework.kafka.annotation.TopicPartition;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -68,27 +68,27 @@ public class GasKafka  {
     //存储更新基站 队列
     public static Map<Integer, ArrayQueue<TerminalRoad>> attendanceMap=new HashMap<>();
 
-    @Resource
-    private SystemServiceClient systemServiceClient;
 
     @Resource
-    private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
-
-    @Resource
-    private AttendanceServiceClient attendanceServiceClient;
-
-    @Resource
-    private StationPartitionServiceClient stationPartitionServiceClient;
+    private StaffOrganizationMapper staffOrganizationMapper;
 
     @Resource
     private WsPushServiceClient wsPushServiceClient;
 
     @Resource
-    private GasServiceClient gasServiceClient;
+    private GasWarnSettingMapper gasWarnSettingMapper;
+
+    @Resource
+    private GasStandardMapper gasStandardMapper;
 
     @Resource
     private BaseStationMapper baseStationMapper;
 
+    @Resource
+    private LevelDataMapper levelDataMapper;
+
+    @Resource
+    private StaffTerminalMapper staffTerminalMapper;
 
     @Resource
     private WarningAreaMapper warningAreaMapper;
@@ -103,66 +103,35 @@ public class GasKafka  {
     private StaffAttendanceRealRuleMapper staffAttendanceRealRuleMapper;
 
     @Resource
-    RtGasInfoMapper rtGasInfoMapper;
+    private RtGasInfoMapper rtGasInfoMapper;
 
     @Resource
-    TimeStandardMapper timeStandardMapper;
+    private TimeStandardMapper timeStandardMapper;
 
     @Resource
-    GasPositionMapper gasPositionMapper;
+    private  GasPositionMapper gasPositionMapper;
 
-//    @Resource
-//    LevelSettingService levelSettingService;
-//    @Resource
-//    private PartitionService partitionService;
 
     public static List<GasWSRespVO> list = new ArrayList<>();
 
     private static int gasNum = 0;
 
-    private static List<GasPosition> gasPositions = Collections.synchronizedList(new ArrayList<>());
 
 
     public static Set<Integer> overTimeSet= Collections.synchronizedSet(new HashSet());
     public static Set<Integer> seriousTimeSet= Collections.synchronizedSet(new HashSet());
 
-//    @Resource
-//    ProducerService producerService;
-//    private Map<String, Object> map;
-
-//    ObjectMapper json = new ObjectMapper();
-//    @Resource
-//    private StaffOrganizationService staffOrganizationService;
-
-//    @Resource
-//    private BaseStationService baseStationService;
-
-//    @Resource
-//    private AttendanceService attendanceService;
 
     @Resource
     private StaffMapper staffMapper;
 
 
-//    @Resource
-//    private TerminalRoadMapper teminalRoadMapper;
-
-    //@Autowired
-    //KafkaTemplate<String, Object> kafkaTemplate;
-
-//    @Resource
-//    KafkaSender kafkaSender;
-
-//    @Resource
-//    StaffService staffService;
 
     private volatile boolean isWarn = false;
 
     @Resource
     RSTL rstl;
 
-//    @Resource
-//    GasPositionWarnMapper gasPositionWarnMapper;
 
     private static final String TOPIC = "gas_kafka.tut";
 
@@ -329,7 +298,8 @@ public class GasKafka  {
 
 
                     //----------------------------------以下是判断出入问题------------------------------------
-            GasWSRespVO staff = staffGroupTerminalServiceClient.findStaffNameByTerminalId(gasPosition.getTerminalId());
+                    //去除staffGroupTerminalServiceClient
+            GasWSRespVO staff = findStaffNameByTerminalId(gasPosition.getTerminalId());
                     Integer staffId = staff.getStaffId();
                     gasPosition.setStaffId(staffId);
                     gasPosition.setStaffName(staff.getStaffName());
@@ -364,8 +334,8 @@ public class GasKafka  {
                                     String staffName = staff.getStaffName();
                                     Staff staff1 = staffMapper.selectByPrimaryKey(staffId);
                                     Integer groupId = staff1.getGroupId();
-//                                    String deptName = staffOrganizationService.getDeptNameByGroupId(groupId);
-                                    String deptName = staffGroupTerminalServiceClient.getDeptNameByGroupId(groupId);
+//                                    //去除远程调用staffGroupTerminalServiceClient
+                                    String deptName = getDeptNameByGroupId(groupId);
                                     HashMap<Object, Object> staffInfo = new HashMap<>();
                                     staffInfo.put("staffId", staffId);
                                     staffInfo.put("staffName", staffName);
@@ -470,12 +440,6 @@ public class GasKafka  {
                                 overTimeSet.add(staffId);
                                 wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
                             }
-                            //严重超时加1
-
-              /*  //超时-1
-                data.setType(1);
-                data.setData(-1);
-                WSPersonNumberServer.sendInfo(JSON.toJSONString(data));*/
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -538,7 +502,8 @@ public class GasKafka  {
                     StationStandardRelation stationStandardRelation = stationStandardRelationMapper.selectStandardByStationId(requestData.getStationId());
                     if(null != stationStandardRelation){
                         Integer standardId = stationStandardRelation.getStandardId();
-                        GasLevelVO gasLevelVO = systemServiceClient.getWarnLevelSettingByGasLevelId(standardId);
+                        //去除systemServiceClient远程调用
+                        GasLevelVO gasLevelVO = getWarnLevelSettingByGasLevelId(standardId);
                         //气体标准值
                         GasStandard gasStandard = gasLevelVO.getGasStandard();
                         Double ch4Standard = gasStandard.getCh4Standard();
@@ -635,8 +600,10 @@ public class GasKafka  {
                                 contrastParameter = gasInfoWarn.gethFlag();
                             }
                             gasWSRespVO.setGasLevel(contrastParameter);
-//                String url = levelDataService.findRangUrlByLevelDataId(contrastParameter);
-                            String url = systemServiceClient.findRangUrlByLevelDataId(contrastParameter);
+                            //去除服务远程调用
+                            Map<String ,Object> map = levelDataMapper.selectRangUrlByLevelDataId(contrastParameter);
+                            String url = (String )map.get("url");
+
                             if (null != url && !"".equals(url)) {
                                 gasWSRespVO.setRangUrl(url);
                             }
@@ -692,7 +659,7 @@ public class GasKafka  {
                         }
                     }
                     if(null != orgId && null == zoneId){
-                        List<Integer> deptIds = staffGroupTerminalServiceClient.findSonIdsByDeptId(orgId);
+                        List<Integer> deptIds = findSonIdsByDeptId(orgId);
                         for (Integer deptId : deptIds) {
                             if(groupId.equals(deptId)){
                                 try {
@@ -707,9 +674,9 @@ public class GasKafka  {
                     }
 
                     if(null == orgId && null != zoneId){
-                        List<Integer>  zoneIds = stationPartitionServiceClient.getSonIdsById(zoneId);
+                        List<Integer>  zoneIds = getSonIdsById(zoneId);
 //                    List<BaseStation> baseStations    = baseStationService.findBaseStationByZoneIds(zoneIds);
-                        List<BaseStation> baseStations    = stationPartitionServiceClient.findBaseStationByZoneIds(zoneIds);
+                        List<BaseStation> baseStations    = baseStationMapper.findBaseStationByZoneIds(zoneIds);
                         for (BaseStation baseStation : baseStations) {
                             //该终端所连基站
                             if(stationId.equals(baseStation.getBaseStationNum())){
@@ -724,11 +691,9 @@ public class GasKafka  {
                         }
                     }
                     if(null != orgId && null != zoneId){
-                        List<Integer>   deptIds = staffGroupTerminalServiceClient.findSonIdsByDeptId(orgId);
-//                    List<Integer>  zoneIds = partitionService.getSonIdsById(zoneIdGas);
-                        List<Integer>  zoneIds = stationPartitionServiceClient.getSonIdsById(zoneId);
-//                    List<BaseStation> baseStations    = baseStationService.findBaseStationByZoneIds(zoneIds);
-                        List<BaseStation> baseStations    = stationPartitionServiceClient.findBaseStationByZoneIds(zoneIds);
+                        List<Integer>   deptIds = findSonIdsByDeptId(orgId);
+                        List<Integer>  zoneIds = getSonIdsById(zoneId);
+                        List<BaseStation> baseStations    = baseStationMapper.findBaseStationByZoneIds(zoneIds);
                         for (Integer deptId : deptIds) {
                             for (BaseStation baseStation : baseStations) {
                                 //该终端所连基站
@@ -770,8 +735,7 @@ public class GasKafka  {
                                 }
                             }
                             if(null != orgIdGas && null == zoneIdGas){
-//                                List<Integer>   deptIds = staffOrganizationService.findSonIdsByDeptId(orgId);
-                                List<Integer>   deptIds = staffGroupTerminalServiceClient.findSonIdsByDeptId(orgId);
+                                List<Integer>   deptIds = findSonIdsByDeptId(orgId);
                                 for (Integer deptId : deptIds) {
                                     if(groupId.equals(deptId)){
                                         try {
@@ -784,11 +748,8 @@ public class GasKafka  {
                             }
 
                             if(null == orgIdGas && null != zoneIdGas){
-                                List<Integer>   deptIds = staffGroupTerminalServiceClient.findSonIdsByDeptId(orgId);
-//                    List<Integer>  zoneIds = partitionService.getSonIdsById(zoneIdGas);
-                                List<Integer>  zoneIds = stationPartitionServiceClient.getSonIdsById(zoneId);
-//                    List<BaseStation> baseStations    = baseStationService.findBaseStationByZoneIds(zoneIds);
-                                List<BaseStation> baseStations    = stationPartitionServiceClient.findBaseStationByZoneIds(zoneIds);
+                                List<Integer>  zoneIds = getSonIdsById(zoneId);
+                                List<BaseStation> baseStations    = baseStationMapper.findBaseStationByZoneIds(zoneIds);
                                 for (BaseStation baseStation : baseStations) {
                                     //该终端所连基站
                                     if(stationId.equals(baseStation.getBaseStationNum())){
@@ -802,11 +763,9 @@ public class GasKafka  {
 
                             }
                             if(null != orgIdGas && null != zoneIdGas){
-                                List<Integer>   deptIds = staffGroupTerminalServiceClient.findSonIdsByDeptId(orgId);
-//                    List<Integer>  zoneIds = partitionService.getSonIdsById(zoneIdGas);
-                                List<Integer>  zoneIds = stationPartitionServiceClient.getSonIdsById(zoneId);
-//                    List<BaseStation> baseStations    = baseStationService.findBaseStationByZoneIds(zoneIds);
-                                List<BaseStation> baseStations    = stationPartitionServiceClient.findBaseStationByZoneIds(zoneIds);
+                                List<Integer>   deptIds = findSonIdsByDeptId(orgId);
+                                List<Integer>  zoneIds = getSonIdsById(zoneId);
+                                List<BaseStation> baseStations    = baseStationMapper.findBaseStationByZoneIds(zoneIds);
                                 for (Integer deptId : deptIds) {
                                     for (BaseStation baseStation : baseStations) {
                                         //该终端所连基站
@@ -853,5 +812,106 @@ public class GasKafka  {
     public void listen2(List<ConsumerRecord<?, ?>> records) {
         process(records);
     }
+
+    public GasLevelVO getWarnLevelSettingByGasLevelId(Integer standardId) {
+        Map<String ,Object> params = new HashMap<>();
+        params.put("standardId", standardId);
+        params.put("gasType", 5);
+        List<GasWarnSettingDto> o2GasWarnSettingList = gasWarnSettingMapper.selectGasWarnSettingByParams(params);
+        params.put("gasType", 1);
+        List<GasWarnSettingDto> coGasWarnSettingList = gasWarnSettingMapper.selectGasWarnSettingByParams(params);
+        params.put("gasType", 2);
+        List<GasWarnSettingDto> ch4GasWarnSettingList = gasWarnSettingMapper.selectGasWarnSettingByParams(params);
+        params.put("gasType", 3);
+        List<GasWarnSettingDto> tGasWarnSettingList = gasWarnSettingMapper.selectGasWarnSettingByParams(params);
+        params.put("gasType", 4);
+        List<GasWarnSettingDto> hGasWarnSettingList = gasWarnSettingMapper.selectGasWarnSettingByParams(params);
+
+        GasStandard standard = gasStandardMapper.selectByPrimaryKey(standardId);
+
+        GasLevelVO gasLevelVO = new GasLevelVO();
+
+        gasLevelVO.setGasStandard(standard);
+        gasLevelVO.setCh4WarnSettingDto(ch4GasWarnSettingList);
+        gasLevelVO.setCoWarnSettingDto(coGasWarnSettingList);
+        gasLevelVO.setO2WarnSettingDto(o2GasWarnSettingList);
+        gasLevelVO.sethWarnSettingDto(hGasWarnSettingList);
+        gasLevelVO.settWarnSettingDto(tGasWarnSettingList);
+
+        return gasLevelVO;
+    }
+
+
+    public GasWSRespVO findStaffNameByTerminalId(Integer terminalId) {
+
+        Map<String, Object> resultMap = staffTerminalMapper.selectStaffNameByTerminalId(terminalId);
+
+        GasWSRespVO gasWSRespVO = new GasWSRespVO();
+        if (null != resultMap &&resultMap.size() > 0) {
+            Integer staffId = (Integer) resultMap.get("staff_id");
+            String staffName = (String) resultMap.get("staff_name");
+            Integer isPerson = (Integer) resultMap.get("is_person");
+            gasWSRespVO.setStaffName(staffName);
+            gasWSRespVO.setStaffId(staffId);
+            gasWSRespVO.setIsPerson(isPerson);
+            return gasWSRespVO;
+        } else {
+            gasWSRespVO.setStaffName("未知人员");
+            gasWSRespVO.setStaffId(0);
+            gasWSRespVO.setIsPerson(0);
+            return gasWSRespVO;
+        }
+    }
+
+
+    public String getDeptNameByGroupId(Integer groupId) {
+        String deptName="";
+        StaffOrganization staffOrganization = staffOrganizationMapper.selectByPrimaryKey(groupId);
+        if(staffOrganization!=null){
+            deptName=staffOrganization.getName();
+            if(staffOrganization.getParentId()!=0){
+                String parentName = getDeptNameByGroupId(staffOrganization.getParentId());
+                deptName=parentName+"/"+deptName;
+            }
+        }
+
+        return deptName;
+    }
+
+
+    public  List<Integer> getSonIdsById(Integer id) {
+        List<Integer> sonIdsById = findSonIdsById(id);
+        sonIdsById.add(id);
+        return sonIdsById;
+    }
+
+    private  List<Integer> findSonIdsById(Integer id) {
+        if(id==null){
+            id=0;
+        }
+        ArrayList<Integer> list = new ArrayList<>();
+        StaffOrganizationExample example = new StaffOrganizationExample();
+        example.createCriteria().andParentIdEqualTo(id);
+        List<StaffOrganization> sonList = staffOrganizationMapper.selectByExample(example);
+        if(sonList!=null){
+            for (StaffOrganization staffOrganization : sonList) {
+                list.add(staffOrganization.getId());
+                List<Integer> sonIds = findSonIdsById(staffOrganization.getId());
+                if(sonIds!=null){
+                    for (Integer sonId : sonIds) {
+                        list.add(sonId);
+                    }
+                }
+            }
+        }
+        return list;
+    }
+
+    public List<Integer> findSonIdsByDeptId(Integer deptId) {
+        List<Integer> deptIds = findSonIdsById(deptId);
+        deptIds.add(deptId);
+        return deptIds;
+    }
+
 
 }

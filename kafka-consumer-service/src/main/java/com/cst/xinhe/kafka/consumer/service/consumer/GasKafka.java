@@ -640,11 +640,13 @@ public class GasKafka  {
                             if (null != url && !"".equals(url)) {
                                 gasWSRespVO.setRangUrl(url);
                             }
-                            try {
-                                wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(new WebSocketData(1, gasWSRespVO)));
-                            } catch (Exception e) {
-                                throw new RuntimeOtherException(ResultEnum.WEBSOCKET_SEND_ERROR);
-                            }
+                           if(contrastParameter>0){
+                               try {
+                                   wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(new WebSocketData(1, gasWSRespVO)));
+                               } catch (Exception e) {
+                                   throw new RuntimeOtherException(ResultEnum.WEBSOCKET_SEND_ERROR);
+                               }
+                           }
 
                         }else{
                             gasPosition.setGasFlag(0);

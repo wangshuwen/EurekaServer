@@ -84,13 +84,14 @@ public class CallServiceImpl implements CallService {
     public String rangBasePath ;
 
     @Override
-    public String callStaffByStaffId(MultipartFile wavFile, Integer staffId, Integer userId) {
+    public ChatMsg callStaffByStaffId(MultipartFile wavFile, Integer staffId, Integer userId) {
 //        Integer terminalId = terminalService.findTerminalInfoByStaffId(staffId);
+        Date currentDate = new Date();
         Integer terminalId = staffTerminalMapper.selectTerminalIdByStaffId(staffId);
 //        Integer terminalId = staffGroupTerminalServiceClient.findTerminalInfoByStaffId(staffId);
         StringBuffer folderName = new StringBuffer(basePath);
         folderName.append(terminalId).append(File.separator);
-        StringBuffer fileName = new StringBuffer(DateConvert.convert(new Date(), 15));
+        StringBuffer fileName = new StringBuffer(DateConvert.convert(currentDate, 15));
         Integer seq = terminalMonitorClient.getSequenceId();
         fileName.append(terminalId).append(seq);
         FileUtils.createFile(folderName.toString(), fileName.toString(), FileType.WAV);
@@ -107,7 +108,9 @@ public class CallServiceImpl implements CallService {
 //        Map<String, Object> terminalInfo = terminalUpdateIpMapper.selectTerminalIpInfoByTerminalId(terminalId);
 //        Map<String, Object> terminalInfo = staffGroupTerminalServiceClient.selectTerminalIpInfoByTerminalId(terminalId);
         Map<String, Object> terminalInfo = terminalUpdateIpMapper.selectTerminalIpInfoByTerminalId(terminalId);
-        if (terminalInfo != null && !terminalInfo.isEmpty()) {
+        ChatMsg chatMsg = new ChatMsg();
+        if (null != terminalInfo && !terminalInfo.isEmpty()) {
+
             String stationIp = (String) terminalInfo.get("station_ip");
             String stationIps[] = stationIp.split("\\.");
             Integer stationIp1 = Integer.parseInt(stationIps[0]);
@@ -151,14 +154,13 @@ public class CallServiceImpl implements CallService {
             }else {
                 TemporarySendList temporarySendList = new TemporarySendList();
                 temporarySendList.setType(0);
-                temporarySendList.setCreateTime(new Date());
+                temporarySendList.setCreateTime(currentDate);
                 temporarySendList.setTerminalId(terminalId);
                 temporarySendList.setVoiceUrl(realUrl);
                 temporarySendListMapper.insert(temporarySendList);
             }
-            ChatMsg chatMsg = new ChatMsg();
             chatMsg.setTerminalId(terminalId);
-            chatMsg.setSequenceId(seq.toString());
+            chatMsg.setSequenceId(seq + "" + currentDate.getTime() + terminalId);
             chatMsg.setConvertTime(new Date());
             chatMsg.setStationIp(stationIp);
             chatMsg.setReceiceUserId(staffId);
@@ -170,10 +172,10 @@ public class CallServiceImpl implements CallService {
             chatMsg.setStatus(false);
             chatMsg.setReceiveIp(terminalIp);
             chatMsgService.insertRecord(chatMsg);
-
+            chatMsg.setPostMsg(realUrl.replace(basePath, webBaseUrl));
 
         }
-        return realUrl.replace(basePath, webBaseUrl);
+        return chatMsg;
     }
 
     @Override

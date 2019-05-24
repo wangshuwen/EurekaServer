@@ -243,7 +243,7 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
      */
     @Override
     public Page<EsAttendanceEntity> searchAttendanceInfo(Integer startPage, Integer pageSize) {
-        Pageable pageable = new PageRequest(startPage,pageSize);
+        Pageable pageable = new PageRequest(startPage - 1 ,pageSize);
         Page<EsAttendanceEntity> page = attendanceRepository.findAll(pageable);
         return page;
     }

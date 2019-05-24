@@ -61,8 +61,8 @@ public class UpdateVoiceReadStatus {
 
                     Integer seq = jsonObject.getInteger("sequenceId");
 
-                    StringBuffer seq_str = new StringBuffer();
-                    seq_str.append(time).append(terminalId).append(seq);
+                    StringBuffer seq_str = new StringBuffer(seq);
+                    seq_str.append(time.getTime()).append(terminalId);
                     chatMsg.setSequenceId(seq_str.toString());
 
                     chatMsgMapper.updateChatMegStatusBySeqId(chatMsg);

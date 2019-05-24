@@ -5,6 +5,7 @@ import com.cst.xinhe.base.exception.ErrorCode;
 import com.cst.xinhe.base.exception.RuntimeWebException;
 import com.cst.xinhe.base.result.ResultUtil;
 import com.cst.xinhe.chatmessage.service.service.CallService;
+import com.cst.xinhe.persistence.model.chat.ChatMsg;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,7 +40,7 @@ public class CallController {
     public String callStaff(MultipartFile wavFile, Integer staffId) {
         if (null != wavFile && null != staffId) {
             try {
-                String res = callService.callStaffByStaffId(wavFile, staffId, 0);
+                ChatMsg res = callService.callStaffByStaffId(wavFile, staffId, 0);
                 if (null != res){
                     return ResultUtil.jsonToStringSuccess(res);
                 }

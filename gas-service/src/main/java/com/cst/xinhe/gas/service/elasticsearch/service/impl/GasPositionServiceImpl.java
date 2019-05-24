@@ -153,7 +153,7 @@ public class GasPositionServiceImpl implements GasPositionService {
 //            queryBuilder2 = QueryBuilders.rangeQuery("createtime").format("yyyy-MM-dd").lte(endTime);
 //        }
         FieldSortBuilder sortBuilder = SortBuilders.fieldSort("createtime").order(SortOrder.DESC);
-        Pageable pageable = new PageRequest(startPage,pageSize);
+        Pageable pageable = new PageRequest(startPage - 1,pageSize);
         NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withPageable(pageable).withQuery(queryBuilder).withQuery(queryBuilder1).withSort(sortBuilder).withFields("createtime","temppositionname", "isore");
         Page<GasPositionEntity> iterable = gasPositionRepository.search(searchQueryBuilder.build());
 //        for (GasPositionEntity item: iterable.getContent()){

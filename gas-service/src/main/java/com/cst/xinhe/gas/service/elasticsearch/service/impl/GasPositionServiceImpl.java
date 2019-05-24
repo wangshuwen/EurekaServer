@@ -64,16 +64,19 @@ public class GasPositionServiceImpl implements GasPositionService {
 
     @Override
     public List<Map<String, Object>> findRoadByStaffIdAndTime(int staffId, String currentTime) throws ParseException {
-        QueryBuilder queryBuilder = QueryBuilders.termQuery("staffid", staffId);
+        BoolQueryBuilder builder = QueryBuilders.boolQuery();
+        builder.must(QueryBuilders.termQuery("staffid", staffId));
+
         Date s = DateConvert.convertStringToDate(currentTime,10);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(s);
         calendar.add(Calendar.DAY_OF_MONTH, + 1);//+1今天的时间加一天
         Date date = calendar.getTime();
         String endtime = DateConvert.convert(date, 10);
-        QueryBuilder queryBuilder1 = QueryBuilders.rangeQuery("createtime").format("yyyy-MM-dd").gte(currentTime).lt(endtime);
+
+        builder.must(QueryBuilders.rangeQuery("createtime").format("yyyy-MM-dd").gte(currentTime).lt(endtime));
         SortBuilder sortBuilder = SortBuilders.fieldSort("createtime").order(SortOrder.ASC);
-        NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withQuery(queryBuilder).withQuery(queryBuilder1).withSort(sortBuilder);
+        NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withQuery(builder).withSort(sortBuilder);
         Iterable<GasPositionEntity> iterable = gasPositionRepository.search(searchQueryBuilder.build());
 
         List<Map<String, Object>> result = new ArrayList<>();

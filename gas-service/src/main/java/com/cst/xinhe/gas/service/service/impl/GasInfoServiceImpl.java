@@ -6,9 +6,7 @@ import com.cst.xinhe.gas.service.elasticsearch.service.GasPositionService;
 import com.cst.xinhe.gas.service.service.GasInfoService;
 import com.cst.xinhe.persistence.dao.rt_gas.RtGasInfoMapper;
 import com.cst.xinhe.persistence.dao.staff.StaffMapper;
-import com.cst.xinhe.persistence.dao.terminal_road.TerminalRoadMapper;
 import com.cst.xinhe.persistence.model.staff.Staff;
-import com.cst.xinhe.persistence.model.terminal_road.TerminalRoad;
 import com.cst.xinhe.persistence.vo.resp.GasWSRespVO;
 import com.github.pagehelper.Page;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +32,7 @@ public class GasInfoServiceImpl implements GasInfoService {
     @Resource
     private StaffMapper staffMapper;
 
-    @Resource
-    private TerminalRoadMapper terminalRoadMapper;
+
 
 //    @Autowired
 //    private StaffOrganizationService staffOrganizationService;

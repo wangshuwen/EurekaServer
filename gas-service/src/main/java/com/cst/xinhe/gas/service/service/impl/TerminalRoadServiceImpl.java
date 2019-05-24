@@ -4,12 +4,9 @@ import com.cst.xinhe.common.utils.convert.DateConvert;
 import com.cst.xinhe.gas.service.elasticsearch.entity.GasPositionEntity;
 import com.cst.xinhe.gas.service.elasticsearch.service.GasPositionService;
 import com.cst.xinhe.gas.service.service.TerminalRoadService;
-import com.cst.xinhe.persistence.dao.terminal_road.TerminalRoadMapper;
+
 import com.cst.xinhe.persistence.model.terminal_road.TerminalRoad;
 import com.github.pagehelper.Page;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

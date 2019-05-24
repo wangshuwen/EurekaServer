@@ -599,11 +599,13 @@ public class GasKafka  {
                             gasWSRespVO.setGasLevel(contrastParameter);
                             //去除服务远程调用
                             Map<String ,Object> map = levelDataMapper.selectRangUrlByLevelDataId(contrastParameter);
-                            String url = (String )map.get("url");
+                           if(map!=null&&map.size()>0){
+                               String url = (String )map.get("url");
+                               if(url!=null){
+                                   gasWSRespVO.setRangUrl(url);
+                               }
+                           }
 
-                            if (null != url && !"".equals(url)) {
-                                gasWSRespVO.setRangUrl(url);
-                            }
                            if(contrastParameter>0){
                                try {
                                    wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(new WebSocketData(1, gasWSRespVO)));

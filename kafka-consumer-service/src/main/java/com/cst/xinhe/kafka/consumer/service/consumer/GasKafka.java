@@ -15,7 +15,6 @@ import com.cst.xinhe.persistence.dao.attendance.StaffAttendanceRealRuleMapper;
 import com.cst.xinhe.persistence.dao.attendance.TimeStandardMapper;
 import com.cst.xinhe.persistence.dao.base_station.BaseStationMapper;
 import com.cst.xinhe.persistence.dao.rt_gas.GasPositionMapper;
-import com.cst.xinhe.persistence.dao.rt_gas.RtGasInfoMapper;
 import com.cst.xinhe.persistence.dao.staff.StaffMapper;
 import com.cst.xinhe.persistence.dao.staff.StaffOrganizationMapper;
 import com.cst.xinhe.persistence.dao.station_standard_relation.StationStandardRelationMapper;
@@ -102,8 +101,6 @@ public class GasKafka  {
     @Resource
     private StaffAttendanceRealRuleMapper staffAttendanceRealRuleMapper;
 
-    @Resource
-    private RtGasInfoMapper rtGasInfoMapper;
 
     @Resource
     private TimeStandardMapper timeStandardMapper;

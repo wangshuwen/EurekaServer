@@ -188,40 +188,46 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
             Integer basestationid = attendance.getBasestationid();
             Integer ruleid = attendance.getRuleid();
             Map<String, Object> obj = res.get(staffid);
-            if (null == obj) {
+          /*  if (null == obj) {
                 iterator.remove();
                 continue;
-            }
+            }*/
 //            Staff staff = staffMapper.selectByPrimaryKey(staffid);
 //            Staff staff = res.get(staffid);
 //            Staff staff = staffGroupTerminalServiceClient.findStaffById(staffid);
 //            Integer jobId = staff.getStaffJobId();
-            Integer jobId = (Integer)obj.get("jobId");
+           if(obj!=null){
+               Integer jobId = (Integer)obj.get("jobId");
+               StaffJob staffJob = staffJobMapper.selectByPrimaryKey(jobId);
+//            StaffJob staffJob = staffGroupTerminalServiceClient.selectStaffJobByJobId(jobId);
+
+               if(staffJob!=null)
+                   attendance.setJobname(staffJob.getJobName());
+
+
 //            Integer groupId = staff.getGroupId();
 //            Integer groupId = staff.getGroupId();
 //            String staffName1 = staff.getStaffName();
-            String staffName1 = (String) res.get(staffid).get("staffName");
-            attendance.setStaffname(staffName1);
+               String staffName1 = (String) obj.get("staffName");
+               attendance.setStaffname(staffName1);
 //            String deptName = staffOrganizationService.getDeptNameByGroupId(groupId);
 //            String deptName = staffGroupTerminalServiceClient.getDeptNameByGroupId(groupId);
 //            String deptName = staff.getStaffEmail();
-            String deptName = (String) res.get(staffid).get("deptName");
-            attendance.setDeptname(deptName);
+               String deptName = (String) obj.get("deptName");
+               attendance.setDeptname(deptName);
 //            BaseStation station = baseStationService.findBaseStationByNum(basestationid);
 //            BaseStation station = stationPartitionServiceClient.findBaseStationByNum(basestationid);
-            BaseStation station = baseStationMapper.findBaseStationByNum(basestationid);
-            TimeStandard timeStandard = timeStandardMapper.selectByPrimaryKey(ruleid);
-            if(timeStandard!=null){
-                attendance.setTimestandardname(timeStandard.getTimeStandardName());
-            }
-            if(station!=null)
-                attendance.setStationname(station.getBaseStationName());
+               BaseStation station = baseStationMapper.findBaseStationByNum(basestationid);
+               TimeStandard timeStandard = timeStandardMapper.selectByPrimaryKey(ruleid);
+               if(timeStandard!=null){
+                   attendance.setTimestandardname(timeStandard.getTimeStandardName());
+               }
+               if(station!=null)
+                   attendance.setStationname(station.getBaseStationName());
 
-            StaffJob staffJob = staffJobMapper.selectByPrimaryKey(jobId);
-//            StaffJob staffJob = staffGroupTerminalServiceClient.selectStaffJobByJobId(jobId);
+           }
 
-            if(staffJob!=null)
-                attendance.setJobname(staffJob.getJobName());
+
 
         }
 

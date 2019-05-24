@@ -564,6 +564,7 @@ public class GasKafka  {
                             if(ch4>=(multiple*ch4Standard)){
                                 //警报等级大的会把等级小的覆盖掉（已排序根据multiple）
                                 gasInfoWarn.setCh4Flag(gasWarnSettingDto.getLevelDataId());
+                                gasPosition.setCh4Unit(gasWarnSettingDto.getLevelDataId());
                                 isWarn=true;
                             }
                         }
@@ -573,6 +574,7 @@ public class GasKafka  {
                             Double multiple = gasWarnSettingDto.getMultiple();
                             if(co>=(multiple*coStandard)){
                                 gasInfoWarn.setCoFlag(gasWarnSettingDto.getLevelDataId());
+                                gasPosition.setCoUnit(gasWarnSettingDto.getLevelDataId());
                                 isWarn=true;
                             }
                         }
@@ -582,6 +584,7 @@ public class GasKafka  {
                             Double multiple = gasWarnSettingDto.getMultiple();
                             if(h>=(multiple*hStandard)){
                                 gasInfoWarn.sethFlag(gasWarnSettingDto.getLevelDataId());
+                                gasPosition.setHumidityUnit(gasWarnSettingDto.getLevelDataId());
                                 isWarn=true;
                             }
                         }
@@ -591,6 +594,7 @@ public class GasKafka  {
                             Double multiple = gasWarnSettingDto.getMultiple();
                             if(o2>=(multiple*o2Standard)){
                                 gasInfoWarn.setO2Flag(gasWarnSettingDto.getLevelDataId());
+                                gasPosition.setO2Unit(gasWarnSettingDto.getLevelDataId());
                                 isWarn=true;
                             }
                         }
@@ -600,6 +604,7 @@ public class GasKafka  {
                             Double multiple = gasWarnSettingDto.getMultiple();
                             if(t>=(multiple*tStandard)){
                                 gasInfoWarn.settFlag(gasWarnSettingDto.getLevelDataId());
+                                gasPosition.setTemperatureUnit(gasWarnSettingDto.getLevelDataId());
                                 isWarn=true;
                             }
                         }

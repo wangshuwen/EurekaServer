@@ -101,6 +101,7 @@ public class GasKafka {
     @Resource
     private StaffAttendanceRealRuleMapper staffAttendanceRealRuleMapper;
 
+
     @Resource
     private TimeStandardMapper timeStandardMapper;
 
@@ -884,11 +885,11 @@ public class GasKafka {
         StaffOrganizationExample example = new StaffOrganizationExample();
         example.createCriteria().andParentIdEqualTo(id);
         List<StaffOrganization> sonList = staffOrganizationMapper.selectByExample(example);
-        if (sonList != null) {
+        if (null != sonList) {
             for (StaffOrganization staffOrganization : sonList) {
                 list.add(staffOrganization.getId());
                 List<Integer> sonIds = findSonIdsById(staffOrganization.getId());
-                if (sonIds != null) {
+                if (null != sonIds) {
                     for (Integer sonId : sonIds) {
                         list.add(sonId);
                     }

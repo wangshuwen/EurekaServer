@@ -19,7 +19,7 @@ public class TerminalMonitorController {
     @Autowired
     private TerminalMonitorService terminalMonitorService;
 
-    @RequestMapping("sendResponseData")
+    @PostMapping("sendResponseData")
     public String sendResponseData(@RequestBody ResponseData responseData){
         responseData.getCustomMsg().setSequenceId(SequenceIdGenerate.getSequenceId());
         terminalMonitorService.sendResponseData(responseData);

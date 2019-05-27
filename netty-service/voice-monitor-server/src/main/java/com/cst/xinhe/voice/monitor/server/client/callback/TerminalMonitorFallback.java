@@ -20,8 +20,8 @@ public class TerminalMonitorFallback implements TerminalMonitorClient {
     private static Logger logger = LoggerFactory.getLogger(TerminalMonitorFallback.class);
     @Override
     public String sendResponseData(ResponseData responseData) {
-
-        return ResultUtil.jsonToStringError(ResultEnum.TerminalMonitorFallback);
+        logger.error(ResultUtil.jsonToStringError(ResultEnum.TerminalMonitorFallback));
+        return null;
     }
 
     @Override

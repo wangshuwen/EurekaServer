@@ -40,7 +40,7 @@ public class TerminalControllerServer {
     private MalfunctionService malfunctionService;
 
     @GetMapping("findTerminalIdByIpAndPort")
-    public TerminalUpdateIp findTerminalIdByIpAndPort(@RequestParam String terminalIp, @RequestParam Integer port){
+    public TerminalUpdateIp findTerminalIdByIpAndPort(@RequestParam("terminalIp") String terminalIp, @RequestParam("port") Integer port){
         TerminalUpdateIp terminalUpdateIp = terminalService.findTerminalIdByIpAndPort(terminalIp, port);
         return terminalUpdateIp;
     }

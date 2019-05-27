@@ -1,6 +1,5 @@
 package com.cst.xinhe.voice.monitor.server.process;
 
-import com.cst.xinhe.base.context.SpringContextUtil;
 import com.cst.xinhe.common.constant.ConstantValue;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
@@ -11,9 +10,11 @@ import com.cst.xinhe.persistence.model.terminal_road.TerminalRoad;
 import com.cst.xinhe.voice.monitor.server.channel.VoiceChannelMap;
 import com.cst.xinhe.voice.monitor.server.client.StaffGroupTerminalServiceClient;
 import com.cst.xinhe.voice.monitor.server.client.GasServiceClient;
+import com.cst.xinhe.voice.monitor.server.context.SpringContextUtil;
 import com.cst.xinhe.voice.monitor.server.service.VoiceMonitorService;
 import com.cst.xinhe.voice.monitor.server.ws.WSVoiceStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -36,18 +37,8 @@ public class ProcessRtVoice {
     public void setIp_prefix(String ip_prefix) {
         ProcessRtVoice.ip_prefix = "192.168.";
     }
-//    private ApplicationContext applicationContext = SpringUtils.getApplicationContext();
-//    private TerminalService terminalService = applicationContext.getBean(TerminalServiceImpl.class);
-//    private TerminalUpdateIpMapper terminalUpdateIpMapper = applicationContext.getBean(TerminalUpdateIpMapper.class);
 
-    //    @Autowired
-//    private TerminalService terminalService;
-    //    @Autowired
-//    private StaffService staffService;
-    //    @Autowired
-//    private RtGasInfoMapper rtGasInfoMapper;
 
-    //    @Autowired
     private TerminalUpdateIpMapper terminalUpdateIpMapper;
 
     private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
@@ -55,21 +46,11 @@ public class ProcessRtVoice {
     private GasServiceClient gasServiceClient;
 
     private VoiceMonitorService voiceMonitorService;
-//    @PostConstruct
-//    public void init() {
-//        realTimeVoice = this;
-//        realTimeVoice.terminalUpdateIpMapper = this.terminalUpdateIpMapper;
-//        realTimeVoice.terminalService = this.terminalService;
-//    }
 
     public ProcessRtVoice() {
-//        this.terminalUpdateIpMapper = SpringContextUtil.getBean(TerminalUpdateIpMapper.class);
-//        this.terminalService = SpringContextUtil.getBean(TerminalServiceImpl.class);
-//        this.terminalRoadMapper = SpringContextUtil.getBean(TerminalRoadMapper.class);
-//        this.rtGasInfoMapper = SpringContextUtil.getBean(RtGasInfoMapper.class);
-//        this.staffService = SpringContextUtil.getBean(StaffService.class);
         this.voiceMonitorService = SpringContextUtil.getBean(VoiceMonitorService.class);
         this.staffGroupTerminalServiceClient = SpringContextUtil.getBean(StaffGroupTerminalServiceClient.class);
+        this.gasServiceClient=SpringContextUtil.getBean(GasServiceClient.class);
     }
 
     public static ProcessRtVoice getProcessRealTimeVoice() {
@@ -164,8 +145,8 @@ public class ProcessRtVoice {
         map.put("ipPort", ipPort);
         map.put("result", "44");
         //TODO 根据IP查找人员ID 人员所在的部门分组，最近一次气体信息以及定位信息
-//        TerminalUpdateIp terminalUpdateIp = terminalUpdateIpMapper.findTerminalIdByIpAndPort(ip, port);
-        TerminalUpdateIp terminalUpdateIp = staffGroupTerminalServiceClient.findTerminalIdByIpAndPort(ip,port);
+        TerminalUpdateIp terminalUpdateIp = staffGroupTerminalServiceClient.findTerminalIdByIpAndPort(ip, port);
+
         if (terminalUpdateIp != null) {
             Integer terminalId = terminalUpdateIp.getTerminalNum();
             //员工信息

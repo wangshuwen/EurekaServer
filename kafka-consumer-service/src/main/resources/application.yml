@@ -81,9 +81,9 @@ eureka:
     service-url:
       defaultZone: http://127.0.0.1:8761/eureka/
 ribbon:
-  ReadTimeout: 3500 #请求处理的超时时间
-  ConnectTimeout: 1000 #请求连接的超时时间
-  OkToRetryOnAllOperations: false # 对所有的操作请求都进行重试，如果是get则可以，如果是post,put等操作没有实现幂等的情况下是很危险的，所以设置为false
+  ReadTimeout: 2000 #请求处理的超时时间
+  ConnectTimeout: 250 #请求连接的超时时间
+  OkToRetryOnAllOperations: true # 对所有的操作请求都进行重试，如果是get则可以，如果是post,put等操作没有实现幂等的情况下是很危险的，所以设置为false
   SocketTimeout: 3500
   MaxAutoRetries: 1 #最大重试次数，当Eureka中可以找到服务，但是服务连不上时将会重试
   MaxAutoRetriesNextServer: 1  #切换实例的重试次数
@@ -93,13 +93,18 @@ ribbon:
 hystrix:
   command:
     default:
+      circuitBreaker:
+        requestVolumeThreshold: 1000
+      fallback:
+        isolation:
+
       execution:
         timeout:
           enabled: true
-          #        isolation:
-          #          strategy: SEMAPHORE
-          #          semaphore:
-          #            maxConcurrentRequests: 500
+        isolation:
+          strategy: SEMAPHORE
+          semaphore:
+            maxConcurrentRequests: 500
           thread:
             timeoutInMilliseconds: 20000
 feign:
@@ -114,8 +119,10 @@ feign:
     enabled: true
   httpclient:
     enabled: true
-    max-connections: 200
+    max-connections: 2000
     max-connections-per-route: 50
+  okhttp:
+    enabled: false
 mybatis:
   mapper-locations: com/cst/xinhe/persistence/dao/*/*.xml
   configuration:

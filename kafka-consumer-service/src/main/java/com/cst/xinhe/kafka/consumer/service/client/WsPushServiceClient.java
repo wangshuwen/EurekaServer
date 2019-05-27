@@ -36,7 +36,6 @@ public interface WsPushServiceClient {
     @PostMapping("sendInfo")
     String sendInfo(@RequestBody String jsonObject);
 
-
     @GetMapping("getWSSiteServerOrgId")
     Integer getWSSiteServerOrgId();
 

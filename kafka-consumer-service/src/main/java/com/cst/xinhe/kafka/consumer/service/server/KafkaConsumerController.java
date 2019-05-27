@@ -36,8 +36,8 @@ public class KafkaConsumerController {
     public void removeStaffSet(@RequestParam Integer staffId){
         kafkaConsumerService.removeStaffSet(staffId);
     }
-    @GetMapping("pushRtPersonData")
-    public void pushRtPersonData(){
-        kafkaConsumerService.pushRtPersonData();
-    }
+//    @GetMapping("pushRtPersonData")
+//    public void pushRtPersonData(){
+//        kafkaConsumerService.pushRtPersonData();
+//    }
 }

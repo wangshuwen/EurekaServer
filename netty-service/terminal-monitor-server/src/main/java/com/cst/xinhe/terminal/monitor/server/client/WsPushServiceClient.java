@@ -4,6 +4,7 @@ import com.cst.xinhe.terminal.monitor.server.client.callback.WsPushServiceFallba
 import com.cst.xinhe.terminal.monitor.server.client.config.FeignConfig;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(value = "ws-push-service",
         configuration = FeignConfig.class,
@@ -13,5 +14,5 @@ import org.springframework.web.bind.annotation.PostMapping;
 public interface WsPushServiceClient {
 
     @PostMapping("sendWSSiteServer")
-    void sendWSSiteServer(String jsonString);
+    void sendWSSiteServer(@RequestBody String jsonString);
 }

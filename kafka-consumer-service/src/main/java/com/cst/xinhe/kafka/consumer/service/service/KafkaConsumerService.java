@@ -10,5 +10,5 @@ public interface KafkaConsumerService {
 
     void removeStaffSet(Integer staffId);
 
-    void pushRtPersonData();
+//    void pushRtPersonData();
 }

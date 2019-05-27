@@ -10,7 +10,6 @@ import com.cst.xinhe.kafka.consumer.service.client.StaffGroupTerminalServiceClie
 import com.cst.xinhe.kafka.consumer.service.client.SystemServiceClient;
 import com.cst.xinhe.kafka.consumer.service.client.WsPushServiceClient;
 import com.cst.xinhe.kafka.consumer.service.service.RSTL;
-import com.cst.xinhe.persistence.dao.terminal_road.TerminalRoadMapper;
 import com.cst.xinhe.persistence.model.terminal_road.TerminalRoad;
 import com.cst.xinhe.persistence.vo.resp.GasWSRespVO;
 import org.apache.kafka.clients.consumer.ConsumerRecord;

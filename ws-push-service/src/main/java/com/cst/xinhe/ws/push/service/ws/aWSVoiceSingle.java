@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
- * @ClassName WSServer
+ * @ClassName aWSVoiceSingle
  * @Description
  * @Auther lifeng
  * @DATE 2018/8/31 14:31

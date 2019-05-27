@@ -115,6 +115,7 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
     @Override
     public void sendGasInfoToQueue(RequestData customMsg) {
 
+        //根据终端ID取余分区，保证每个人都能进入同一个分区，实现分区消费数据有序
         kafkaClient.send("gas_kafka.tut",JSON.toJSONString(customMsg),customMsg.getTerminalId());
     }
 

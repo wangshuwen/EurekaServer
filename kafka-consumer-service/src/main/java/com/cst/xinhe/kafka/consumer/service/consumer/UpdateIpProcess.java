@@ -266,7 +266,7 @@ public class UpdateIpProcess {
                 //下班
                 if(head.getStationId().equals(attendanceId)  && end.getStationId().equals(entryId)){
                     //推送井下总人数到前端
-                    TerminalInfoProcess.pushRtPersonData();
+//                    TerminalInfoProcess.pushRtPersonData();
 
                     //------------------------------------超时处理开始--------------------------------------
                     //下班，查看该员工是否超时，如果超时，推送前端，超时人数减1
@@ -652,7 +652,7 @@ public class UpdateIpProcess {
                         //下班
                         if (head.getStationId().equals(attendanceId) && end.getStationId().equals(entryId)) {
                             //推送井下总人数到前端
-                            TerminalInfoProcess.pushRtPersonData();
+//                            TerminalInfoProcess.pushRtPersonData();
 
                             //------------------------------------超时处理开始--------------------------------------
                             //下班，查看该员工是否超时，如果超时，推送前端，超时人数减1

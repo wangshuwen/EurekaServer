@@ -33,8 +33,8 @@ public class KafkaConsumerServiceImpl implements KafkaConsumerService {
         TerminalInfoProcess.staffSet.remove(staffId);
     }
 
-    @Override
-    public void pushRtPersonData() {
-        TerminalInfoProcess.pushRtPersonData();
-    }
+//    @Override
+//    public void pushRtPersonData() {
+//        TerminalInfoProcess.pushRtPersonData();
+//    }
 }

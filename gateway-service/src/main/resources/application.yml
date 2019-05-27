@@ -8,8 +8,10 @@ eureka:
 server:
   port: 8443
   tomcat:
-    uri-encoding: UTF-8
-    max-threads: 2000
+    uri-encoding: UTF-8 #编码格式
+    max-threads: 1000 #tomcat工作线程数量
+    accept-count: 1000 #tomcat接受排队的最大数量
+    max-connections: 2000 #tomcat处理的最大连接数
   ssl:
     key-store: zkxh.keystore
     #密钥库密码
@@ -87,14 +89,14 @@ spring:
         min-idle: 200
 zuul:
   semaphore:
-    max-semaphores: 500
+    max-semaphores: 5000
   thread-pool:
     use-separate-thread-pools: true
   host:
     connect-timeout-millis: 60000 #HTTP连接超时要比Hystrix的大
     socket-timeout-millis: 3000   #socket超时
-    max-per-route-connections: 20
-    max-total-connections: 200
+    max-per-route-connections: 1000
+    max-total-connections: 1000
   sensitive-headers: Access-Control-Allow-Origin
   ignored-headers: Access-Control-Allow-Origin,H-APP-Id,Token,APPToken
   routes:
@@ -124,14 +126,11 @@ zuul:
 #      path: /user/**
 #      serviceId: service-zuul
   prefix: /v1
-gas:
-  ribbon:
-    ConnectTimeout: 50000
-    ReadTimeout: 50000
+  retryable: true #开启重试开关
 ribbon:
-  ReadTimeout: 3500 #请求处理的超时时间
-  ConnectTimeout: 1000 #请求连接的超时时间
-  OkToRetryOnAllOperations: false # 对所有的操作请求都进行重试，如果是get则可以，如果是post,put等操作没有实现幂等的情况下是很危险的，所以设置为false
+  ReadTimeout: 2000 #请求处理的超时时间
+  ConnectTimeout: 250 #请求连接的超时时间
+  OkToRetryOnAllOperations: true # 对所有的操作请求都进行重试，如果是get则可以，如果是post,put等操作没有实现幂等的情况下是很危险的，所以设置为false
   SocketTimeout: 3500
   MaxAutoRetries: 1 #最大重试次数，当Eureka中可以找到服务，但是服务连不上时将会重试
   MaxAutoRetriesNextServer: 1  #切换实例的重试次数

@@ -5,9 +5,7 @@ import com.cst.xinhe.common.constant.ConstantValue;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
 import com.cst.xinhe.common.ws.WebSocketData;
-import com.cst.xinhe.persistence.dao.rt_gas.RtGasInfoMapper;
 import com.cst.xinhe.persistence.dao.terminal.TerminalUpdateIpMapper;
-import com.cst.xinhe.persistence.dao.terminal_road.TerminalRoadMapper;
 import com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp;
 import com.cst.xinhe.persistence.model.terminal_road.TerminalRoad;
 import com.cst.xinhe.voice.monitor.server.channel.VoiceChannelMap;
@@ -52,7 +50,6 @@ public class ProcessRtVoice {
     //    @Autowired
     private TerminalUpdateIpMapper terminalUpdateIpMapper;
     //    @Autowired
-    private TerminalRoadMapper terminalRoadMapper;
 
     private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
 

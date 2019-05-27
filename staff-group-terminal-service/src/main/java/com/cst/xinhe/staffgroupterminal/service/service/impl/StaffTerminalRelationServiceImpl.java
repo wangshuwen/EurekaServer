@@ -1,6 +1,7 @@
 package com.cst.xinhe.staffgroupterminal.service.service.impl;
 
 import com.cst.xinhe.persistence.dao.staff_terminal_relation.StaffTerminalRelationMapper;
+import com.cst.xinhe.persistence.dao.terminal.StaffTerminalMapper;
 import com.cst.xinhe.persistence.model.staff_terminal_relation.StaffTerminalRelation;
 import com.cst.xinhe.persistence.model.staff_terminal_relation.StaffTerminalRelationExample;
 import com.cst.xinhe.staffgroupterminal.service.service.StaffTerminalRelationService;
@@ -23,6 +24,9 @@ public class StaffTerminalRelationServiceImpl implements StaffTerminalRelationSe
 
     @Resource
     StaffTerminalRelationMapper staffTerminalRelationMapper;
+
+    @Resource
+    StaffTerminalMapper staffTerminalMapper;
 
     @Override
     public StaffTerminalRelation insert(StaffTerminalRelation staffTerminalRelation) {

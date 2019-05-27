@@ -1,3 +1,4 @@
+
 server:
   port: 8761
 eureka:
@@ -20,3 +21,8 @@ logging:
     #org.springframework.web: DEBUG
     com.cst.xinhe.persistence.dao: DEBUG
   config: classpath:logback-boot.xml
+management:
+  endpoints:
+    web:
+      cors:
+        exposed-headers:

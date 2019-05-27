@@ -27,6 +27,7 @@ import java.util.concurrent.Executors;
 * @author      wangshuwen
 * @param
 * @description  实时查询：根据终端id实时更新人员、车辆、领导
+ *                 暂时未被使用
 * @return
 * @exception
 * @date        2018/12/10 17:21
@@ -69,48 +70,6 @@ public class TerminalInfoProcess {
     private static ObjectMapper json = new ObjectMapper();
 
     private static final String TOPIC = "terminalInfo.tut";
-
-    private void process(String str){
-
-        Thread thread = Thread.currentThread();
-        logger.error("ThreadId: {}" , thread.getId());
-        JSONObject jsonObject = JSON.parseObject(str);
-        Integer terminalId = jsonObject.getInteger("terminalId");
-        Integer stationId = jsonObject.getInteger("stationId");
-//        Map<String, Object> map = staffMapper.selectStaffInfoByTerminalId(terminalId);
-        Map<String, Object> map = staffMapper.selectStaffInfoByTerminalId(terminalId);
-//        Map<String, Object> map = staffGroupTerminalServiceClient.selectStaffInfoByTerminalId(terminalId);
-        Integer staffId = (Integer) map.get("staff_id");
-
-        //记录员工加入考勤
-//        StaffAttendanceRealRule realRule = staffAttendanceRealRuleMapper.selectByPrimaryKey(staffId);
-        StaffAttendanceRealRule realRule = attendanceServiceClient.findStaffAttendanceRealRuleById(staffId);
-        realRule.setIsAttendance(1);
-        staffAttendanceRealRuleMapper.updateByPrimaryKeySelective(realRule);
-//        attendanceServiceClient.updateStaffAttendanceRealRuleById(realRule);
-
-        //实时查询:人，车，领导
-        Integer isPerson = (Integer) map.get("is_person");
-        if(staffId!=null){
-            switch (isPerson){
-                case 0: staffSet.add(staffId);
-                    break;
-                case 1: leaderSet.add(staffId);
-                    break;
-                case 2:
-                    outPersonSet.add(staffId);
-                    break;
-                case 3:
-                    carSet.add(staffId);
-                    break;
-            }
-        }
-
-
-        //实时查询：数据推送到前端页面
-        pushRtPersonData();
-    }
-
 
     private void processT(List<ConsumerRecord<?, ?>> records) {
 

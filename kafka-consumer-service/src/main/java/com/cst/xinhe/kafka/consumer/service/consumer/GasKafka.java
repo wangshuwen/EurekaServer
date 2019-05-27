@@ -15,7 +15,6 @@ import com.cst.xinhe.persistence.dao.attendance.StaffAttendanceRealRuleMapper;
 import com.cst.xinhe.persistence.dao.attendance.TimeStandardMapper;
 import com.cst.xinhe.persistence.dao.base_station.BaseStationMapper;
 import com.cst.xinhe.persistence.dao.rt_gas.GasPositionMapper;
-import com.cst.xinhe.persistence.dao.rt_gas.RtGasInfoMapper;
 import com.cst.xinhe.persistence.dao.staff.StaffMapper;
 import com.cst.xinhe.persistence.dao.staff.StaffOrganizationMapper;
 import com.cst.xinhe.persistence.dao.station_standard_relation.StationStandardRelationMapper;
@@ -62,11 +61,11 @@ import java.util.concurrent.Executors;
  * @Date 2019/4/24/11:05
  */
 @Component
-public class GasKafka  {
+public class GasKafka {
 
     private static final Logger logger = LoggerFactory.getLogger(GasKafka.class);
     //存储更新基站 队列
-    public static Map<Integer, ArrayQueue<TerminalRoad>> attendanceMap=new HashMap<>();
+    public static Map<Integer, ArrayQueue<TerminalRoad>> attendanceMap = Collections.synchronizedMap(new HashMap<>());
 
 
     @Resource
@@ -94,7 +93,7 @@ public class GasKafka  {
     private WarningAreaMapper warningAreaMapper;
 
     @Resource
-    StationStandardRelationMapper stationStandardRelationMapper;
+    private StationStandardRelationMapper stationStandardRelationMapper;
 
     @Resource
     private WarningAreaRecordMapper warningAreaRecordMapper;
@@ -103,28 +102,23 @@ public class GasKafka  {
     private StaffAttendanceRealRuleMapper staffAttendanceRealRuleMapper;
 
     @Resource
-    private RtGasInfoMapper rtGasInfoMapper;
-
-    @Resource
     private TimeStandardMapper timeStandardMapper;
 
     @Resource
-    private  GasPositionMapper gasPositionMapper;
+    private GasPositionMapper gasPositionMapper;
 
 
-    public static List<GasWSRespVO> list = new ArrayList<>();
+    public static List<GasWSRespVO> list = Collections.synchronizedList(new ArrayList<>());
 
-    private static int gasNum = 0;
+    private volatile static int gasNum = 0;
 
 
-
-    public static Set<Integer> overTimeSet= Collections.synchronizedSet(new HashSet());
-    public static Set<Integer> seriousTimeSet= Collections.synchronizedSet(new HashSet());
+    public static Set<Integer> overTimeSet = Collections.synchronizedSet(new HashSet());
+    public static Set<Integer> seriousTimeSet = Collections.synchronizedSet(new HashSet());
 
 
     @Resource
     private StaffMapper staffMapper;
-
 
 
     private volatile boolean isWarn = false;
@@ -135,9 +129,21 @@ public class GasKafka  {
 
     private static final String TOPIC = "gas_kafka.tut";
 
-    private ExecutorService executorService = Executors.newCachedThreadPool();
-    private void process(List<ConsumerRecord<?, ?>> records){
-        executorService.execute(() -> {
+    private ExecutorService executorService = Executors.newFixedThreadPool(4);
+
+
+    class GasProcess implements Runnable {
+
+        private List<ConsumerRecord<?, ?>> records;
+        GasProcess(List<ConsumerRecord<?, ?>> records) {
+            this.records = records;
+        }
+
+        @Override
+        public void run() {
+            process(this.records);
+        }
+        private void process(List<ConsumerRecord<?, ?>> records) {
             for (ConsumerRecord<?, ?> record : records) {
                 Optional<?> kafkaMessage = Optional.ofNullable(record.value());
                 logger.info("Received: " + record);
@@ -175,24 +181,24 @@ public class GasKafka  {
                     gasInfo.setCo(co0);
                     gasPosition.setCo(co0);
                     gasInfo.setCoFlag(body[2]);
-                    gasPosition.setCoUnit((int)body[2]);
+                    gasPosition.setCoUnit((int) body[2]);
                     double co20 = ((long) (((body[3] & 0xff) << 8) + (body[4] & 0xff)) / 10.0);
 
                     gasInfo.setCo2(co20);
                     gasPosition.setCo2(co20);
                     gasInfo.setCo2Flag(body[5]);
-                    gasPosition.setCo2Unit((int)body[5]);
+                    gasPosition.setCo2Unit((int) body[5]);
                     double o20 = ((long) (((body[6] & 0xff) << 8) + (body[7] & 0xff)) / 10.0);
                     gasInfo.setO2(o20);
                     gasPosition.setO2(o20);
                     gasInfo.setO2Flag(body[8]);
-                    gasPosition.setO2Unit((int)body[8]);
+                    gasPosition.setO2Unit((int) body[8]);
 
                     double ch40 = ((long) (((body[9] & 0xff) << 8) + (body[10] & 0xff)) / 10.0);
                     gasInfo.setCh4(ch40);
                     gasPosition.setCh4(ch40);
                     gasInfo.setCh4Flag(body[11]);
-                    gasPosition.setCh4Unit((int)body[11]);
+                    gasPosition.setCh4Unit((int) body[11]);
                     /**
                      * 判断温度数据的零上零下问题
                      */
@@ -226,7 +232,7 @@ public class GasKafka  {
                     gasInfo.setH(h0);
                     gasPosition.setHumidity(h0);
                     gasInfo.sethFlag(body[17]);
-                    gasPosition.setHumidityUnit((int)body[17]);
+                    gasPosition.setHumidityUnit((int) body[17]);
                     Integer baseStation1 = ((body[18] & 0xff) << 8) + (body[19] & 0xff);
                     gasPosition.setStationId1(baseStation1);
                     Integer int_rssi1 = body[20] & 0xff;
@@ -245,6 +251,7 @@ public class GasKafka  {
                             decimal_rssi2;
                     double rssi2 = Double.parseDouble(t_rssi2);
                     gasPosition.setWifiStrength2(rssi2);
+
                     UpLoadGasDto upLoadGasDto = UpLoadGasDto.getInstance();
 
                     upLoadGasDto.setSequenceId(requestData.getSequenceId());
@@ -299,7 +306,7 @@ public class GasKafka  {
 
                     //----------------------------------以下是判断出入问题------------------------------------
                     //去除staffGroupTerminalServiceClient
-            GasWSRespVO staff = findStaffNameByTerminalId(gasPosition.getTerminalId());
+                    GasWSRespVO staff = findStaffNameByTerminalId(gasPosition.getTerminalId());
                     Integer staffId = staff.getStaffId();
                     gasPosition.setStaffId(staffId);
                     gasPosition.setStaffName(staff.getStaffName());
@@ -312,12 +319,12 @@ public class GasKafka  {
                     if (null != warningAreaRecords && warningAreaRecords.size() > 0) {
                         WarningAreaRecord warningAreaRecord = warningAreaRecords.get(0);
                         WarningArea warningArea = warningAreaMapper.selectByPrimaryKey(warningAreaRecord.getWarningAreaId());
-                        if(warningArea!=null){
-                            if(warningArea.getWarningAreaType()==1){
+                        if (warningArea != null) {
+                            if (warningArea.getWarningAreaType() == 1) {
                                 //在重点区域内
                                 road.setIsOre(3);
                                 gasPosition.setIsOre(3);
-                            }else{
+                            } else {
                                 road.setIsOre(4);
                                 gasPosition.setIsOre(4);
                                 //在限制区域内
@@ -365,7 +372,7 @@ public class GasKafka  {
 
                     //--------------------------------判断员工是否是出矿入矿---------------------------------
                     Map<String, Object> entryStation = baseStationMapper.selectBaseStationByType(1);
-//        Map<String, Object> attendanceStation = baseStationService.findBaseStationByType(2);
+//          Map<String, Object> attendanceStation = baseStationService.findBaseStationByType(2);
                     Map<String, Object> attendanceStation = baseStationMapper.selectBaseStationByType(2);
                     //井口基站编号
                     Integer entryId = (Integer) entryStation.get("baseStationNum");
@@ -500,7 +507,8 @@ public class GasKafka  {
                     //根据系统气体等级标准划分，判断气体是不是警报气体
                     //查找气体标准id
                     StationStandardRelation stationStandardRelation = stationStandardRelationMapper.selectStandardByStationId(requestData.getStationId());
-                    if(null != stationStandardRelation){
+                    if (null != stationStandardRelation) {
+                        //获取基站ID
                         Integer standardId = stationStandardRelation.getStandardId();
                         //去除systemServiceClient远程调用
                         GasLevelVO gasLevelVO = getWarnLevelSettingByGasLevelId(standardId);
@@ -526,57 +534,57 @@ public class GasKafka  {
                         List<GasWarnSettingDto> ch4WarnSettingDto = gasLevelVO.getCh4WarnSettingDto();
                         for (GasWarnSettingDto gasWarnSettingDto : ch4WarnSettingDto) {
                             Double multiple = gasWarnSettingDto.getMultiple();
-                            if(ch4>=(multiple*ch4Standard)){
+                            if (ch4 >= (multiple * ch4Standard)) {
                                 //警报等级大的会把等级小的覆盖掉（已排序根据multiple）
                                 gasInfoWarn.setCh4Flag(gasWarnSettingDto.getLevelDataId());
                                 gasPosition.setCh4Unit(gasWarnSettingDto.getLevelDataId());
-                                isWarn=true;
+                                isWarn = true;
                             }
                         }
                         //判断co气体等级
-                        List<GasWarnSettingDto> coWarnSettingDto=gasLevelVO.getCoWarnSettingDto();
+                        List<GasWarnSettingDto> coWarnSettingDto = gasLevelVO.getCoWarnSettingDto();
                         for (GasWarnSettingDto gasWarnSettingDto : coWarnSettingDto) {
                             Double multiple = gasWarnSettingDto.getMultiple();
-                            if(co>=(multiple*coStandard)){
+                            if (co >= (multiple * coStandard)) {
                                 gasInfoWarn.setCoFlag(gasWarnSettingDto.getLevelDataId());
                                 gasPosition.setCoUnit(gasWarnSettingDto.getLevelDataId());
-                                isWarn=true;
+                                isWarn = true;
                             }
                         }
                         //判断湿度等级
-                        List<GasWarnSettingDto> hWarnSettingDto=gasLevelVO.gethWarnSettingDto();
+                        List<GasWarnSettingDto> hWarnSettingDto = gasLevelVO.gethWarnSettingDto();
                         for (GasWarnSettingDto gasWarnSettingDto : hWarnSettingDto) {
                             Double multiple = gasWarnSettingDto.getMultiple();
-                            if(h>=(multiple*hStandard)){
+                            if (h >= (multiple * hStandard)) {
                                 gasInfoWarn.sethFlag(gasWarnSettingDto.getLevelDataId());
                                 gasPosition.setHumidityUnit(gasWarnSettingDto.getLevelDataId());
-                                isWarn=true;
+                                isWarn = true;
                             }
                         }
                         //判断O2气体等级
-                        List<GasWarnSettingDto> O2WarnSettingDto=gasLevelVO.getO2WarnSettingDto();
+                        List<GasWarnSettingDto> O2WarnSettingDto = gasLevelVO.getO2WarnSettingDto();
                         for (GasWarnSettingDto gasWarnSettingDto : O2WarnSettingDto) {
                             Double multiple = gasWarnSettingDto.getMultiple();
-                            if(o2>=(multiple*o2Standard)){
+                            if (o2 >= (multiple * o2Standard)) {
                                 gasInfoWarn.setO2Flag(gasWarnSettingDto.getLevelDataId());
                                 gasPosition.setO2Unit(gasWarnSettingDto.getLevelDataId());
-                                isWarn=true;
+                                isWarn = true;
                             }
                         }
                         //判断温度气体等级
-                        List<GasWarnSettingDto> tWarnSettingDto= gasLevelVO.gettWarnSettingDto();
+                        List<GasWarnSettingDto> tWarnSettingDto = gasLevelVO.gettWarnSettingDto();
                         for (GasWarnSettingDto gasWarnSettingDto : tWarnSettingDto) {
                             Double multiple = gasWarnSettingDto.getMultiple();
-                            if(t>=(multiple*tStandard)){
+                            if ((multiple * tStandard) <= t) {
                                 gasInfoWarn.settFlag(gasWarnSettingDto.getLevelDataId());
                                 gasPosition.setTemperatureUnit(gasWarnSettingDto.getLevelDataId());
-                                isWarn=true;
+                                isWarn = true;
                             }
                         }
 
                         gasInfoWarn.setCo2Flag(0);
 
-                        if(isWarn) {
+                        if (isWarn) {
                             gasPosition.setGasFlag(1);
                             gasInfoWarn.setIsWarn(true);
                             upLoadGasDto.setGasInfo(gasInfoWarn);
@@ -601,55 +609,47 @@ public class GasKafka  {
                             }
                             gasWSRespVO.setGasLevel(contrastParameter);
                             //去除服务远程调用
-                            Map<String ,Object> map = levelDataMapper.selectRangUrlByLevelDataId(contrastParameter);
-                            String url = (String )map.get("url");
+                            Map<String, Object> map = levelDataMapper.selectRangUrlByLevelDataId(contrastParameter);
+                            if(null != map && !map.isEmpty()){
+                                String url = (String) map.get("url");
 
-                            if (null != url && !"".equals(url)) {
-                                gasWSRespVO.setRangUrl(url);
+                                if (null != url && !"".equals(url)) {
+                                    gasWSRespVO.setRangUrl(url);
+                                }
                             }
-                           if(contrastParameter>0){
-                               try {
-                                   wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(new WebSocketData(1, gasWSRespVO)));
-                               } catch (Exception e) {
-                                   throw new RuntimeOtherException(ResultEnum.WEBSOCKET_SEND_ERROR);
-                               }
-                           }
 
-                        }else{
+                            //判断具体发送警报的等级，并发送
+                            if (contrastParameter > 0) {
+                                try {
+                                    wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(new WebSocketData(1, gasWSRespVO)));
+                                } catch (Exception e) {
+                                    throw new RuntimeOtherException(ResultEnum.WEBSOCKET_SEND_ERROR);
+                                }
+                            }
+                        } else {
+                            //非警报数据
                             gasPosition.setGasFlag(0);
                             gasInfoWarn.setIsWarn(false);
                             upLoadGasDto.setGasInfo(gasInfoWarn);// 发送队列插入
                         }
                         gasNum++;
-                        System.out.println("--------------------------已插入气体数量：-------------------------"+gasNum);
-                       /* gasPositions.add(gasPosition);
-                        if (gasPositions.size() > 200){
-                            gasPositionMapper.insertGasPositions(gasPositions);
-                            gasPositions.clear();
-                        }*/
                         Integer insert = gasPositionMapper.insertSingleGas(gasPosition);
-
+                        System.out.println("--------------------------已插入气体数量：-------------------------" + gasNum);
+                        if (insert == 1) {
+                            System.out.println("插入第" + gasNum + "条成功！");
+                        }
                         isWarn = false;
                     }
-
-
-
-
-
 
 
                     //--------------------------定位部门、区域筛选开始----------------------------------
                     Staff staff1 = staffMapper.selectByPrimaryKey(staffId);
                     Integer groupId = staff1.getGroupId();
                     Integer orgId = wsPushServiceClient.getWSSiteServerOrgId();
-//        Integer zoneId = WSSiteServer.zoneId;
                     Integer zoneId = wsPushServiceClient.getWSSiteServerZoneId();
-                    Map<String ,Object> map = new HashMap<>();
+                    Map<String, Object> map = new HashMap<>();
 
-
-
-                    if(null == orgId && null == zoneId){
-
+                    if (null == orgId && null == zoneId) {
                         try {
                             map.put("gasWSRespVO", gasWSRespVO);
                             map.put("type", 1);
@@ -658,10 +658,10 @@ public class GasKafka  {
                             e.printStackTrace();
                         }
                     }
-                    if(null != orgId && null == zoneId){
+                    if (null != orgId && null == zoneId) {
                         List<Integer> deptIds = findSonIdsByDeptId(orgId);
                         for (Integer deptId : deptIds) {
-                            if(groupId.equals(deptId)){
+                            if (groupId.equals(deptId)) {
                                 try {
                                     map.put("gasWSRespVO", gasWSRespVO);
                                     map.put("type", 1);
@@ -672,17 +672,15 @@ public class GasKafka  {
                             }
                         }
                     }
-
-                    if(null == orgId && null != zoneId){
-                        List<Integer>  zoneIds = getSonIdsById(zoneId);
-//                    List<BaseStation> baseStations    = baseStationService.findBaseStationByZoneIds(zoneIds);
-                        List<BaseStation> baseStations    = baseStationMapper.findBaseStationByZoneIds(zoneIds);
+                    if (null == orgId && null != zoneId) {
+                        List<Integer> zoneIds = getSonIdsById(zoneId);
+                        List<BaseStation> baseStations = baseStationMapper.findBaseStationByZoneIds(zoneIds);
                         for (BaseStation baseStation : baseStations) {
                             //该终端所连基站
-                            if(stationId.equals(baseStation.getBaseStationNum())){
+                            if (stationId.equals(baseStation.getBaseStationNum())) {
                                 try {
                                     map.put("gasWSRespVO", gasWSRespVO);
-                                    map.put("type", 1);
+                                    map.put("type", 1); // 1 证明时正常发送的数据， 其他就是 终端断开
                                     wsPushServiceClient.sendWSSiteServer(JSON.toJSONString(map));
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -690,10 +688,10 @@ public class GasKafka  {
                             }
                         }
                     }
-                    if(null != orgId && null != zoneId){
-                        List<Integer>   deptIds = findSonIdsByDeptId(orgId);
-                        List<Integer>  zoneIds = getSonIdsById(zoneId);
-                        List<BaseStation> baseStations    = baseStationMapper.findBaseStationByZoneIds(zoneIds);
+                    if (null != orgId && null != zoneId) {
+                        List<Integer> deptIds = findSonIdsByDeptId(orgId); //查找所有的机构所属的子机构
+                        List<Integer> zoneIds = getSonIdsById(zoneId); //查找该区域下所有的子区域
+                        List<BaseStation> baseStations = baseStationMapper.findBaseStationByZoneIds(zoneIds); //查询该区域下的所有基站
                         for (Integer deptId : deptIds) {
                             for (BaseStation baseStation : baseStations) {
                                 //该终端所连基站
@@ -716,28 +714,22 @@ public class GasKafka  {
 
                     if (list.size() >= 10) {
                         JSONArray jsonArray = new JSONArray();
-
-
-
                         try {
                             jsonArray.addAll(list);
-
                             //--------------------------气体部门、区域筛选开始----------------------------------
-
                             Integer orgIdGas = wsPushServiceClient.getWSSiteServerOrgId();
-
                             Integer zoneIdGas = wsPushServiceClient.getWSSiteServerZoneId();
-                            if(null == orgIdGas && null == zoneIdGas){
+                            if (null == orgIdGas && null == zoneIdGas) {
                                 try {
                                     wsPushServiceClient.sendWSServer(jsonArray.toJSONString()); //发送实时监控气体
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }
-                            if(null != orgIdGas && null == zoneIdGas){
-                                List<Integer>   deptIds = findSonIdsByDeptId(orgId);
+                            if (null != orgIdGas && null == zoneIdGas) {
+                                List<Integer> deptIds = findSonIdsByDeptId(orgId);
                                 for (Integer deptId : deptIds) {
-                                    if(groupId.equals(deptId)){
+                                    if (groupId.equals(deptId)) {
                                         try {
                                             wsPushServiceClient.sendWSServer(jsonArray.toJSONString()); //发送实时监控气体
                                         } catch (Exception e) {
@@ -747,12 +739,12 @@ public class GasKafka  {
                                 }
                             }
 
-                            if(null == orgIdGas && null != zoneIdGas){
-                                List<Integer>  zoneIds = getSonIdsById(zoneId);
-                                List<BaseStation> baseStations    = baseStationMapper.findBaseStationByZoneIds(zoneIds);
+                            if (null == orgIdGas && null != zoneIdGas) {
+                                List<Integer> zoneIds = getSonIdsById(zoneId);
+                                List<BaseStation> baseStations = baseStationMapper.findBaseStationByZoneIds(zoneIds);
                                 for (BaseStation baseStation : baseStations) {
                                     //该终端所连基站
-                                    if(stationId.equals(baseStation.getBaseStationNum())){
+                                    if (stationId.equals(baseStation.getBaseStationNum())) {
                                         try {
                                             wsPushServiceClient.sendWSServer(jsonArray.toJSONString());//发送实时监控气体
                                         } catch (Exception e) {
@@ -760,12 +752,11 @@ public class GasKafka  {
                                         }
                                     }
                                 }
-
                             }
-                            if(null != orgIdGas && null != zoneIdGas){
-                                List<Integer>   deptIds = findSonIdsByDeptId(orgId);
-                                List<Integer>  zoneIds = getSonIdsById(zoneId);
-                                List<BaseStation> baseStations    = baseStationMapper.findBaseStationByZoneIds(zoneIds);
+                            if (null != orgIdGas && null != zoneIdGas) {
+                                List<Integer> deptIds = findSonIdsByDeptId(orgId);
+                                List<Integer> zoneIds = getSonIdsById(zoneId);
+                                List<BaseStation> baseStations = baseStationMapper.findBaseStationByZoneIds(zoneIds);
                                 for (Integer deptId : deptIds) {
                                     for (BaseStation baseStation : baseStations) {
                                         //该终端所连基站
@@ -779,9 +770,7 @@ public class GasKafka  {
                                     }
                                 }
                             }
-
                             //--------------------------气体部门、区域筛选结束----------------------------------
-
                             list.clear();
                             jsonArray.clear();
                         } catch (Exception e) {
@@ -791,30 +780,32 @@ public class GasKafka  {
                     }
                 }
             }
-        });
-
+        }
     }
 
 
 
 
-    @KafkaListener(groupId = "gas_kafka", id = "gas_kafka01", topicPartitions = { @TopicPartition(topic = TOPIC, partitions = { "0" }) })
+    @KafkaListener(groupId = "gas_kafka", id = "gas_kafka01", topicPartitions = {@TopicPartition(topic = TOPIC, partitions = {"0"})})
     public void listen0(List<ConsumerRecord<?, ?>> records) {
-        process(records);
+//        process(records);
+        executorService.execute(new GasProcess(records));
     }
 
-    @KafkaListener(groupId = "gas_kafka", id = "gas_kafka11", topicPartitions = { @TopicPartition(topic = TOPIC, partitions = { "1" }) })
+    @KafkaListener(groupId = "gas_kafka", id = "gas_kafka11", topicPartitions = {@TopicPartition(topic = TOPIC, partitions = {"1"})})
     public void listen1(List<ConsumerRecord<?, ?>> records) {
-        process(records);
+//        process(records);
+        executorService.execute(new GasProcess(records));
     }
 
-    @KafkaListener(groupId = "gas_kafka", id = "gas_kafka21", topicPartitions = { @TopicPartition(topic = TOPIC, partitions = { "2" }) })
+    @KafkaListener(groupId = "gas_kafka", id = "gas_kafka21", topicPartitions = {@TopicPartition(topic = TOPIC, partitions = {"2"})})
     public void listen2(List<ConsumerRecord<?, ?>> records) {
-        process(records);
+//        process(records);
+        executorService.execute(new GasProcess(records));
     }
 
     public GasLevelVO getWarnLevelSettingByGasLevelId(Integer standardId) {
-        Map<String ,Object> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         params.put("standardId", standardId);
         params.put("gasType", 5);
         List<GasWarnSettingDto> o2GasWarnSettingList = gasWarnSettingMapper.selectGasWarnSettingByParams(params);
@@ -847,7 +838,7 @@ public class GasKafka  {
         Map<String, Object> resultMap = staffTerminalMapper.selectStaffNameByTerminalId(terminalId);
 
         GasWSRespVO gasWSRespVO = new GasWSRespVO();
-        if (null != resultMap &&resultMap.size() > 0) {
+        if (null != resultMap && resultMap.size() > 0) {
             Integer staffId = (Integer) resultMap.get("staff_id");
             String staffName = (String) resultMap.get("staff_name");
             Integer isPerson = (Integer) resultMap.get("is_person");
@@ -865,13 +856,13 @@ public class GasKafka  {
 
 
     public String getDeptNameByGroupId(Integer groupId) {
-        String deptName="";
+        String deptName = "";
         StaffOrganization staffOrganization = staffOrganizationMapper.selectByPrimaryKey(groupId);
-        if(staffOrganization!=null){
-            deptName=staffOrganization.getName();
-            if(staffOrganization.getParentId()!=0){
+        if (staffOrganization != null) {
+            deptName = staffOrganization.getName();
+            if (staffOrganization.getParentId() != 0) {
                 String parentName = getDeptNameByGroupId(staffOrganization.getParentId());
-                deptName=parentName+"/"+deptName;
+                deptName = parentName + "/" + deptName;
             }
         }
 
@@ -879,25 +870,25 @@ public class GasKafka  {
     }
 
 
-    public  List<Integer> getSonIdsById(Integer id) {
+    public List<Integer> getSonIdsById(Integer id) {
         List<Integer> sonIdsById = findSonIdsById(id);
         sonIdsById.add(id);
         return sonIdsById;
     }
 
-    private  List<Integer> findSonIdsById(Integer id) {
-        if(id==null){
-            id=0;
+    private List<Integer> findSonIdsById(Integer id) {
+        if (null == id) {
+            id = 0;
         }
         ArrayList<Integer> list = new ArrayList<>();
         StaffOrganizationExample example = new StaffOrganizationExample();
         example.createCriteria().andParentIdEqualTo(id);
         List<StaffOrganization> sonList = staffOrganizationMapper.selectByExample(example);
-        if(sonList!=null){
+        if (sonList != null) {
             for (StaffOrganization staffOrganization : sonList) {
                 list.add(staffOrganization.getId());
                 List<Integer> sonIds = findSonIdsById(staffOrganization.getId());
-                if(sonIds!=null){
+                if (sonIds != null) {
                     for (Integer sonId : sonIds) {
                         list.add(sonId);
                     }

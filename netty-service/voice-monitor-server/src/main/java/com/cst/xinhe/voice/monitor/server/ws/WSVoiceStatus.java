@@ -214,11 +214,7 @@ public class WSVoiceStatus {
     public  static void sendInfo(String message) throws IOException {
         log.info(message);
         for (WSVoiceStatus item : webSocketSet) {
-            try {
                 item.sendMessage(message);
-            } catch (IOException e) {
-                continue;
-            }
         }
     }
 

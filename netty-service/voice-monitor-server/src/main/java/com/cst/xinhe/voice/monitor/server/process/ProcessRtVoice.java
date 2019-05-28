@@ -163,7 +163,10 @@ public class ProcessRtVoice {
             Integer positionId = (Integer) gasInfo.get("position_id");
             //终端路线信息
 //            TerminalRoad positionInfo = terminalRoadMapper.selectByPrimaryKey(positionId);
-            TerminalRoad positionInfo = gasServiceClient.selectRoadById(positionId);
+            TerminalRoad positionInfo=null;
+          if(positionId!=null){
+               positionInfo = gasServiceClient.selectRoadById(positionId);
+          }
             map.put("staffInfo", staffInfo);
             map.put("nameInfo", nameInfo);
             map.put("gasInfo", gasInfo);

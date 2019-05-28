@@ -33,5 +33,5 @@ public interface TerminalMonitorClient {
      * @return
      */
     @GetMapping("/getChannelByIpPort")
-    Boolean getChanelByName(@RequestParam String ipPort);
+    Boolean getChanelByName(@RequestParam("ipPort") String ipPort);
 }

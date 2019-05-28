@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -63,6 +64,12 @@ public class StaffControllerServer {
     public List<Map<String,Object>> findStaffByIds(@RequestParam("staffIds") List<Integer> staffIds){
         return staffService.findStaffByIds(staffIds);
     }
+
+    @GetMapping("getDeptAndGroupNameByStaffId")
+    HashMap<String, Object> getDeptAndGroupNameByStaffId(@RequestParam("staffId") Integer staffId){
+        return staffService.getDeptAndGroupNameByStaffId(staffId);
+    }
+
 
     @GetMapping("findStaffByTimeStandardId")
     public List<Staff> findStaffByTimeStandardId(@RequestParam("item") Integer item){

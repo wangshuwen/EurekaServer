@@ -16,7 +16,7 @@ import java.util.Map;
 public interface GasServiceClient {
 
     @GetMapping("selectGasInfoByTerminalLastTime")
-    Map<String, Object> selectGasInfoByTerminalLastTime(@RequestParam Integer terminalId);
+    Map<String, Object> selectGasInfoByTerminalLastTime(@RequestParam("terminalId") Integer terminalId);
 
     @GetMapping("selectRoadById")
     TerminalRoad selectRoadById(Integer positionId);

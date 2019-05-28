@@ -373,7 +373,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 }
                 //实时查询：数据推送到前端页面
                 //TerminalInfoProcess.pushRtPersonData();
-                terminalMonitorService.pushRtPersonData();
+//                terminalMonitorService.pushRtPersonData();
 
             }
         });

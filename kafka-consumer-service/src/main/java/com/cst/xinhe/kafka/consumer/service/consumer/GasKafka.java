@@ -67,7 +67,6 @@ public class GasKafka {
     //存储更新基站 队列
     public static Map<Integer, ArrayQueue<TerminalRoad>> attendanceMap = Collections.synchronizedMap(new HashMap<>());
 
-
     @Resource
     private StaffOrganizationMapper staffOrganizationMapper;
 

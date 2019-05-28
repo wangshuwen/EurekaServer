@@ -1,4 +1,20 @@
 spring:
+  redis:
+    database: 0
+    host: 192.168.1.182
+    port: 6379
+    #    password: root
+    timeout: 50000
+    jedis:
+      pool:
+        #连接池最大连接数（使用负值表示没有限制）
+        max-active: 5000
+        # 连接池中的最大空闲连接
+        max-idle: 500
+        # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: 5000
+        # 连接池中的最小空闲连接
+        min-idle: 200
   application:
     name: kafka-consumer-service
   datasource:
@@ -97,10 +113,9 @@ hystrix:
         requestVolumeThreshold: 1000
       fallback:
         isolation:
-
       execution:
         timeout:
-          enabled: true
+          enabled: false
         isolation:
           strategy: SEMAPHORE
           semaphore:
@@ -116,7 +131,7 @@ feign:
     response:
       enabled: true
   hystrix:
-    enabled: true
+    enabled: false
   httpclient:
     enabled: true
     max-connections: 2000
@@ -127,8 +142,9 @@ mybatis:
   mapper-locations: com/cst/xinhe/persistence/dao/*/*.xml
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-    cache-enabled: false
+    cache-enabled: true
     default-statement-timeout: 3000
+    map-underscore-to-camel-case: true
 #  type-aliases-package: com.cst.xinhe.persistence.model
 pagehelper:
   helper-dialect: mysql

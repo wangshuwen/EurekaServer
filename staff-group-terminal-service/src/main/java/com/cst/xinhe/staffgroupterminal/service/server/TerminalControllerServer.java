@@ -51,7 +51,7 @@ public class TerminalControllerServer {
     }
 
     @GetMapping("findTerminalInfoByStaffId")
-    public Integer findTerminalInfoByStaffId(int parseInt){
+    public Integer findTerminalInfoByStaffId(@RequestParam("parseInt") Integer parseInt){
         Integer terminalId = terminalService.findTerminalInfoByStaffId(parseInt);
         if(terminalId==null){
             return 0;
@@ -60,7 +60,7 @@ public class TerminalControllerServer {
     }
 
     @GetMapping("selectTerminalIpInfoByTerminalId")
-    public Map<String, Object> selectTerminalIpInfoByTerminalId(Integer terminalId){
+    public Map<String, Object> selectTerminalIpInfoByTerminalId(@RequestParam("terminalId") Integer terminalId){
         return terminalService.selectTerminalIpInfoByTerminalId(terminalId);
     }
 

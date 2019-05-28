@@ -66,7 +66,7 @@ public class StaffGroupTerminalServiceClientFallback implements StaffGroupTermin
     }
 
     @Override
-    public Integer findTerminalInfoByStaffId(int parseInt) {
+    public Integer findTerminalInfoByStaffId(Integer parseInt) {
         logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
 
         return null;

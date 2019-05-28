@@ -66,7 +66,7 @@ public class StaffControllerServer {
     }
 
     @GetMapping("getDeptAndGroupNameByStaffId")
-    HashMap<String, Object> getDeptAndGroupNameByStaffId(@RequestParam("staffId") Integer staffId){
+    public HashMap<String, Object> getDeptAndGroupNameByStaffId(@RequestParam("staffId") Integer staffId){
         return staffService.getDeptAndGroupNameByStaffId(staffId);
     }
 

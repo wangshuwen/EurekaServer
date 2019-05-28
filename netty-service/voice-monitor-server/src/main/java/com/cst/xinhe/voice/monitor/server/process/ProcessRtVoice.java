@@ -160,17 +160,18 @@ public class ProcessRtVoice {
             //气体信息
 //            Map<String, Object> gasInfo = rtGasInfoMapper.selectGasInfoByTerminalLastTime(terminalId);
             Map<String, Object> gasInfo = gasServiceClient.selectGasInfoByTerminalLastTime(terminalId);
-            Integer positionId = (Integer) gasInfo.get("position_id");
-            //终端路线信息
-//            TerminalRoad positionInfo = terminalRoadMapper.selectByPrimaryKey(positionId);
-            TerminalRoad positionInfo=null;
-          if(positionId!=null){
-               positionInfo = gasServiceClient.selectRoadById(positionId);
-          }
+            String tempPositionName = (String)gasInfo.get("temp_position_name");
+//            Integer positionId = (Integer) gasInfo.get("position_id");
+//            //终端路线信息
+////            TerminalRoad positionInfo = terminalRoadMapper.selectByPrimaryKey(positionId);
+//            TerminalRoad positionInfo=null;
+//          if(positionId!=null){
+//               positionInfo = gasServiceClient.selectRoadById(positionId);
+//          }
             map.put("staffInfo", staffInfo);
             map.put("nameInfo", nameInfo);
             map.put("gasInfo", gasInfo);
-            map.put("positionInfo", positionInfo);
+            map.put("positionInfo", tempPositionName);
         }
 
         try {

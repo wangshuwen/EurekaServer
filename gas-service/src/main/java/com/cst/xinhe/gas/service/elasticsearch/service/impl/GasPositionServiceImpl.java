@@ -196,6 +196,7 @@ public class GasPositionServiceImpl implements GasPositionService {
         Iterable<GasPositionEntity> iterable = gasPositionRepository.search(searchQueryBuilder.build());
         for (GasPositionEntity gasPositionEntity : iterable) {
             result.put("terminal_real_time", gasPositionEntity.getTerminalrealtime());
+            result.put("temp_position_name", gasPositionEntity.getTemppositionname());
             result.put("co",gasPositionEntity.getCo());
             result.put("co_unit",gasPositionEntity.getCounit());
             result.put("co2",gasPositionEntity.getCo2());

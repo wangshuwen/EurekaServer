@@ -162,7 +162,7 @@ public class BaseStationController extends BaseController {
 //                map.put("standardName", map1.get("standardName"));
 //        }
         PageInfo pageInfo = new PageInfo(page);
-        return ResultUtil.jsonToStringSuccess(pageInfo);
+        return pageInfo.getSize() > 0 ?ResultUtil.jsonToStringSuccess(pageInfo):ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
     }
 
 

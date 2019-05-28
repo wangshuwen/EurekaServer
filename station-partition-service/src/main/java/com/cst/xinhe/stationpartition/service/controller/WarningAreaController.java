@@ -143,7 +143,7 @@ public class WarningAreaController {
 
         Page page=warningAreaService.findAreaRecordByAreaId(type,areaId,pageSize,startPage,staffName,deptId);
         PageInfo pageInfo = new PageInfo(page);
-        return ResultUtil.jsonToStringSuccess(pageInfo);
+        return pageInfo.getSize() > 0 ?ResultUtil.jsonToStringSuccess(pageInfo): ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
     }
 
     @GetMapping("findHistoryAreaRecord")
@@ -157,7 +157,7 @@ public class WarningAreaController {
 
         Page page=warningAreaService.findHistoryAreaRecord(areaId,pageSize,startPage,staffName,deptId);
         PageInfo pageInfo = new PageInfo(page);
-        return ResultUtil.jsonToStringSuccess(pageInfo);
+        return !pageInfo.getList().isEmpty()? ResultUtil.jsonToStringSuccess(pageInfo): ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
     }
 
     @GetMapping("findAreaRecordByStaffId")
@@ -169,9 +169,9 @@ public class WarningAreaController {
             @RequestParam(name = "limit", defaultValue = "12", required = false) Integer pageSize,
             @RequestParam(name = "page", defaultValue = "1", required = false) Integer startPage) {
 
-        Page page=warningAreaService.findAreaRecordByStaffId(type,areaId,pageSize,startPage,staffId);
+        Page page = warningAreaService.findAreaRecordByStaffId(type,areaId,pageSize,startPage,staffId);
         PageInfo pageInfo = new PageInfo(page);
-        return ResultUtil.jsonToStringSuccess(pageInfo);
+        return pageInfo.getSize() > 0 ?ResultUtil.jsonToStringSuccess(pageInfo):ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
     }
 
 

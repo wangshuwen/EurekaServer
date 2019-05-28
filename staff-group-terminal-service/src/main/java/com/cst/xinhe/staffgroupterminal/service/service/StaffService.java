@@ -1,10 +1,12 @@
 package com.cst.xinhe.staffgroupterminal.service.service;
 
 
+import com.cst.xinhe.persistence.dto.staff.StaffInfoDto;
 import com.cst.xinhe.persistence.model.staff.Staff;
 import com.cst.xinhe.persistence.vo.req.StaffInfoVO;
 import com.cst.xinhe.persistence.vo.resp.GasWSRespVO;
 import com.github.pagehelper.Page;
+import com.github.pagehelper.PageInfo;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +30,7 @@ public interface StaffService {
 
     int updateStaffInfo(StaffInfoVO staffInfoVO);
 
-    String getStaffInfoByStaff(String staffName, Integer startPage, Integer pageSize, Integer orgId, Integer isPerson);
+    PageInfo<StaffInfoDto> getStaffInfoByStaff(String staffName, Integer startPage, Integer pageSize, Integer orgId, Integer isPerson);
 
     GasWSRespVO findStaffNameByTerminalId(Integer terminalId);
 

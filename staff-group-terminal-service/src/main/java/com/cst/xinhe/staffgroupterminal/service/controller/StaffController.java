@@ -5,6 +5,7 @@ import com.cst.xinhe.base.exception.ErrorCode;
 import com.cst.xinhe.base.exception.RuntimeWebException;
 import com.cst.xinhe.base.result.ResultUtil;
 import com.cst.xinhe.common.utils.convert.DateConvert;
+import com.cst.xinhe.persistence.dto.staff.StaffInfoDto;
 import com.cst.xinhe.persistence.vo.req.StaffInfoVO;
 import com.cst.xinhe.staffgroupterminal.service.service.StaffOrganizationService;
 import com.cst.xinhe.staffgroupterminal.service.service.StaffService;
@@ -110,8 +111,8 @@ public class StaffController {
             , @RequestParam(name = "staffName", required = false) String staffName
             ,@RequestParam(name = "orgId", required = false) Integer orgId
             ,@RequestParam(name = "isPerson", required = false) Integer isPerson) {
-        String staffList = staffService.getStaffInfoByStaff(staffName, startPage, pageSize, orgId, isPerson);
-        return staffList;
+        PageInfo<StaffInfoDto> staffList = staffService.getStaffInfoByStaff(staffName, startPage, pageSize, orgId, isPerson);
+        return staffList.getSize() > 0 ? ResultUtil.jsonToStringSuccess(staffList): ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
     }
 
     @GetMapping("staff/getContacts")

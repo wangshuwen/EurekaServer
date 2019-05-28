@@ -5,8 +5,10 @@ import com.cst.xinhe.common.constant.ConstantValue;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
 import com.cst.xinhe.voice.monitor.server.channel.VoiceChannelMap;
+import com.cst.xinhe.voice.monitor.server.context.SpringContextUtil;
 import com.cst.xinhe.voice.monitor.server.process.ProcessRtVoice;
 import com.cst.xinhe.voice.monitor.server.service.VoiceMonitorService;
+import com.cst.xinhe.voice.monitor.server.service.impl.VoiceMonitorServiceImpl;
 import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,8 +31,11 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @Component
 public class WSVoiceStatus {
 
-    @Autowired
+
     private VoiceMonitorService voiceMonitorService;
+    public WSVoiceStatus() {
+        this.voiceMonitorService = SpringContextUtil.getBean(VoiceMonitorServiceImpl.class);
+    }
 
     private static final Logger log = LoggerFactory.getLogger(WSVoiceStatus.class);
 

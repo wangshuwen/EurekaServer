@@ -26,6 +26,7 @@ public class TerminalMonitorServerApplication implements CommandLineRunner {
         SpringApplication.run(TerminalMonitorServerApplication.class, args);
     }
 
+
     @Override
     public void run(String... args) throws Exception {
         nettyConfig.run();

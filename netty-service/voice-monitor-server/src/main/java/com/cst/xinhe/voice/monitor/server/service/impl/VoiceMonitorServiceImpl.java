@@ -3,6 +3,7 @@ package com.cst.xinhe.voice.monitor.server.service.impl;
 import com.cst.xinhe.common.constant.ConstantValue;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
+import com.cst.xinhe.voice.monitor.server.client.StaffGroupTerminalServiceClient;
 import com.cst.xinhe.voice.monitor.server.client.TerminalMonitorClient;
 import com.cst.xinhe.voice.monitor.server.process.ProcessRtVoice;
 import com.cst.xinhe.voice.monitor.server.service.VoiceMonitorService;
@@ -11,6 +12,7 @@ import com.cst.xinhe.voice.monitor.server.ws.WSVoiceStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 
 import static com.cst.xinhe.voice.monitor.server.process.ProcessRtVoice.getRoomStatus;
@@ -25,7 +27,7 @@ import static com.cst.xinhe.voice.monitor.server.process.ProcessRtVoice.isBusyLi
 @Service
 public class VoiceMonitorServiceImpl implements VoiceMonitorService {
 
-    @Autowired
+    @Resource
     private TerminalMonitorClient terminalMonitorClient;
 
     @Override

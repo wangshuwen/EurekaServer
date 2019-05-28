@@ -48,9 +48,7 @@ public class SingletonClient {
 
 //        int channelNum = ChannelMap.channelNum;
 
-        StringBuffer stringBuffer = new StringBuffer(ip_prefix);
-        stringBuffer.append(t_ip).append(":").append(responseData.getCustomMsg().getTerminalPort());
-        String ip = stringBuffer.toString();
+        String ip = ip_prefix + t_ip + ":" + responseData.getCustomMsg().getTerminalPort();
         Channel channel = ChannelMap.getChannelByName(ip);
         try {
             channel.writeAndFlush(responseData);
@@ -62,9 +60,7 @@ public class SingletonClient {
 
     public int sendCmd(byte[] bytes) {
 
-        StringBuffer stringBuffer = new StringBuffer(ip_prefix);
-        stringBuffer.append("1.101");
-        Channel channel = ChannelMap.getChannelByName(stringBuffer.toString());
+        Channel channel = ChannelMap.getChannelByName(ip_prefix + "1.101");
         channel.writeAndFlush(bytes);
 
         return 0;

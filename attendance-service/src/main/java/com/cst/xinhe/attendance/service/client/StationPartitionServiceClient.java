@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(value = "station-partition-service",
         configuration = FeignConfig.class,
         fallback = StationPartitionServiceClientFallback.class,
-        url = "http://127.0.0.1:8776/")
+        url = "https://127.0.0.1:8776/")
 //@RequestMapping(value = "station-partition-service/")
 public interface StationPartitionServiceClient {
 

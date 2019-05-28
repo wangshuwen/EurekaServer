@@ -19,7 +19,7 @@ import java.util.Set;
 @FeignClient(value = "staff-group-terminal-service",
         configuration = FeignConfig.class,
         fallback = StaffGroupTerminalServiceClientFallback.class,
-        url = "http://127.0.0.1:8772/")
+        url = "https://127.0.0.1:8772/")
 //@RequestMapping(value = "staff-group-terminal-service")
 public interface StaffGroupTerminalServiceClient {
 

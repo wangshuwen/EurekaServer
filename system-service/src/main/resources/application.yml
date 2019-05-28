@@ -1,5 +1,11 @@
 server:
   port: 8778
+  ssl:
+    key-store: zkxh.keystore
+    #密钥库密码
+    key-store-password: 123456
+    keyStoreType: JKS
+    keyAlias: zkxh
 rangBasePath: D:/idea/ideaProject/vue2/
 spring:
   #配置redis数据库
@@ -76,7 +82,7 @@ eureka:
     lease-renewal-interval-in-seconds: 1     #每间隔1s，向服务端发送一次心跳，证明自己依然”存活“
   client:
     service-url:
-      defaultZone: http://127.0.0.1:8761/eureka/
+      defaultZone: https://127.0.0.1:8761/eureka/
 ribbon:
   ReadTimeout: 3500 #请求处理的超时时间
   ConnectTimeout: 1000 #请求连接的超时时间

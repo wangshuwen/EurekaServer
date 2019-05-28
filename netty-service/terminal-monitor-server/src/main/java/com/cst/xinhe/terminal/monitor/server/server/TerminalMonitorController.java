@@ -21,7 +21,7 @@ public class TerminalMonitorController {
 
     @PostMapping("sendResponseData")
     public String sendResponseData(@RequestBody ResponseData responseData){
-        responseData.getCustomMsg().setSequenceId(SequenceIdGenerate.getSequenceId());
+//        responseData.getCustomMsg().setSequenceId(SequenceIdGenerate.getSequenceId());
         terminalMonitorService.sendResponseData(responseData);
         return ResultUtil.jsonToStringSuccess();
     }

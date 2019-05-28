@@ -25,18 +25,18 @@ public class WsPushServiceApplication {
         SpringApplication.run(WsPushServiceApplication.class, args);
     }
 
-    @Bean
-    public ServletWebServerFactory servletContainer() {
-        TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory();
-        tomcat.addAdditionalTomcatConnectors(createStandardConnector()); // 添加http
-        return tomcat;
-    }
-    // 配置http
-    private Connector createStandardConnector() {
-        Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
-        connector.setPort(8779);
-        return connector;
-    }
+//    @Bean
+//    public ServletWebServerFactory servletContainer() {
+//        TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory();
+//        tomcat.addAdditionalTomcatConnectors(createStandardConnector()); // 添加http
+//        return tomcat;
+//    }
+//    // 配置http
+//    private Connector createStandardConnector() {
+//        Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
+//        connector.setPort(8779);
+//        return connector;
+//    }
 //    @Bean
 //    public Connector connector(){
 //        Connector connector=new Connector("org.apache.coyote.http11.Http11NioProtocol");

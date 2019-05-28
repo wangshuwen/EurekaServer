@@ -5,6 +5,12 @@ constant:
 ipPrefix: 192.168.
 server:
   port: 8777
+  ssl:
+    key-store: zkxh.keystore
+    #密钥库密码
+    key-store-password: 123456
+    keyStoreType: JKS
+    keyAlias: zkxh
 spring:
   application:
     name: chat-message-service
@@ -81,9 +87,12 @@ eureka:
   instance:
     lease-expiration-duration-in-seconds: 2
     lease-renewal-interval-in-seconds: 1
+    secure-port-enabled: true
+    non-secure-port-enabled: false
+    secure-port: ${server.port}
   client:
     service-url:
-      defaultZone: http://127.0.0.1:8761/eureka/
+      defaultZone: https://127.0.0.1:8761/
 ribbon:
   ReadTimeout: 3500 #请求处理的超时时间
   ConnectTimeout: 1000 #请求连接的超时时间

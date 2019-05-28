@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(value = "kafka-sender-service",
         configuration = FeignConfig.class,
         fallback = KafkaClientFallback.class,
-url = "http://192.168.1.50")
+url = "https://192.168.1.50")
 public interface KafkaClient {
     @PostMapping("kafka-sender-service/sendData")
     void sendData(@RequestParam String topic, @RequestBody RequestData requestData);

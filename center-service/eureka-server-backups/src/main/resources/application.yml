@@ -1,5 +1,12 @@
 server:
   port: 8762
+  ssl:
+    key-store: zkxh.keystore
+    #密钥库密码
+    key-store-password: 123456
+    keyStoreType: JKS
+    keyAlias: zkxh
+    enabled: true
 eureka:
   server:
     peer-node-read-timeout-ms: 1000
@@ -11,7 +18,7 @@ eureka:
     register-with-eureka: false
     fetch-registry: false
     service-url:
-      defaultZone: http://127.0.0.1:8761/eureka/
+      defaultZone: https://127.0.0.1:8761/eureka/
 #打印日志
 logging:
   level:

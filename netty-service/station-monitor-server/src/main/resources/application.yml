@@ -65,13 +65,19 @@ netty:
   port: 7777
 server:
   port: 8765
+  ssl:
+    key-store: zkxh.keystore
+    #密钥库密码
+    key-store-password: 123456
+    keyStoreType: JKS
+    keyAlias: zkxh
 eureka:
   instance:
     lease-expiration-duration-in-seconds: 2
     lease-renewal-interval-in-seconds: 1
   client:
     service-url:
-      defaultZone: http://127.0.0.1:8761/eureka/
+      defaultZone: https://127.0.0.1:8761/eureka/
 ribbon:
   ReadTimeout: 3500 #请求处理的超时时间
   ConnectTimeout: 1000 #请求连接的超时时间

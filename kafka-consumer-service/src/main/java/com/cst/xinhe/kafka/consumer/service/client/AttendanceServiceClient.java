@@ -16,7 +16,7 @@ import java.util.List;
 @FeignClient(value = "attendance-service",
         configuration = FeignConfig.class,
         fallback = AttendanceServiceClientFallback.class,
-        url = "http://127.0.0.1:8775/")
+        url = "https://127.0.0.1:8775/")
 public interface AttendanceServiceClient {
 
     @GetMapping("getTimeStandardByStaffId")

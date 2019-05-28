@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(value = "chat-message-service",
         configuration = FeignConfig.class,
         fallback = ChatMsgServiceClientFallback.class,
-        url = "http://127.0.0.1:8777/")
+        url = "https://127.0.0.1:8777/")
 public interface ChatMsgServiceClient {
 
     @PostMapping("insertChatMsgSelective")

@@ -30,18 +30,18 @@ public class VoiceMonitorServerApplication implements CommandLineRunner {
         SpringApplication.run(VoiceMonitorServerApplication.class, args);
     }
 
-    @Bean
-    public ServletWebServerFactory servletContainer() {
-        TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory();
-        tomcat.addAdditionalTomcatConnectors(createStandardConnector()); // 添加http
-        return tomcat;
-    }
-    // 配置http
-    private Connector createStandardConnector() {
-        Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
-        connector.setPort(8780);
-        return connector;
-    }
+//    @Bean
+//    public ServletWebServerFactory servletContainer() {
+//        TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory();
+//        tomcat.addAdditionalTomcatConnectors(createStandardConnector()); // 添加http
+//        return tomcat;
+//    }
+//    // 配置http
+//    private Connector createStandardConnector() {
+//        Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
+//        connector.setPort(8780);
+//        return connector;
+//    }
 
     @Override
     public void run(String... args) throws Exception {

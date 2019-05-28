@@ -51,7 +51,7 @@ public class TerminalRoadController {
             @RequestParam(name = "page", defaultValue = "1", required = false) Integer startPage) {
         Page page = terminalRoadService.findTimeList(staffId,pageSize,startPage);
         PageInfo pageInfo = new PageInfo(page);
-        return ResultUtil.jsonToStringSuccess(pageInfo);
+        return pageInfo.getSize() > 0 ?ResultUtil.jsonToStringSuccess(pageInfo):ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
     }
 
     @GetMapping("findNowSiteByStaffId")
@@ -74,7 +74,7 @@ public class TerminalRoadController {
            return  ResultUtil.jsonToStringSuccess();
 
         List<Map<String,Object>> list=terminalRoadService.findTerminalRoadByTime(staffId,currentTime);
-        return ResultUtil.jsonToStringSuccess(list);
+        return !list.isEmpty() ? ResultUtil.jsonToStringSuccess(list): ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
     }
 
     @GetMapping("findTerminalRoadByInOreTime")

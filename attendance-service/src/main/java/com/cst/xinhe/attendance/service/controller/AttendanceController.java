@@ -209,7 +209,7 @@ public class AttendanceController {
             //入矿时间
             Integer staffId = (Integer) map.get("staffId");
             Attendance attendance = attendanceService.findAttendanceByStaffIdAndEndTimeIsNull(staffId);
-           if(attendance!=null){
+           if(null != attendance){
                Date inOre = attendance.getInOre();
                map.put("inOreTime",inOre);
                //封装时长
@@ -286,8 +286,6 @@ public class AttendanceController {
                 long min = diff % nd % nh / nm;
                 map.put("timeLong",day + "天" + hour + "小时" + min + "分钟");
             }
-
-
         }
         PageInfo pageInfo = new PageInfo(page);
         return pageInfo.getSize() > 0 ? ResultUtil.jsonToStringSuccess(pageInfo) : ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
@@ -298,7 +296,7 @@ public class AttendanceController {
                                       @RequestParam(name = "limit", defaultValue = "10", required = false)Integer pageSize,
                                       @RequestParam(name = "deptId", required = false)Integer deptId,
                                       @RequestParam(name = "staffName",required = false)String staffName){
-        if(deptId==null){
+        if(null == deptId){
             deptId=0;
         }
 //        List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(deptId);

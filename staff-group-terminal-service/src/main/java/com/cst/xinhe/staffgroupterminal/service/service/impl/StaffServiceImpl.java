@@ -150,7 +150,7 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public String getStaffInfoByStaff(String staffName, Integer startPage, Integer pageSize, Integer orgId,Integer isPerson) {
+    public PageInfo<StaffInfoDto> getStaffInfoByStaff(String staffName, Integer startPage, Integer pageSize, Integer orgId,Integer isPerson) {
 
         List<Integer> orgList=null;
 
@@ -167,7 +167,7 @@ public class StaffServiceImpl implements StaffService {
         }
 
         PageInfo pageInfo = new PageInfo<>(page);
-        return ResultUtil.jsonToStringSuccess(pageInfo);
+        return pageInfo;
     }
 
     @Override

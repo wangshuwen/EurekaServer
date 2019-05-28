@@ -49,7 +49,7 @@ public class GasWarnSettingController {
     @GetMapping("getWarnSettingByStandardId/{standardId}")
     public String getWarnSettingByStandardId(@PathVariable Integer standardId) {
         GasLevelVO gasLevelVO = levelSettingService.getWarnLevelSettingByGasLevelId(standardId);
-        return gasLevelVO != null ? ResultUtil.jsonToStringSuccess(gasLevelVO): ResultUtil.jsonToStringError(ResultEnum.FAILED);
+        return null != gasLevelVO ? ResultUtil.jsonToStringSuccess(gasLevelVO): ResultUtil.jsonToStringError(ResultEnum.FAILED);
     }
 
 }

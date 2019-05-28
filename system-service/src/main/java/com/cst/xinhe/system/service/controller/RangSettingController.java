@@ -78,14 +78,14 @@ public class RangSettingController {
     @ApiOperation(value = "根据铃声类型查找铃声", notes = "获取铃声根据类型")
     public String findRangByType(@RequestParam(required = false) Integer type) {
         List<RangSetting> list= rangSettingService.findRangByType(type);
-        return ResultUtil.jsonToStringSuccess(list);
+        return null!=list && !list.isEmpty()?ResultUtil.jsonToStringSuccess(list):ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
     }
 
     @GetMapping("findRangByLevelDataId")
     @ApiOperation(value = "获取所有等级对应选中的铃声", notes = "获取所有等级对应的铃声")
     public String findRangByLevelDataId(@RequestParam(required = false) Integer levelId) {
         List<LevelData> list= rangSettingService.findRangByLevelDataId(levelId);
-        return ResultUtil.jsonToStringSuccess(list);
+        return null != list && !list.isEmpty() ?ResultUtil.jsonToStringSuccess(list): ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
     }
 
 

@@ -65,4 +65,6 @@ public interface AttendanceService {
     Integer getStaffAttendanceRealRuleMapperUnAttendanceDept(Date date, List<Integer> deptIds);
 
     Long getAttendanceStaffCount(List<Integer> deptIds, String staffName);
+
+
 }

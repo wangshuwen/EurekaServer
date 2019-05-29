@@ -33,11 +33,12 @@ public class AttendanceParamsVO {
     private String currentDate1;   // 当前天
 
     private Integer jobType;    //工种
+    private Integer staffType;   //员工类型
 
     public AttendanceParamsVO() {
     }
 
-    public AttendanceParamsVO(Integer startPage, Integer pageSize, String staffName, Integer orgId, List<Integer> staffIdOfList, Integer timeStandardId, Date startTime, Date endTime, Date currentDate, Integer jobType) {
+    public AttendanceParamsVO(Integer startPage, Integer pageSize, String staffName, Integer orgId, List<Integer> staffIdOfList, Integer timeStandardId, Date startTime, Date endTime, Date currentDate, Integer jobType,Integer staffType) {
         this.startPage = startPage;
         this.pageSize = pageSize;
         this.staffName = staffName;
@@ -48,6 +49,7 @@ public class AttendanceParamsVO {
         this.endTime = endTime;
         this.currentDate = currentDate;
         this.jobType = jobType;
+        this.staffType=staffType;
     }
 
     public String getStartTime1() {
@@ -154,6 +156,14 @@ public class AttendanceParamsVO {
         this.jobType = jobType;
     }
 
+    public Integer getStaffType() {
+        return staffType;
+    }
+
+    public void setStaffType(Integer staffType) {
+        this.staffType = staffType;
+    }
+
     @Override
     public String toString() {
         return "AttendanceParamsVO{" +
@@ -164,9 +174,13 @@ public class AttendanceParamsVO {
                 ", staffIdOfList=" + staffIdOfList +
                 ", timeStandardId=" + timeStandardId +
                 ", startTime=" + startTime +
+                ", startTime1='" + startTime1 + '\'' +
                 ", endTime=" + endTime +
+                ", endTime1='" + endTime1 + '\'' +
                 ", currentDate=" + currentDate +
+                ", currentDate1='" + currentDate1 + '\'' +
                 ", jobType=" + jobType +
+                ", staffType=" + staffType +
                 '}';
     }
 }

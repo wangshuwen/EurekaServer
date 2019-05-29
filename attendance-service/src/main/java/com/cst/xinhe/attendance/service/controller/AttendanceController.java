@@ -64,7 +64,8 @@ public class AttendanceController {
             @RequestParam(name = "startTime", required = false) String startTime,
             @RequestParam(name = "endTime", required = false) String endTime,
             @RequestParam(name = "currentDate", required = false) String currentDate,
-            @RequestParam(name = "jobType", required = false)Integer jobType) throws ParseException {
+            @RequestParam(name = "jobType", required = false)Integer jobType
+    ) throws ParseException {
         AttendanceParamsVO attendanceParamsVO = new AttendanceParamsVO();
         if (null != currentDate && !"".equals(currentDate) && !"0".equals(currentDate))
             attendanceParamsVO.setCurrentDate1(currentDate);
@@ -76,6 +77,8 @@ public class AttendanceController {
         attendanceParamsVO.setPageSize(pageSize);
         attendanceParamsVO.setStartPage(startPage);
         attendanceParamsVO.setTimeStandardId(timeStandardId);
+
+
 
 
         if (null != startTime && !"".equals(startTime) && !"0".equals(startTime))
@@ -93,6 +96,8 @@ public class AttendanceController {
         //List<StaffOrganization> list = staffOrganizationService.getOneSonByParent(1);
         StaffOrganizationExample example = new StaffOrganizationExample();
         example.createCriteria().andParentIdEqualTo(1);
+
+
 
         List<StaffOrganization> list  =  staffOrganizationMapper.selectByExample(example);
 //        List<StaffOrganization> list  = staffGroupTerminalServiceClient.getOneSonByParent(1);
@@ -330,6 +335,27 @@ public class AttendanceController {
         PageInfo pageInfo = new PageInfo(page);
         return pageInfo.getSize() > 0 ? ResultUtil.jsonToStringSuccess(pageInfo) : ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
     }
+
+
+
+    @GetMapping("getAttendance")
+    @ApiOperation("获取领导干部的考勤记录")
+    public String getAttendanceByStaffType(@RequestParam(name = "page", defaultValue = "1", required = false)Integer startPage,
+                                      @RequestParam(name = "limit", defaultValue = "10", required = false)Integer pageSize,
+                                           @RequestParam(name = "staffType") Integer staffType){
+
+        org.springframework.data.domain.Page<EsAttendanceEntity> page=esAttendanceService.searchAttendanceByStaffType(startPage,pageSize,staffType);
+
+
+        return   ResultUtil.jsonToStringSuccess(page);
+    }
+
+
+
+
+
+
+
 
 
 

@@ -126,4 +126,6 @@ public interface StaffMapper {
     int updateByPrimaryKey(Staff record);
 
     int insertStaffs(@Param("list") List<StaffInfoVO> staffInfoVOs);
+
+    List<Integer> findStaffIdByStaffType(@Param("staffType") Integer staffType);
 }

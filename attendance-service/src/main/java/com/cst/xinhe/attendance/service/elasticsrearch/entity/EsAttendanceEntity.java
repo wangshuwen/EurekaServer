@@ -25,6 +25,10 @@ public class EsAttendanceEntity {
     private String jobname;
     private String deptname;
     private String timestandardname;
+    //下井时长
+    private String timeLong;
+    //每月下井总数
+    private Integer inOreSum;
 
     /**
      *

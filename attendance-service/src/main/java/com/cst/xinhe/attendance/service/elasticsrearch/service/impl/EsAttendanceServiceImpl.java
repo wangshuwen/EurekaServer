@@ -15,6 +15,7 @@ import com.cst.xinhe.persistence.model.base_station.BaseStation;
 import com.cst.xinhe.persistence.model.staff.Staff;
 import com.cst.xinhe.persistence.model.staff.StaffJob;
 import com.cst.xinhe.persistence.vo.req.AttendanceParamsVO;
+import org.bouncycastle.est.CACertsResponse;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.sort.FieldSortBuilder;
@@ -25,9 +26,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -73,6 +76,82 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
 
     @Resource
     private ElasticsearchTemplate elasticsearchTemplate;
+
+
+    @Override
+    public org.springframework.data.domain.Page<EsAttendanceEntity> searchAttendanceByStaffType(Integer startPage, Integer pageSize, Integer staffType) {
+        List<Integer> staffList = staffMapper.findStaffIdByStaffType(staffType);
+        Pageable pageable = new PageRequest(startPage-1,pageSize);
+        BoolQueryBuilder builder = QueryBuilders.boolQuery();
+
+        if(staffList!=null&&staffList.size()>0){
+            for (Integer staffid : staffList) {
+                builder.should(QueryBuilders.termQuery("staffid",staffid));
+            }
+        }
+        FieldSortBuilder sort = SortBuilders.fieldSort("attendanceid").order(SortOrder.ASC);
+        NativeSearchQueryBuilder nativeBuilder = new NativeSearchQueryBuilder().withSort(sort).withQuery(builder).withPageable(pageable);
+        Page<EsAttendanceEntity> page = attendanceRepository.search(nativeBuilder.build());
+
+        List<EsAttendanceEntity> content = page.getContent();
+       if(content!=null&&content.size()>0){
+           for (EsAttendanceEntity esAttendanceEntity : content) {
+               Integer staffid = esAttendanceEntity.getStaffid();
+               String staffName = staffMapper.selectStaffNameById(staffid);
+               esAttendanceEntity.setStaffname(staffName);
+               Date inore = esAttendanceEntity.getInore();
+               Date outore = esAttendanceEntity.getOutore();
+               if(outore==null){
+                   outore=new Date();
+               }
+                   //封装时长
+                   long nd = 1000 * 24 * 60 * 60;
+                   long nh = 1000 * 60 * 60;
+                   long nm = 1000 * 60;
+                   long diff = outore.getTime()-inore.getTime();
+                   long day = diff / nd;
+                   long hour = diff % nd / nh;
+                   long min = diff % nd % nh / nm;
+                esAttendanceEntity.setTimeLong(day + "天" + hour + "小时" + min + "分钟");
+
+                //封装每月下井次数
+               Calendar c = Calendar.getInstance();
+               c.setTime(inore);
+               c.set(Calendar.DAY_OF_MONTH,1);//设置当前时间为本月第一天
+
+               //获取当前月最后一天
+               Calendar ca = Calendar.getInstance();
+               ca.set(Calendar.DAY_OF_MONTH, ca.getActualMaximum(Calendar.DAY_OF_MONTH));
+
+               Date firstDay = c.getTime();
+               Date lastDay = ca.getTime();
+
+               SimpleDateFormat simple = new SimpleDateFormat("yyyy-MM-dd");
+               String firstDay1 = simple.format(firstDay);
+               String lastDay1 = simple.format(lastDay);
+
+               BoolQueryBuilder builder1 = QueryBuilders.boolQuery();
+               builder1.must(QueryBuilders.termQuery("staffid",staffid));
+               builder1.must(QueryBuilders.rangeQuery("inore").format("yyyy-MM-dd").gte(firstDay1).lte(lastDay1));
+               Iterable<EsAttendanceEntity> search = attendanceRepository.search(builder1);
+               Iterator<EsAttendanceEntity> iterator = search.iterator();
+               int sum=0;
+               while (iterator.hasNext()) {
+                   iterator.next();
+                   sum++;
+               }
+               esAttendanceEntity.setInOreSum(sum);
+
+           }
+
+
+       }
+
+        return page;
+    }
+
+
+
     /**
      * 根据员工ID，查询所有的员工信息
      * @return
@@ -81,8 +160,6 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
 
         Pageable pageable = new PageRequest(attendanceParamsVO.getStartPage()-1,attendanceParamsVO.getPageSize());
         BoolQueryBuilder builder = QueryBuilders.boolQuery();
-      /*  QueryBuilders.prefixQuery("name","*");
-        QueryBuilders.regexpQuery("name","*");*/
         Integer orgId = attendanceParamsVO.getOrgId();
 
 
@@ -93,11 +170,9 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
         String endTime = attendanceParamsVO.getEndTime1();
         Integer jobType = attendanceParamsVO.getJobType();
         String staffName = attendanceParamsVO.getStaffName();
-        List<Integer> staffIdOfList =attendanceParamsVO.getStaffIdOfList();
         Integer timeStandardId = attendanceParamsVO.getTimeStandardId();
         if(orgId!=null){
             Boolean flag=true;
-//            List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(orgId);
             List<Integer> deptIds = staffGroupTerminalServiceClient.findSonIdsByDeptId(orgId);
             List<Integer> staffids =staffGroupTerminalServiceClient.findAllStaffByGroupIds(deptIds);
             if(staffids!=null&&staffids.size()>0){
@@ -225,14 +300,7 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
                    attendance.setStationname(station.getBaseStationName());
 
 
-
-
-
         }
-
-
-
-
         //把f要移除的对象放在list_remove中，统一移除
         return page;
     }
@@ -252,4 +320,6 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
         Page<EsAttendanceEntity> page = attendanceRepository.findAll(pageable);
         return page;
     }
+
+
 }

@@ -290,6 +290,12 @@ public class StaffServiceImpl implements StaffService {
         return list;
     }
 
+    @Override
+    public List<Integer> findStaffIdByStaffType(Integer staffType) {
+
+        return staffMapper.findStaffIdByStaffType(staffType);
+    }
+
 
     @Override
     public List<Staff> findStaffByTimeStandardId(Integer item) {

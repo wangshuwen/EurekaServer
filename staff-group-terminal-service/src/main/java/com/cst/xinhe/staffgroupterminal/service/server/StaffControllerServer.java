@@ -135,4 +135,11 @@ public class StaffControllerServer {
         return staffService.findGroupNameByIds(list1);
     }
 
+    @GetMapping("findStaffIdByStaffType")
+    public List<Integer> findStaffIdByStaffType(@RequestParam("staffType") Integer staffType){
+        return staffService.findStaffIdByStaffType(staffType);
+    }
+
+
+
 }

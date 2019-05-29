@@ -293,4 +293,6 @@ public class AttendanceServiceImpl implements AttendanceService, AttendanceRules
     public Long getAttendanceStaffCount(List<Integer> deptIds, String staffName) {
         return staffAttendanceRealRuleMapper.getAttendanceStaffCount(deptIds,staffName);
     }
+
+
 }

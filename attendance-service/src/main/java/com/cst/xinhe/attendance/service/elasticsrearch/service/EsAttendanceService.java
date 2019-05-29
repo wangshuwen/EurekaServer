@@ -14,4 +14,6 @@ public interface EsAttendanceService {
     Page<EsAttendanceEntity> searchAttendanceByParams(AttendanceParamsVO attendanceParamsVO);
 
     Page<EsAttendanceEntity> searchAttendanceInfo(Integer startPage, Integer pageSize);
+
+    org.springframework.data.domain.Page<EsAttendanceEntity> searchAttendanceByStaffType(Integer startPage, Integer pageSize, Integer staffType);
 }

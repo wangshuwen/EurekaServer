@@ -640,4 +640,13 @@
       #{item.isPerson},#{item.createTime},#{item.groupId})
     </foreach>
   </insert>
+
+  <select id="findStaffIdByStaffType" parameterType="java.lang.Integer" resultType="java.lang.Integer" useCache="true">
+    SELECT staff_id AS staffId
+    FROM staff
+    WHERE is_person = #{staffType}
+  </select>
+
+
+
 </mapper>

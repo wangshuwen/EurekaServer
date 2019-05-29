@@ -123,6 +123,8 @@ public class WSVoiceStatus {
 
         //ip和port不为空
         if (!"".equals(ipPort) && ipPort != null) {
+            //解决ipPort="null1.106"
+            ipPort= ipPort.replace("null","");
             //设置终端ip和端口
             String[] ips = ipPort.split(":");
 

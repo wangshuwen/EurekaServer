@@ -45,8 +45,8 @@ public interface StaffGroupTerminalServiceClient {
     Map<String, Object> selectStationIpByStationId(@RequestParam("stationId") Integer stationId);
 
     @GetMapping("findTerminalInfoByStaffId")
-    Integer findTerminalInfoByStaffId(int parseInt);
+    Integer findTerminalInfoByStaffId(@RequestParam("parseInt") Integer parseInt);
 
     @GetMapping("selectTerminalIpInfoByTerminalId")
-    Map<String, Object> selectTerminalIpInfoByTerminalId(Integer terminalId);
+    Map<String, Object> selectTerminalIpInfoByTerminalId(@RequestParam("terminalId") Integer terminalId);
 }

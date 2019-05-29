@@ -31,7 +31,7 @@ public class ProcessRtVoice {
 
     private volatile static ProcessRtVoice processRealTimeVoice;
     //从配置文件获取ip前缀
-    private static String ip_prefix;
+    private static String ip_prefix="192.168.";
 
 //    @Value("${ip.prefix}")
     public void setIp_prefix(String ip_prefix) {
@@ -191,10 +191,11 @@ public class ProcessRtVoice {
      * @date: 2019-04-02
      */
     public static void checkOnline(String staffId) {
+        int parseInt = Integer.parseInt(staffId);
 
         //根据员工id查询对应的ip和port
 //        Integer terminalId = getProcessRealTimeVoice().terminalService.findTerminalInfoByStaffId(Integer.parseInt(staffId));
-        Integer terminalId = getProcessRealTimeVoice().staffGroupTerminalServiceClient.findTerminalInfoByStaffId(Integer.parseInt(staffId));
+        Integer terminalId = getProcessRealTimeVoice().staffGroupTerminalServiceClient.findTerminalInfoByStaffId(parseInt);
         Map<String, Object> ipInfoMap = getProcessRealTimeVoice().staffGroupTerminalServiceClient.selectTerminalIpInfoByTerminalId(terminalId);
         String terminalIp = (String) ipInfoMap.get("terminal_ip");
         Integer terminalPort = (Integer) ipInfoMap.get("terminal_port");
@@ -209,7 +210,7 @@ public class ProcessRtVoice {
         //判断终端
         //Channel channel = ChannelMap.getChannelByName(ipPort); //todo client search ipPort return JSON
         boolean f = getProcessRealTimeVoice().voiceMonitorService.getChannelByName(ipPort);
-        getProcessRealTimeVoice().voiceMonitorService.sendDataToTerminalMonitorServer(resp);
+       // getProcessRealTimeVoice().voiceMonitorService.sendDataToTerminalMonitorServer(resp);
         int voiceChannelNum = VoiceChannelMap.getChannelNum();
         if (!f) {
             if (voiceChannelNum > 0) {

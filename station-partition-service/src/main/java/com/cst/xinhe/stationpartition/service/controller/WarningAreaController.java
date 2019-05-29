@@ -48,7 +48,7 @@ public class WarningAreaController {
             @RequestParam(name = "limit", defaultValue = "12", required = false) Integer pageSize,
             @RequestParam(name = "page", defaultValue = "1", required = false) Integer startPage) {
 
-        Page page=warningAreaService.findAreaInfoByType(type,pageSize,startPage,name,areaId);
+        Page page = warningAreaService.findAreaInfoByType(type,pageSize,startPage,name,areaId);
         PageInfo pageInfo = new PageInfo(page);
         return pageInfo.getSize() > 0 ? ResultUtil.jsonToStringSuccess(pageInfo): ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
     }
@@ -60,7 +60,7 @@ public class WarningAreaController {
         warningArea.setCreateTime(new Date());
         Integer result=warningAreaService.addAreaInfo(warningArea);
 
-        return result >0 ? ResultUtil.jsonToStringSuccess() : ResultUtil.jsonToStringError(ResultEnum.ADD_STATION_FAIL);
+        return result == 1 ? ResultUtil.jsonToStringSuccess() : ResultUtil.jsonToStringError(ResultEnum.ADD_STATION_FAIL);
     }
 
 

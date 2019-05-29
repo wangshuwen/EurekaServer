@@ -97,7 +97,7 @@ hystrix:
     default:
       execution:
         timeout:
-          enabled: true
+          enabled: false
           #        isolation:
           #          strategy: SEMAPHORE
           #          semaphore:

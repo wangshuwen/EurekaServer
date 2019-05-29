@@ -3,9 +3,8 @@ package com.cst.xinhe.persistence.dao.warning_area;
 import com.cst.xinhe.persistence.dto.warning_area.CoordinateDto;
 import com.cst.xinhe.persistence.model.warning_area.WarningArea;
 import com.cst.xinhe.persistence.model.warning_area.WarningAreaExample;
-import org.apache.ibatis.annotations.Param;
-
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 public interface WarningAreaMapper {
     /**
@@ -97,6 +96,7 @@ public interface WarningAreaMapper {
     int updateByPrimaryKey(WarningArea record);
 
     CoordinateDto getAreaInfoByAreaId(Integer areaId);
+
     List<CoordinateDto> getOtherAreaInfoByAreaId(Integer areaId);
 
     List<CoordinateDto> getAll();

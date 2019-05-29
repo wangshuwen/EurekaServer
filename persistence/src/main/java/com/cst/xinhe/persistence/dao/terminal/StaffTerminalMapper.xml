@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cst.xinhe.persistence.dao.terminal.StaffTerminalMapper">
+    <cache eviction="LRU" flushInterval="100000" size="1024" readOnly="true"/>
     <resultMap id="BaseResultMap" type="com.cst.xinhe.persistence.model.terminal.StaffTerminal">
         <!--
           WARNING - @mbg.generated
@@ -512,7 +513,7 @@
         where staff_terminal_id = #{staffTerminalId,jdbcType=INTEGER}
     </update>
 
-    <select id="selectStaffNameByTerminalId" parameterType="java.lang.Integer" resultType="java.util.Map">
+    <select id="selectStaffNameByTerminalId" parameterType="java.lang.Integer" resultType="java.util.Map" useCache="true">
         SELECT staff.staff_id,staff_name,is_person
         FROM staff,staff_terminal
         WHERE  staff.staff_id = staff_terminal.staff_id AND terminal_id = #{terminalId}

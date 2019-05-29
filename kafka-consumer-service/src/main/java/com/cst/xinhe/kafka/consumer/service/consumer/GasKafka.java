@@ -49,6 +49,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.TopicPartition;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -60,6 +61,7 @@ import java.util.concurrent.Executors;
  * @Description:
  * @Date 2019/4/24/11:05
  */
+@Transactional
 @Component
 public class GasKafka {
 
@@ -116,6 +118,7 @@ public class GasKafka {
     public static Set<Integer> overTimeSet = Collections.synchronizedSet(new HashSet());
     public static Set<Integer> seriousTimeSet = Collections.synchronizedSet(new HashSet());
 
+    private static List<GasPosition> gasPositionList = Collections.synchronizedList(new LinkedList<>());
 
     @Resource
     private StaffMapper staffMapper;
@@ -129,7 +132,7 @@ public class GasKafka {
 
     private static final String TOPIC = "gas_kafka.tut";
 
-    private ExecutorService executorService = Executors.newFixedThreadPool(4);
+    private ExecutorService executorService = Executors.newFixedThreadPool(6);
 
 
     class GasProcess implements Runnable {
@@ -633,11 +636,17 @@ public class GasKafka {
                             upLoadGasDto.setGasInfo(gasInfoWarn);// 发送队列插入
                         }
                         gasNum++;
-                        Integer insert = gasPositionMapper.insertSingleGas(gasPosition);
                         System.out.println("--------------------------已插入气体数量：-------------------------" + gasNum);
-                        if (insert == 1) {
-                            System.out.println("插入第" + gasNum + "条成功！");
+                        gasPositionList.add(gasPosition);
+                        if (gasPositionList.size() > 1000){
+                            gasPositionMapper.insertGasPositions(gasPositionList);
+                            gasPositionList.clear();
                         }
+//                        Integer insert = gasPositionMapper.insertSingleGas(gasPosition);
+//                        System.out.println("--------------------------已插入气体数量：-------------------------" + gasNum);
+//                        if (insert == 1) {
+//                            System.out.println("插入第" + gasNum + "条成功！");
+//                        }
                         isWarn = false;
                     }
 

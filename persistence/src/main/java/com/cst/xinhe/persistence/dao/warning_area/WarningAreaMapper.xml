@@ -302,7 +302,7 @@
       contain_number = #{containNumber,jdbcType=INTEGER}
     where warning_area_id = #{warningAreaId,jdbcType=INTEGER}
   </update>
-  <cache eviction="LRU" flushInterval="100000" readOnly="true" size="1024" />
+
   <resultMap id="customMap" type="com.cst.xinhe.persistence.dto.warning_area.CoordinateDto">
     <id column="warning_area_id" jdbcType="INTEGER" property="warningAreaId" />
     <result column="warning_area_name" jdbcType="VARCHAR" property="warningAreaName" />
@@ -331,31 +331,4 @@
     FROM warning_area
   </select>
 
-  <resultMap id="customMap" type="com.cst.xinhe.persistence.dto.warning_area.CoordinateDto">
-    <id column="warning_area_id" jdbcType="INTEGER" property="warningAreaId" />
-    <result column="warning_area_name" jdbcType="VARCHAR" property="warningAreaName" />
-    <result column="warning_area_desc" jdbcType="VARCHAR" property="warningAreaDesc" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="warning_area_type" jdbcType="INTEGER" property="warningAreaType" />
-    <!--<result column="residence_time" jdbcType="VARCHAR" property="residenceTime" />-->
-    <collection property="coordinateVOS" column="warning_area_id" select="com.cst.xinhe.persistence.dao.coordinate.CoordinateMapper.selectCoordinateInfoByAreaId" javaType="java.util.List" ofType="com.cst.xinhe.persistence.dto.warning_area.CoordinateDto">
-      <result property="x" column="coordinate_x"/>
-      <result property="y" column="coordinate_y"/>
-      <result property="z" column="coordinate_z"/>
-    </collection>
-  </resultMap>
-  <select id="getAreaInfoByAreaId" parameterType="java.lang.Integer" resultMap="customMap">
-    SELECT warning_area_id, warning_area_name, warning_area_desc, create_time, warning_area_type
-    FROM warning_area
-    WHERE warning_area_id = #{areaId}
-  </select>
-  <select id="getOtherAreaInfoByAreaId" parameterType="java.lang.Integer" resultMap="customMap">
-    SELECT warning_area_id, warning_area_name, warning_area_desc, create_time, warning_area_type
-    FROM warning_area
-    WHERE warning_area_id != #{areaId}
-  </select>
-  <select id="getAll" resultMap="customMap">
-    SELECT warning_area_id, warning_area_name, warning_area_desc, create_time, warning_area_type
-    FROM warning_area
-  </select>
 </mapper>

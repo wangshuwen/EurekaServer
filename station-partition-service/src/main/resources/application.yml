@@ -101,6 +101,7 @@ mybatis:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 #    cache-enabled: false
     default-statement-timeout: 3000
+    map-underscore-to-camel-case: true
 #  type-aliases-package: com.cst.xinhe.persistence.model
 pagehelper:
   helper-dialect: mysql

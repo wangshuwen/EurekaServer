@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author wangshuwen
@@ -72,7 +73,7 @@ public class WarningAreaController {
                 return ResultUtil.jsonToStringError(ResultEnum.ADD_AREA_FAIL);
             }
         }
-        Integer result=warningAreaService.addCoordinateList(list);
+        Integer result = warningAreaService.addCoordinateList(list);
 
         return result >0 ? ResultUtil.jsonToStringSuccess() : ResultUtil.jsonToStringError(ResultEnum.ADD_STATION_FAIL);
     }
@@ -196,6 +197,18 @@ public class WarningAreaController {
             @RequestParam(name ="type",required = false) Integer type) {
        Integer count =warningAreaService.findStaffNumByType(type);
         return ResultUtil.jsonToStringSuccess(count);
+    }
+
+    @GetMapping("printReportOfWarningArea")
+    @ApiOperation(value = "根据区域类型，月份时间，查询")
+    public String printReportOfWarningArea(
+            @RequestParam(name = "type" ) Integer type,
+            @RequestParam(name = "time" , required = false) String date,
+            @RequestParam(name = "page" , required = false,defaultValue = "1") Integer startPage,
+            @RequestParam(name = "limit", required = false,defaultValue = "10") Integer pageSize) {
+        Page page = warningAreaService.printReportOfWarningArea(type, date,startPage,pageSize);
+        PageInfo<Map<String,Object>> pageInfo = new PageInfo<>(page);
+        return pageInfo.getSize() > 0?ResultUtil.jsonToStringSuccess(pageInfo):ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
     }
 
 

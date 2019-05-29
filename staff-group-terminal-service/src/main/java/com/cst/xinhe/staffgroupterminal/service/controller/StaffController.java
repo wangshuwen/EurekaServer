@@ -132,7 +132,7 @@ public class StaffController {
             map.put("deptName", t_deptName);
         }
         PageInfo pageInfo = new PageInfo(page);
-        return ResultUtil.jsonToStringSuccess(pageInfo);
+        return pageInfo.getSize() > 0 ?ResultUtil.jsonToStringSuccess(pageInfo): ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
     }
 
     @PutMapping("staff/bindingAttendanceBaseStation/{stationId}")

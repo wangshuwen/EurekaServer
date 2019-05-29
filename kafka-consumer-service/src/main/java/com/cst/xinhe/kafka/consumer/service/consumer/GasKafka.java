@@ -7,6 +7,7 @@ import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.exception.RuntimeOtherException;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
+import com.cst.xinhe.common.netty.utils.NettyDataUtils;
 import com.cst.xinhe.common.utils.array.ArrayQueue;
 import com.cst.xinhe.common.utils.convert.DateConvert;
 import com.cst.xinhe.common.ws.WebSocketData;
@@ -309,7 +310,7 @@ public class GasKafka {
                     gasPosition.setPositionY(road.getPositionY());
                     gasPosition.setPositionZ(road.getPositionZ());
                     road.setStationId(gasPosition.getStationId());
-                    sendTempRoadName(requestData.getTerminalIp(),requestData.getTerminalPort(),road.getTempPositionName());
+//                    sendTempRoadName(requestData.getTerminalIp(),requestData.getTerminalPort(),road.getTempPositionName());
 
                     //----------------------------------以下是判断出入问题------------------------------------
                     //去除staffGroupTerminalServiceClient
@@ -797,9 +798,12 @@ public class GasKafka {
 
         private void sendTempRoadName(String ip,Integer port, String tempPositionName) {
             ResponseData responseData = ResponseData.getResponseData();
+            RequestData requestData = new RequestData();
+            int realLen = 34 + tempPositionName.getBytes().length;
+//            NettyDataUtils.toHexByteByStrings();
 //            requestData.setLength();
 //            responseData.setCustomMsg();
-            terminalMonitorClient.sendResponseData(responseData);
+//            terminalMonitorClient.sendResponseData(responseData);
         }
     }
 

@@ -196,10 +196,34 @@ public class NettyDataUtils {
                 (byte) (num & 0xFF)
         };
     }
-
-    public static void main(String[] args) {
-        byte[] l = NettyDataUtils.intToByteArray(30);
-        System.out.println(l[2]);
-        System.out.println(l[3]);
+    public synchronized static byte[] toHexByteByStrings(byte[] data,int start,String s) {
+        int j = start;
+        for (int i = 0; i < s.length(); i++) {
+            int ch = (int) s.charAt(i);
+            data[j-1] = (byte) ((ch & 0xFF00) >> 8 );
+            data[j] = (byte) ( ch & 0xFF);
+            j += 2;
+        }
+        return data;
     }
+//    private static byte charToByte(char c){
+//        return (byte)"0123456789ABCDEF".indexOf(c);
+//    }
+    public static void main(String[] args) {
+//        byte[] l = NettyDataUtils.intToByteArray(30);
+//        System.out.println(l[2]);
+//        System.out.println(l[3]);
+        String str = "#as斯阿达克".toUpperCase();
+        char[] charArr = str.toCharArray();
+        System.out.println(charArr);
+        for (int i = 0 ; i < charArr.length; i ++){
+            char a = charArr[i];
+
+            System.out.println(a);
+        }
+        byte[] res = toHexByteByStrings(str.getBytes(),1,str);
+        System.out.println(res.length);
+    }
+
+
 }

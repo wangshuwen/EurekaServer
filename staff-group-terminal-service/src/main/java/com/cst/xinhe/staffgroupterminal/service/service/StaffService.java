@@ -74,4 +74,5 @@ public interface StaffService {
     List<Map<String,Object>> findStaffByIds(List<Integer> staffIds);
 
 
+    List<Integer> findStaffIdByStaffType(Integer staffType);
 }

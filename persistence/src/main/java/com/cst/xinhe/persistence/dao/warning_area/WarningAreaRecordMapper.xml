@@ -343,4 +343,21 @@
     AND out_time IS NULL
     ORDER BY id DESC
   </select>
+
+
+  <select id="getWarningWarePersonNumber" parameterType="java.util.Map" resultType="java.util.Map">
+    SELECT war.warning_area_id AS warningAreaId,in_time AS inTime,out_time AS outTime,war.staff_id AS staffId,wa.warning_area_name AS warningAreaName,wa.warning_area_desc AS warningAreaDesc,staff_name AS staffName,group_id AS groupId,sj.job_name AS jobName from warning_area_record war INNER JOIN warning_area wa ON war.warning_area_id = wa.warning_area_id
+ INNER JOIN staff s ON s.staff_id = war.staff_id, staff_job sj
+<where>
+  <if test="p_date != null and p_date neq '' ">
+  AND  DATE_FORMAT( in_time, '%Y-%m-%d' ) = DATE_FORMAT( #{p_date}, '%Y-%m-%d' )
+  </if>
+  <if test="p_type != null and p_type neq '' ">
+    AND wa.warning_area_type = #{p_type}
+  </if>
+  AND s.staff_job_id = sj.job_id
+  AND out_time IS NULL
+  ORDER BY in_time DESC
+</where>
+  </select>
 </mapper>

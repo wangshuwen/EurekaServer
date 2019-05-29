@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface WarningAreaRecordMapper {
@@ -110,4 +111,8 @@ public interface WarningAreaRecordMapper {
 
 
     List<WarningAreaRecord> findWarningAreaRecordByStaffAndOutTime(Integer staffId);
+
+//    Integer selectWarningPersonCountByTypeAndTime(Map<String, Object> param);
+
+    List<Map<String, Object>> getWarningWarePersonNumber(Map<String, Object> param);
 }

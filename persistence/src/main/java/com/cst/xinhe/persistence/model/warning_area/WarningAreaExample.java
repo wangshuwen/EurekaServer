@@ -514,6 +514,136 @@ public class WarningAreaExample {
             addCriterion("warning_area_type not between", value1, value2, "warningAreaType");
             return (Criteria) this;
         }
+
+        public Criteria andResidenceTimeIsNull() {
+            addCriterion("residence_time is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andResidenceTimeIsNotNull() {
+            addCriterion("residence_time is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andResidenceTimeEqualTo(String value) {
+            addCriterion("residence_time =", value, "residenceTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andResidenceTimeNotEqualTo(String value) {
+            addCriterion("residence_time <>", value, "residenceTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andResidenceTimeGreaterThan(String value) {
+            addCriterion("residence_time >", value, "residenceTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andResidenceTimeGreaterThanOrEqualTo(String value) {
+            addCriterion("residence_time >=", value, "residenceTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andResidenceTimeLessThan(String value) {
+            addCriterion("residence_time <", value, "residenceTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andResidenceTimeLessThanOrEqualTo(String value) {
+            addCriterion("residence_time <=", value, "residenceTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andResidenceTimeLike(String value) {
+            addCriterion("residence_time like", value, "residenceTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andResidenceTimeNotLike(String value) {
+            addCriterion("residence_time not like", value, "residenceTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andResidenceTimeIn(List<String> values) {
+            addCriterion("residence_time in", values, "residenceTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andResidenceTimeNotIn(List<String> values) {
+            addCriterion("residence_time not in", values, "residenceTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andResidenceTimeBetween(String value1, String value2) {
+            addCriterion("residence_time between", value1, value2, "residenceTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andResidenceTimeNotBetween(String value1, String value2) {
+            addCriterion("residence_time not between", value1, value2, "residenceTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andContainNumberIsNull() {
+            addCriterion("contain_number is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andContainNumberIsNotNull() {
+            addCriterion("contain_number is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andContainNumberEqualTo(Integer value) {
+            addCriterion("contain_number =", value, "containNumber");
+            return (Criteria) this;
+        }
+
+        public Criteria andContainNumberNotEqualTo(Integer value) {
+            addCriterion("contain_number <>", value, "containNumber");
+            return (Criteria) this;
+        }
+
+        public Criteria andContainNumberGreaterThan(Integer value) {
+            addCriterion("contain_number >", value, "containNumber");
+            return (Criteria) this;
+        }
+
+        public Criteria andContainNumberGreaterThanOrEqualTo(Integer value) {
+            addCriterion("contain_number >=", value, "containNumber");
+            return (Criteria) this;
+        }
+
+        public Criteria andContainNumberLessThan(Integer value) {
+            addCriterion("contain_number <", value, "containNumber");
+            return (Criteria) this;
+        }
+
+        public Criteria andContainNumberLessThanOrEqualTo(Integer value) {
+            addCriterion("contain_number <=", value, "containNumber");
+            return (Criteria) this;
+        }
+
+        public Criteria andContainNumberIn(List<Integer> values) {
+            addCriterion("contain_number in", values, "containNumber");
+            return (Criteria) this;
+        }
+
+        public Criteria andContainNumberNotIn(List<Integer> values) {
+            addCriterion("contain_number not in", values, "containNumber");
+            return (Criteria) this;
+        }
+
+        public Criteria andContainNumberBetween(Integer value1, Integer value2) {
+            addCriterion("contain_number between", value1, value2, "containNumber");
+            return (Criteria) this;
+        }
+
+        public Criteria andContainNumberNotBetween(Integer value1, Integer value2) {
+            addCriterion("contain_number not between", value1, value2, "containNumber");
+            return (Criteria) this;
+        }
     }
 
     /**

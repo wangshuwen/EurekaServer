@@ -3,11 +3,13 @@ package com.cst.xinhe.stationpartition.service.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.cst.xinhe.common.ws.WebSocketData;
 import com.cst.xinhe.persistence.dao.coordinate.CoordinateMapper;
+import com.cst.xinhe.persistence.dao.staff.StaffOrganizationMapper;
 import com.cst.xinhe.persistence.dao.warning_area.WarningAreaMapper;
 import com.cst.xinhe.persistence.dao.warning_area.WarningAreaRecordMapper;
 import com.cst.xinhe.persistence.dto.warning_area.CoordinateDto;
 import com.cst.xinhe.persistence.model.coordinate.Coordinate;
 import com.cst.xinhe.persistence.model.coordinate.CoordinateExample;
+import com.cst.xinhe.persistence.model.staff.StaffOrganization;
 import com.cst.xinhe.persistence.model.warning_area.WarningArea;
 import com.cst.xinhe.persistence.model.warning_area.WarningAreaExample;
 import com.cst.xinhe.persistence.model.warning_area.WarningAreaRecord;
@@ -37,9 +39,8 @@ public class WarningAreaServiceImpl implements WarningAreaService {
     private CoordinateMapper coordinateMapper;
     @Resource
     private WarningAreaRecordMapper warningAreaRecordMapper;
-
-//    @Resource
-//    private StaffOrganizationService staffOrganizationService;
+    @Resource
+    private StaffOrganizationMapper staffOrganizationMapper;
 
     @Resource
     private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
@@ -353,4 +354,44 @@ public class WarningAreaServiceImpl implements WarningAreaService {
         warningAreaVO.setOtherArea(coordinateDtos);
         return warningAreaVO;
     }
+
+    @Override
+    public Page printReportOfWarningArea(Integer type, String date,Integer startPage, Integer pageSize) {
+        Map<String, Object> param = new HashMap<>();
+        param.put("p_type",type);
+        param.put("p_date",date);
+        Date currentTime = new Date();
+        Page<Map<String, Object>> page = PageHelper.startPage(startPage,pageSize);
+        List<Map<String, Object>> result = warningAreaRecordMapper.getWarningWarePersonNumber(param);
+        List<Map<String, Object>> list = page.getResult();
+        for (Map<String, Object> map: list){
+            Integer groupId = (Integer) map.get("groupId");
+            String groupName = getDeptNameByGroupId(groupId);
+            map.put("groupName",groupName);
+            Date in = (Date)map.get("inTime");
+            long res =  currentTime.getTime() - in.getTime();
+            long nd = 1000 * 24 * 60 * 60;
+            long nh = 1000 * 60 * 60;
+            long nm = 1000 * 60;
+            long day = res / nd;
+            long hour = res % nd / nh;
+            long min = res % nd % nh / nm;
+            map.put("outTime", day + "天" + hour + "小时" + min + "分钟");
+        }
+        return page;
+    }
+    public String getDeptNameByGroupId(Integer groupId) {
+        String deptName = "";
+        StaffOrganization staffOrganization = staffOrganizationMapper.selectByPrimaryKey(groupId);
+        if (staffOrganization != null) {
+            deptName = staffOrganization.getName();
+            if (staffOrganization.getParentId() != 0) {
+                String parentName = getDeptNameByGroupId(staffOrganization.getParentId());
+                deptName = parentName + "/" + deptName;
+            }
+        }
+
+        return deptName;
+    }
+
 }

@@ -7,6 +7,7 @@ import com.cst.xinhe.persistence.vo.resp.WarningAreaVO;
 import com.github.pagehelper.Page;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author wangshuwen
@@ -49,4 +50,6 @@ public interface WarningAreaService {
     Integer findStaffNumByType(Integer type);
 
     Integer deleteCoordinate(Integer id);
+
+    Page printReportOfWarningArea(Integer type, String date,Integer startPage, Integer pageSize);
 }

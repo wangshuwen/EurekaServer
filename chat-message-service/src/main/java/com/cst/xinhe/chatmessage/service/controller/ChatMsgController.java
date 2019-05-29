@@ -72,7 +72,7 @@ public class ChatMsgController {
                            @RequestParam(name = "pageSize", defaultValue = "5", required = false) Integer pageSize) {
         Page page= chatMsgService.findChatList(keyWord,startPage,pageSize);
         PageInfo pageInfo = new PageInfo(page);
-        return ResultUtil.jsonToStringSuccess(pageInfo);
+        return pageInfo.getSize() > 0 ? ResultUtil.jsonToStringSuccess(pageInfo):ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
     }
 
     @GetMapping("call/chatRecord")
@@ -83,15 +83,16 @@ public class ChatMsgController {
         Page page = chatMsgService.findChatRecord(staffId,startPage,pageSize);
         List<HashMap<String,Object>> result = page.getResult();
         for (HashMap<String, Object> map : result) {
+
             String postMsg = (String) map.get("postMsg");
-            if(postMsg!=null){
+            if(null != postMsg){
                 postMsg = postMsg.replace(basePath,webBaseUrl);
                 map.put("postMsg",postMsg);
             }
         }
 
         PageInfo pageInfo = new PageInfo(page);
-        return ResultUtil.jsonToStringSuccess(pageInfo);
+        return pageInfo.getSize() > 0 ?ResultUtil.jsonToStringSuccess(pageInfo):ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
     }
 
     @DeleteMapping("call/deleteChatRecord")

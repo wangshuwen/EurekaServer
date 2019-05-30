@@ -29,6 +29,8 @@ public class EsAttendanceEntity {
     private String timeLong;
     //每月下井总数
     private Integer inOreSum;
+    //领导总人数
+    private Integer leaderSum;
 
     /**
      *

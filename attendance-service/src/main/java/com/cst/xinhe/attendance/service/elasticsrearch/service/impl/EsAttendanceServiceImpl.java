@@ -15,7 +15,6 @@ import com.cst.xinhe.persistence.model.base_station.BaseStation;
 import com.cst.xinhe.persistence.model.staff.Staff;
 import com.cst.xinhe.persistence.model.staff.StaffJob;
 import com.cst.xinhe.persistence.vo.req.AttendanceParamsVO;
-import org.bouncycastle.est.CACertsResponse;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.sort.FieldSortBuilder;
@@ -26,10 +25,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
-import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -44,49 +43,76 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
 
     @Resource
     private AttendanceRepository attendanceRepository;
-
-//    @Resource
-//    private StaffOrganizationService staffOrganizationService;
-
-//    @Resource
-//    private StaffService staffService;
-
     @Resource
     private StaffMapper staffMapper;
-
     @Resource
     private AttendanceMapper attendanceMapper;
-
     @Resource
     private StaffJobMapper staffJobMapper;
-
     @Resource
     private BaseStationMapper baseStationMapper;
     @Resource
     private TimeStandardMapper timeStandardMapper;
-
-//    @Resource
-//    private BaseStationService baseStationService;
-
     @Resource
     private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
-
     @Resource
     private StationPartitionServiceClient stationPartitionServiceClient;
-
-    @Resource
-    private ElasticsearchTemplate elasticsearchTemplate;
-
-
     @Override
-    public org.springframework.data.domain.Page<EsAttendanceEntity> searchAttendanceByStaffType(Integer startPage, Integer pageSize, Integer staffType) {
+    public org.springframework.data.domain.Page<EsAttendanceEntity> searchAttendanceByStaffType(Integer startPage, Integer pageSize, Integer staffType, String staffName1, String currentDate) {
+
+
+
         List<Integer> staffList = staffMapper.findStaffIdByStaffType(staffType);
         Pageable pageable = new PageRequest(startPage-1,pageSize);
         BoolQueryBuilder builder = QueryBuilders.boolQuery();
+        List<Staff> staffList1=null;
+        Set<Integer> set = new HashSet<>();
+        if(null != staffName1 &&!"".equals(staffName1)){
+             staffList1 = staffGroupTerminalServiceClient.selectStaffByLikeName(staffName1);
+        }
 
         if(staffList!=null&&staffList.size()>0){
             for (Integer staffid : staffList) {
-                builder.should(QueryBuilders.termQuery("staffid",staffid));
+                if(null != staffList1 && staffList1.size()>0){
+                    for (Staff staff : staffList1) {
+                       if(staffid.equals(staff.getStaffId())){
+                           set.add(staffid);
+                       }
+                    }
+                }else{
+                    set.add(staffid);
+                }
+            }
+        }
+        if(set!=null&&set.size()>0){
+                for (Integer integer : set) {
+                    builder.should(QueryBuilders.termQuery("staffid",integer).boost(100));
+                }
+        }
+        if(currentDate!=null&&!"".equals(currentDate)){
+
+            SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM");
+            try {
+                Date parse = sf.parse(currentDate);
+                Calendar instance = Calendar.getInstance();
+                instance.setTime(parse);
+                instance.set(Calendar.DAY_OF_MONTH,1);//设置当前时间为本月第一天
+                Date start = instance.getTime();
+                //获取当前月最后一天
+                instance.set(Calendar.DAY_OF_MONTH, instance.getActualMaximum(Calendar.DAY_OF_MONTH));
+                Date end = instance.getTime();
+                SimpleDateFormat sf1 = new SimpleDateFormat("yyyy-MM-dd");
+
+                String startStr = sf1.format(start);
+                String endStr = sf1.format(end);
+
+                BoolQueryBuilder builderRange = QueryBuilders.boolQuery();
+                builderRange.must(QueryBuilders.rangeQuery("inore").format("yyyy-MM-dd").gte(startStr).lte(endStr));
+                builderRange.must(builder);
+
+                builder=builderRange;
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
         }
         FieldSortBuilder sort = SortBuilders.fieldSort("attendanceid").order(SortOrder.ASC);
@@ -96,6 +122,12 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
         List<EsAttendanceEntity> content = page.getContent();
        if(content!=null&&content.size()>0){
            for (EsAttendanceEntity esAttendanceEntity : content) {
+               if(set!=null){
+                   esAttendanceEntity.setLeaderSum(set.size());
+               }else{
+                   esAttendanceEntity.setLeaderSum(0);
+               }
+
                Integer staffid = esAttendanceEntity.getStaffid();
                String staffName = staffMapper.selectStaffNameById(staffid);
                esAttendanceEntity.setStaffname(staffName);
@@ -118,13 +150,10 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
                Calendar c = Calendar.getInstance();
                c.setTime(inore);
                c.set(Calendar.DAY_OF_MONTH,1);//设置当前时间为本月第一天
-
-               //获取当前月最后一天
-               Calendar ca = Calendar.getInstance();
-               ca.set(Calendar.DAY_OF_MONTH, ca.getActualMaximum(Calendar.DAY_OF_MONTH));
-
                Date firstDay = c.getTime();
-               Date lastDay = ca.getTime();
+               //获取当前月最后一天
+               c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+               Date lastDay = c.getTime();
 
                SimpleDateFormat simple = new SimpleDateFormat("yyyy-MM-dd");
                String firstDay1 = simple.format(firstDay);
@@ -141,12 +170,8 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
                    sum++;
                }
                esAttendanceEntity.setInOreSum(sum);
-
            }
-
-
        }
-
         return page;
     }
 
@@ -181,21 +206,11 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
                 }
                 flag=false;
             }
-               // List<Integer> staffids = staffGroupTerminalServiceClient.findAllStaffByGroupId(deptId);
             if(flag){
                 builder.must(QueryBuilders.termQuery("staffid",0));
             }
         }
         if(currentDate!=null&&!"0".equals(currentDate)){
-           /* Calendar c = Calendar.getInstance();
-            try {
-                c.setTime(DateConvert.convertStringToDate(currentDate,10));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            c.add(Calendar.DAY_OF_MONTH, 1);// 今天+1天
-            Date backDay = c.getTime();
-            DateConvert.convert(backDay,10);*/
 
            builder.must(QueryBuilders.rangeQuery("starttime").format("yyyy-MM-dd").gte(currentDate).lte(currentDate));
         }
@@ -212,9 +227,6 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
         }
 
         if(null != jobType){
-//            StaffExample example = new StaffExample();
-//            example.createCriteria().andStaffJobIdEqualTo(jobType);
-//            List<Staff> staff = staffMapper.selectByExample(example);
             List<Staff> staff = staffGroupTerminalServiceClient.selectStaffListByJobType(jobType);
             if(null != staff &&staff.size() > 0){
                 for (Staff staff1 : staff) {
@@ -226,9 +238,6 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
         }
 
         if(null != staffName &&!"".equals(staffName)){
-//            StaffExample example = new StaffExample();
-//            example.createCriteria().andStaffNameLike("%"+staffName+"%");
-//            List<Staff> staffList = staffMapper.selectByExample(example);
             List<Staff> staffList = staffGroupTerminalServiceClient.selectStaffByLikeName(staffName);
             if(null != staffList && staffList.size()>0){
                 for (Staff staff : staffList) {
@@ -239,7 +248,6 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
             }
 
         }
-       // builder.must((QueryBuilder) SortBuilders.fieldSort("attendanceid").order(SortOrder.ASC));
 
         FieldSortBuilder sort = SortBuilders.fieldSort("attendanceid").order(SortOrder.ASC);
         NativeSearchQueryBuilder nativeBuilder = new NativeSearchQueryBuilder().withSort(sort).withQuery(builder).withPageable(pageable);
@@ -260,35 +268,18 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
             Integer basestationid = attendance.getBasestationid();
             Integer ruleid = attendance.getRuleid();
             Map<String, Object> obj = res.get(staffid);
-          /*  if (null == obj) {
-                iterator.remove();
-                continue;
-            }*/
-//            Staff staff = staffMapper.selectByPrimaryKey(staffid);
-//            Staff staff = res.get(staffid);
-//            Staff staff = staffGroupTerminalServiceClient.findStaffById(staffid);
-//            Integer jobId = staff.getStaffJobId();
            if(obj!=null){
                Integer jobId = (Integer)obj.get("jobId");
                StaffJob staffJob = staffJobMapper.selectByPrimaryKey(jobId);
-//            StaffJob staffJob = staffGroupTerminalServiceClient.selectStaffJobByJobId(jobId);
 
                if(staffJob!=null)
                    attendance.setJobname(staffJob.getJobName());
 
-
-//            Integer groupId = staff.getGroupId();
-//            Integer groupId = staff.getGroupId();
-//            String staffName1 = staff.getStaffName();
                String staffName1 = (String) obj.get("staffName");
                attendance.setStaffname(staffName1);
-//            String deptName = staffOrganizationService.getDeptNameByGroupId(groupId);
-//            String deptName = staffGroupTerminalServiceClient.getDeptNameByGroupId(groupId);
-//            String deptName = staff.getStaffEmail();
+
                String deptName = (String) obj.get("deptName");
                attendance.setDeptname(deptName);
-//            BaseStation station = baseStationService.findBaseStationByNum(basestationid);
-//            BaseStation station = stationPartitionServiceClient.findBaseStationByNum(basestationid);
            }
 
                BaseStation station = baseStationMapper.findBaseStationByNum(basestationid);
@@ -301,7 +292,6 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
 
 
         }
-        //把f要移除的对象放在list_remove中，统一移除
         return page;
     }
 

@@ -342,9 +342,12 @@ public class AttendanceController {
     @ApiOperation("获取领导干部的考勤记录")
     public String getAttendanceByStaffType(@RequestParam(name = "page", defaultValue = "1", required = false)Integer startPage,
                                       @RequestParam(name = "limit", defaultValue = "10", required = false)Integer pageSize,
-                                           @RequestParam(name = "staffType") Integer staffType){
+                                           @RequestParam(name = "staffType") Integer staffType,
+                                           @RequestParam(name = "staffName", required = false) String staffName,
+                                           @RequestParam(name = "inOre", required = false) String currentDate
+                                           ){
 
-        org.springframework.data.domain.Page<EsAttendanceEntity> page=esAttendanceService.searchAttendanceByStaffType(startPage,pageSize,staffType);
+        org.springframework.data.domain.Page<EsAttendanceEntity> page=esAttendanceService.searchAttendanceByStaffType(startPage,pageSize,staffType,staffName,currentDate);
 
 
         return   ResultUtil.jsonToStringSuccess(page);

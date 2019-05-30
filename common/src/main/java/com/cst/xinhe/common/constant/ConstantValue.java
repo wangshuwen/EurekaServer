@@ -42,6 +42,7 @@ public class ConstantValue {
     public static final int MSG_BODY_NODE_NAME_GAS_LEVEL_STANDARD = 0x3003;// 气体等级标准设定
     public static final int MSG_BODY_NODE_NAME_SETTING_FREQUENCY = 0x3004;// 设置
     public static final int MSG_BODY_NODE_NAME_MAC_STATION = 0x3005;// 设置0x3005：wifi探针检测基站周围终端
+    public static final int MSG_BODY_NODE_NAME_POSITION_SHOW = 0x3006;// 设置0x3005：wifi探针检测基站周围终端
 
     //===============硬件故障代码===============
     public static final int MSG_BODY_HANDWARE_ERROR_WIFI = 0x0100; //  , "WIFI故障"),

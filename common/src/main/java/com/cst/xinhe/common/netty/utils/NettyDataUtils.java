@@ -213,17 +213,35 @@ public class NettyDataUtils {
 //        byte[] l = NettyDataUtils.intToByteArray(30);
 //        System.out.println(l[2]);
 //        System.out.println(l[3]);
-        String str = "#as斯阿达克".toUpperCase();
+        String str = "区域管理1#空间4#(12956978.18,4851801.00)#区域管理1#空间4#(12956880.09,4851692.32)#-4851801.0".toUpperCase();
+
         char[] charArr = str.toCharArray();
         System.out.println(charArr);
-        for (int i = 0 ; i < charArr.length; i ++){
-            char a = charArr[i];
-
-            System.out.println(a);
+        System.out.println("======");
+        System.out.println("char长度：" + charArr.length);
+        int charArrLen = charArr.length;
+        byte[] body = new byte[charArrLen * 3];
+        for (int i = 0, j = 0; i < body.length && j < charArrLen; i = i + 3, j++) {
+            if (charArr[j] <= 128) {
+                body[i] = 0;
+                body[i + 1] = 0;
+                body[i + 2] = (byte) (charArr[j] &0xff);
+            } else {
+                String s = String.valueOf(charArr[j]);
+                byte[] t_s_b = s.getBytes();
+                body[i] = (byte)(t_s_b[0]&0xff);
+                body[i + 1] = (byte)(t_s_b[1]&0xff);
+                body[i + 2] = (byte)(t_s_b[2]&0xff);
+            }
         }
-        byte[] res = toHexByteByStrings(str.getBytes(),1,str);
-        System.out.println(res.length);
+        System.out.println("-------");
+        for (int i = 0 ; i< body.length ; i ++){
+            if (i % 3 == 0){
+                System.out.print(" | ");
+            }
+            System.out.printf("0x%02x ",body[i]);
+        }
+        System.out.println("\n-------");
+
     }
-
-
 }

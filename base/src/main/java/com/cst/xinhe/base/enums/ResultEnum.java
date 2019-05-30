@@ -59,6 +59,7 @@ public enum ResultEnum {
     SEND_TO_SERVER_CHAT_MSG_FAIL(148, "调用服务发送语音数据失败！"),
     CALL_REMOTE_SERVER_FAIL(149, "调用远程服务失败！"),
     RT_SELECT_TERMINAL_BATTERY_FAIL(150, "实时查询终端剩余电量失败！"),
+    GET_SEQUENCE_ID_FAIL(151, "实时查询终端剩余电量失败！"),
     ;
 
     private Integer code;

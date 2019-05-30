@@ -29,4 +29,10 @@ public class TerminalMonitorFallback implements TerminalMonitorClient {
         logger.error(ResultUtil.jsonToStringError(ResultEnum.GET_CHANNEL_FAIL));
         return false;
     }
+
+    @Override
+    public Integer getSequenceId() {
+        logger.error(ResultUtil.jsonToStringError(ResultEnum.GET_SEQUENCE_ID_FAIL));
+        return null;
+    }
 }

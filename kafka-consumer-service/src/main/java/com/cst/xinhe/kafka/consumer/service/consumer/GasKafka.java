@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.exception.RuntimeOtherException;
+import com.cst.xinhe.common.constant.ConstantValue;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
 import com.cst.xinhe.common.netty.utils.NettyDataUtils;
@@ -277,6 +278,7 @@ public class GasKafka {
                     upLoadGasDto.setCreateTime(DateConvert.convert(new Date(), 19));
 
                     gasPosition.setCreateTime(new Date());
+
 //        gasPosition.setCreateTime(DateConvert.convertStampToDate(String.valueOf(System.currentTimeMillis()),19));
 
                     upLoadGasDto.setStationId(requestData.getStationId());
@@ -310,7 +312,7 @@ public class GasKafka {
                     gasPosition.setPositionY(road.getPositionY());
                     gasPosition.setPositionZ(road.getPositionZ());
                     road.setStationId(gasPosition.getStationId());
-//                    sendTempRoadName(requestData.getTerminalIp(),requestData.getTerminalPort(),road.getTempPositionName());
+                    sendTempRoadName(requestData.getTerminalId(),requestData.getTerminalIp(),requestData.getTerminalPort(),road.getTempPositionName());
 
                     //----------------------------------以下是判断出入问题------------------------------------
                     //去除staffGroupTerminalServiceClient
@@ -796,14 +798,56 @@ public class GasKafka {
             }
         }
 
-        private void sendTempRoadName(String ip,Integer port, String tempPositionName) {
+        private void sendTempRoadName(Integer terminalId, String ip,Integer port, String tempPositionName) {
             ResponseData responseData = ResponseData.getResponseData();
             RequestData requestData = new RequestData();
-            int realLen = 34 + tempPositionName.getBytes().length;
+
+            char[] charArr = tempPositionName.toCharArray();
+            System.out.println(charArr);
+            System.out.println("======");
+            System.out.println("char长度：" + charArr.length);
+            int charArrLen = charArr.length;
+            byte[] body = new byte[charArrLen * 3];
+            for (int i = 0, j = 0; i < body.length && j < charArrLen; i = i + 3, j++) {
+                if (charArr[j] <= 128) {
+                    body[i] = 0;
+                    body[i + 1] = 0;
+                    body[i + 2] = (byte) (charArr[j] &0xff);
+                } else {
+                    String s = String.valueOf(charArr[j]);
+                    byte[] t_s_b = s.getBytes();
+                    body[i] = (byte)(t_s_b[0]&0xff);
+                    body[i + 1] = (byte)(t_s_b[1]&0xff);
+                    body[i + 2] = (byte)(t_s_b[2]&0xff);
+                }
+            }
+            int realLen = 34 + body.length;
+            requestData.setLength(realLen);
+            requestData.setType(ConstantValue.MSG_HEADER_FREAME_HEAD);
+            requestData.setStationPort(0);
+            requestData.setStationIp1(0);
+            requestData.setStationIp2(0);
+            requestData.setStationId(0);
+            requestData.setStationIp("0.0");
+
+            requestData.setTerminalIp1(Integer.parseInt(ip.split("\\.")[0]));
+            requestData.setTerminalIp2(Integer.parseInt(ip.split("\\.")[1]));
+            requestData.setTerminalIp(ip);
+            requestData.setTerminalPort(port);
+            requestData.setTerminalId(terminalId);
+            requestData.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_REQUEST);
+            requestData.setSequenceId(terminalMonitorClient.getSequenceId());
+            requestData.setResult(ConstantValue.MSG_BODY_RESULT_SUCCESS);
+            requestData.setNodeCount((byte) 0);
+            requestData.setNdName(ConstantValue.MSG_BODY_NODE_NAME_POSITION_SHOW);
+
+            requestData.setBody(body);
+
+            responseData.setCustomMsg(requestData);
 //            NettyDataUtils.toHexByteByStrings();
 //            requestData.setLength();
 //            responseData.setCustomMsg();
-//            terminalMonitorClient.sendResponseData(responseData);
+            terminalMonitorClient.sendResponseData(responseData);
         }
     }
 

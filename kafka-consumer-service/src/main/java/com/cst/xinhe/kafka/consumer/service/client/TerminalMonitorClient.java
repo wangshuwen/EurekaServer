@@ -37,4 +37,8 @@ public interface TerminalMonitorClient {
      */
     @GetMapping("/getChannelByIpPort")
     Boolean getChanelByName(@RequestParam("ipPort") String ipPort);
+
+    @GetMapping("getSequenceId")
+    Integer getSequenceId();
+
 }

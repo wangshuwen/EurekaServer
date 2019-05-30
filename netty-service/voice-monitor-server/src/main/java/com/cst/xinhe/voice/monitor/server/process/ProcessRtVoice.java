@@ -4,7 +4,10 @@ import com.cst.xinhe.common.constant.ConstantValue;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
 import com.cst.xinhe.common.ws.WebSocketData;
+import com.cst.xinhe.persistence.dao.rang_setting.RangSettingMapper;
 import com.cst.xinhe.persistence.dao.terminal.TerminalUpdateIpMapper;
+import com.cst.xinhe.persistence.model.rang_setting.RangSetting;
+import com.cst.xinhe.persistence.model.rang_setting.RangSettingExample;
 import com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp;
 import com.cst.xinhe.persistence.model.terminal_road.TerminalRoad;
 import com.cst.xinhe.voice.monitor.server.channel.VoiceChannelMap;
@@ -18,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -48,10 +52,13 @@ public class ProcessRtVoice {
 
     private VoiceMonitorService voiceMonitorService;
 
+    private RangSettingMapper rangSettingMapper;
+
     public ProcessRtVoice() {
         this.voiceMonitorService = SpringContextUtil.getBean(VoiceMonitorService.class);
         this.staffGroupTerminalServiceClient = SpringContextUtil.getBean(StaffGroupTerminalServiceClient.class);
         this.gasServiceClient=SpringContextUtil.getBean(GasServiceClient.class);
+        this.rangSettingMapper=SpringContextUtil.getBean(RangSettingMapper.class);
     }
 
     public static ProcessRtVoice getProcessRealTimeVoice() {
@@ -168,10 +175,22 @@ public class ProcessRtVoice {
 //          if(positionId!=null){
 //               positionInfo = gasServiceClient.selectRoadById(positionId);
 //          }
+            //获取铃声url
+            RangSettingExample example = new RangSettingExample();
+                example.createCriteria().andTypeEqualTo(2);
+            List<RangSetting> rangSettings = rangSettingMapper.selectByExample(example);
+            for (RangSetting rangSetting : rangSettings) {
+                if(rangSetting.getStatus()==1){
+                    map.put("rangUrl",rangSetting.getUrl());
+                }
+            }
+
             map.put("staffInfo", staffInfo);
             map.put("nameInfo", nameInfo);
             map.put("gasInfo", gasInfo);
             map.put("positionInfo", tempPositionName);
+
+
         }
 
         try {

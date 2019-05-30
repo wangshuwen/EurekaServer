@@ -108,15 +108,9 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
 
 
         if(set!=null&&set.size()>0){
-            if(set.size()==1){
                 for (Integer integer : set) {
-                    builder.must(QueryBuilders.termQuery("staffid",integer));
+                    builder.should(QueryBuilders.termQuery("staffid",integer).boost(100));
                 }
-            }else {
-                for (Integer integer : set) {
-                    builder.should(QueryBuilders.termQuery("staffid",integer));
-                }
-            }
         }
 
 
@@ -139,8 +133,11 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
                 String startStr = sf1.format(start);
                 String endStr = sf1.format(end);
 
+                BoolQueryBuilder builderRange = QueryBuilders.boolQuery();
+                builderRange.must(QueryBuilders.rangeQuery("inore").format("yyyy-MM-dd").gte(startStr).lte(endStr));
+                builderRange.must(builder);
 
-                builder.must(QueryBuilders.rangeQuery("inore").format("yyyy-MM-dd").gte(startStr).lte(endStr));
+                builder=builderRange;
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -183,13 +180,10 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
                Calendar c = Calendar.getInstance();
                c.setTime(inore);
                c.set(Calendar.DAY_OF_MONTH,1);//设置当前时间为本月第一天
-
-               //获取当前月最后一天
-               Calendar ca = Calendar.getInstance();
-               ca.set(Calendar.DAY_OF_MONTH, ca.getActualMaximum(Calendar.DAY_OF_MONTH));
-
                Date firstDay = c.getTime();
-               Date lastDay = ca.getTime();
+               //获取当前月最后一天
+               c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+               Date lastDay = c.getTime();
 
                SimpleDateFormat simple = new SimpleDateFormat("yyyy-MM-dd");
                String firstDay1 = simple.format(firstDay);

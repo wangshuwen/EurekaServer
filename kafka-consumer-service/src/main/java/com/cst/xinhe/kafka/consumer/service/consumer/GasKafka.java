@@ -642,18 +642,20 @@ public class GasKafka {
                             gasInfoWarn.setIsWarn(false);
                             upLoadGasDto.setGasInfo(gasInfoWarn);// 发送队列插入
                         }
+
                         gasNum++;
+                        /*
                         gasPositionList.add(gasPosition);
                         System.out.println("--------------------------已插入气体数量：-------------------------" + gasNum);
                         if (gasPositionList.size() > 1000){
                             gasPositionMapper.insertGasPositions(gasPositionList);
                             gasPositionList.clear();
+                        }*/
+                        Integer insert = gasPositionMapper.insertSingleGas(gasPosition);
+                        System.out.println("--------------------------已插入气体数量：-------------------------" + gasNum);
+                        if (insert == 1) {
+                            System.out.println("插入第" + gasNum + "条成功！");
                         }
-//                        Integer insert = gasPositionMapper.insertSingleGas(gasPosition);
-//                        System.out.println("--------------------------已插入气体数量：-------------------------" + gasNum);
-//                        if (insert == 1) {
-//                            System.out.println("插入第" + gasNum + "条成功！");
-//                        }
                         isWarn = false;
                     }
 
@@ -858,6 +860,7 @@ public class GasKafka {
     public void listen0(List<ConsumerRecord<?, ?>> records) {
 //        process(records);
         executorService.execute(new GasProcess(records));
+
     }
 
     @KafkaListener(groupId = "gas_kafka", id = "gas_kafka11", topicPartitions = {@TopicPartition(topic = TOPIC, partitions = {"1"})})

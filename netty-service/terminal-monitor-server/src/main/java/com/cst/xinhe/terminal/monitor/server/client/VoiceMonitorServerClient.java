@@ -5,9 +5,7 @@ import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.terminal.monitor.server.client.callback.VoiceMonitorServerClientFallback;
 import com.cst.xinhe.terminal.monitor.server.client.config.FeignConfig;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @FeignClient(value = "voice-monitor-server",
 configuration = FeignConfig.class,
@@ -25,4 +23,7 @@ public interface VoiceMonitorServerClient {
 
     @PostMapping("sendInfoToWs")
     void sendInfoToWs(@RequestBody String keyStr);
+
+    @GetMapping("setBusyLineIsF")
+    void setBusyLineIsF(@RequestParam("flag") boolean flag);
 }

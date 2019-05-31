@@ -253,6 +253,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 //                                processRealTimeVoice.sendCheckOnline(customMsg);
                                 break;
                             case ConstantValue.MSG_BODY_NODE_NAME_REAL_TIME_CALL: // 发起呼叫
+
                                 terminalMonitorService.sendCallInfo(customMsg);
 //                                processRealTimeVoice.sendCallInfo(customMsg);
                                 break;

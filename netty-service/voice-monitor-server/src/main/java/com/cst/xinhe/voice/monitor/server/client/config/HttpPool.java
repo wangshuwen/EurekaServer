@@ -1,4 +1,4 @@
-package com.cst.xinhe.kafka.consumer.service.config;
+package com.cst.xinhe.voice.monitor.server.client.config;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;

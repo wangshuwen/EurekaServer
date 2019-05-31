@@ -87,7 +87,7 @@ hystrix:
     default:
       execution:
         timeout:
-          enabled: true
+          enabled: false
           #        isolation:
           #          strategy: SEMAPHORE
           #          semaphore:
@@ -103,7 +103,7 @@ feign:
     response:
       enabled: true
   hystrix:
-    enabled: true
+    enabled: false
   httpclient:
     enabled: true
     max-connections: 200

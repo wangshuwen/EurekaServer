@@ -324,100 +324,114 @@
 
 
     <select id="checkTerminalIdIsNotExist" parameterType="java.lang.Integer" resultType="boolean">
-    SELECT COUNT(terminal_num) FROM terminal_update_ip WHERE terminal_num = #{terminalId}
+    SELECT COUNT(terminal_id) FROM terminal_ip_port WHERE terminal_id = #{terminalId}
   </select>
 
 
     <select id="checkStationIdIsNotExist" parameterType="java.lang.Integer" resultType="boolean">
-       SELECT COUNT(station_id) FROM terminal_update_ip WHERE station_id = #{stationId} AND terminal_num = 0 AND terminal_port = 0
+       SELECT COUNT(station_id) FROM station_ip_port WHERE station_id = #{stationId}
     </select>
 
 
 
 
     <update id="updateIpInfoByTerminalId" parameterType="com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp">
-        update terminal_update_ip
+        update terminal_ip_port
         <set>
             <if test="terminalIp != null">
                 terminal_ip = #{terminalIp,jdbcType=VARCHAR},
             </if>
-            <if test="stationPort != null and stationPort != 0">
-                station_port = #{stationPort,jdbcType=VARCHAR},
-            </if>
+
             <if test="terminalPort != null and terminalPort != 0">
                 terminal_port = #{terminalPort,jdbcType=VARCHAR},
             </if>
             <if test="updateTime != null">
                 update_time = #{updateTime,jdbcType=TIMESTAMP},
             </if>
-            <if test="stationId != null">
-                station_id = #{stationId,jdbcType=INTEGER},
-            </if>
-            <if test="stationIp != null">
-                station_ip = #{stationIp,jdbcType=VARCHAR},
-            </if>
         </set>
-        where terminal_num = #{terminalNum,jdbcType=INTEGER}
+        where terminal_id = #{terminalNum,jdbcType=INTEGER}
     </update>
 
     <update id="updateIpInfoByStationId" parameterType="com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp">
-        update terminal_update_ip
+        update station_ip_port
         <set>
-            <if test="terminalIp != null">
-                terminal_ip = #{terminalIp,jdbcType=VARCHAR},
-            </if>
             <if test="stationPort != null and stationPort != 0">
                 station_port = #{stationPort,jdbcType=VARCHAR},
             </if>
-            <if test="terminalPort != null and terminalPort != 0">
-                terminal_port = #{terminalPort,jdbcType=VARCHAR},
-            </if>
+
             <if test="updateTime != null">
                 update_time = #{updateTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="terminalNum != null">
-                terminal_num = #{terminalNum,jdbcType=INTEGER},
             </if>
             <if test="stationIp != null">
                 station_ip = #{stationIp,jdbcType=VARCHAR},
             </if>
         </set>
         where  station_id = #{stationId,jdbcType=INTEGER}
-        AND terminal_num = 0 AND terminal_port = 0
 
     </update>
 
-    <select id="selectTerminalIpInfoByTerminalId" parameterType="java.lang.Integer" resultType="java.util.Map">
+   <!-- <select id="selectTerminalIpInfoByTerminalId" parameterType="java.lang.Integer" resultType="java.util.Map">
         SELECT
         <include refid="Base_Column_List"/>
         FROM terminal_update_ip
         WHERE terminal_num = #{terminalId}
+    </select>-->
+
+
+
+    <select id="selectTerminalIpInfoByTerminalId" parameterType="java.lang.Integer" resultType="java.util.Map">
+        SELECT  *  FROM  terminal_ip_port
+        WHERE terminal_id = #{terminalId}
     </select>
 
 
 
-    <select id="findTerminalIdByIpAndPort" resultMap="BaseResultMap">
+
+    <!--<select id="findTerminalIdByIpAndPort" resultMap="BaseResultMap">
         select
         *
         from terminal_update_ip
         where terminal_ip = #{terminalIp} and terminal_port=#{terminalPort}
+    </select>-->
+    <select id="findTerminalIdByIpAndPort" resultMap="BaseResultMap">
+        select
+        *
+        from terminal_ip_port
+        where terminal_ip = #{terminalIp} and terminal_port=#{terminalPort}
     </select>
 
-<select id="selectStationIpByStationId" resultType="java.util.Map" parameterType="java.lang.Integer">
+
+
+<!--<select id="selectStationIpByStationId" resultType="java.util.Map" parameterType="java.lang.Integer">
     SELECT *
     FROM terminal_update_ip
     WHERE station_id = #{stationId}
     AND terminal_num = 0
     AND terminal_ip = '0.0'
-</select>
+</select>-->
+    <select id="selectStationIpByStationId" resultType="java.util.Map" parameterType="java.lang.Integer">
+        SELECT *
+        FROM station_ip_port
+        WHERE station_id = #{stationId}
+    </select>
 
-    <insert id="insertUpdateIpTerminals" parameterType="java.util.List">
+
+    <!--<insert id="insertUpdateIpTerminals" parameterType="java.util.List">
         INSERT INTO terminal_update_ip(
         terminal_num
 	)VALUES
 	<foreach collection="list" item="it" separator=",">
         (#{it.terminalId})
     </foreach>
+    </insert>-->
+
+    <insert id="insertUpdateIpTerminals" parameterType="java.util.List">
+        INSERT INTO terminal_ip_port(
+        terminal_id
+        )VALUES
+        <foreach collection="list" item="it" separator=",">
+            (#{it.terminalId})
+        </foreach>
     </insert>
 
 </mapper>

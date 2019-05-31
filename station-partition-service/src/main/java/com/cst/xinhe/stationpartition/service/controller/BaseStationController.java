@@ -11,8 +11,10 @@ import com.cst.xinhe.common.netty.data.response.ResponseData;
 import com.cst.xinhe.common.utils.convert.DateConvert;
 import com.cst.xinhe.common.utils.string.StringUtils;
 import com.cst.xinhe.persistence.dao.terminal.TerminalUpdateIpMapper;
+import com.cst.xinhe.persistence.dao.updateIp.StationIpPortMapper;
 import com.cst.xinhe.persistence.model.base_station.BaseStation;
 import com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp;
+import com.cst.xinhe.persistence.model.updateIp.StationIpPort;
 import com.cst.xinhe.persistence.vo.req.BaseStationBindingStandardVO;
 import com.cst.xinhe.persistence.vo.resp.BaseStationPositionVO;
 import com.cst.xinhe.stationpartition.service.client.StaffGroupTerminalServiceClient;
@@ -48,6 +50,9 @@ import java.util.*;
 @Api(value = "BaseStationController", tags = {"基站基础信息操作"})
 public class BaseStationController extends BaseController {
 
+
+    @Resource
+    private StationIpPortMapper stationIpPortMapper;
     @Resource
     private TerminalMonitorClient terminalMonitorClient;
 
@@ -181,12 +186,9 @@ public class BaseStationController extends BaseController {
             //检测该基站是否更新ip，不存在则插入更新ip表
             boolean exist = terminalUpdateIpMapper.checkStationIdIsNotExist(baseStationNum);
             if(!exist){
-                TerminalUpdateIp updateIp = new TerminalUpdateIp();
-                updateIp.setTerminalIp("0.0");
-                updateIp.setTerminalNum(0);
-                updateIp.setStationId(baseStationNum);
-                updateIp.setTerminalPort(0);
-                terminalUpdateIpMapper.insert(updateIp);
+                StationIpPort stationIpPort = new StationIpPort();
+                stationIpPort.setStationId(baseStationNum);
+                stationIpPortMapper.insert(stationIpPort);
             }
 
 

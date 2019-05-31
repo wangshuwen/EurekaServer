@@ -5,8 +5,10 @@ import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
 import com.cst.xinhe.persistence.dao.terminal.StaffTerminalMapper;
 import com.cst.xinhe.persistence.dao.terminal.TerminalUpdateIpMapper;
+import com.cst.xinhe.persistence.dao.updateIp.TerminalIpPortMapper;
 import com.cst.xinhe.persistence.model.terminal.StaffTerminal;
 import com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp;
+import com.cst.xinhe.persistence.model.updateIp.TerminalIpPort;
 import com.cst.xinhe.staffgroupterminal.service.client.TerminalMonitorClient;
 import com.cst.xinhe.staffgroupterminal.service.service.TerminalService;
 import com.github.pagehelper.Page;
@@ -36,6 +38,9 @@ public class TerminalServiceImpl implements TerminalService {
 
     @Resource
     private TerminalMonitorClient terminalMonitorClient;
+
+    @Resource
+    private TerminalIpPortMapper terminalIpPortMapper;
 
     @Override
     public StaffTerminal getTeminalByNum(Integer terminalId) {
@@ -117,9 +122,9 @@ public class TerminalServiceImpl implements TerminalService {
 
     @Override
     public int insertToUpdataIpByTerminal(Integer terminalId) {
-        TerminalUpdateIp terminalUpdateIp = new TerminalUpdateIp();
-        terminalUpdateIp.setTerminalNum(terminalId);
-        return terminalUpdateIpMapper.insert(terminalUpdateIp);
+        TerminalIpPort terminalIpPort = new TerminalIpPort();
+        terminalIpPort.setTerminalId(terminalId);
+        return terminalIpPortMapper.insert(terminalIpPort);
     }
 
     @Override

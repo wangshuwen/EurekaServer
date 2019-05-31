@@ -351,7 +351,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 //                Map<String, Object> map = terminalMonitorService.selectStaffInfoByTerminalId(terminalId);
                 Integer isPerson = (Integer) map.get("is_person");
                 Integer staffId = (Integer) map.get("staff_id");
-                if (staffId != null) {
+                if (null != staffId) {
                     switch (isPerson) {
                         case 0:
                            // TerminalInfoProcess.staffSet.remove(staffId);

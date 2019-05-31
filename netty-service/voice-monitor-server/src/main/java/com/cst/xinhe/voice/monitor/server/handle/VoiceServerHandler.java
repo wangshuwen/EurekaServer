@@ -3,6 +3,7 @@ package com.cst.xinhe.voice.monitor.server.handle;
 import com.alibaba.fastjson.JSON;
 import com.cst.xinhe.common.ws.WebSocketData;
 import com.cst.xinhe.voice.monitor.server.channel.VoiceChannelMap;
+import com.cst.xinhe.voice.monitor.server.context.SpringContextUtil;
 import com.cst.xinhe.voice.monitor.server.ws.WSVoiceServer;
 import com.cst.xinhe.voice.monitor.server.ws.WSVoiceStatus;
 import io.netty.buffer.ByteBuf;
@@ -32,7 +33,7 @@ import java.util.Map;
 @Component
 public class VoiceServerHandler extends ChannelInboundHandlerAdapter {
 
-    private static VoiceServerHandler voiceServerHandler;
+//    private static VoiceServerHandler voiceServerHandler;
 
     @Resource
     private WSVoiceServer wSVoiceServer;
@@ -45,8 +46,9 @@ public class VoiceServerHandler extends ChannelInboundHandlerAdapter {
     private Logger log = LoggerFactory.getLogger(getClass());
 
     public VoiceServerHandler() {
-//        this.wSVoiceServer = SpringContextUtil.getBean(WSVoiceServer.class);
-//        this.wsVoiceStatus = SpringContextUtil.getBean(WSVoiceStatus.class);
+
+        this.wSVoiceServer = SpringContextUtil.getBean(WSVoiceServer.class);
+        this.wsVoiceStatus = SpringContextUtil.getBean(WSVoiceStatus.class);
     }
 
 
@@ -57,13 +59,13 @@ public class VoiceServerHandler extends ChannelInboundHandlerAdapter {
 //    @Resource
 //    private Client client;
 
-    @PostConstruct //通过@PostConstruct实现初始化bean之前进行的操作
-    public void init() {
-        voiceServerHandler = this;
-        voiceServerHandler.wSVoiceServer = this.wSVoiceServer;
-        voiceServerHandler.wsVoiceStatus = this.wsVoiceStatus;
-
-    }
+//    @PostConstruct //通过@PostConstruct实现初始化bean之前进行的操作
+//    public void init() {
+//        voiceServerHandler = this;
+//        voiceServerHandler.wSVoiceServer = this.wSVoiceServer;
+//        voiceServerHandler.wsVoiceStatus = this.wsVoiceStatus;
+//
+//    }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {

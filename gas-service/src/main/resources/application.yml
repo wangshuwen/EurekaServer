@@ -9,6 +9,27 @@ server:
 spring:
   application:
     name: gas-service
+#  kafka:
+#    partition-number: 3
+#    producer:
+#      retries: 3
+#      batch-size: 16384
+#      buffer-memory: 33554432
+#      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+#      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+#      acks: all
+#      bootstrap-servers: 192.168.1.182:9092
+#    consumer:
+#      group-id: test
+#      max-poll-records: 1000
+#      auto-offset-reset: earliest
+#      enable-auto-commit: true
+#      auto-commit-interval: 1000
+#      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#      bootstrap-servers: 192.168.1.182:9092
+#    listener:
+#      concurrency: 4
   datasource:
     # 使用阿里的Druid连接池
     type: com.alibaba.druid.pool.DruidDataSource

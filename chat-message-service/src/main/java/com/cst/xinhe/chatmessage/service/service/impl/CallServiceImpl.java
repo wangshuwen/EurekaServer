@@ -1,9 +1,7 @@
 package com.cst.xinhe.chatmessage.service.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.cst.xinhe.base.context.SpringContextUtil;
 import com.cst.xinhe.chatmessage.service.client.KafkaClient;
-import com.cst.xinhe.chatmessage.service.client.StaffGroupTerminalServiceClient;
 import com.cst.xinhe.chatmessage.service.client.TerminalMonitorClient;
 import com.cst.xinhe.chatmessage.service.service.CallService;
 import com.cst.xinhe.chatmessage.service.service.ChatMessageService;
@@ -36,17 +34,6 @@ import java.util.Map;
 @Service
 public class CallServiceImpl implements CallService {
 
-//    private static final Integer terminalId = 65539;
-//    private static final String terminalIp = "1.68";
-//    private static final Integer stationId = 1;
-//    private static final String stationIp = "1.251";
-
-
-//    @Resource
-//    private TerminalService terminalService;
-
-//    @Resource
-//    private TerminalUpdateIpMapper terminalUpdateIpMapper;
 
     @Resource
     private ChatMessageService chatMsgService;
@@ -54,17 +41,12 @@ public class CallServiceImpl implements CallService {
     @Resource
     private StaffTerminalMapper staffTerminalMapper;
 
-//    @Resource
-//    private KafkaSender kafkaSender;
-
     @Resource
     private KafkaClient kafkaClient;
 
     @Value("${ipPrefix}")
     private String ipPrefix;
 
-    @Resource
-    private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
 
     @Resource
     private TerminalMonitorClient terminalMonitorClient;
@@ -197,52 +179,11 @@ public class CallServiceImpl implements CallService {
                     Integer terminalIp2 = Integer.parseInt(terminalIps[1]);
                     StringBuffer ipPort = new StringBuffer(ipPrefix);
                     ipPort.append(terminalIp1).append(".").append(terminalIp2).append(":").append(terminalPort);
-//                    Channel channel = ChannelMap.getChannelByName(ipPort.toString());
                     boolean flag = terminalMonitorClient.getChanelByName(ipPort.toString());
-//                    if (channel == null) {
-//                        return false;
-//                    }
-//                    return true;
                     return flag;
                 }
-
             }
             return false;
-//            String stationIp = (String) terminalInfo.get("station_ip");
-//
-//            String stationIps[] = stationIp.split("\\.");
-//
-//            Integer stationIp1 = Integer.parseInt(stationIps[0]);
-//            Integer stationIp2 = Integer.parseInt(stationIps[1]);
-//
-//            String terminalIp = (String) terminalInfo.get("terminal_ip");
-//
-//            String terminalIps[] = terminalIp.split("\\.");
-//            Integer terminalIp1 = Integer.parseInt(terminalIps[0]);
-//            Integer terminalIp2 = Integer.parseInt(terminalIps[1]);
-//
-////        Integer terminalId = (Integer)terminalInfo.get("terminal_num");
-//            Integer stationId = (Integer) terminalInfo.get("station_id");
-//            RequestData requestData = new RequestData();
-//            requestData.setType(ConstantValue.MSG_HEADER_FREAME_HEAD);
-//            requestData.setTerminalId(terminalId);
-//            requestData.setStationId(stationId);
-//            requestData.setTerminalIp1(terminalIp1);
-//            requestData.setTerminalIp2(terminalIp2);
-//            requestData.setStationIp1(stationIp1);
-//            requestData.setStationIp2(stationIp2);
-//            requestData.setTerminalIp(terminalIp);
-//            requestData.setLength(34);
-//            requestData.setSequenceId(111);
-//            requestData.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_SEARCH);
-//            requestData.setResult((byte) -1);
-//            requestData.setNodeCount((byte) 0);
-//            requestData.setNdName(ConstantValue.MSG_BODY_NODE_NAME_CHECK_ONLINE);
-//            ResponseData responseData = new ResponseData();
-//            responseData.setCode((byte) -1);
-//            responseData.setCustomMsg(requestData);
-//            SingletonClient.getSingletonClient().sendCmd(responseData);
-
         }
         return false;
     }

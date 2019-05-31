@@ -125,7 +125,6 @@ public class GasKafka {
     public static Set<Integer> seriousTimeSet = Collections.synchronizedSet(new HashSet());
 
     private static List<GasPosition> gasPositionList = Collections.synchronizedList(new LinkedList<>());
-    private static List<GasPosition> gasPositionList1 = Collections.synchronizedList(new LinkedList<>());
 
     @Resource
     private StaffMapper staffMapper;
@@ -644,21 +643,11 @@ public class GasKafka {
                             upLoadGasDto.setGasInfo(gasInfoWarn);// 发送队列插入
                         }
                         gasNum++;
-
-                        if(gasPositionList.size()>1000){
-                            gasPositionList1.add(gasPosition);
-                        }else {
-                            gasPositionList.add(gasPosition);
-                        }
+                        gasPositionList.add(gasPosition);
                         System.out.println("--------------------------已插入气体数量：-------------------------" + gasNum);
                         if (gasPositionList.size() > 1000){
                             gasPositionMapper.insertGasPositions(gasPositionList);
                             gasPositionList.clear();
-                        }
-
-                        if (gasPositionList1.size() > 1000){
-                            gasPositionMapper.insertGasPositions(gasPositionList1);
-                            gasPositionList1.clear();
                         }
 //                        Integer insert = gasPositionMapper.insertSingleGas(gasPosition);
 //                        System.out.println("--------------------------已插入气体数量：-------------------------" + gasNum);

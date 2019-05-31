@@ -73,7 +73,8 @@ public class WSVoiceServer {
     public void onMessage(byte[] message, Session session) {
         //发送语音数据到终端
         Channel channel = VoiceChannelMap.getChannelByName("channel");
-        channel.writeAndFlush(message);
+        if (null != channel)
+            channel.writeAndFlush(message);
 
     }
 

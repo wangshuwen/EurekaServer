@@ -169,16 +169,20 @@ public class WSVoiceStatus {
                     voiceMonitorService.sendDataToTerminalMonitorServer(responseData);
                     break;
                 case "99":
+                    ProcessRtVoice.setBusyLine(false);
                     Channel channel = VoiceChannelMap.getChannelByName("channel");
-                    channel.flush();
-                    channel.close();
-                    channel.closeFuture();
-                    VoiceChannelMap.removeChannelByName("channel");//挂断
+                    if (null != channel){
+                        channel.flush();
+                        channel.close();
+                        channel.closeFuture();
+                        VoiceChannelMap.removeChannelByName("channel");//挂断
+                    }
                     break;
                 case "33":
                     ProcessRtVoice.checkOnline(staffId);  //上面呼叫下面查询：  返回55成功   66终端语音占线，77终端不在线
                     break;
                 case "44":
+                    ProcessRtVoice.setBusyLine(true);
                     customMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_SEARCH);
                     customMsg.setNdName(ConstantValue.MSG_BODY_NODE_NAME_REAL_TIME_CALL);   //上面呼叫下面
                     responseData.setCustomMsg(customMsg);

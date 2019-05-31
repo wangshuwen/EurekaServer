@@ -112,8 +112,9 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
      */
     @Override
     public void sendCallInfo(RequestData customMsg) {
-
+        voiceMonitorServerClient.setBusyLineIsF(true);
         voiceMonitorServerClient.sendCallInfo(customMsg);
+
     }
 
     @Override

@@ -80,6 +80,10 @@ public class ProcessRtVoice {
         return VoiceChannelMap.getChannelNum() > 0;
     }
 
+    public static synchronized void setBusyLine(boolean f) {
+        busyLine = f;
+    }
+
     private static boolean roomStatus = false;//默认false，没人,处于不可呼叫状态，   //用来判断是否可以呼叫
 
     public static synchronized boolean getRoomStatus() { // 获取房间状态

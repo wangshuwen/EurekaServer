@@ -2,12 +2,10 @@ package com.cst.xinhe.voice.monitor.server.server;
 
 import com.cst.xinhe.base.result.ResultUtil;
 import com.cst.xinhe.common.netty.data.request.RequestData;
+import com.cst.xinhe.voice.monitor.server.process.ProcessRtVoice;
 import com.cst.xinhe.voice.monitor.server.service.VoiceMonitorService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @program: EurekaServer
@@ -39,5 +37,11 @@ public class VoiceMonitorController {
         voiceMonitorService.sendInfoToWs(keyStr);
         return ResultUtil.jsonToStringSuccess();
     }
+
+    @GetMapping("setBusyLineIsF")
+    public void setBusyLineIsF(@RequestParam("flag") boolean flag){
+        ProcessRtVoice.setBusyLine(flag);
+    }
+
 
 }

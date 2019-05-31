@@ -92,10 +92,8 @@ public class VoiceServerHandler extends ChannelInboundHandlerAdapter {
         InetSocketAddress inSocket = (InetSocketAddress) ctx.channel().remoteAddress();
         String clientIP = inSocket.getAddress().getHostAddress();
         int port = inSocket.getPort();
-        StringBuffer sb = new StringBuffer(clientIP);
-        sb.append(":");
-        sb.append(port);
-        String str = sb.toString();
+        String str = clientIP + ":" +
+                port;
         log.info("语音[" + str + "] 连接成功");
         //默认是和一个人通话
         VoiceChannelMap.addChannel("channel", ctx.channel());
@@ -120,10 +118,8 @@ public class VoiceServerHandler extends ChannelInboundHandlerAdapter {
         InetSocketAddress inSocket = (InetSocketAddress) ctx.channel().remoteAddress();
         String clientIP = inSocket.getAddress().getHostAddress();
         int port = inSocket.getPort();
-        StringBuffer sb = new StringBuffer(clientIP);
-        sb.append(":");
-        sb.append(port);
-        String str = sb.toString();
+        String str = clientIP + ":" +
+                port;
 
 
         Map<String, Object> map = new HashMap<>();
@@ -157,10 +153,8 @@ public class VoiceServerHandler extends ChannelInboundHandlerAdapter {
         InetSocketAddress inSocket = (InetSocketAddress) ctx.channel().remoteAddress();
         String clientIP = inSocket.getAddress().getHostAddress();
         int port = inSocket.getPort();
-        StringBuffer sb = new StringBuffer(clientIP);
-        sb.append(":");
-        sb.append(port);
-        String str = sb.toString();
+        String str = clientIP + ":" +
+                port;
         log.info("读取语音[" + str + "] 数据完成");
     }
 
@@ -226,10 +220,8 @@ public class VoiceServerHandler extends ChannelInboundHandlerAdapter {
         InetSocketAddress inSocket = (InetSocketAddress) ctx.channel().remoteAddress();
         String clientIP = inSocket.getAddress().getHostAddress();
         int port = inSocket.getPort();
-        StringBuffer sb = new StringBuffer(clientIP);
-        sb.append(":");
-        sb.append(port);
-        String str = sb.toString();
+        String str = clientIP + ":" +
+                port;
         log.error("语音[" + str + "] 出现异常" + cause.getLocalizedMessage());
         VoiceChannelMap.removeChannelByName("channel");
         cause.printStackTrace();

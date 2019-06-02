@@ -142,6 +142,50 @@ public class ResponsePkg {
 
             return data;
         }
+        // 返回给终端临时位置信息
+        if(msg.getNdName() == ConstantValue.MSG_BODY_NODE_NAME_POSITION_SHOW){
+            int r_len = msg.getLength();
+            byte[] data = new byte[r_len];
+
+            byte[] type = NettyDataUtils.intToByteArray(msg.getType());
+            data[0] = type[2];
+            data[1] = type[3];
+            byte[] length = NettyDataUtils.intToByteArray(r_len);
+            data[18] = length[2];
+            data[19] = length[3];
+
+            byte[] cmd = NettyDataUtils.intToByteArray(msg.getCmd());
+            data[20] = cmd[2];
+            data[21] = cmd[3];
+            byte[] seq = NettyDataUtils.intToByteArray(msg.getSequenceId());
+            data[22] = seq[2];
+            data[23] = seq[3];
+
+            Calendar cal = Calendar.getInstance();
+            int year = cal.get(Calendar.YEAR);//获取年份
+            int rty = year - 2000;
+            int month = cal.get(Calendar.MONTH) + 1;//获取月份
+            int day = cal.get(Calendar.DATE);//获取日
+            int hour = cal.get(Calendar.HOUR);//小时
+            int minute = cal.get(Calendar.MINUTE);//分
+            int second = cal.get(Calendar.SECOND);//秒
+
+            data[24] = (byte) rty;
+            data[25] = (byte) month;
+            data[26] = (byte) day;
+            data[27] = (byte) hour;
+            data[28] = (byte) minute;
+            data[29] = (byte) second;
+            byte[] ndName = NettyDataUtils.intToByteArray(msg.getNdName());
+            data[32] = ndName[2];
+            data[33] = ndName[3];
+            byte[] r_body = msg.getBody();
+            for (int i = 34; i < r_len; i++){
+                data[i] = r_body[i-34];
+            }
+
+            return data;
+        }
 
         if(msg.getNdName() == ConstantValue.MSG_BODY_NODE_NAME_SETTING_FREQUENCY){
             byte[] data = new byte[msg.getLength()];

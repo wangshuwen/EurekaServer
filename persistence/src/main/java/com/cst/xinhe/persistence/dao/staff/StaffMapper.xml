@@ -570,7 +570,7 @@
   <select id="selectStaffInfoByTerminalId" resultType="java.util.Map" parameterType="java.lang.Integer" useCache="false">
       SELECT
     <include refid="Base_Column_List"/>
-    FROM staff LEFT JOIN staff_terminal ON staff.staff_id = staff_terminal.staff_id
+    FROM staff INNER JOIN staff_terminal ON staff.staff_id = staff_terminal.staff_id
     WHERE terminal_id = #{terminalId}
   </select>
 

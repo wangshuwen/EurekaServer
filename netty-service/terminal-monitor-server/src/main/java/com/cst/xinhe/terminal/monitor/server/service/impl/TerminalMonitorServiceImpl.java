@@ -8,6 +8,7 @@ import com.cst.xinhe.persistence.dao.base_station.BaseStationMapper;
 import com.cst.xinhe.persistence.dao.chat.TemporarySendListMapper;
 import com.cst.xinhe.persistence.dao.staff.StaffMapper;
 import com.cst.xinhe.persistence.dao.terminal.TerminalUpdateIpMapper;
+import com.cst.xinhe.persistence.dao.updateIp.TerminalIpPortMapper;
 import com.cst.xinhe.persistence.dto.voice.VoiceDto;
 import com.cst.xinhe.persistence.model.chat.TemporarySendList;
 import com.cst.xinhe.persistence.model.lack_electric.LackElectric;
@@ -72,6 +73,8 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
 
     @Resource
     private TerminalUpdateIpMapper terminalUpdateIpMapper;
+    @Resource
+    private TerminalIpPortMapper terminalIpPortMapper;
     /**
      * 根据端口和Ip判断是否在线
      * @param ipPort
@@ -89,6 +92,7 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
      */
     @Override
     public void sendResponseData(ResponseData responseData) {
+        System.out.println(responseData.toString());
         SingletonClient.getSingletonClient().sendCmd(responseData);
     }
 
@@ -291,10 +295,10 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
     }
 
     @Override
-    public TerminalUpdateIp findTerminalIdByIpAndPort(String terminalIp, int port) {
+    public Integer findTerminalIdByIpAndPort(String terminalIp, int port) {
 
         /*return staffGroupTerminalServiceClient.findTerminalIdByIpAndPort(terminalIp, port);*/
-        return  terminalUpdateIpMapper.findTerminalIdByIpAndPort(terminalIp, port);
+        return  terminalIpPortMapper.findTerminalIdByIpPort(terminalIp, port);
     }
 
     @Override

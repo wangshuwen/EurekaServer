@@ -54,7 +54,7 @@ public interface TerminalMonitorService {
 
     void pushRtPersonData();
 
-    TerminalUpdateIp findTerminalIdByIpAndPort(String terminalIp, int port);
+    Integer findTerminalIdByIpAndPort(String terminalIp, int port);
 
     Map<String, Object> selectStaffInfoByTerminalId(Integer terminalId);
 

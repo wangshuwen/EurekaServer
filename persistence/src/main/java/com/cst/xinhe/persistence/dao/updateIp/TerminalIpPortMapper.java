@@ -93,4 +93,6 @@ public interface TerminalIpPortMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(TerminalIpPort record);
+
+    Integer findTerminalIdByIpPort(@Param("terminalIp") String terminalIp, @Param("port") int port);
 }

@@ -8,6 +8,7 @@ import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
 import com.cst.xinhe.persistence.dao.staff.StaffMapper;
 import com.cst.xinhe.persistence.dao.terminal.TerminalUpdateIpMapper;
+import com.cst.xinhe.persistence.dao.updateIp.TerminalIpPortMapper;
 import com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp;
 import com.cst.xinhe.terminal.monitor.server.channel.ChannelMap;
 import com.cst.xinhe.terminal.monitor.server.context.SpringContextUtil;
@@ -25,7 +26,6 @@ import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.InetSocketAddress;
@@ -70,6 +70,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
     private TerminalUpdateIpMapper terminalUpdateIpMapper;
 
+    private TerminalIpPortMapper terminalIpPortMapper;
+
 //    private static NettyServerHandler nettyServerHandler;
 //
 //    //注入上传数据服务
@@ -102,6 +104,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         this.terminalMonitorService = SpringContextUtil.getBean(TerminalMonitorServiceImpl.class);
         this.terminalUpdateIpMapper = SpringContextUtil.getBean(TerminalUpdateIpMapper.class);
         this.staffMapper = SpringContextUtil.getBean(StaffMapper.class);
+        this.terminalIpPortMapper = SpringContextUtil.getBean(TerminalIpPortMapper.class);
 //        this.processRealTimeVoice = ProcessRealTimeVoice.getProcessRealTimeVoice();
     }
 
@@ -322,7 +325,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
      * @date 9:50 2018/12/6
      * @auther lifeng
      **/
-    private ExecutorService executorService = Executors.newFixedThreadPool(4);
+    private ExecutorService executorService = Executors.newFixedThreadPool(6);
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
         executorService.execute(() -> {
@@ -339,15 +342,16 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             //实时查询：根据IP和端口到终端ip更新表查找,移除断开连接的人或车
             String[] split = clientIP.split("\\.");
             String terminalIp = split[2] + "." + split[3];
-            TerminalUpdateIp terminalUpdateIp = terminalUpdateIpMapper.findTerminalIdByIpAndPort(terminalIp, port);
+//            TerminalUpdateIp terminalUpdateIp = terminalUpdateIpMapper.findTerminalIdByIpAndPort(terminalIp, port);
+            Integer terminalId = terminalIpPortMapper.findTerminalIdByIpPort(terminalIp,port);
 //            TerminalUpdateIp terminalUpdateIp = terminalMonitorService.findTerminalIdByIpAndPort(terminalIp, port);
-            if (null != terminalUpdateIp) {
+            if (null != terminalId) {
                 //掉线终端
-                processOfflineTerminalSendWs(terminalUpdateIp);
+                processOfflineTerminalSendWs(terminalId);
 
 
                 //处理终端数量发送
-                Integer terminalId = terminalUpdateIp.getTerminalNum();
+//                Integer terminalId = terminalUpdateIp.getTerminalNum();
                 Map<String, Object> map = staffMapper.selectStaffInfoByTerminalId(terminalId);
 //                Map<String, Object> map = terminalMonitorService.selectStaffInfoByTerminalId(terminalId);
                 Integer isPerson = (Integer) map.get("is_person");
@@ -381,8 +385,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
     }
 
-    private void processOfflineTerminalSendWs(TerminalUpdateIp terminalUpdateIp) {
-        Integer terminalId = terminalUpdateIp.getTerminalNum();
+    private void processOfflineTerminalSendWs(Integer terminalId) {
         //Map<String, Object> map = staffMapper.selectStaffInfoByTerminalId(terminalId);
         Map<String, Object> map = terminalMonitorService.selectStaffInfoByTerminalId(terminalId);
         if (null == map){

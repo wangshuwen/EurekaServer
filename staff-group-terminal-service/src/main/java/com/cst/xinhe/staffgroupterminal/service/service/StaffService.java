@@ -75,4 +75,6 @@ public interface StaffService {
 
 
     List<Integer> findStaffIdByStaffType(Integer staffType);
+
+    Map<Integer, Map<String, String>> findStaffNameAndGroupName(Set<Integer> staffIds);
 }

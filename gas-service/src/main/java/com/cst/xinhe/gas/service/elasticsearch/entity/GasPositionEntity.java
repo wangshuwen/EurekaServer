@@ -17,6 +17,15 @@ import java.util.Date;
 public class GasPositionEntity  {
 
 
+    private String groupName;
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
 
     private String staffname;
 

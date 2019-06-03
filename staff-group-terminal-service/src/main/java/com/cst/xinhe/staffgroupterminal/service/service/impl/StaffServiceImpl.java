@@ -273,6 +273,7 @@ public class StaffServiceImpl implements StaffService {
     public Staff findStaffById(Integer staffId) {
         return staffMapper.selectByPrimaryKey(staffId);
     }
+
     @Override
     public List<Map<String, Object>> findStaffByIds(List<Integer> staffIds) {
         List<Map<String, Object>> list = new ArrayList<>();
@@ -400,4 +401,20 @@ public class StaffServiceImpl implements StaffService {
     }
 
 
+    @Override
+    public Map<Integer, Map<String, String>> findStaffNameAndGroupName(Set<Integer> staffIds) {
+        Map<Integer, Map<String, String>> result = new HashMap<>();
+        Map<String, String> itemMap = new HashMap<>();
+
+        for (Integer item: staffIds){
+            Staff staff = staffMapper.selectByPrimaryKey(item);
+            if (null == staff)
+                continue;
+//            itemMap.put("jobId",staff.getStaffJobId());
+            itemMap.put("staffName",staff.getStaffName());
+            itemMap.put("deptName",staffOrganizationService.getDeptNameByGroupId(staff.getGroupId()));
+            result.put(item,itemMap);
+        }
+        return result;
+    }
 }

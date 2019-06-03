@@ -65,11 +65,20 @@ public class StaffGroupTerminalServiceClientFallback implements StaffGroupTermin
     @Override
     public String getDeptNameByGroupId(Integer group_id) {
         logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
+
+
         return null;
     }
 
     @Override
     public Map<Integer, Map<String, Object>> findGroupNameByStaffId(Set<Integer> list1) {
+        logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
+        return null;
+    }
+
+    @Override
+    public Map<Integer, Map<String, String>> findStaffNameAndGroupName(Set<Integer> staffIds) {
+        logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
         return null;
     }
 }

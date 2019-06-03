@@ -849,7 +849,14 @@ public class GasKafka {
 //            NettyDataUtils.toHexByteByStrings();
 //            requestData.setLength();
 //            responseData.setCustomMsg();
-            terminalMonitorClient.sendResponseData(responseData);
+            try {
+                terminalMonitorClient.sendResponseData(responseData);
+            }catch (Exception e){
+                System.out.println(responseData.toString());
+                e.printStackTrace();
+
+            }
+
         }
     }
 

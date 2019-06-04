@@ -142,7 +142,7 @@ public class StaffControllerServer {
 
 
     @GetMapping("findStaffNameAndGroupName")
-    public Map<Integer, Map<String, String>> findStaffNameAndGroupName(Set<Integer> staffIds){
+    public Map<Integer, Map<String, String>> findStaffNameAndGroupName(@RequestParam("staffIds") Set<Integer> staffIds){
         return staffService.findStaffNameAndGroupName(staffIds);
     }
 

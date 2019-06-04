@@ -575,7 +575,8 @@ public class GasKafka {
                         List<GasWarnSettingDto> O2WarnSettingDto = gasLevelVO.getO2WarnSettingDto();
                         for (GasWarnSettingDto gasWarnSettingDto : O2WarnSettingDto) {
                             Double multiple = gasWarnSettingDto.getMultiple();
-                            if (o2 >= (multiple * o2Standard)) {
+                            //氧气浓度越低，警报等级越高
+                            if (o2 <= (multiple * o2Standard)) {
                                 gasInfoWarn.setO2Flag(gasWarnSettingDto.getLevelDataId());
                                 gasPosition.setO2Unit(gasWarnSettingDto.getLevelDataId());
                                 isWarn = true;

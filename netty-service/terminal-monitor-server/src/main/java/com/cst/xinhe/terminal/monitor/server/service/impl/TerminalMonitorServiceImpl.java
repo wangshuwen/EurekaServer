@@ -388,7 +388,7 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
         body[0] = (byte) ((charArrLenOfStaffName * 3) & 0xff);
         body[1] = (byte) ((charArrLenOfDeptName * 3) & 0xff);
 
-        for (int i = 2,j = 0 ; i < (2 + charArrLenOfStaffName * 3) && j < charArrLenOfStaffName; i = i + 3,j++){
+        for (int i = 2, j = 0 ; i < (2 + charArrLenOfStaffName * 3) && j < charArrLenOfStaffName; i = i + 3,j++){
             if (charArrOfStaffName[j] <= 128) {
                 body[i] = 0;
                 body[i + 1] = 0;
@@ -401,7 +401,7 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
                 body[i + 2] = (byte)(t_s_b[2]&0xff);
             }
         }
-        for (int i = 2 + charArrLenOfStaffName,j = 0 ; i < len && j < charArrLenOfDeptName; i = i+3,j++){
+        for (int i = 2 + charArrLenOfStaffName * 3,j = 0 ; i < len && j < charArrLenOfDeptName; i = i+3,j++){
             if (charArrOfDeptName[j] <= 128) {
                 body[i] = 0;
                 body[i + 1] = 0;

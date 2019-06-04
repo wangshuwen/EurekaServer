@@ -205,7 +205,7 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public HashMap<String, Object> getDeptAndGroupNameByStaffId(Integer staffId) {
         HashMap<String, Object> map = staffMapper.getDeptAndGroupNameByStaffId(staffId);
-       if(map!=null&&map.size()>0){
+       if(null != map && !map.isEmpty()){
            Integer groupId = (Integer) map.get("groupId");
            String deptName = staffOrganizationService.getDeptNameByGroupId(groupId);
            map.put("deptName",deptName);

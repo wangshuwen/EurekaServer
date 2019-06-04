@@ -1,18 +1,22 @@
 package com.cst.xinhe.terminal.monitor.server.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.cst.xinhe.common.constant.ConstantValue;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
+import com.cst.xinhe.common.netty.utils.NettyDataUtils;
 import com.cst.xinhe.common.ws.WebSocketData;
 import com.cst.xinhe.persistence.dao.base_station.BaseStationMapper;
 import com.cst.xinhe.persistence.dao.chat.TemporarySendListMapper;
 import com.cst.xinhe.persistence.dao.staff.StaffMapper;
+import com.cst.xinhe.persistence.dao.terminal.StaffTerminalMapper;
 import com.cst.xinhe.persistence.dao.terminal.TerminalUpdateIpMapper;
 import com.cst.xinhe.persistence.dao.updateIp.TerminalIpPortMapper;
 import com.cst.xinhe.persistence.dto.voice.VoiceDto;
 import com.cst.xinhe.persistence.model.chat.TemporarySendList;
 import com.cst.xinhe.persistence.model.lack_electric.LackElectric;
 import com.cst.xinhe.persistence.model.malfunction.Malfunction;
+import com.cst.xinhe.persistence.model.terminal.StaffTerminal;
 import com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp;
 import com.cst.xinhe.persistence.vo.resp.GasLevelVO;
 import com.cst.xinhe.terminal.monitor.server.channel.ChannelMap;
@@ -23,6 +27,7 @@ import com.cst.xinhe.terminal.monitor.server.request.SingletonClient;
 import com.cst.xinhe.terminal.monitor.server.service.TerminalMonitorService;
 import com.cst.xinhe.terminal.monitor.server.utils.SequenceIdGenerate;
 import io.netty.channel.Channel;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -75,6 +80,9 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
     private TerminalUpdateIpMapper terminalUpdateIpMapper;
     @Resource
     private TerminalIpPortMapper terminalIpPortMapper;
+
+    @Resource
+    private StaffTerminalMapper staffTerminalMapper;
     /**
      * 根据端口和Ip判断是否在线
      * @param ipPort
@@ -343,4 +351,109 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
             }
         }
     }
+
+    @Override
+    public void searchPersonInfoByTerminalId(RequestData customMsg) {
+
+        Integer terminalId = customMsg.getTerminalId();
+        Map<String, Object> staffInfo = staffMapper.selectStaffInfoByTerminalId(terminalId);
+        if (null == staffInfo)
+            return;
+        Integer staffId = (Integer) staffInfo.get("staff_id");
+        if (null == staffId)
+            return;
+        Map<String, Object> res = staffGroupTerminalServiceClient.getDeptAndGroupNameByStaffId(staffId);
+
+        if (null == res){
+            return;
+        }
+
+        String staffName = ((String) staffInfo.get("staff_name")).trim();
+        String deptName = ((String) res.get("deptName")).trim();
+
+
+        char[] charArrOfStaffName = staffName.toCharArray();
+        char[] charArrOfDeptName = deptName.toCharArray();
+
+        int charArrLenOfStaffName = charArrOfStaffName.length;
+        int charArrLenOfDeptName = charArrOfDeptName.length;
+
+        // 数据包总长度 = 34长度的包头 + staffName的长度 + deptName的长度 + 2字节的长度位置
+        int len = 34 + charArrLenOfStaffName * 3 + charArrLenOfDeptName * 3 + 2;
+
+        byte[] body = new byte[len];
+//        byte[] len1 = NettyDataUtils.intToByteArray(charArrLenOfStaffName);
+//        byte[] len2 = NettyDataUtils.intToByteArray(charArrLenOfDeptName);
+        // 暂时认定，员工姓名长度以及部门的长度 都不超过255一个字节的长度 即 80 的字符
+        body[0] = (byte) ((charArrLenOfStaffName * 3) & 0xff);
+        body[1] = (byte) ((charArrLenOfDeptName * 3) & 0xff);
+
+        for (int i = 2,j = 0 ; i < (2 + charArrLenOfStaffName * 3) && j < charArrLenOfStaffName; i = i + 3,j++){
+            if (charArrOfStaffName[j] <= 128) {
+                body[i] = 0;
+                body[i + 1] = 0;
+                body[i + 2] = (byte) (charArrOfStaffName[j] &0xff);
+            } else {
+                String s = String.valueOf(charArrOfStaffName[j]);
+                byte[] t_s_b = s.getBytes();
+                body[i] = (byte)(t_s_b[0]&0xff);
+                body[i + 1] = (byte)(t_s_b[1]&0xff);
+                body[i + 2] = (byte)(t_s_b[2]&0xff);
+            }
+        }
+        for (int i = 2 + charArrLenOfStaffName,j = 0 ; i < len && j < charArrLenOfDeptName; i = i+3,j++){
+            if (charArrOfDeptName[j] <= 128) {
+                body[i] = 0;
+                body[i + 1] = 0;
+                body[i + 2] = (byte) (charArrOfDeptName[j] &0xff);
+            } else {
+                String s = String.valueOf(charArrOfDeptName[j]);
+                byte[] t_s_b = s.getBytes();
+                body[i] = (byte)(t_s_b[0]&0xff);
+                body[i + 1] = (byte)(t_s_b[1]&0xff);
+                body[i + 2] = (byte)(t_s_b[2]&0xff);
+            }
+        }
+
+
+
+//        body[1] =
+//        for (int i = 0, j = 0; i < body.length && j < charArrLen; i = i + 3, j++) {
+//            if (charArr[j] <= 128) {
+//                body[i] = 0;
+//                body[i + 1] = 0;
+//                body[i + 2] = (byte) (charArr[j] &0xff);
+//            } else {
+//                String s = String.valueOf(charArr[j]);
+//                byte[] t_s_b = s.getBytes();
+//                body[i] = (byte)(t_s_b[0]&0xff);
+//                body[i + 1] = (byte)(t_s_b[1]&0xff);
+//                body[i + 2] = (byte)(t_s_b[2]&0xff);
+//            }
+//        }
+
+
+        ResponseData responseData = ResponseData.getResponseData();
+//        RequestData requestData = RequestData.getInstance();
+//
+//        requestData.setType(ConstantValue.MSG_HEADER_FREAME_HEAD);
+//        requestData.setStationIp("0.0");
+//        requestData.setStationId(customMsg.getStationId());
+//        requestData.setStationPort();
+//        requestData.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);
+//        requestData.setSequenceId(SequenceIdGenerate.getSequenceId());
+//        requestData.setNdName(ConstantValue.MSG_BODY_NODE_NAME_PERSON_INFO_SEARCH);
+//        requestData.setResult(ConstantValue.MSG_BODY_RESULT_SUCCESS);
+//        requestData.setNodeCount((byte) 0);
+//        requestData.setLength(len);
+//        requestData.setBody(body);
+        customMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);
+        customMsg.setNdName(ConstantValue.MSG_BODY_NODE_NAME_PERSON_INFO_SEARCH);
+        customMsg.setSequenceId(SequenceIdGenerate.getSequenceId());
+        customMsg.setLength(len);
+        customMsg.setBody(body);
+        responseData.setCustomMsg(customMsg);
+        SingletonClient.getSingletonClient().sendCmd(responseData);
+    }
+
 }

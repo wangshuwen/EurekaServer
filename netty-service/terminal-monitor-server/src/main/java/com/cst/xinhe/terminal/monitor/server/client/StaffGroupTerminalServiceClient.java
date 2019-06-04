@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @FeignClient(value = "staff-group-terminal-service",
@@ -26,4 +27,7 @@ public interface StaffGroupTerminalServiceClient {
 
     @GetMapping("selectStaffInfoByTerminalId")
     Map<String, Object> selectStaffInfoByTerminalId(@RequestParam("terminalId") Integer terminalId);
+
+    @GetMapping("getDeptAndGroupNameByStaffId")
+    Map<String, Object> getDeptAndGroupNameByStaffId(@RequestParam("staffId") Integer staffId);
 }

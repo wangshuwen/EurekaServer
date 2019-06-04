@@ -25,7 +25,7 @@ public class ConstantValue {
     public static final byte MSG_BODY_RESULT_NO_MEAN = -1; //  "无  意义标志"),
     public static final int MSG_BODY_NODE_NAME_HANDWARE_VERSION = 0x1001;   //  , "硬件版本号"),
     public static final int MSG_BODY_NODE_NAME_SOFTWARE_VERSION = 0x1002; //  , "软件版本号"),
-    public static final int MSG_BODY_NODE_NAME_SELFCHECK_RESULT = 0x1003;   //  , "自检结果"),
+    public static final int MSG_BODY_NODE_NAME_SELF_CHECK_RESULT = 0x1003;   //  , "自检结果"),
     public static final int MSG_BODY_NODE_NAME_SENSOR_DATA = 0x2001;  //  , "传感器数据"),
     public static final int MSG_BODY_NODE_NAME_LOCATOR_DATA = 0x2002;   //  , "定位数据"),
     public static final int MSG_BODY_NODE_NAME_VOICE_DATA = 0x2003;   //  , "语音数据"),
@@ -43,6 +43,7 @@ public class ConstantValue {
     public static final int MSG_BODY_NODE_NAME_SETTING_FREQUENCY = 0x3004;// 设置
     public static final int MSG_BODY_NODE_NAME_MAC_STATION = 0x3005;// 设置0x3005：wifi探针检测基站周围终端
     public static final int MSG_BODY_NODE_NAME_POSITION_SHOW = 0x3006;// 设置0x3006：临时位置显示
+    public static final int MSG_BODY_NODE_NAME_PERSON_INFO_SEARCH = 0x3007;// 设置0x3007：个人信息查询
 
     //===============硬件故障代码===============
     public static final int MSG_BODY_HANDWARE_ERROR_WIFI = 0x0100; //  , "WIFI故障"),

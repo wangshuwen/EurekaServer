@@ -73,7 +73,7 @@ public class StationServerHandler extends ChannelInboundHandlerAdapter {
                     case ConstantValue.MSG_HEADER_COMMAND_ID_REQUEST:
                         log.info("采集数据上报");
                         switch (ndName) {
-                            case ConstantValue.MSG_BODY_NODE_NAME_SELFCHECK_RESULT:
+                            case ConstantValue.MSG_BODY_NODE_NAME_SELF_CHECK_RESULT:
 //                                upLoadService.sendSelfCheckResult(reqMsg);
                                 kafkaClient.sendData("selfCheckResultOfStation",reqMsg);
                                 reqMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);

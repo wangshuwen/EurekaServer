@@ -619,6 +619,7 @@ public class GasKafka {
                             }
                             gasWSRespVO.setGasLevel(contrastParameter);
                             //去除服务远程调用
+                            System.out.println("实际计算的等级：" + contrastParameter);
                             Map<String, Object> map = levelDataMapper.selectRangUrlByLevelDataId(contrastParameter);
                             if(null != map && !map.isEmpty()){
                                 String url = (String) map.get("url");

@@ -61,4 +61,6 @@ public interface TerminalMonitorService {
     Integer getBatteryNumByTerminalNum(Integer terminalNum);
 
     void checkTempSendListAndToSend(RequestData customMsg);
+
+    void searchPersonInfoByTerminalId(RequestData customMsg);
 }

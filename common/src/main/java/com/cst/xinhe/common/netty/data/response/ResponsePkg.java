@@ -143,7 +143,8 @@ public class ResponsePkg {
             return data;
         }
         // 返回给终端临时位置信息
-        if(msg.getNdName() == ConstantValue.MSG_BODY_NODE_NAME_POSITION_SHOW){
+        if(msg.getNdName() == ConstantValue.MSG_BODY_NODE_NAME_POSITION_SHOW
+                || msg.getNdName() == ConstantValue.MSG_BODY_NODE_NAME_PERSON_INFO_SEARCH){
             int r_len = msg.getLength();
             byte[] data = new byte[r_len];
 

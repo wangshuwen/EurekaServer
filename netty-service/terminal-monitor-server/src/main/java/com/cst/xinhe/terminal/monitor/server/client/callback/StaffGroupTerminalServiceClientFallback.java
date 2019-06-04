@@ -39,5 +39,9 @@ public class StaffGroupTerminalServiceClientFallback implements StaffGroupTermin
         return null;
     }
 
-
+    @Override
+    public Map<String, Object> getDeptAndGroupNameByStaffId(Integer staffId) {
+        logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
+        return null;
+    }
 }

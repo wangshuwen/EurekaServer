@@ -52,7 +52,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
      */
     private Logger log = LoggerFactory.getLogger(getClass());
 
-    public static final Map<Integer,Integer> battery = new HashMap<>();
+    public static final Map<Integer, Integer> battery = new HashMap<>();
 
 //    private UpLoadService upLoadService;
 
@@ -72,7 +72,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
     private TerminalIpPortMapper terminalIpPortMapper;
 
-//    private static NettyServerHandler nettyServerHandler;
+    //    private static NettyServerHandler nettyServerHandler;
 //
 //    //注入上传数据服务
 //    @Resource
@@ -165,11 +165,11 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                                 customMsg.setNodeCount((byte) 0x00);
                                 resp.setCustomMsg(customMsg);
                                 resp.setCode((byte) 0x55);
-                                System.out.println("接收到的气体数量："  + ++c);
+                                System.out.println("接收到的气体数量：" + ++c);
                                 SingletonClient.getSingletonClient().sendCmd(resp);//返回气体成功标记
                                 log.info("返回气体确认结束");
                                 break;
-                            case ConstantValue.MSG_BODY_NODE_NAME_SELFCHECK_RESULT:
+                            case ConstantValue.MSG_BODY_NODE_NAME_SELF_CHECK_RESULT:
 //                                upLoadService.sendSelfCheckResult(customMsg);
                                 terminalMonitorService.sendSelfCheckResult(customMsg);
                                 customMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);
@@ -179,7 +179,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                                 log.info("自检结果");
                                 break;
                             case ConstantValue.MSG_BODY_NODE_NAME_SOFTWARE_VERSION:
-                             //   upLoadService.sendSoftWareVersion(customMsg);
+                                //   upLoadService.sendSoftWareVersion(customMsg);
                                 terminalMonitorService.sendSoftWareVersion(customMsg);
                                 customMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);
                                 customMsg.setResult(ConstantValue.MSG_BODY_RESULT_SUCCESS);
@@ -188,7 +188,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                                 log.info("软件版本号");
                                 break;
                             case ConstantValue.MSG_BODY_NODE_NAME_HANDWARE_VERSION:
-                          //      upLoadService.sendHandWareVersion(customMsg);
+                                //      upLoadService.sendHandWareVersion(customMsg);
                                 terminalMonitorService.sendHandWareVersion(customMsg);
                                 customMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);
                                 customMsg.setResult(ConstantValue.MSG_BODY_RESULT_SUCCESS);
@@ -256,16 +256,18 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 //                                processRealTimeVoice.sendCheckOnline(customMsg);
                                 break;
                             case ConstantValue.MSG_BODY_NODE_NAME_REAL_TIME_CALL: // 发起呼叫
-
                                 terminalMonitorService.sendCallInfo(customMsg);
 //                                processRealTimeVoice.sendCallInfo(customMsg);
+                                break;
+                            case ConstantValue.MSG_BODY_NODE_NAME_PERSON_INFO_SEARCH:
+                                terminalMonitorService.searchPersonInfoByTerminalId(customMsg);
                                 break;
                         }
                         break;
                     case ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE:
                         switch (ndName) {
                             case ConstantValue.MSG_BODY_NODE_NAME_CHECK_POWER:
-                                battery.put(customMsg.getTerminalId(),(int) customMsg.getBody()[0]);
+                                battery.put(customMsg.getTerminalId(), (int) customMsg.getBody()[0]);
                                 break;
                             case ConstantValue.MSG_BODY_NODE_NAME_CHECK_ONLINE:
                                 // 检查在线情况
@@ -326,6 +328,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
      * @auther lifeng
      **/
     private ExecutorService executorService = Executors.newFixedThreadPool(6);
+
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
         executorService.execute(() -> {
@@ -343,7 +346,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             String[] split = clientIP.split("\\.");
             String terminalIp = split[2] + "." + split[3];
 //            TerminalUpdateIp terminalUpdateIp = terminalUpdateIpMapper.findTerminalIdByIpAndPort(terminalIp, port);
-            Integer terminalId = terminalIpPortMapper.findTerminalIdByIpPort(terminalIp,port);
+            Integer terminalId = terminalIpPortMapper.findTerminalIdByIpPort(terminalIp, port);
 //            TerminalUpdateIp terminalUpdateIp = terminalMonitorService.findTerminalIdByIpAndPort(terminalIp, port);
             if (null != terminalId) {
                 //掉线终端
@@ -359,19 +362,19 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 if (null != staffId) {
                     switch (isPerson) {
                         case 0:
-                           // TerminalInfoProcess.staffSet.remove(staffId);
+                            // TerminalInfoProcess.staffSet.remove(staffId);
                             terminalMonitorService.removeStaffSet(staffId);
                             break;
                         case 1:
-                           // TerminalInfoProcess.leaderSet.remove(staffId);
+                            // TerminalInfoProcess.leaderSet.remove(staffId);
                             terminalMonitorService.removeLeaderSet(staffId);
                             break;
                         case 2:
-                           // TerminalInfoProcess.outPersonSet.remove(staffId);
+                            // TerminalInfoProcess.outPersonSet.remove(staffId);
                             terminalMonitorService.removeOutPersonSet(staffId);
                             break;
                         case 3:
-                          //  TerminalInfoProcess.carSet.remove(staffId);
+                            //  TerminalInfoProcess.carSet.remove(staffId);
                             terminalMonitorService.removeCarSet(staffId);
                             break;
                     }
@@ -388,7 +391,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     private void processOfflineTerminalSendWs(Integer terminalId) {
         //Map<String, Object> map = staffMapper.selectStaffInfoByTerminalId(terminalId);
         Map<String, Object> map = terminalMonitorService.selectStaffInfoByTerminalId(terminalId);
-        if (null == map){
+        if (null == map) {
             throw new RuntimeServiceException(ErrorCode.TERMINAL_AND_STAFF_NOT_BINDING);
         }
 //        Integer isPerson = (Integer) map.get("is_person");
@@ -396,7 +399,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         mapOfWs.put("type", 2);
         mapOfWs.put("staffId", staffId);
 //            WSSiteServer.sendInfo(JSON.toJSONString(mapOfWs));
-            terminalMonitorService.sendInfoToWsServer(JSON.toJSONString(mapOfWs));
+        terminalMonitorService.sendInfoToWsServer(JSON.toJSONString(mapOfWs));
     }
 
     /**

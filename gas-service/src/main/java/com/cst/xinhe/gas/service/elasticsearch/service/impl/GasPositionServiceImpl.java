@@ -131,7 +131,7 @@ public class GasPositionServiceImpl implements GasPositionService {
 
 
 
-        FieldSortBuilder sortBuilder = SortBuilders.fieldSort("gaspositionid").order(SortOrder.ASC);
+        FieldSortBuilder sortBuilder = SortBuilders.fieldSort("gaspositionid").order(SortOrder.DESC);
         NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder().withSort(sortBuilder).withQuery(builder).withPageable(pageable);
         Page<GasPositionEntity> page = gasPositionRepository.search(nativeSearchQueryBuilder.build());
         return page;

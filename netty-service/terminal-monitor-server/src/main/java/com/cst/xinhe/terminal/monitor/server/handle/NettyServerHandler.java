@@ -234,6 +234,16 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                                 SingletonClient.getSingletonClient().sendCmd(resp);
                                 // 终端欠电提醒
                                 break;
+                                case ConstantValue.MSG_BODY_NODE_NAME_E_CALL:
+                                //紧急呼叫
+//                                upLoadService.sendPowerStatus(customMsg);
+                                terminalMonitorService.eCall(customMsg);
+                                customMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);
+                                customMsg.setResult(ConstantValue.MSG_BODY_RESULT_SUCCESS);
+                                customMsg.setLength(34);
+                                resp.setCustomMsg(customMsg);
+                                SingletonClient.getSingletonClient().sendCmd(resp);
+                                break;
                             default:
                                 log.error("未知命令包");
                                 break;

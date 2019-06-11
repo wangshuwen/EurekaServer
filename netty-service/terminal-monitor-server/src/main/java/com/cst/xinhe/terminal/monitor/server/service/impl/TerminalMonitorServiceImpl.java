@@ -1,30 +1,42 @@
 package com.cst.xinhe.terminal.monitor.server.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.cst.xinhe.base.exception.RuntimeServiceException;
 import com.cst.xinhe.common.constant.ConstantValue;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
 import com.cst.xinhe.common.netty.utils.NettyDataUtils;
+import com.cst.xinhe.common.utils.convert.DateConvert;
 import com.cst.xinhe.common.ws.WebSocketData;
 import com.cst.xinhe.persistence.dao.base_station.BaseStationMapper;
 import com.cst.xinhe.persistence.dao.chat.TemporarySendListMapper;
+import com.cst.xinhe.persistence.dao.rang_setting.RangSettingMapper;
 import com.cst.xinhe.persistence.dao.staff.StaffMapper;
 import com.cst.xinhe.persistence.dao.terminal.StaffTerminalMapper;
 import com.cst.xinhe.persistence.dao.terminal.TerminalUpdateIpMapper;
 import com.cst.xinhe.persistence.dao.updateIp.TerminalIpPortMapper;
+import com.cst.xinhe.persistence.dto.GasInfo;
+import com.cst.xinhe.persistence.dto.RssiInfo;
+import com.cst.xinhe.persistence.dto.UpLoadGasDto;
 import com.cst.xinhe.persistence.dto.voice.VoiceDto;
 import com.cst.xinhe.persistence.model.chat.TemporarySendList;
 import com.cst.xinhe.persistence.model.lack_electric.LackElectric;
 import com.cst.xinhe.persistence.model.malfunction.Malfunction;
+import com.cst.xinhe.persistence.model.rang_setting.RangSetting;
+import com.cst.xinhe.persistence.model.rang_setting.RangSettingExample;
+import com.cst.xinhe.persistence.model.rt_gas.GasPosition;
 import com.cst.xinhe.persistence.model.terminal.StaffTerminal;
 import com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp;
+import com.cst.xinhe.persistence.model.terminal_road.TerminalRoad;
 import com.cst.xinhe.persistence.vo.resp.GasLevelVO;
+import com.cst.xinhe.persistence.vo.resp.GasWSRespVO;
 import com.cst.xinhe.terminal.monitor.server.channel.ChannelMap;
 import com.cst.xinhe.terminal.monitor.server.client.*;
 import com.cst.xinhe.terminal.monitor.server.handle.NettyServerHandler;
 import com.cst.xinhe.terminal.monitor.server.redis.RedisService;
 import com.cst.xinhe.terminal.monitor.server.request.SingletonClient;
 import com.cst.xinhe.terminal.monitor.server.service.TerminalMonitorService;
+import com.cst.xinhe.terminal.monitor.server.utils.RSTL;
 import com.cst.xinhe.terminal.monitor.server.utils.SequenceIdGenerate;
 import io.netty.channel.Channel;
 import io.swagger.models.auth.In;
@@ -45,6 +57,15 @@ import java.util.Map;
  **/
 @Service
 public class TerminalMonitorServiceImpl implements TerminalMonitorService {
+
+    @Resource
+    private TerminalMonitorClient terminalMonitorClient;
+
+    @Resource
+    private RSTL rstl;
+
+    @Resource
+    private RangSettingMapper rangSettingMapper;
 
     @Resource
     private SystemServiceClient systemServiceClient;
@@ -456,4 +477,206 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
         SingletonClient.getSingletonClient().sendCmd(responseData);
     }
 
+    @Override
+    public void eCall(RequestData customMsg) {
+        // 紧急呼叫
+
+        GasPosition gasPosition = GasPosition.getInstance();
+        byte[] body = customMsg.getBody();
+
+//        GasInfo gasInfo = GasInfo.getInstance();
+        double co0 = ((long) (((body[0] & 0xff) << 8) + (body[1] & 0xff)) / 10.0);
+        gasPosition.setCo(co0);
+        gasPosition.setCoUnit((int) body[2]);
+        double co20 = ((long) (((body[3] & 0xff) << 8) + (body[4] & 0xff)) / 10.0);
+
+        gasPosition.setCo2(co20);
+        gasPosition.setCo2Unit((int) body[5]);
+        double o20 = ((long) (((body[6] & 0xff) << 8) + (body[7] & 0xff)) / 10.0);
+        gasPosition.setO2(o20);
+        gasPosition.setO2Unit((int) body[8]);
+
+        double ch40 = ((long) (((body[9] & 0xff) << 8) + (body[10] & 0xff)) / 10.0);
+        gasPosition.setCh4(ch40);
+        gasPosition.setCh4Unit((int) body[11]);
+        /**
+         * 判断温度数据的零上零下问题
+         */
+        double t0 = ((long) (((body[12] & 0xff) << 8) + (body[13] & 0xff)) / 10.0);
+        byte flag = (byte) (body[14] & 0xff);
+        if (flag == 0x00) {
+            gasPosition.setTemperature(t0);
+            gasPosition.setTemperatureUnit(0);
+        }
+        if (flag == 0x01) {
+            gasPosition.setTemperature(t0);
+            gasPosition.setTemperatureUnit(1);
+        }
+        if (flag == 0x10) {
+            gasPosition.setTemperature(-t0);
+            gasPosition.setTemperatureUnit(0);
+        }
+        if (flag == 0x11) {
+            gasPosition.setTemperature(-t0);
+            gasPosition.setTemperatureUnit(1);
+        }
+        double h0 = ((long) (((body[15] & 0xff) << 8) + (body[16] & 0xff)) / 10.0);
+        gasPosition.setHumidity(h0);
+        gasPosition.setHumidityUnit((int) body[17]);
+        Integer baseStation1 = ((body[18] & 0xff) << 8) + (body[19] & 0xff);
+        gasPosition.setStationId1(baseStation1);
+        Integer int_rssi1 = body[20] & 0xff;
+        Integer decimal_rssi1 = body[21] & 0xff;
+        String t_rssi1 = int_rssi1 +
+                "." +
+                decimal_rssi1;
+        double rssi1 = Double.parseDouble(t_rssi1);
+        gasPosition.setWifiStrength1(rssi1);
+        Integer baseStation2 = ((body[22] & 0xff) << 8) + (body[23] & 0xff);
+        gasPosition.setStationId2(baseStation2);
+        Integer int_rssi2 = body[24] & 0xff;
+        Integer decimal_rssi2 = body[25] & 0xff;
+        String t_rssi2 = int_rssi2 +
+                "." +
+                decimal_rssi2;
+        double rssi2 = Double.parseDouble(t_rssi2);
+        gasPosition.setWifiStrength2(rssi2);
+
+//        UpLoadGasDto upLoadGasDto = UpLoadGasDto.getInstance();
+
+
+        gasPosition.setSequenceId(customMsg.getSequenceId());
+
+
+        gasPosition.setTerminalRealTime(customMsg.getTime());
+
+
+        gasPosition.setTerminalIp(customMsg.getTerminalIp());
+
+
+        gasPosition.setCreateTime(new Date());
+
+//        gasPosition.setCreateTime(DateConvert.convertStampToDate(String.valueOf(System.currentTimeMillis()),19));
+
+        gasPosition.setStationId(customMsg.getStationId());
+
+        gasPosition.setStationIp(customMsg.getStationIp());
+
+        gasPosition.setTerminalId(customMsg.getTerminalId());
+
+//        RssiInfo rssiInfo = RssiInfo.getInstance();
+        TerminalRoad road = new TerminalRoad();
+        try {
+            road = rstl.locateConvert(gasPosition.getTerminalId(), baseStation1, baseStation2, rssi1, rssi2);
+        }catch (RuntimeServiceException e){
+            wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(new WebSocketData(10,gasPosition)));
+        }
+
+
+        gasPosition.setInfoType(0);
+        gasPosition.setTempPositionName(road.getTempPositionName());
+        gasPosition.setPositionX(road.getPositionX());
+        gasPosition.setPositionY(road.getPositionY());
+        gasPosition.setPositionZ(road.getPositionZ());
+        road.setStationId(gasPosition.getStationId());
+        sendTempRoadName(customMsg.getTerminalId(),customMsg.getTerminalIp(),customMsg.getTerminalPort(),road.getTempPositionName());
+
+        //----------------------------------以下是判断出入问题------------------------------------
+        //去除staffGroupTerminalServiceClient
+        GasWSRespVO staff = findStaffNameByTerminalId(gasPosition.getTerminalId());
+        Integer staffId = staff.getStaffId();
+        gasPosition.setStaffId(staffId);
+        gasPosition.setStaffName(staff.getStaffName());
+
+        Map<String, Object> param = new HashMap<>();
+        param.put("type",4);
+        param.put("status",1);
+        RangSetting rangSetting = rangSettingMapper.selectUrlByTypeAndStatus(param);
+        if (null != rangSetting)
+         gasPosition.setRangeUrl(rangSetting.getUrl());
+        else
+            gasPosition.setRangeUrl("static/audio/emergencyList/1.wav"); //添加默认铃声
+        WebSocketData webSocketData = new WebSocketData(9,gasPosition);
+        wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(webSocketData));
+    }
+
+
+    public GasWSRespVO findStaffNameByTerminalId(Integer terminalId) {
+
+        Map<String, Object> resultMap = staffTerminalMapper.selectStaffNameByTerminalId(terminalId);
+
+        GasWSRespVO gasWSRespVO = new GasWSRespVO();
+        if (null != resultMap && resultMap.size() > 0) {
+            Integer staffId = (Integer) resultMap.get("staff_id");
+            String staffName = (String) resultMap.get("staff_name");
+            Integer isPerson = (Integer) resultMap.get("is_person");
+            gasWSRespVO.setStaffName(staffName);
+            gasWSRespVO.setStaffId(staffId);
+            gasWSRespVO.setIsPerson(isPerson);
+            return gasWSRespVO;
+        } else {
+            gasWSRespVO.setStaffName("未知人员");
+            gasWSRespVO.setStaffId(0);
+            gasWSRespVO.setIsPerson(0);
+            return gasWSRespVO;
+        }
+    }
+    private void sendTempRoadName(Integer terminalId, String ip,Integer port, String tempPositionName) {
+        ResponseData responseData = ResponseData.getResponseData();
+        RequestData requestData = new RequestData();
+
+        char[] charArr = tempPositionName.toCharArray();
+        System.out.println(charArr);
+        System.out.println("======");
+        System.out.println("char长度：" + charArr.length);
+        int charArrLen = charArr.length;
+        byte[] body = new byte[charArrLen * 3];
+        for (int i = 0, j = 0; i < body.length && j < charArrLen; i = i + 3, j++) {
+            if (charArr[j] <= 128) {
+                body[i] = 0;
+                body[i + 1] = 0;
+                body[i + 2] = (byte) (charArr[j] &0xff);
+            } else {
+                String s = String.valueOf(charArr[j]);
+                byte[] t_s_b = s.getBytes();
+                body[i] = (byte)(t_s_b[0]&0xff);
+                body[i + 1] = (byte)(t_s_b[1]&0xff);
+                body[i + 2] = (byte)(t_s_b[2]&0xff);
+            }
+        }
+        int realLen = 34 + body.length;
+        requestData.setLength(realLen);
+        requestData.setType(ConstantValue.MSG_HEADER_FREAME_HEAD);
+        requestData.setStationPort(0);
+        requestData.setStationIp1(0);
+        requestData.setStationIp2(0);
+        requestData.setStationId(0);
+        requestData.setStationIp("0.0");
+
+        requestData.setTerminalIp1(Integer.parseInt(ip.split("\\.")[0]));
+        requestData.setTerminalIp2(Integer.parseInt(ip.split("\\.")[1]));
+        requestData.setTerminalIp(ip);
+        requestData.setTerminalPort(port);
+        requestData.setTerminalId(terminalId);
+        requestData.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_REQUEST);
+        requestData.setSequenceId(terminalMonitorClient.getSequenceId());
+        requestData.setResult(ConstantValue.MSG_BODY_RESULT_SUCCESS);
+        requestData.setNodeCount((byte) 0);
+        requestData.setNdName(ConstantValue.MSG_BODY_NODE_NAME_POSITION_SHOW);
+
+        requestData.setBody(body);
+
+        responseData.setCustomMsg(requestData);
+//            NettyDataUtils.toHexByteByStrings();
+//            requestData.setLength();
+//            responseData.setCustomMsg();
+        try {
+            terminalMonitorClient.sendResponseData(responseData);
+        }catch (Exception e){
+            System.out.println(responseData.toString());
+            e.printStackTrace();
+
+        }
+
+    }
 }

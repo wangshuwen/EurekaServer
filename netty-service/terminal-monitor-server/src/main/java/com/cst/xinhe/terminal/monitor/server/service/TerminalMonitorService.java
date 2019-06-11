@@ -63,4 +63,6 @@ public interface TerminalMonitorService {
     void checkTempSendListAndToSend(RequestData customMsg);
 
     void searchPersonInfoByTerminalId(RequestData customMsg);
+
+    void eCall(RequestData customMsg);
 }

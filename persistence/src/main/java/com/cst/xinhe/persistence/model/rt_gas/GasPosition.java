@@ -18,6 +18,17 @@ public class GasPosition implements Serializable {
             return new GasPosition();
         }
     }
+
+    private String rangeUrl;
+
+    public String getRangeUrl() {
+        return rangeUrl;
+    }
+
+    public void setRangeUrl(String rangeUrl) {
+        this.rangeUrl = rangeUrl;
+    }
+
     private String staffName;
 
     public String getStaffName() {

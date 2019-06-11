@@ -6,6 +6,7 @@ import com.cst.xinhe.persistence.model.rang_setting.RangSettingExample;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface RangSettingMapper {
     /**
@@ -95,4 +96,6 @@ public interface RangSettingMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(RangSetting record);
+
+    RangSetting selectUrlByTypeAndStatus(Map<String, Object> param);
 }

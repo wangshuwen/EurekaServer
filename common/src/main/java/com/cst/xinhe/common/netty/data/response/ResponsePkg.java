@@ -29,7 +29,8 @@ public class ResponsePkg {
         if (msg.getNdName() == ConstantValue.MSG_BODY_NODE_NAME_CHECK_ONLINE
                 || msg.getNdName() == ConstantValue.MSG_BODY_NODE_NAME_REAL_TIME_CALL
                 || msg.getNdName() == ConstantValue.MSG_BODY_NODE_NAME_POWER_STATUS
-                || msg.getNdName() == ConstantValue.MSG_BODY_NODE_NAME_CHECK_POWER) {
+                || msg.getNdName() == ConstantValue.MSG_BODY_NODE_NAME_CHECK_POWER
+                || msg.getNdName() == ConstantValue.MSG_BODY_NODE_NAME_E_CALL) {
 
             byte[] data = new byte[34];
 

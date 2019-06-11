@@ -299,4 +299,12 @@
     name = #{name,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="selectUrlByTypeAndStatus" parameterType="java.util.Map" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM rang_setting
+    WHERE
+     status = #{status}
+    AND
+     type = #{type}
+  </select>
 </mapper>

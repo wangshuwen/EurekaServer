@@ -16,10 +16,41 @@ import org.springframework.stereotype.Component;
 @Component
 public class WsPushServiceFallback implements WsPushServiceClient {
 
-    Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger logger = LoggerFactory.getLogger(WsPushServiceFallback.class);
 
     @Override
     public void sendWSSiteServer(String jsonString) {
         logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
+    }
+
+    @Override
+    public void setOrgId(Integer o) {
+        logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
+
+    }
+
+    @Override
+    public void setZoneId(Integer o) {
+        logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
+
+    }
+
+    @Override
+    public void setOrgIdIsNull() {
+
+        logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
+    }
+
+    @Override
+    public void setZoneIdIsNull() {
+        logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
+    }
+
+
+    @Override
+    public String sendWebsocketServer(String jsonObject) {
+
+        logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
+        return null;
     }
 }

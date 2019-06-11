@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.exception.RuntimeOtherException;
+import com.cst.xinhe.base.exception.RuntimeServiceException;
 import com.cst.xinhe.common.constant.ConstantValue;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
@@ -304,8 +305,12 @@ public class GasKafka {
                     //封装返回的气体信息
                     upLoadGasDto.setRssiInfo(rssiInfo);
 
-                    TerminalRoad road = rstl.locateConvert(gasPosition.getTerminalId(), baseStation1, baseStation2, rssi1, rssi2);
-
+                    TerminalRoad road = new TerminalRoad();
+                    try {
+                        road = rstl.locateConvert(gasPosition.getTerminalId(), baseStation1, baseStation2, rssi1, rssi2);
+                    }catch (RuntimeServiceException e){
+                        wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(new WebSocketData(10,gasPosition)));
+                    }
                     gasPosition.setInfoType(0);
                     gasPosition.setTempPositionName(road.getTempPositionName());
                     gasPosition.setPositionX(road.getPositionX());

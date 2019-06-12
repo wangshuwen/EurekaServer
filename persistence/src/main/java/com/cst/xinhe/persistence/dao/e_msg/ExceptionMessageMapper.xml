@@ -728,7 +728,8 @@
     where e_msg_id = #{eMsgId,jdbcType=BIGINT}
   </update>
   <select id="selectByParams" parameterType="java.util.Map" resultType="java.util.Map">
-    SELECT e.*,s.staff_name,s.group_id FROM exception_message e INNER JOIN staff s ON e.staff_id = s.staff_id
+    SELECT e.*,s.staff_name,s.group_id,j.job_name,j.remark FROM exception_message e INNER JOIN staff s ON e.staff_id = s.staff_id
+    INNER JOIN staff_job j ON j.job_id = s.staff_job_id
     <where>
       <if test="staffName != null and staffName neq ''">
         AND CONCAT('%',staffName,'%')

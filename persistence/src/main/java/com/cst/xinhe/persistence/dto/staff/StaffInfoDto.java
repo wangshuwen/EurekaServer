@@ -55,6 +55,16 @@ public class StaffInfoDto {
 
     private String jobName;
 
+    private String remark;
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
     private Date staffBirthday;
 
     public Integer getJobId() {

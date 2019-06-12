@@ -1,5 +1,6 @@
 package com.cst.xinhe.kafka.consumer.service.server;
 
+import com.cst.xinhe.kafka.consumer.service.consumer.GasKafka;
 import com.cst.xinhe.kafka.consumer.service.service.KafkaConsumerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,15 @@ public class KafkaConsumerController {
 
     @Autowired
     KafkaConsumerService kafkaConsumerService;
+
+    @PutMapping("overmanedAlarm")
+    public void overmanedAlarm(@RequestParam("type") Integer type,@RequestParam("staffId") Integer staffId){
+        if(type==1){
+            GasKafka.importantArea.remove(staffId);
+        }else{
+            GasKafka.limitArea.remove(staffId);
+        }
+    }
 
     @PutMapping("removeCarSet")
     public void removeCarSet(@RequestParam Integer staffId){

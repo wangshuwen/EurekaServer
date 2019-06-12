@@ -75,6 +75,9 @@ public class GasKafka {
     //存储更新基站 队列
     public static Map<Integer, ArrayQueue<TerminalRoad>> attendanceMap = Collections.synchronizedMap(new HashMap<>());
 
+    public static Set<Integer> importantArea  = Collections.synchronizedSet(new HashSet<Integer>());
+    public static Set<Integer> limitArea  = Collections.synchronizedSet(new HashSet<Integer>());
+
     @Resource
     private StaffOrganizationMapper staffOrganizationMapper;
 
@@ -376,10 +379,36 @@ public class GasKafka {
                         WarningArea warningArea = warningAreaMapper.selectByPrimaryKey(warningAreaRecord.getWarningAreaId());
                         if (warningArea != null) {
                             if (warningArea.getWarningAreaType() == 1) {
+
+                                //重点区域超员报警
+                                importantArea.add(staffId);
+                                if(importantArea.size()>warningArea.getContainNumber()){
+                                    WebSocketData data = WebSocketData.getInstance();
+                                    HashMap<String, Object> map = new HashMap<>();
+                                    map.put("areaInfo",warningArea);
+                                    map.put("personNum",importantArea.size());
+                                    data.setType(9);
+                                    data.setData(data);
+                                    wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
+                                }
+
                                 //在重点区域内
                                 road.setIsOre(3);
                                 gasPosition.setIsOre(3);
                             } else {
+                                //限制区域超员报警
+                                limitArea.add(staffId);
+                                if(limitArea.size()>warningArea.getContainNumber()){
+                                    WebSocketData data = WebSocketData.getInstance();
+                                    HashMap<String, Object> map = new HashMap<>();
+                                    map.put("areaInfo",warningArea);
+                                    map.put("personNum",limitArea.size());
+                                    data.setType(10);
+                                    data.setData(data);
+                                    wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
+                                }
+
+
                                 road.setIsOre(4);
                                 gasPosition.setIsOre(4);
                                 //在限制区域内

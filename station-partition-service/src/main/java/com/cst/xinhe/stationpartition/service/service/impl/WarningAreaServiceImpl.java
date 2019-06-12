@@ -15,6 +15,7 @@ import com.cst.xinhe.persistence.model.warning_area.WarningAreaExample;
 import com.cst.xinhe.persistence.model.warning_area.WarningAreaRecord;
 import com.cst.xinhe.persistence.model.warning_area.WarningAreaRecordExample;
 import com.cst.xinhe.persistence.vo.resp.WarningAreaVO;
+import com.cst.xinhe.stationpartition.service.client.KafkaConsumerServiceClient;
 import com.cst.xinhe.stationpartition.service.client.StaffGroupTerminalServiceClient;
 import com.cst.xinhe.stationpartition.service.client.WsPushServiceClient;
 import com.cst.xinhe.stationpartition.service.service.WarningAreaService;
@@ -47,6 +48,9 @@ public class WarningAreaServiceImpl implements WarningAreaService {
 
     @Resource
     private WsPushServiceClient wsPushServiceClient;
+
+    @Resource
+    private KafkaConsumerServiceClient kafkaConsumerServiceClient;
 
     @Override
     public List<Coordinate> findCoordinateByAreaId(Integer areaId) {
@@ -321,6 +325,13 @@ public class WarningAreaServiceImpl implements WarningAreaService {
             Integer areaId = record.getWarningAreaId();
             WarningArea area = warningAreaMapper.selectByPrimaryKey(areaId);
             Integer type = area.getWarningAreaType();
+
+            //超员报警
+            if(type==1){
+                kafkaConsumerServiceClient.overmanedAlarm(1,staffId);
+            }else{
+                kafkaConsumerServiceClient.overmanedAlarm(2,staffId);
+            }
 
             WebSocketData data = new WebSocketData();
 

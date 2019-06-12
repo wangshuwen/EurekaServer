@@ -188,6 +188,7 @@ public class WarningAreaController {
     @PutMapping("updateOutTime")
     public String updateOutTime(@RequestParam(name ="staffId") Integer staffId){
         Integer result = warningAreaService.updateOutTime(staffId);
+
         return result >0 ? ResultUtil.jsonToStringSuccess(): ResultUtil.jsonToStringError(ResultEnum.FAILED);
     }
 

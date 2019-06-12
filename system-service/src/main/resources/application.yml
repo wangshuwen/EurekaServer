@@ -1,7 +1,22 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: ALWAYS
 server:
   port: 8778
 rangBasePath: D:/idea/ideaProject/vue2/
 spring:
+  elasticsearch:
+    rest:
+      uris: ["http://192.168.1.182:9200"]
+  boot:
+    admin:
+      client:
+        url: http://127.0.0.1:5000
   #配置redis数据库
   redis:
     database: 15
@@ -74,6 +89,7 @@ eureka:
   instance:
     lease-expiration-duration-in-seconds: 2   #告诉服务端，如果我2s之内没有给你发心跳，就代表我“死”了，将我踢出掉。
     lease-renewal-interval-in-seconds: 1     #每间隔1s，向服务端发送一次心跳，证明自己依然”存活“
+    health-check-url-path: /actuator/health
   client:
     service-url:
       defaultZone: http://127.0.0.1:8761/eureka/

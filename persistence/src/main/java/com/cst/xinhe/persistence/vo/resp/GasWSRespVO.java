@@ -31,6 +31,16 @@ public class GasWSRespVO implements Serializable,Cloneable {
 
     private Long rtGasInfoId;
 
+    private Integer groupId;
+
+    public Integer getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(Integer groupId) {
+        this.groupId = groupId;
+    }
+
     private Integer gasLevel;
 
     public Integer getGasLevel() {

@@ -4,10 +4,15 @@ import com.cst.xinhe.common.utils.convert.DateConvert;
 import com.cst.xinhe.gas.service.elasticsearch.repository.GasPositionRepository;
 import com.cst.xinhe.gas.service.elasticsearch.entity.GasPositionEntity;
 import com.cst.xinhe.gas.service.elasticsearch.service.GasPositionService;
+import com.cst.xinhe.persistence.dao.e_msg.ExceptionMessageMapper;
 import com.cst.xinhe.persistence.dao.staff.StaffMapper;
+import com.cst.xinhe.persistence.dao.staff.StaffOrganizationMapper;
 import com.cst.xinhe.persistence.model.staff.Staff;
 import com.cst.xinhe.persistence.model.staff.StaffExample;
+import com.cst.xinhe.persistence.model.staff.StaffOrganization;
 import com.cst.xinhe.persistence.model.terminal_road.TerminalRoad;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -44,6 +49,12 @@ public class GasPositionServiceImpl implements GasPositionService {
 
     @Resource
     private StaffMapper staffMapper;
+
+    @Resource
+    private StaffOrganizationMapper staffOrganizationMapper;
+
+    @Resource
+    private ExceptionMessageMapper exceptionMessageMapper;
 
 
     @Resource
@@ -290,5 +301,35 @@ public class GasPositionServiceImpl implements GasPositionService {
 //        ORDER BY a.rt_gas_info_id DESC LIMIT #{number}
 //    </select>
         return list;
+    }
+
+    @Override
+    public PageInfo<Map<String, Object>> getEMsgList(Integer pageSize, Integer startPage, String staffName, Integer staffId) {
+        com.github.pagehelper.Page<Map<String, Object>> page = PageHelper.startPage(startPage,pageSize);
+        Map<String, Object> params = new HashMap<>();
+        params.put("staffName", staffName);
+        params.put("staffId", staffId);
+//        List<Map<String, Object>> mapList = eCallMapper.selectByParams(params);
+        List<Map<String, Object>> mapList = exceptionMessageMapper.selectByParams(params);
+        for (Map<String, Object> item : page.getResult()){
+            Integer groupId = (Integer) item.get("group_id");
+            String deptName = getDeptNameByGroupId(groupId);
+            item.put("dept_name",deptName);
+        }
+        PageInfo pageInfo = new PageInfo(page);
+        return pageInfo;
+    }
+    public String getDeptNameByGroupId(Integer groupId) {
+        String deptName = "";
+        StaffOrganization staffOrganization = staffOrganizationMapper.selectByPrimaryKey(groupId);
+        if (staffOrganization != null) {
+            deptName = staffOrganization.getName();
+            if (staffOrganization.getParentId() != 0) {
+                String parentName = getDeptNameByGroupId(staffOrganization.getParentId());
+                deptName = parentName + "/" + deptName;
+            }
+        }
+
+        return deptName;
     }
 }

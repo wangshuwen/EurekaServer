@@ -10,11 +10,19 @@ import com.cst.xinhe.common.netty.utils.FileUtils;
 import com.cst.xinhe.common.utils.FileType;
 import com.cst.xinhe.common.utils.convert.DateConvert;
 import com.cst.xinhe.persistence.dao.chat.TemporarySendListMapper;
+import com.cst.xinhe.persistence.dao.e_call.ECallMapper;
+import com.cst.xinhe.persistence.dao.staff.StaffOrganizationMapper;
 import com.cst.xinhe.persistence.dao.terminal.StaffTerminalMapper;
 import com.cst.xinhe.persistence.dao.terminal.TerminalUpdateIpMapper;
 import com.cst.xinhe.persistence.dto.voice.VoiceDto;
 import com.cst.xinhe.persistence.model.chat.ChatMsg;
 import com.cst.xinhe.persistence.model.chat.TemporarySendList;
+import com.cst.xinhe.persistence.model.e_call.ECall;
+import com.cst.xinhe.persistence.model.staff.StaffOrganization;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +31,8 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,6 +44,9 @@ import java.util.Map;
 @Service
 public class CallServiceImpl implements CallService {
 
+
+    @Resource
+    private StaffOrganizationMapper staffOrganizationMapper;
 
     @Resource
     private ChatMessageService chatMsgService;
@@ -57,6 +70,9 @@ public class CallServiceImpl implements CallService {
 
     @Resource
     private TemporarySendListMapper temporarySendListMapper;
+
+    @Resource
+    private ECallMapper eCallMapper;
 
     @Value("${constant.webBaseUrl}")
     public String webBaseUrl ;
@@ -213,5 +229,34 @@ public class CallServiceImpl implements CallService {
             return false;
         }
         return false;
+    }
+
+    @Override
+    public PageInfo<Map<String, Object>> getECallList(Integer pageSize, Integer startPage, String staffName, Integer staffId) {
+        Page<Map<String, Object>> page = PageHelper.startPage(startPage,pageSize);
+        Map<String, Object> params = new HashMap<>();
+        params.put("staffName", staffName);
+        params.put("staffId", staffId);
+        List<Map<String, Object>> mapList = eCallMapper.selectByParams(params);
+        for (Map<String, Object> item : page.getResult()){
+            Integer groupId = (Integer) item.get("group_id");
+            String deptName = getDeptNameByGroupId(groupId);
+            item.put("dept_name",deptName);
+        }
+        PageInfo pageInfo = new PageInfo(page);
+        return pageInfo;
+    }
+    public String getDeptNameByGroupId(Integer groupId) {
+        String deptName = "";
+        StaffOrganization staffOrganization = staffOrganizationMapper.selectByPrimaryKey(groupId);
+        if (staffOrganization != null) {
+            deptName = staffOrganization.getName();
+            if (staffOrganization.getParentId() != 0) {
+                String parentName = getDeptNameByGroupId(staffOrganization.getParentId());
+                deptName = parentName + "/" + deptName;
+            }
+        }
+
+        return deptName;
     }
 }

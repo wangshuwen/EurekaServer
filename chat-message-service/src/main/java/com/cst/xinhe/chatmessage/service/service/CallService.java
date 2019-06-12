@@ -1,7 +1,10 @@
 package com.cst.xinhe.chatmessage.service.service;
 
 import com.cst.xinhe.persistence.model.chat.ChatMsg;
+import com.github.pagehelper.PageInfo;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Map;
 
 /**
  * @program: EurekaServer
@@ -16,4 +19,6 @@ public interface CallService {
     boolean pingTerminal(Integer staffId);
 
     boolean pingTerminalByTerminalNum(Integer terminalNum);
+
+    PageInfo<Map<String, Object>> getECallList(Integer pageSize, Integer startPage, String staffName, Integer staffId);
 }

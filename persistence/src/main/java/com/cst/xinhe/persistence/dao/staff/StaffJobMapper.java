@@ -96,4 +96,6 @@ public interface StaffJobMapper {
     int updateByPrimaryKey(StaffJob record);
 
     List<StaffJob> selectAllJobs();
+
+    List<StaffJob> selectJobByJobName(@Param("jobName") String jobName);
 }

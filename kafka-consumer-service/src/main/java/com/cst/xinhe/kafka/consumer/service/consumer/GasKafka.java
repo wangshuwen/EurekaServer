@@ -18,6 +18,7 @@ import com.cst.xinhe.kafka.consumer.service.service.RSTL;
 import com.cst.xinhe.persistence.dao.attendance.StaffAttendanceRealRuleMapper;
 import com.cst.xinhe.persistence.dao.attendance.TimeStandardMapper;
 import com.cst.xinhe.persistence.dao.base_station.BaseStationMapper;
+import com.cst.xinhe.persistence.dao.e_msg.ExceptionMessageMapper;
 import com.cst.xinhe.persistence.dao.rt_gas.GasPositionMapper;
 import com.cst.xinhe.persistence.dao.staff.StaffMapper;
 import com.cst.xinhe.persistence.dao.staff.StaffOrganizationMapper;
@@ -34,6 +35,7 @@ import com.cst.xinhe.persistence.dto.UpLoadGasDto;
 import com.cst.xinhe.persistence.dto.warn_level_setting.GasWarnSettingDto;
 import com.cst.xinhe.persistence.model.attendance.StaffAttendanceRealRule;
 import com.cst.xinhe.persistence.model.base_station.BaseStation;
+import com.cst.xinhe.persistence.model.e_msg.ExceptionMessage;
 import com.cst.xinhe.persistence.model.rt_gas.GasPosition;
 import com.cst.xinhe.persistence.model.staff.Staff;
 import com.cst.xinhe.persistence.model.staff.StaffOrganization;
@@ -115,6 +117,9 @@ public class GasKafka {
 
     @Resource
     private GasPositionMapper gasPositionMapper;
+
+    @Resource
+    private ExceptionMessageMapper exceptionMessageMapper;
 
 
     public static List<GasWSRespVO> list = Collections.synchronizedList(new ArrayList<>());
@@ -305,10 +310,48 @@ public class GasKafka {
                     //封装返回的气体信息
                     upLoadGasDto.setRssiInfo(rssiInfo);
 
+                    GasWSRespVO staff = findStaffNameByTerminalId(gasPosition.getTerminalId());
+                    Integer staffId = staff.getStaffId();
+                    gasPosition.setStaffId(staffId);
+                    gasPosition.setStaffName(staff.getStaffName());
+                    String t_deptName = getDeptNameByGroupId(staff.getGroupId());
+                    gasPosition.setDeptName(t_deptName);
                     TerminalRoad road = new TerminalRoad();
                     try {
                         road = rstl.locateConvert(gasPosition.getTerminalId(), baseStation1, baseStation2, rssi1, rssi2);
                     }catch (RuntimeServiceException e){
+                        ExceptionMessage exceptionMessage = new ExceptionMessage();
+                        exceptionMessage.setCh4(gasPosition.getCh4());
+                        exceptionMessage.setCh4Unit(gasPosition.getCh4Unit());
+                        exceptionMessage.setCo(gasPosition.getCo());
+                        exceptionMessage.setCoUnit(gasPosition.getCoUnit());
+                        exceptionMessage.setCo2(gasPosition.getCo2());
+                        exceptionMessage.setCo2Unit(gasPosition.getCo2Unit());
+                        exceptionMessage.setCreateTime(gasPosition.getCreateTime());
+                        exceptionMessage.setField3(gasPosition.getField3());
+                        exceptionMessage.setField3Unit(gasPosition.getField3Unit());
+                        exceptionMessage.setHumidity(gasPosition.getHumidity());
+                        exceptionMessage.setHumidityUnit(gasPosition.getHumidityUnit());
+                        exceptionMessage.setO2(gasPosition.getO2());
+                        exceptionMessage.setO2Unit(gasPosition.getO2Unit());
+                        exceptionMessage.setTemperature(gasPosition.getTemperature());
+                        exceptionMessage.setTemperatureUnit(gasPosition.getTemperatureUnit());
+                        exceptionMessage.setTerminalId(gasPosition.getTerminalId());
+                        exceptionMessage.setTerminalIp(gasPosition.getTerminalIp());
+                        exceptionMessage.setTempPositionName(gasPosition.getTempPositionName());
+                        exceptionMessage.setTerminalRealTime(gasPosition.getTerminalRealTime());
+                        exceptionMessage.setStaffId(gasPosition.getStaffId());
+                        exceptionMessage.setStationId(gasPosition.getStationId());
+                        exceptionMessage.setStationId1(gasPosition.getStationId1());
+                        exceptionMessage.setStationId2(gasPosition.getStationId2());
+                        exceptionMessage.setStationIp(gasPosition.getStationIp());
+                        exceptionMessage.setWifiStrength1(gasPosition.getWifiStrength1());
+                        exceptionMessage.setWifiStrength2(gasPosition.getWifiStrength2());
+                        exceptionMessage.setPositionX(gasPosition.getPositionX());
+                        exceptionMessage.setPositionY(gasPosition.getPositionY());
+                        exceptionMessage.setPositionZ(gasPosition.getPositionZ());
+                        exceptionMessageMapper.insert(exceptionMessage);
+
                         wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(new WebSocketData(10,gasPosition)));
                     }
                     gasPosition.setInfoType(0);
@@ -321,10 +364,7 @@ public class GasKafka {
 
                     //----------------------------------以下是判断出入问题------------------------------------
                     //去除staffGroupTerminalServiceClient
-                    GasWSRespVO staff = findStaffNameByTerminalId(gasPosition.getTerminalId());
-                    Integer staffId = staff.getStaffId();
-                    gasPosition.setStaffId(staffId);
-                    gasPosition.setStaffName(staff.getStaffName());
+
                     //---------------------判断该员工是否在限制区域，滞留时间过长，则报警开始-----------------------
                     WarningAreaRecordExample example = WarningAreaRecordExample.getInstance();
                     WarningAreaRecordExample.Criteria criteria = example.createCriteria();
@@ -927,9 +967,11 @@ public class GasKafka {
             Integer staffId = (Integer) resultMap.get("staff_id");
             String staffName = (String) resultMap.get("staff_name");
             Integer isPerson = (Integer) resultMap.get("is_person");
+            Integer groupId = (Integer) resultMap.get("group_id");
             gasWSRespVO.setStaffName(staffName);
             gasWSRespVO.setStaffId(staffId);
             gasWSRespVO.setIsPerson(isPerson);
+            gasWSRespVO.setGroupId(groupId);
             return gasWSRespVO;
         } else {
             gasWSRespVO.setStaffName("未知人员");

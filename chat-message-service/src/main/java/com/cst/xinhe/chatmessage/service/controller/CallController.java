@@ -6,7 +6,10 @@ import com.cst.xinhe.base.exception.RuntimeWebException;
 import com.cst.xinhe.base.result.ResultUtil;
 import com.cst.xinhe.chatmessage.service.service.CallService;
 import com.cst.xinhe.persistence.model.chat.ChatMsg;
+import com.cst.xinhe.persistence.model.e_call.ECall;
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.models.auth.In;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.util.Map;
 
 /**
  * @ClassName
@@ -71,6 +75,16 @@ public class CallController {
             return ResultUtil.jsonToStringSuccess();
         }
         return ResultUtil.jsonToStringError(ResultEnum.CHECK_ONLINE_FAIL);
+    }
+
+    @ApiOperation(value = "获取紧急呼叫的信息，分页查询")
+    @GetMapping("getECallList")
+    public String getECallList(@RequestParam(name = "limit", defaultValue = "12",required = false)Integer pageSize
+                                , @RequestParam(name="page",defaultValue = "1", required = false)Integer startPage
+                                , @RequestParam(name = "staffName",required = false)String staffName
+                                , @RequestParam(name = "staffId",required = false)Integer staffId){
+        PageInfo<Map<String, Object>> pageInfo = callService.getECallList(pageSize,startPage,staffName,staffId);
+        return pageInfo.getSize() > 0 ?ResultUtil.jsonToStringSuccess(pageInfo):ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
     }
 
 

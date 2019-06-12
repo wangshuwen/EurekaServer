@@ -2,6 +2,7 @@ package com.cst.xinhe.staffgroupterminal.service.service;
 
 
 import com.cst.xinhe.persistence.model.staff.StaffJob;
+import com.github.pagehelper.PageInfo;
 
 import java.util.List;
 
@@ -19,4 +20,12 @@ public interface StaffJobService {
     String findJobNameById(Integer staffJobId);
 
     StaffJob findJobById(Integer jobId);
+
+    PageInfo getStaffJobsByParams(Integer pageSize, Integer startPage, String jobName);
+
+    Integer updateJob(StaffJob staffJob);
+
+    Integer delStaffJob(Integer jobId);
+
+    Integer addStaffJobs(StaffJob staffJob);
 }

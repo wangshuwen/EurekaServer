@@ -3,6 +3,7 @@ package com.cst.xinhe.gas.service.controller;
 import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.result.ResultUtil;
 import com.cst.xinhe.gas.service.client.WsPushServiceClient;
+import com.cst.xinhe.gas.service.elasticsearch.service.GasPositionService;
 import com.cst.xinhe.gas.service.service.GasInfoService;
 import com.cst.xinhe.persistence.dao.rt_gas.GasPositionMapper;
 import com.cst.xinhe.persistence.model.rt_gas.GasPosition;
@@ -38,6 +39,9 @@ public class GasController {
 
     @Resource
     private GasInfoService gasInfoService;
+
+    @Resource
+    private GasPositionService gasPositionService;
 
     @Resource
     private WsPushServiceClient wsPushServiceClient;
@@ -101,7 +105,7 @@ public class GasController {
 
 
     //测试气体批量插入
-    List<GasPosition> gasPositions=new ArrayList();
+    List<GasPosition> gasPositions = new ArrayList<>();
     @Resource
     private GasPositionMapper gasPositionMapper;
     @PostMapping("add")
@@ -116,6 +120,21 @@ public class GasController {
         }
 
         return ResultUtil.jsonToStringSuccess();
+    }
+
+//    @GetMapping("getWarningGasCount")
+//    public String getWarningGasCount(){
+//        Long count = gasPositionService.getWarningGasCount();
+//        return ResultUtil.jsonToStringSuccess(count);
+//    }
+    @ApiOperation(value = "获取定位异常的信息，分页查询")
+    @GetMapping("getEMsg")
+    public String getEMsg(@RequestParam(name = "limit", defaultValue = "12",required = false)Integer pageSize
+            , @RequestParam(name="page",defaultValue = "1", required = false)Integer startPage
+            , @RequestParam(name = "staffName",required = false)String staffName
+            , @RequestParam(name = "staffId",required = false)Integer staffId){
+        PageInfo<Map<String, Object>> pageInfo = gasPositionService.getEMsgList(pageSize,startPage,staffName,staffId);
+        return pageInfo.getSize() > 0 ?ResultUtil.jsonToStringSuccess(pageInfo):ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
     }
 
 

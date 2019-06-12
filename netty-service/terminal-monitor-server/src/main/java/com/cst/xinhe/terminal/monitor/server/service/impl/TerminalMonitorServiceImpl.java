@@ -10,6 +10,7 @@ import com.cst.xinhe.common.utils.convert.DateConvert;
 import com.cst.xinhe.common.ws.WebSocketData;
 import com.cst.xinhe.persistence.dao.base_station.BaseStationMapper;
 import com.cst.xinhe.persistence.dao.chat.TemporarySendListMapper;
+import com.cst.xinhe.persistence.dao.e_call.ECallMapper;
 import com.cst.xinhe.persistence.dao.rang_setting.RangSettingMapper;
 import com.cst.xinhe.persistence.dao.staff.StaffMapper;
 import com.cst.xinhe.persistence.dao.terminal.StaffTerminalMapper;
@@ -20,6 +21,7 @@ import com.cst.xinhe.persistence.dto.RssiInfo;
 import com.cst.xinhe.persistence.dto.UpLoadGasDto;
 import com.cst.xinhe.persistence.dto.voice.VoiceDto;
 import com.cst.xinhe.persistence.model.chat.TemporarySendList;
+import com.cst.xinhe.persistence.model.e_call.ECall;
 import com.cst.xinhe.persistence.model.lack_electric.LackElectric;
 import com.cst.xinhe.persistence.model.malfunction.Malfunction;
 import com.cst.xinhe.persistence.model.rang_setting.RangSetting;
@@ -96,6 +98,9 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
 
     @Resource
     private RedisService redisService;
+
+    @Resource
+    private ECallMapper eCallMapper;
 
     @Resource
     private TerminalUpdateIpMapper terminalUpdateIpMapper;
@@ -566,6 +571,12 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
 
 //        RssiInfo rssiInfo = RssiInfo.getInstance();
         TerminalRoad road = new TerminalRoad();
+        GasWSRespVO staff = findStaffNameByTerminalId(gasPosition.getTerminalId());
+        Integer staffId = staff.getStaffId();
+        gasPosition.setStaffId(staffId);
+        gasPosition.setStaffName(staff.getStaffName());
+        Map<String, Object> deptName = staffGroupTerminalServiceClient.getDeptAndGroupNameByStaffId(staffId);
+        gasPosition.setDeptName((String)deptName.get("deptName"));
         try {
             road = rstl.locateConvert(gasPosition.getTerminalId(), baseStation1, baseStation2, rssi1, rssi2);
         }catch (RuntimeServiceException e){
@@ -583,11 +594,6 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
 
         //----------------------------------以下是判断出入问题------------------------------------
         //去除staffGroupTerminalServiceClient
-        GasWSRespVO staff = findStaffNameByTerminalId(gasPosition.getTerminalId());
-        Integer staffId = staff.getStaffId();
-        gasPosition.setStaffId(staffId);
-        gasPosition.setStaffName(staff.getStaffName());
-
         Map<String, Object> param = new HashMap<>();
         param.put("type",4);
         param.put("status",1);
@@ -597,11 +603,42 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
         else
             gasPosition.setRangeUrl("static/audio/emergencyList/1.wav"); //添加默认铃声
         WebSocketData webSocketData = new WebSocketData(9,gasPosition);
+        ECall eCall = new ECall();
+        eCall.setCh4(gasPosition.getCh4());
+        eCall.setCh4Unit(gasPosition.getCh4Unit());
+        eCall.setCo(gasPosition.getCo());
+        eCall.setCoUnit(gasPosition.getCoUnit());
+        eCall.setCo2(gasPosition.getCo2());
+        eCall.setCo2Unit(gasPosition.getCo2Unit());
+        eCall.setCreateTime(gasPosition.getCreateTime());
+        eCall.setField3(gasPosition.getField3());
+        eCall.setField3Unit(gasPosition.getField3Unit());
+        eCall.setHumidity(gasPosition.getHumidity());
+        eCall.setHumidityUnit(gasPosition.getHumidityUnit());
+        eCall.setO2(gasPosition.getO2());
+        eCall.setO2Unit(gasPosition.getO2Unit());
+        eCall.setTemperature(gasPosition.getTemperature());
+        eCall.setTemperatureUnit(gasPosition.getTemperatureUnit());
+        eCall.setTerminalId(gasPosition.getTerminalId());
+        eCall.setTerminalIp(gasPosition.getTerminalIp());
+        eCall.setTempPositionName(gasPosition.getTempPositionName());
+        eCall.setTerminalRealTime(gasPosition.getTerminalRealTime());
+        eCall.setStaffId(gasPosition.getStaffId());
+        eCall.setStationId(gasPosition.getStationId());
+        eCall.setStationId1(gasPosition.getStationId1());
+        eCall.setStationId2(gasPosition.getStationId2());
+        eCall.setStationIp(gasPosition.getStationIp());
+        eCall.setWifiStrength1(gasPosition.getWifiStrength1());
+        eCall.setWifiStrength2(gasPosition.getWifiStrength2());
+        eCall.setPositionX(gasPosition.getPositionX());
+        eCall.setPositionY(gasPosition.getPositionY());
+        eCall.setPositionZ(gasPosition.getPositionZ());
+        eCallMapper.insert(eCall);
         wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(webSocketData));
     }
 
 
-    public GasWSRespVO findStaffNameByTerminalId(Integer terminalId) {
+    private GasWSRespVO findStaffNameByTerminalId(Integer terminalId) {
 
         Map<String, Object> resultMap = staffTerminalMapper.selectStaffNameByTerminalId(terminalId);
 
@@ -610,9 +647,11 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
             Integer staffId = (Integer) resultMap.get("staff_id");
             String staffName = (String) resultMap.get("staff_name");
             Integer isPerson = (Integer) resultMap.get("is_person");
+            Integer groupId = (Integer) resultMap.get("group_id");
             gasWSRespVO.setStaffName(staffName);
             gasWSRespVO.setStaffId(staffId);
             gasWSRespVO.setIsPerson(isPerson);
+            gasWSRespVO.setGroupId(groupId);
             return gasWSRespVO;
         } else {
             gasWSRespVO.setStaffName("未知人员");

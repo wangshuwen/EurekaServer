@@ -514,7 +514,7 @@
     </update>
 
     <select id="selectStaffNameByTerminalId" parameterType="java.lang.Integer" resultType="java.util.Map" useCache="true">
-        SELECT staff.staff_id,staff_name,is_person
+        SELECT staff.staff_id,staff_name,is_person,group_id
         FROM staff,staff_terminal
         WHERE  staff.staff_id = staff_terminal.staff_id AND terminal_id = #{terminalId}
     </select>

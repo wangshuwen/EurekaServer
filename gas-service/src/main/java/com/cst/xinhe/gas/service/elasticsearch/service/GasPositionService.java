@@ -2,6 +2,7 @@ package com.cst.xinhe.gas.service.elasticsearch.service;
 
 import com.cst.xinhe.gas.service.elasticsearch.entity.GasPositionEntity;
 import com.cst.xinhe.persistence.model.terminal_road.TerminalRoad;
+import com.github.pagehelper.PageInfo;
 import org.springframework.data.domain.Page;
 
 import java.text.ParseException;
@@ -26,4 +27,8 @@ public interface GasPositionService {
     Map<String, Object> findRecentlyGasInfoByStaffId(Integer staffId);
 
     List<Map<String, Object>> selectGasInfoLastTenData(int number);
+
+    PageInfo<Map<String, Object>> getEMsgList(Integer pageSize, Integer startPage, String staffName, Integer staffId);
+
+//    Long getWarningGasCount();
 }

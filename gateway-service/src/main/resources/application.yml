@@ -2,9 +2,18 @@ eureka:
   instance:
     lease-expiration-duration-in-seconds: 2
     lease-renewal-interval-in-seconds: 1
+    health-check-url-path: /actuator/health
   client :
     serviceUrl:
       defaultZone: http://127.0.0.1:8761/eureka/,http://127.0.0.1:8762/eureka/
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: ALWAYS
 server:
   port: 8443
   tomcat:
@@ -19,6 +28,13 @@ server:
     keyStoreType: JKS
     keyAlias: zkxh
 spring:
+  elasticsearch:
+    rest:
+      uris: ["http://192.168.1.182:9200"]
+  boot:
+    admin:
+      client:
+        url: http://127.0.0.1:5000
   application:
     name: service-zuul
   datasource:

@@ -90,7 +90,9 @@ eureka:
   instance:
     lease-expiration-duration-in-seconds: 2
     lease-renewal-interval-in-seconds: 1
-    health-check-url-path: /actuator/health
+    health-check-url: http://127.0.0.1:8780/actuator/health
+    status-page-url: http://127.0.0.1:8780/actuator/info
+    home-page-url: http://127.0.0.1:8780/
   client:
     service-url:
       defaultZone: http://127.0.0.1:8761/eureka/

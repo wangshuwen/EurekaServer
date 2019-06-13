@@ -3,8 +3,7 @@ package com.cst.xinhe.kafka.consumer.service.consumer;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.cst.xinhe.base.log.BaseLog;
-import com.cst.xinhe.kafka.consumer.service.client.StationPartitionServiceClient;
+import com.cst.xinhe.kafka.consumer.service.client.WebServiceClient;
 import com.cst.xinhe.persistence.model.base_station.BaseStation;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
@@ -31,7 +30,7 @@ public class ConfigResponse {
 //    private BaseStationMapper baseStationMapper;
 
     @Resource
-    private StationPartitionServiceClient stationPartitionServiceClient;
+    private WebServiceClient  webServiceClient;
 
     private static final String TOPIC = "configResp.tut";
    // @KafkaListener(id = "confRespToDB", topics = "configResp.tut")
@@ -78,6 +77,6 @@ public class ConfigResponse {
         baseStation.setBaseStationNum(stationNum);
         baseStation.setRemark("1");
 
-        stationPartitionServiceClient.updateByStationNumSelective(baseStation);
+        webServiceClient.updateByStationNumSelective(baseStation);
     }
 }

@@ -6,8 +6,7 @@ import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.exception.RuntimeOtherException;
 import com.cst.xinhe.common.utils.array.ArrayQueue;
 import com.cst.xinhe.common.ws.WebSocketData;
-import com.cst.xinhe.kafka.consumer.service.client.StaffGroupTerminalServiceClient;
-import com.cst.xinhe.kafka.consumer.service.client.SystemServiceClient;
+import com.cst.xinhe.kafka.consumer.service.client.WebServiceClient;
 import com.cst.xinhe.kafka.consumer.service.client.WsPushServiceClient;
 import com.cst.xinhe.kafka.consumer.service.service.RSTL;
 import com.cst.xinhe.persistence.model.terminal_road.TerminalRoad;
@@ -20,7 +19,6 @@ import org.springframework.kafka.annotation.TopicPartition;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -40,14 +38,13 @@ public class GasWarnInfoToWS {
     //存储更新基站 队列
     public static Map<Integer, ArrayQueue<TerminalRoad>> attendanceMap = new HashMap<>();
 
-    @Resource
-    private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
+
 
     @Resource
     private WsPushServiceClient wsPushServiceClient;
 
-    @Resource
-    private SystemServiceClient systemServiceClient;
+   @Resource
+   private WebServiceClient webServiceClient;
 
     @Resource
     RSTL rstl;
@@ -122,7 +119,7 @@ public class GasWarnInfoToWS {
                 double rssi2 = rssiObj.getDouble("rssi2");
                 TerminalRoad road = rstl.locateConvert(terminalId, stationId1, stationId2, rssi1, rssi2);
 //                GasWSRespVO staff = staffService.findStaffNameByTerminalId(terminalId);
-                GasWSRespVO staff = staffGroupTerminalServiceClient.findStaffNameByTerminalId(terminalId);
+                GasWSRespVO staff = webServiceClient.findStaffNameByTerminalId(terminalId);
                 road.setStaffId(staff.getStaffId());
                 //终端所连基站id
                 road.setStationId(stationId);
@@ -212,7 +209,7 @@ public class GasWarnInfoToWS {
                 }
                 gasWSRespVO.setGasLevel(contrastParameter);
 //                String url = levelDataService.findRangUrlByLevelDataId(contrastParameter);
-                String url = systemServiceClient.findRangUrlByLevelDataId(contrastParameter);
+                String url = webServiceClient.findRangUrlByLevelDataId(contrastParameter);
                 if (null != url && !"".equals(url)) {
                     gasWSRespVO.setRangUrl(url);
                 }

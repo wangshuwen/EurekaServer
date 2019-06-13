@@ -2,8 +2,7 @@ package com.cst.xinhe.kafka.consumer.service.consumer;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.cst.xinhe.kafka.consumer.service.client.AttendanceServiceClient;
-import com.cst.xinhe.kafka.consumer.service.client.StaffGroupTerminalServiceClient;
+import com.cst.xinhe.kafka.consumer.service.client.WebServiceClient;
 import com.cst.xinhe.kafka.consumer.service.client.WsPushServiceClient;
 import com.cst.xinhe.persistence.dao.attendance.StaffAttendanceRealRuleMapper;
 import com.cst.xinhe.persistence.dao.staff.StaffMapper;
@@ -16,7 +15,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.TopicPartition;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -43,13 +41,9 @@ public class TerminalInfoProcess {
     public static Set<Integer> carSet= Collections.synchronizedSet(new HashSet());
 
     @Resource
-    private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
+    private WebServiceClient webServiceClient;
 
-    @Resource
-    private AttendanceServiceClient attendanceServiceClient;
 
-    @Resource
-    private WsPushServiceClient wsPushServiceClient;
 
     @Resource
     private StaffMapper staffMapper;

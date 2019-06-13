@@ -2,7 +2,7 @@ package com.cst.xinhe.kafka.consumer.service.service;
 
 import ICT.Position;
 import ICT.RSSI2;
-import com.cst.xinhe.kafka.consumer.service.client.StationPartitionServiceClient;
+import com.cst.xinhe.kafka.consumer.service.client.WebServiceClient;
 import com.cst.xinhe.persistence.dao.base_station.BaseStationMapper;
 import com.cst.xinhe.persistence.model.base_station.BaseStation;
 import com.cst.xinhe.persistence.model.terminal_road.TerminalRoad;
@@ -22,9 +22,6 @@ public class RSTL {
 
 //    @Resource
 //    private BaseStationService baseStationService;
-
-    @Resource
-    private StationPartitionServiceClient stationPartitionServiceClient;
 
     @Resource
     private BaseStationMapper baseStationMapper;

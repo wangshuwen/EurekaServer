@@ -41,28 +41,25 @@ public class VoiceInfoProcess {
 //    @Resource
 //    private StaffService staffService;
 
-    @Resource
-    private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
+
 
 //    @Resource
 //    private GasInfoService gasInfoService;
 
     @Resource
-    private GasServiceClient gasServiceClient;
+    private WebServiceClient webServiceClient;
 
     @Resource
     private ChatMsgMapper chatMsgMapper;
 
-    @Resource
-    private ChatMsgServiceClient chatMsgServiceClient;
+
 
 //    @Resource
 //    private StaffTerminalRelationService staffTerminalRelationService;
 //    @Resource
 //    private RangSettingService rangSettingService;
 
-    @Resource
-    private SystemServiceClient systemServiceClient;
+
 //    @Resource
 //    private Constant constant;
 
@@ -98,7 +95,7 @@ public class VoiceInfoProcess {
         chatMsg.setStatus(status);
 
 //        Map<String, Object> map = staffService.findStaffIdByTerminalId(terminalId);
-        Map<String, Object> map = staffGroupTerminalServiceClient.findStaffIdByTerminalId(terminalId);
+        Map<String, Object> map = webServiceClient.findStaffIdByTerminalId(terminalId);
         Integer staffId = (Integer) map.get("staff_id");
         chatMsg.setPostUserId(staffId);
         chatMsg.setReceiceUserId(1);
@@ -110,15 +107,15 @@ public class VoiceInfoProcess {
         chatMsgMapper.insertSelective(chatMsg);
 //        chatMsgServiceClient.insertChatMsgSelective(chatMsg);
 //        GasWSRespVO staffInfo = staffService.findStaffNameByTerminalId(terminalId);
-        GasWSRespVO staffInfo = staffGroupTerminalServiceClient.findStaffNameByTerminalId(terminalId);
+        GasWSRespVO staffInfo = webServiceClient.findStaffNameByTerminalId(terminalId);
 
 //        Map<String, Object> resultMap = staffService.findStaffGroupAndDeptByStaffId(staffInfo.getStaffId());
-        Map<String, Object> resultMap = staffGroupTerminalServiceClient.findStaffGroupAndDeptByStaffId(staffInfo.getStaffId());
+        Map<String, Object> resultMap = webServiceClient.findStaffGroupAndDeptByStaffId(staffInfo.getStaffId());
 
         GasWSRespVO gasWSRespVO = null;
         try {
 //            gasWSRespVO = gasInfoService.findGasInfoByStaffIdAndTerminalId(terminalId);
-            gasWSRespVO = gasServiceClient.findGasInfoByStaffIdAndTerminalId(terminalId);
+            gasWSRespVO = webServiceClient.findGasInfoByStaffIdAndTerminalId(terminalId);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -144,7 +141,7 @@ public class VoiceInfoProcess {
 
         //发送铃声的url
 //        List<RangSetting> rangs = rangSettingService.findRangByType(1);
-        List<RangSetting> rangs = systemServiceClient.findRangByType(1);
+        List<RangSetting> rangs = webServiceClient.findRangByType(1);
 
         for (RangSetting rang : rangs) {
             if(rang.getStatus()==1){

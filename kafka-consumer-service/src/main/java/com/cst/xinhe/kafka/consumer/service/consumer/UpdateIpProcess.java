@@ -2,13 +2,9 @@ package com.cst.xinhe.kafka.consumer.service.consumer;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.cst.xinhe.base.exception.ErrorCode;
-import com.cst.xinhe.base.exception.RuntimeServiceException;
 import com.cst.xinhe.common.utils.array.ArrayQueue;
 import com.cst.xinhe.common.ws.WebSocketData;
-import com.cst.xinhe.kafka.consumer.service.client.AttendanceServiceClient;
-import com.cst.xinhe.kafka.consumer.service.client.StaffGroupTerminalServiceClient;
-import com.cst.xinhe.kafka.consumer.service.client.StationPartitionServiceClient;
+import com.cst.xinhe.kafka.consumer.service.client.WebServiceClient;
 import com.cst.xinhe.kafka.consumer.service.client.WsPushServiceClient;
 import com.cst.xinhe.persistence.dao.attendance.AttendanceMapper;
 import com.cst.xinhe.persistence.dao.attendance.StaffAttendanceRealRuleMapper;
@@ -19,7 +15,6 @@ import com.cst.xinhe.persistence.dao.staff.StaffMapper;
 import com.cst.xinhe.persistence.dao.terminal.TerminalUpdateIpMapper;
 import com.cst.xinhe.persistence.model.attendance.Attendance;
 import com.cst.xinhe.persistence.model.attendance.StaffAttendanceRealRule;
-import com.cst.xinhe.persistence.model.base_station.OfflineStationExample;
 import com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp;
 import com.cst.xinhe.persistence.vo.req.TimeStandardVO;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -58,8 +53,6 @@ public class UpdateIpProcess {
     @Resource
     private WsPushServiceClient wsPushServiceClient;
 
-    @Resource
-    private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
 
 //    @Resource
 //    TerminalUpdateIpMapper terminalUpdateIpMapper;
@@ -67,7 +60,8 @@ public class UpdateIpProcess {
     private BaseStationMapper baseStationMapper;
 
     @Resource
-    private StationPartitionServiceClient stationPartitionServiceClient;
+    private  WebServiceClient webServiceClient;
+
 //    @Resource
 //    AttendanceService attendanceService;
 
@@ -78,7 +72,7 @@ public class UpdateIpProcess {
     StaffAttendanceRealRuleMapper staffAttendanceRealRuleMapper;
 
     @Resource
-    private AttendanceServiceClient attendanceServiceClient;
+    private WebServiceClient attendanceServiceClient;
 
     @Resource
     private TerminalUpdateIpMapper terminalUpdateIpMapper;
@@ -578,9 +572,9 @@ public class UpdateIpProcess {
 //            Integer leave_early_time =standard.getLeaveEarlyTime();
 //            Integer serious_leave_early_time = standard.getSeriousLeaveEarlyTime();
 //                Map<String, Object> entryStation = baseStationService.findBaseStationByType(1);
-                Map<String, Object> entryStation = stationPartitionServiceClient.findBaseStationByType(1);
+                Map<String, Object> entryStation = webServiceClient.findBaseStationByType(1);
 //                Map<String, Object> attendanceStation = baseStationService.findBaseStationByType(2);
-                Map<String, Object> attendanceStation = stationPartitionServiceClient.findBaseStationByType(2);
+                Map<String, Object> attendanceStation = webServiceClient.findBaseStationByType(2);
 
                 //井口基站编号
 //            DecimalFormat fmt = new DecimalFormat("##0.0");// 时间小数点后截取以为小数

@@ -5,8 +5,6 @@ import com.cst.xinhe.base.exception.RuntimeServiceException;
 import com.cst.xinhe.common.constant.ConstantValue;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
-import com.cst.xinhe.common.netty.utils.NettyDataUtils;
-import com.cst.xinhe.common.utils.convert.DateConvert;
 import com.cst.xinhe.common.ws.WebSocketData;
 import com.cst.xinhe.persistence.dao.base_station.BaseStationMapper;
 import com.cst.xinhe.persistence.dao.chat.TemporarySendListMapper;
@@ -16,19 +14,13 @@ import com.cst.xinhe.persistence.dao.staff.StaffMapper;
 import com.cst.xinhe.persistence.dao.terminal.StaffTerminalMapper;
 import com.cst.xinhe.persistence.dao.terminal.TerminalUpdateIpMapper;
 import com.cst.xinhe.persistence.dao.updateIp.TerminalIpPortMapper;
-import com.cst.xinhe.persistence.dto.GasInfo;
-import com.cst.xinhe.persistence.dto.RssiInfo;
-import com.cst.xinhe.persistence.dto.UpLoadGasDto;
 import com.cst.xinhe.persistence.dto.voice.VoiceDto;
 import com.cst.xinhe.persistence.model.chat.TemporarySendList;
 import com.cst.xinhe.persistence.model.e_call.ECall;
 import com.cst.xinhe.persistence.model.lack_electric.LackElectric;
 import com.cst.xinhe.persistence.model.malfunction.Malfunction;
 import com.cst.xinhe.persistence.model.rang_setting.RangSetting;
-import com.cst.xinhe.persistence.model.rang_setting.RangSettingExample;
 import com.cst.xinhe.persistence.model.rt_gas.GasPosition;
-import com.cst.xinhe.persistence.model.terminal.StaffTerminal;
-import com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp;
 import com.cst.xinhe.persistence.model.terminal_road.TerminalRoad;
 import com.cst.xinhe.persistence.vo.resp.GasLevelVO;
 import com.cst.xinhe.persistence.vo.resp.GasWSRespVO;
@@ -41,8 +33,6 @@ import com.cst.xinhe.terminal.monitor.server.service.TerminalMonitorService;
 import com.cst.xinhe.terminal.monitor.server.utils.RSTL;
 import com.cst.xinhe.terminal.monitor.server.utils.SequenceIdGenerate;
 import io.netty.channel.Channel;
-import io.swagger.models.auth.In;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -70,7 +60,7 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
     private RangSettingMapper rangSettingMapper;
 
     @Resource
-    private SystemServiceClient systemServiceClient;
+    private WebServiceClient webServiceClient;
 
     @Resource
     private VoiceMonitorServerClient voiceMonitorServerClient;
@@ -91,7 +81,7 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
     private TemporarySendListMapper temporarySendListMapper;
 
     @Resource
-    private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
+    private WebServiceClient staffGroupTerminalServiceClient;
 
     @Resource
     private StaffMapper staffMapper;
@@ -295,7 +285,7 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
     @Override
     public GasLevelVO getWarnLevelSettingByGasLevelId(Integer standardId) {
 
-        return systemServiceClient.getWarnLevelSettingByGasLevelId(standardId);
+        return webServiceClient.getWarnLevelSettingByGasLevelId(standardId);
     }
 
     @Override

@@ -2,9 +2,8 @@ package com.cst.xinhe.kafka.consumer.service.consumer;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.cst.xinhe.base.log.BaseLog;
 import com.cst.xinhe.common.ws.WebSocketData;
-import com.cst.xinhe.kafka.consumer.service.client.StaffGroupTerminalServiceClient;
+import com.cst.xinhe.kafka.consumer.service.client.WebServiceClient;
 import com.cst.xinhe.kafka.consumer.service.client.WsPushServiceClient;
 import com.cst.xinhe.persistence.dao.lack_electric.LackElectricMapper;
 import com.cst.xinhe.persistence.dao.malfunction.MalfunctionMapper;
@@ -21,7 +20,6 @@ import org.springframework.kafka.annotation.TopicPartition;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -49,7 +47,7 @@ public class MalfunctionProcess {
 //    private TerminalService terminalService;
 
     @Resource
-    private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
+    private WebServiceClient webServiceClient;
 
     @Resource
     private WsPushServiceClient wsPushServiceClient;
@@ -194,7 +192,7 @@ public class MalfunctionProcess {
                     LackElectric lackElectric  = new LackElectric();
                     lackElectric.setUploadId(terminalId);
                     lackElectric.setLackType(1);
-                    staffGroupTerminalServiceClient.deleteLeLackElectricByLackElectric(lackElectric);
+                    webServiceClient.deleteLeLackElectricByLackElectric(lackElectric);
                 } else {
                     LackElectricExample example = new LackElectricExample();
                     example.createCriteria().andUploadIdEqualTo(terminalId);
@@ -204,11 +202,11 @@ public class MalfunctionProcess {
                     lackElectric.setUploadId(terminalId);
                     lackElectric.setLackType(1);
 //                    lackElectricMapper.updateByExampleSelective(lackElectric, example);
-                    staffGroupTerminalServiceClient.updateLackElectric(lackElectric);
+                    webServiceClient.updateLackElectric(lackElectric);
                 }
 
 
-                map.put("batteryAlarmValue", staffGroupTerminalServiceClient.getLackElectricList());
+                map.put("batteryAlarmValue", webServiceClient.getLackElectricList());
 
                 try {
 //                    WebsocketServer.sendInfo(JSON.toJSONString(new WebSocketData(6, map)));
@@ -236,7 +234,7 @@ public class MalfunctionProcess {
                 //判断上传的自检结果是否有异常的模块，如有异常则推送到客户端
 
 //                Map<String, Object> map = staffService.findStaffIdByTerminalId(terminalId);
-                Map<String, Object> map = staffGroupTerminalServiceClient.findStaffIdByTerminalId(terminalId);
+                Map<String, Object> map = webServiceClient.findStaffIdByTerminalId(terminalId);
                 if(map!=null&&map.size()>0){
                     Integer staffId = (Integer) map.get("staff_id");
                     Map<String, Object> params = new HashMap<>();
@@ -246,16 +244,16 @@ public class MalfunctionProcess {
 
 //                StaffTerminalRelation staffTerminalRelation = staffTerminalRelationService.findNewRelationByStaffId(staffId);
 //                StaffTerminalRelation staffTerminalRelation =  staffTerminalRelation.get(0);
-                    StaffTerminalRelation staffTerminalRelation = staffGroupTerminalServiceClient.findNewRelationByStaffId(staffId);
+                    StaffTerminalRelation staffTerminalRelation = webServiceClient.findNewRelationByStaffId(staffId);
 
                     malfunction.setTerminalId(staffTerminalRelation.getStaffTerminalRelationId());
 
 //                malfunctionMapper.insertSelective(malfunction);
-                    staffGroupTerminalServiceClient.addMalfunction(malfunction);
+                    webServiceClient.addMalfunction(malfunction);
                     if (co2Error == 1 || coError == 1 || ch4Error == 1 || wifiError == 1 || voiceError == 1 || o2Error == 1 || tError == 1) {
                         try {
 //
-                            int malfunctionValue = (Integer) (staffGroupTerminalServiceClient.getCountMalfunction().get("malfunctionCount"));
+                            int malfunctionValue = (Integer) (webServiceClient.getCountMalfunction().get("malfunctionCount"));
 //                        long malfunctionValue = (Long) malfunctionMapper.selectCountMalfunction().get("malfunctionCount");
                             // 查询数据推送
                             map.put("malfunctionValue", malfunctionValue);

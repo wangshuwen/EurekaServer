@@ -2,9 +2,8 @@ package com.cst.xinhe.kafka.consumer.service.consumer;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.cst.xinhe.base.log.BaseLog;
 import com.cst.xinhe.common.ws.WebSocketData;
-import com.cst.xinhe.kafka.consumer.service.client.StaffGroupTerminalServiceClient;
+import com.cst.xinhe.kafka.consumer.service.client.WebServiceClient;
 import com.cst.xinhe.kafka.consumer.service.client.WsPushServiceClient;
 import com.cst.xinhe.persistence.dao.lack_electric.LackElectricMapper;
 import com.cst.xinhe.persistence.model.lack_electric.LackElectric;
@@ -18,7 +17,6 @@ import org.springframework.kafka.annotation.TopicPartition;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -37,7 +35,7 @@ public class PowerStatusRemind {
     private LackElectricMapper lackElectricMapper;
 
     @Resource
-    private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
+    private WebServiceClient webServiceClient;
 
     @Resource
     private WsPushServiceClient wsPushServiceClient;
@@ -130,7 +128,7 @@ public class PowerStatusRemind {
                 criteria.andUploadIdEqualTo(uploadId);
 
 //                StaffTerminalRelation staffTerminalRelation = staffTerminalRelationService.findNewRelationByTerminalId(uploadId);
-                StaffTerminalRelation staffTerminalRelation = staffGroupTerminalServiceClient.findNewRelationByTerminalId(uploadId);
+                StaffTerminalRelation staffTerminalRelation = webServiceClient.findNewRelationByTerminalId(uploadId);
 
                 Integer relationId = staffTerminalRelation.getStaffTerminalRelationId();
 

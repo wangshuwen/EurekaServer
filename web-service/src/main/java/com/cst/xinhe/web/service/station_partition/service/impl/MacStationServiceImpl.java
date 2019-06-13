@@ -5,6 +5,8 @@ import com.cst.xinhe.persistence.dao.staff.StaffJobMapper;
 import com.cst.xinhe.persistence.dao.terminal.StaffTerminalMapper;
 import com.cst.xinhe.persistence.model.mac_station.MacStation;
 import com.cst.xinhe.persistence.model.staff.StaffJob;
+import com.cst.xinhe.web.service.staff_group_terminal.service.StaffJobService;
+import com.cst.xinhe.web.service.staff_group_terminal.service.StaffOrganizationService;
 import com.cst.xinhe.web.service.station_partition.service.MacStationService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -35,14 +37,13 @@ public class MacStationServiceImpl implements MacStationService {
     @Resource
     private StaffJobMapper staffJobMapper;
 
-//    @Resource
-//    private StaffOrganizationService staffOrganizationService;
-//
-//    @Resource
-//    private StaffJobService staffJobService;
+    @Resource
+    private StaffOrganizationService staffOrganizationService;
 
     @Resource
-    private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
+    private StaffJobService staffJobService;
+
+
 
     @Override
     public List<Map<String, Object>> findMacNumber() {
@@ -78,6 +79,8 @@ public class MacStationServiceImpl implements MacStationService {
                 setOfJobId.add(staffJobId);
             }
         }
+
+
         Map<Integer, String> groupNames = staffGroupTerminalServiceClient.findGroupNameByGroupIds(setOfGroupId);
        // Map<Integer, String> jobNames = staffGroupTerminalServiceClient.findJobByJobId(setOfJobId);
         //去除服务调用

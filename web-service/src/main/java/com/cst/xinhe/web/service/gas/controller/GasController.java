@@ -2,12 +2,13 @@ package com.cst.xinhe.web.service.gas.controller;
 
 import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.result.ResultUtil;
-import com.cst.xinhe.gas.service.client.WsPushServiceClient;
-import com.cst.xinhe.gas.service.elasticsearch.service.GasPositionService;
-import com.cst.xinhe.gas.service.service.GasInfoService;
+
 import com.cst.xinhe.persistence.dao.rt_gas.GasPositionMapper;
 import com.cst.xinhe.persistence.model.rt_gas.GasPosition;
 import com.cst.xinhe.persistence.vo.resp.GasWSRespVO;
+import com.cst.xinhe.web.service.feign.client.WsPushServiceClient;
+import com.cst.xinhe.web.service.gas.elasticsearch.service.GasPositionService;
+import com.cst.xinhe.web.service.gas.service.GasInfoService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;

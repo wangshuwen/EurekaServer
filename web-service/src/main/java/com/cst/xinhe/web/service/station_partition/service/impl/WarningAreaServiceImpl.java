@@ -17,6 +17,7 @@ import com.cst.xinhe.persistence.model.warning_area.WarningAreaRecordExample;
 import com.cst.xinhe.persistence.vo.resp.WarningAreaVO;
 import com.cst.xinhe.web.service.feign.client.KafkaConsumerServiceClient;
 import com.cst.xinhe.web.service.feign.client.WsPushServiceClient;
+import com.cst.xinhe.web.service.staff_group_terminal.service.StaffOrganizationService;
 import com.cst.xinhe.web.service.station_partition.service.WarningAreaService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -42,7 +43,9 @@ public class WarningAreaServiceImpl implements WarningAreaService {
     private StaffOrganizationMapper staffOrganizationMapper;
 
     @Resource
-    private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
+    private StaffOrganizationService staffOrganizationService;
+
+
 
     @Resource
     private WsPushServiceClient wsPushServiceClient;
@@ -172,7 +175,7 @@ public class WarningAreaServiceImpl implements WarningAreaService {
             deptId=0;
         }
 //        List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(deptId);
-        List<Integer> deptIds = staffGroupTerminalServiceClient.findSonIdsByDeptId(deptId);
+        List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(deptId);
 
         if(null != type){
             WarningAreaExample example = new WarningAreaExample();
@@ -196,7 +199,7 @@ public class WarningAreaServiceImpl implements WarningAreaService {
             Integer groupId = (Integer) map.get("groupId");
             groupIds.add(groupId);
         }
-        List<Map<String, Object>> stafflist = staffGroupTerminalServiceClient.getDeptNameByGroupIds(groupIds);
+        List<Map<String, Object>> stafflist =staffOrganizationService.getDeptNameByGroupIds(groupIds);
 
         for (HashMap<String, Object> map : list) {
             Date inTime = (Date) map.get("inTime");
@@ -233,7 +236,7 @@ public class WarningAreaServiceImpl implements WarningAreaService {
             deptId=0;
         }
 //        List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(deptId);
-        List<Integer> deptIds = staffGroupTerminalServiceClient.findSonIdsByDeptId(deptId);
+        List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(deptId);
 
         Page page = PageHelper.startPage(startPage, pageSize);
         List<HashMap<String,Object>> list = warningAreaRecordMapper.findHistoryAreaRecord(areaId,staffName,deptIds);
@@ -242,7 +245,7 @@ public class WarningAreaServiceImpl implements WarningAreaService {
             Date outTime = (Date) map.get("outTime");
             Integer groupId = (Integer) map.get("groupId");
 //            String deptName = staffOrganizationService.getDeptNameByGroupId(groupId);
-            String deptName = staffGroupTerminalServiceClient.getDeptNameByGroupId(groupId);
+            String deptName = staffOrganizationService.getDeptNameByGroupId(groupId);
             map.put("deptName",deptName);
             //封装时长
             long nd = 1000 * 24 * 60 * 60;

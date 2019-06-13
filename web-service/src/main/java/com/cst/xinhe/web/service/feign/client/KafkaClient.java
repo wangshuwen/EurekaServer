@@ -1,8 +1,9 @@
 package com.cst.xinhe.web.service.feign.client;
 
-import com.cst.xinhe.chatmessage.service.client.callback.KafkaClientFallback;
-import com.cst.xinhe.chatmessage.service.client.config.FeignConfig;
+
 import com.cst.xinhe.common.netty.data.request.RequestData;
+import com.cst.xinhe.web.service.feign.callback.KafkaClientFallback;
+import com.cst.xinhe.web.service.feign.config.FeignConfig;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

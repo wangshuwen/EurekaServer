@@ -18,9 +18,12 @@ import com.cst.xinhe.persistence.vo.req.BaseStationBindingStandardVO;
 import com.cst.xinhe.persistence.vo.resp.BaseStationPositionVO;
 import com.cst.xinhe.web.service.feign.client.StationMonitorServerClient;
 import com.cst.xinhe.web.service.feign.client.TerminalMonitorClient;
+import com.cst.xinhe.web.service.staff_group_terminal.service.StaffOrganizationService;
+import com.cst.xinhe.web.service.staff_group_terminal.service.TerminalService;
 import com.cst.xinhe.web.service.station_partition.service.BaseStationService;
 import com.cst.xinhe.web.service.station_partition.service.OfflineStationService;
 import com.cst.xinhe.web.service.station_partition.service.PartitionService;
+import com.cst.xinhe.web.service.system.service.LevelSettingService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -60,10 +63,7 @@ public class BaseStationController extends BaseController {
     private PartitionService partitionService;
 
     @Resource
-    private SystemServiceClient systemServiceClient;
-
-//    @Resource
-//    private LevelSettingService levelSettingService;
+    private LevelSettingService levelSettingService;
 
     @Resource
     private OfflineStationService offlineStationService;
@@ -71,14 +71,14 @@ public class BaseStationController extends BaseController {
     @Resource
     private TerminalUpdateIpMapper terminalUpdateIpMapper;
 
-//    @Resource
-//    private TerminalService terminalService;
+    @Resource
+    private TerminalService terminalService;
 
     @Resource
     private StationMonitorServerClient stationMonitorServerClient;
 
-    @Resource
-    private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
+//    @Resource
+//    private StaffOrganizationService staffOrganizationService;
 
     @GetMapping("findStationByNum")
     @ApiOperation(value = "获取基站信息", notes = "根据Num查找基站")
@@ -147,7 +147,7 @@ public class BaseStationController extends BaseController {
             standardIdList.put((Integer)map.get("baseStationNum"),(Integer) map.get("standardId"));
         }
 
-        Map<Integer, String> map1 = systemServiceClient.getStandardNameByStandardIds(standardIdList);
+        Map<Integer, String> map1 = levelSettingService.getStandardNameByStandardIds(standardIdList);
         if(map1!=null&&map1.size()>0){
             for (Map<String, Object> map : result) {
                 map.put("zoneName", partitionService.geParentNamesById((Integer) map.get("zoneId")));
@@ -234,8 +234,8 @@ public class BaseStationController extends BaseController {
         requestData.setLength(38);
         requestData.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_CONTROL);
         Integer stationId = station.getBaseStationNum();
-//        Map<String, Object> result = terminalService.selectStationIpByStationId(stationId);
-        Map<String, Object> result = staffGroupTerminalServiceClient.selectStationIpByStationId(stationId);
+        Map<String, Object> result = terminalService.selectStationIpByStationId(stationId);
+//        Map<String, Object> result = staffGroupTerminalServiceClient.selectStationIpByStationId(stationId);
         if (result == null || result.isEmpty()){
             throw new RuntimeWebException(ErrorCode.FIND_STATION_IP_FAIL);
         }

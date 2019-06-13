@@ -66,22 +66,22 @@ public class MacStationServiceImpl implements MacStationService {
         List<Map<String, Object>> mapList = new ArrayList<>();
         Map<String,Object> mapEntity = null;
 
-        Set<Integer> setOfGroupId = new HashSet<>();
+       // Set<Integer> setOfGroupId = new HashSet<>();
         Set<Integer> setOfJobId = new HashSet<>();
 
         for (Object item: page.getResult()){
 //            Map<String, Object> map = terminalService.findTerminalAndPersonInfoByMac(((MacStation)item).getMac());
             Map<String, Object> map = staffTerminalMapper.selectTerminalAndPersonInfoByMac(((MacStation)item).getMac());
             if (null != map && !map.isEmpty()){
-                Integer groupId = (Integer)map.get("groupId");
+                //Integer groupId = (Integer)map.get("groupId");
                 Integer staffJobId = (Integer) map.get("staffJobId");
-                setOfGroupId.add(groupId);
+              //  setOfGroupId.add(groupId);
                 setOfJobId.add(staffJobId);
             }
         }
 
 
-        Map<Integer, String> groupNames = staffGroupTerminalServiceClient.findGroupNameByGroupIds(setOfGroupId);
+     //   Map<Integer, String> groupNames = staffGroupTerminalServiceClient.findGroupNameByGroupIds(setOfGroupId);
        // Map<Integer, String> jobNames = staffGroupTerminalServiceClient.findJobByJobId(setOfJobId);
         //去除服务调用
         Map<Integer, String > jobNames = new HashMap<>();
@@ -102,11 +102,11 @@ public class MacStationServiceImpl implements MacStationService {
                 }
                 Integer groupId = (Integer)map.get("groupId");
                 Integer staffJobId = (Integer) map.get("staffJobId");
-//                String groupName = staffOrganizationService.getDeptNameByGroupId(groupId);
-                String groupName = groupNames.get(groupId);
+                String groupName = staffOrganizationService.getDeptNameByGroupId(groupId);
+  //              String groupName = groupNames.get(groupId);
 //                String jobName = staffJobService.findJobNameById(staffJobId);
                 String jobName = jobNames.get(staffJobId);
-                setOfGroupId.add(groupId);
+            //    setOfGroupId.add(groupId);
                 setOfJobId.add(staffJobId);
                 mapEntity.put("groupName", groupName);
                 mapEntity.put("jobName", jobName);

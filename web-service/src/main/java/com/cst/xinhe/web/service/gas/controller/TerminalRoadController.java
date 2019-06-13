@@ -3,12 +3,11 @@ package com.cst.xinhe.web.service.gas.controller;
 
 import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.result.ResultUtil;
-import com.cst.xinhe.gas.service.client.AttendanceServiceClient;
-import com.cst.xinhe.gas.service.elasticsearch.entity.GasPositionEntity;
-import com.cst.xinhe.gas.service.service.TerminalRoadService;
 import com.cst.xinhe.persistence.dao.attendance.AttendanceMapper;
 import com.cst.xinhe.persistence.model.attendance.Attendance;
 import com.cst.xinhe.persistence.model.terminal_road.TerminalRoad;
+import com.cst.xinhe.web.service.gas.elasticsearch.entity.GasPositionEntity;
+import com.cst.xinhe.web.service.gas.service.TerminalRoadService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
@@ -35,10 +34,6 @@ import java.util.Map;
 public class TerminalRoadController {
     @Resource
    private TerminalRoadService terminalRoadService;
-
-    @Resource
-    private AttendanceServiceClient attendanceServiceClient;
-
 
     @Resource
     private AttendanceMapper attendanceMapper;

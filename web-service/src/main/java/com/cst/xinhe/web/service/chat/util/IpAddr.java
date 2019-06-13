@@ -10,7 +10,7 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 
-import static com.cst.xinhe.chatmessage.service.util.CusAccessObjectUtil.INTRANET_IP;
+import static com.cst.xinhe.web.service.chat.util.CusAccessObjectUtil.INTRANET_IP;
 
 
 /**

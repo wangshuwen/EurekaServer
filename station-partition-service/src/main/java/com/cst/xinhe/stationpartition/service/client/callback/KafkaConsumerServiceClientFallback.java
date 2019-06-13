@@ -18,7 +18,7 @@ public class KafkaConsumerServiceClientFallback implements KafkaConsumerServiceC
 
 
     @Override
-    public void overmanedAlarm(Integer type, Integer staffId) {
+    public void overmanedAlarm(Integer type, Integer staffId, Integer areaId) {
         logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
     }
 }

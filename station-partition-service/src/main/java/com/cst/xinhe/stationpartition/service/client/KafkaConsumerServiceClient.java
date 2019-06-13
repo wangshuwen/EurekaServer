@@ -1,13 +1,10 @@
 package com.cst.xinhe.stationpartition.service.client;
 
 import com.cst.xinhe.stationpartition.service.client.callback.KafkaConsumerServiceClientFallback;
-import com.cst.xinhe.stationpartition.service.client.callback.StaffGroupTerminalServiceClientFallback;
 import com.cst.xinhe.stationpartition.service.client.config.FeignConfig;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.Map;
 
 /**
  * @author wangshuwen
@@ -21,7 +18,7 @@ import java.util.Map;
 public interface KafkaConsumerServiceClient {
 
     @GetMapping("overmanedAlarm")
-   void overmanedAlarm(@RequestParam("type") Integer type,@RequestParam("staffId") Integer staffId);
+   void overmanedAlarm(@RequestParam("type") Integer type, @RequestParam("staffId") Integer staffId,@RequestParam("areaId") Integer areaId);
 
 
 }

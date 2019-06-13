@@ -13,10 +13,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-@FeignClient(value = "attendance-service",
+@FeignClient(value = "web-service",
         configuration = FeignConfig.class,
         fallback = AttendanceServiceClientFallback.class,
-        url = "http://127.0.0.1:8775/")
+        url = "http://127.0.0.1:8781/")
 public interface AttendanceServiceClient {
 
     @GetMapping("getTimeStandardByStaffId")

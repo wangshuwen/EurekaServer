@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Map;
 
-@FeignClient(value = "gas-service",
+@FeignClient(value = "web-service",
         configuration = FeignConfig.class,
         fallback = GasServiceClientFallback.class,
-        url = "http://127.0.0.1:8774/")
+        url = "http://127.0.0.1:8781/")
 public interface GasServiceClient {
 
     @GetMapping("selectGasInfoByTerminalLastTime")

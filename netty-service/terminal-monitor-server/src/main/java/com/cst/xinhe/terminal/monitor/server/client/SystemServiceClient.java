@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(value = "system-service",
+@FeignClient(value = "web-service",
         configuration = FeignConfig.class,
         fallback = SystemServiceClientFallback.class,
-        url = "http://127.0.0.1:8778/")
+        url = "http://127.0.0.1:8781/")
 public interface SystemServiceClient {
 
     @GetMapping("findRangByType")

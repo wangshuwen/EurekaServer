@@ -116,28 +116,31 @@ zuul:
   sensitive-headers: Access-Control-Allow-Origin
   ignored-headers: Access-Control-Allow-Origin,H-APP-Id,Token,APPToken
   routes:
-    attendance:
-      path: /attendance/**
-      serviceId: attendance-service
-    staff-group-terminal:
-      path: /staff/**
-      serviceId: staff-group-terminal-service
-    station-partition:
-      path: /station/**
-      serviceId: station-partition-service
-    system-service:
-      path: /system/**
-      serviceId: system-service
-      # 加了url指定到每一个服务，就不需要指定serviceId，不可以负载均衡
-    chat:
-      path: /chat/**
-      serviceId: chat-message-service
-    #    common:
-    #      path: /common/**
-    #      serviceId: common
-    gas:
-      path: /gas/**
-      serviceId: gas-service
+    web:
+      path: /api/**
+      serviceId: web-service
+#    attendance:
+#      path: /attendance/**
+#      serviceId: attendance-service
+#    staff-group-terminal:
+#      path: /staff/**
+#      serviceId: staff-group-terminal-service
+#    station-partition:
+#      path: /station/**
+#      serviceId: station-partition-service
+#    system-service:
+#      path: /system/**
+#      serviceId: system-service
+#      # 加了url指定到每一个服务，就不需要指定serviceId，不可以负载均衡
+#    chat:
+#      path: /chat/**
+#      serviceId: chat-message-service
+#    #    common:
+#    #      path: /common/**
+#    #      serviceId: common
+#    gas:
+#      path: /gas/**
+#      serviceId: gas-service
   #    user:
   #      path: /user/**
   #      serviceId: service-zuul

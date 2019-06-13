@@ -31,7 +31,7 @@ public class Task {
      * @author: lifeng
      * @date: 2019-02-14
      */
-//   @Scheduled(cron = "0 0 0 * * ?") // 每天的零点执行一次定时任务
+    @Scheduled(cron = "0 0 0 * * ?") // 每天的零点执行一次定时任务
 //    @Scheduled(cron = "0 30/10 * * * ? ") // 每天的零点执行一次定时任务
     public void createAttendanceData() throws ParseException {
         System.out.println("执行 " + i + " 次");

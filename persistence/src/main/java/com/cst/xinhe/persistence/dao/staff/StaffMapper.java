@@ -128,4 +128,6 @@ public interface StaffMapper {
     int insertStaffs(@Param("list") List<StaffInfoVO> staffInfoVOs);
 
     List<Integer> findStaffIdByStaffType(@Param("staffType") Integer staffType);
+
+    String findStaffTypeById(@Param("staffId") Integer staffId);
 }

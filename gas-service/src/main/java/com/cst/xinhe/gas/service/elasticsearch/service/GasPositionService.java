@@ -28,7 +28,7 @@ public interface GasPositionService {
 
     List<Map<String, Object>> selectGasInfoLastTenData(int number);
 
-    PageInfo<Map<String, Object>> getEMsgList(Integer pageSize, Integer startPage, String staffName, Integer staffId);
+    PageInfo<Map<String, Object>> getEMsgList(Integer pageSize, Integer startPage, String staffName, Integer staffId,Integer type);
 
 //    Long getWarningGasCount();
 }

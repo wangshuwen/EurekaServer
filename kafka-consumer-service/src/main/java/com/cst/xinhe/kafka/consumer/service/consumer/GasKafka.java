@@ -353,9 +353,15 @@ public class GasKafka {
                         exceptionMessage.setPositionX(gasPosition.getPositionX());
                         exceptionMessage.setPositionY(gasPosition.getPositionY());
                         exceptionMessage.setPositionZ(gasPosition.getPositionZ());
+                        String b = staffMapper.findStaffTypeById(staffId);
                         exceptionMessageMapper.insert(exceptionMessage);
 
-                        wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(new WebSocketData(10,gasPosition)));
+                        if ("1".equals(b)){
+                            wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(new WebSocketData(11,gasPosition)));
+                        } else {
+                            wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(new WebSocketData(10,gasPosition)));
+                        }
+
                     }
                     gasPosition.setInfoType(0);
                     gasPosition.setTempPositionName(road.getTempPositionName());
@@ -388,7 +394,7 @@ public class GasKafka {
                                     map.put("areaInfo",warningArea);
                                     map.put("personNum",importantArea.size());
                                     data.setType(9);
-                                    data.setData(data);
+                                    data.setData(map);
                                     wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
                                 }
 
@@ -404,7 +410,7 @@ public class GasKafka {
                                     map.put("areaInfo",warningArea);
                                     map.put("personNum",limitArea.size());
                                     data.setType(10);
-                                    data.setData(data);
+                                    data.setData(map);
                                     wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
                                 }
 
@@ -436,10 +442,9 @@ public class GasKafka {
                                     long nd = 1000 * 24 * 60 * 60;
                                     long nh = 1000 * 60 * 60;
                                     long nm = 1000 * 60;
-                                    long diff = realLong;
-                                    long day = diff / nd;
-                                    long hour = diff % nd / nh;
-                                    long min = diff % nd % nh / nm;
+                                    long day = realLong / nd;
+                                    long hour = realLong % nd / nh;
+                                    long min = realLong % nd % nh / nm;
                                     staffInfo.put("timeLong", day + "天" + hour + "小时" + min + "分钟");
                                     map.put("data", staffInfo);
                                     data.setData(map);

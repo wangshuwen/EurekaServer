@@ -577,10 +577,17 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
         gasPosition.setStaffName(staff.getStaffName());
         Map<String, Object> deptName = staffGroupTerminalServiceClient.getDeptAndGroupNameByStaffId(staffId);
         gasPosition.setDeptName((String)deptName.get("deptName"));
+
+
         try {
             road = rstl.locateConvert(gasPosition.getTerminalId(), baseStation1, baseStation2, rssi1, rssi2);
         }catch (RuntimeServiceException e){
-            wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(new WebSocketData(10,gasPosition)));
+            String b = staffMapper.findStaffTypeById(staffId);
+            if ("1".equals(b)){
+                wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(new WebSocketData(11,gasPosition)));
+            } else {
+                wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(new WebSocketData(10,gasPosition)));
+            }
         }
 
 

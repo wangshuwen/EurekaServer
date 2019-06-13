@@ -532,7 +532,7 @@
         SELECT
         a.staff_id,a.staff_name,a.staff_number,a.create_time,a.staff_birthday,a.staff_id_card,a.staff_sex,
         a.staff_phone,a.group_id,a.is_person,c.terminal_id,a.staff_job_id AS
-        job_id,job_name,base_station.base_station_name
+        job_id,job_name,b.remark,base_station.base_station_name
         FROM staff a LEFT JOIN staff_job b ON a.staff_job_id = b.job_id  LEFT JOIN staff_terminal c ON a.staff_id =
         c.staff_id LEFT JOIN base_station ON base_station.base_station_num = a.attendance_station_id
         <where>
@@ -647,6 +647,11 @@
     WHERE is_person = #{staffType}
   </select>
 
+
+  <select id="findStaffTypeById" parameterType="java.lang.Integer" resultType="java.lang.String">
+    SELECT j.remark FROM staff s INNER JOIN staff_job j ON s.staff_job_id = j.job_id
+    WHERE staff_id = #{staffId}
+  </select>
 
 
 </mapper>

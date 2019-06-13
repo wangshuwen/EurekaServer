@@ -234,7 +234,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                                 SingletonClient.getSingletonClient().sendCmd(resp);
                                 // 终端欠电提醒
                                 break;
-                                case ConstantValue.MSG_BODY_NODE_NAME_E_CALL:
+                            case ConstantValue.MSG_BODY_NODE_NAME_E_CALL:
                                 //紧急呼叫
 //                                upLoadService.sendPowerStatus(customMsg);
                                 terminalMonitorService.eCall(customMsg);

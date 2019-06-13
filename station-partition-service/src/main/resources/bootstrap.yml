@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: station-partition-service
+  cloud:
+    config:
+      uri: http://127.0.0.1:8769
+      enabled: true
+      profile: dev

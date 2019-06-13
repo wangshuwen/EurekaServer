@@ -132,8 +132,9 @@ public class GasController {
     public String getEMsg(@RequestParam(name = "limit", defaultValue = "12",required = false)Integer pageSize
             , @RequestParam(name="page",defaultValue = "1", required = false)Integer startPage
             , @RequestParam(name = "staffName",required = false)String staffName
-            , @RequestParam(name = "staffId",required = false)Integer staffId){
-        PageInfo<Map<String, Object>> pageInfo = gasPositionService.getEMsgList(pageSize,startPage,staffName,staffId);
+            , @RequestParam(name = "staffId",required = false)Integer staffId
+            ,@RequestParam(name = "type",required = false,defaultValue = "0")Integer type){
+        PageInfo<Map<String, Object>> pageInfo = gasPositionService.getEMsgList(pageSize,startPage,staffName,staffId,type);
         return pageInfo.getSize() > 0 ?ResultUtil.jsonToStringSuccess(pageInfo):ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
     }
 

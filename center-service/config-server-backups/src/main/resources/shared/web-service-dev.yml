@@ -150,3 +150,11 @@ logging:
     #org.springframework.web: DEBUG
     com.cst.xinhe.persistence.dao: DEBUG
   config: classpath:logback-boot.xml
+redis:
+  expireTime: 12
+rangBasePath: D:/idea/ideaProject/vue2/
+constant:
+  webBaseUrl: https://127.0.0.1:8443/
+  basePath: d:/voice/file/
+  rangBasePath: D:/idea/ideaProject/vue2
+ipPrefix: 192.168.

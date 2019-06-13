@@ -1,8 +1,8 @@
-package com.cst.xinhe.web.service.station_partition.client.callback;
+package com.cst.xinhe.web.service.feign.callback;
 
 import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.result.ResultUtil;
-import com.cst.xinhe.stationpartition.service.client.KafkaConsumerServiceClient;
+import com.cst.xinhe.web.service.feign.client.KafkaConsumerServiceClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  * @Date 2019/6/12/9:59
  */
 @Component
-public class KafkaConsumerServiceClientFallback implements KafkaConsumerServiceClient{
+public class KafkaConsumerServiceClientFallback implements KafkaConsumerServiceClient {
     Logger logger = LoggerFactory.getLogger(getClass());
 
 

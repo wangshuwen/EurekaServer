@@ -5,7 +5,7 @@ import com.cst.xinhe.base.result.ResultUtil;
 import com.cst.xinhe.common.netty.utils.WriteFileUtil;
 import com.cst.xinhe.persistence.model.rang_setting.RangSetting;
 import com.cst.xinhe.persistence.model.warn_level.LevelData;
-import com.cst.xinhe.system.service.service.RangSettingService;
+import com.cst.xinhe.web.service.system.service.RangSettingService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,7 +1,7 @@
 package com.cst.xinhe.web.service.system.server;
 
 import com.cst.xinhe.persistence.vo.resp.GasLevelVO;
-import com.cst.xinhe.system.service.service.LevelSettingService;
+import com.cst.xinhe.web.service.system.service.LevelSettingService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;

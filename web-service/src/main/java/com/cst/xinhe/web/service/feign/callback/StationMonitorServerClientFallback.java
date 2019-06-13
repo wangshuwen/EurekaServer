@@ -1,9 +1,9 @@
-package com.cst.xinhe.web.service.station_partition.client.callback;
+package com.cst.xinhe.web.service.feign.callback;
 
 import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.result.ResultUtil;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
-import com.cst.xinhe.stationpartition.service.client.StationMonitorServerClient;
+import com.cst.xinhe.web.service.feign.client.StationMonitorServerClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

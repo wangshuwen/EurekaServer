@@ -8,8 +8,8 @@ import com.cst.xinhe.persistence.model.station_standard_relation.StationStandard
 import com.cst.xinhe.persistence.model.station_standard_relation.StationStandardRelationExample;
 import com.cst.xinhe.persistence.vo.req.BaseStationBindingStandardVO;
 import com.cst.xinhe.persistence.vo.resp.BaseStationPositionVO;
-import com.cst.xinhe.stationpartition.service.service.BaseStationService;
-import com.cst.xinhe.stationpartition.service.service.PartitionService;
+import com.cst.xinhe.web.service.station_partition.service.BaseStationService;
+import com.cst.xinhe.web.service.station_partition.service.PartitionService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;

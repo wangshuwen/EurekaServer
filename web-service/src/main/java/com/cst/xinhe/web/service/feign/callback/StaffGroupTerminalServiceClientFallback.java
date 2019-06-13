@@ -1,4 +1,4 @@
-package com.cst.xinhe.web.service.station_partition.client.callback;
+package com.cst.xinhe.web.service.feign.callback;
 
 import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.result.ResultUtil;
@@ -6,7 +6,7 @@ import com.cst.xinhe.persistence.model.staff.Staff;
 import com.cst.xinhe.persistence.model.staff.StaffJob;
 import com.cst.xinhe.persistence.model.staff.StaffOrganization;
 import com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp;
-import com.cst.xinhe.stationpartition.service.client.StaffGroupTerminalServiceClient;
+import com.cst.xinhe.web.service.feign.client.StaffGroupTerminalServiceClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

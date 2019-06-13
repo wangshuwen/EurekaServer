@@ -1,8 +1,8 @@
 package com.cst.xinhe.web.service.system.server;
 
 import com.cst.xinhe.persistence.model.rang_setting.RangSetting;
-import com.cst.xinhe.system.service.service.LevelDataService;
-import com.cst.xinhe.system.service.service.RangSettingService;
+import com.cst.xinhe.web.service.system.service.LevelDataService;
+import com.cst.xinhe.web.service.system.service.RangSettingService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;

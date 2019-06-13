@@ -1,7 +1,7 @@
-package com.cst.xinhe.web.service.station_partition.client;
+package com.cst.xinhe.web.service.feign.client;
 
-import com.cst.xinhe.stationpartition.service.client.callback.KafkaConsumerServiceClientFallback;
-import com.cst.xinhe.stationpartition.service.client.config.FeignConfig;
+import com.cst.xinhe.web.service.feign.callback.KafkaConsumerServiceClientFallback;
+import com.cst.xinhe.web.service.feign.config.FeignConfig;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;

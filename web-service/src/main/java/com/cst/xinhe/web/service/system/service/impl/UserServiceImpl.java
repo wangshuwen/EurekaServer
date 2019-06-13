@@ -5,7 +5,7 @@ import com.cst.xinhe.persistence.model.user.SysUser;
 import com.cst.xinhe.persistence.model.user.SysUserExample;
 import com.cst.xinhe.persistence.vo.UserLoginVOReq;
 import com.cst.xinhe.persistence.vo.UserLoginVOResp;
-import com.cst.xinhe.system.service.service.UserService;
+import com.cst.xinhe.web.service.system.service.UserService;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.stereotype.Service;
 

@@ -9,7 +9,7 @@ import com.cst.xinhe.persistence.model.warn_level.GasStandard;
 import com.cst.xinhe.persistence.model.warn_level.GasStandardExample;
 import com.cst.xinhe.persistence.model.warn_level.GasWarnSetting;
 import com.cst.xinhe.persistence.vo.resp.GasLevelVO;
-import com.cst.xinhe.system.service.service.LevelSettingService;
+import com.cst.xinhe.web.service.system.service.LevelSettingService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

@@ -4,8 +4,8 @@ package com.cst.xinhe.web.service.station_partition.service.impl;
 import com.cst.xinhe.persistence.dao.t_partition.PartitionMapper;
 import com.cst.xinhe.persistence.model.t_partition.Partition;
 import com.cst.xinhe.persistence.model.t_partition.PartitionExample;
-import com.cst.xinhe.stationpartition.service.service.BaseStationService;
-import com.cst.xinhe.stationpartition.service.service.PartitionService;
+import com.cst.xinhe.web.service.station_partition.service.BaseStationService;
+import com.cst.xinhe.web.service.station_partition.service.PartitionService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

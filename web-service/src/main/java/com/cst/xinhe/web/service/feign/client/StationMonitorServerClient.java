@@ -1,8 +1,7 @@
-package com.cst.xinhe.web.service.station_partition.client;
+package com.cst.xinhe.web.service.feign.client;
 
 import com.cst.xinhe.common.netty.data.response.ResponseData;
-import com.cst.xinhe.stationpartition.service.client.callback.StationMonitorServerClientFallback;
-import com.cst.xinhe.stationpartition.service.client.config.FeignConfig;
+import com.cst.xinhe.web.service.feign.callback.StationMonitorServerClientFallback;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

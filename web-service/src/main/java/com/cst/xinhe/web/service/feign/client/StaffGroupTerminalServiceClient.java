@@ -1,11 +1,11 @@
-package com.cst.xinhe.web.service.station_partition.client;
+package com.cst.xinhe.web.service.feign.client;
 
 import com.cst.xinhe.persistence.model.staff.Staff;
 import com.cst.xinhe.persistence.model.staff.StaffJob;
 import com.cst.xinhe.persistence.model.staff.StaffOrganization;
 import com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp;
-import com.cst.xinhe.stationpartition.service.client.callback.StaffGroupTerminalServiceClientFallback;
-import com.cst.xinhe.stationpartition.service.client.config.FeignConfig;
+import com.cst.xinhe.web.service.feign.callback.StaffGroupTerminalServiceClientFallback;
+import com.cst.xinhe.web.service.feign.config.FeignConfig;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;

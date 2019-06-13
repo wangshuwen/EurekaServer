@@ -3,7 +3,7 @@ package com.cst.xinhe.web.service.system.controller;
 import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.result.ResultUtil;
 import com.cst.xinhe.persistence.model.warn_level.LevelData;
-import com.cst.xinhe.system.service.service.LevelDataService;
+import com.cst.xinhe.web.service.system.service.LevelDataService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;

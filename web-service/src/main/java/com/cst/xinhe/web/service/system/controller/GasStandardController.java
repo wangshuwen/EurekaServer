@@ -3,7 +3,7 @@ package com.cst.xinhe.web.service.system.controller;
 import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.result.ResultUtil;
 import com.cst.xinhe.persistence.model.warn_level.GasStandard;
-import com.cst.xinhe.system.service.service.LevelSettingService;
+import com.cst.xinhe.web.service.system.service.LevelSettingService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;

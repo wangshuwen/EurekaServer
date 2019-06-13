@@ -1,4 +1,4 @@
-package com.cst.xinhe.web.service.station_partition.client.config;
+package com.cst.xinhe.web.service.feign.config;
 
 import com.netflix.loadbalancer.IRule;
 import com.netflix.loadbalancer.RoundRobinRule;

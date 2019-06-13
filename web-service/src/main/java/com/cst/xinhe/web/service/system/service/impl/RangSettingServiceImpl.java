@@ -8,7 +8,7 @@ import com.cst.xinhe.persistence.model.rang_setting.RangSetting;
 import com.cst.xinhe.persistence.model.rang_setting.RangSettingExample;
 import com.cst.xinhe.persistence.model.warn_level.LevelData;
 import com.cst.xinhe.persistence.model.warn_level.LevelDataExample;
-import com.cst.xinhe.system.service.service.RangSettingService;
+import com.cst.xinhe.web.service.system.service.RangSettingService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

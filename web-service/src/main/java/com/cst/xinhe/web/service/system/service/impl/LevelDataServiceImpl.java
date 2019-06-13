@@ -3,7 +3,7 @@ package com.cst.xinhe.web.service.system.service.impl;
 import com.cst.xinhe.persistence.dao.warn_level.LevelDataMapper;
 import com.cst.xinhe.persistence.model.warn_level.LevelData;
 import com.cst.xinhe.persistence.model.warn_level.LevelDataExample;
-import com.cst.xinhe.system.service.service.LevelDataService;
+import com.cst.xinhe.web.service.system.service.LevelDataService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

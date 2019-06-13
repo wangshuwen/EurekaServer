@@ -1,8 +1,8 @@
-package com.cst.xinhe.web.service.station_partition.client.callback;
+package com.cst.xinhe.web.service.feign.callback;
 
 import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.result.ResultUtil;
-import com.cst.xinhe.stationpartition.service.client.WsPushServiceClient;
+import com.cst.xinhe.web.service.feign.client.WsPushServiceClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

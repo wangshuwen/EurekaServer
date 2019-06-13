@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(value = "chat-message-service",
+@FeignClient(value = "web-service",
         configuration = FeignConfig.class,
         fallback = ChatMsgServiceClientFallback.class,
-        url = "http://127.0.0.1:8777/")
+        url = "http://127.0.0.1:8781/")
 public interface ChatMsgServiceClient {
 
     @PostMapping("insertChatMsgSelective")

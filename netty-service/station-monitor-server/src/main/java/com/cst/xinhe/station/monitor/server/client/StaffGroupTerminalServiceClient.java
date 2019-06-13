@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.HashMap;
 import java.util.Map;
 
-@FeignClient(value = "staff-group-terminal-service",
+@FeignClient(value = "web-service",
         configuration = FeignConfig.class,
         fallback = StaffGroupTerminalServiceClientFallback.class,
-        url = "http://127.0.0.1:8772/")
+        url = "http://127.0.0.1:8781/")
 //@RequestMapping("staff-group-terminal-service")
 public interface StaffGroupTerminalServiceClient {
 

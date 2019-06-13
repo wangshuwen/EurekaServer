@@ -15,10 +15,10 @@ import java.util.Map;
  * @author: lifeng
  * @create: 2019-04-29 13:22
  **/
-@FeignClient(value = "station-partition-service",
+@FeignClient(value = "web-service",
         configuration = FeignConfig.class,
         fallback = StationPartitionServiceClientFallback.class,
-        url = "http://127.0.0.1:8776/")
+        url = "http://127.0.0.1:8781/")
 //@RequestMapping(value = "station-partition-service/")
 public interface StationPartitionServiceClient {
 

@@ -1,0 +1,12 @@
+server:
+  port: 8775
+defaultZone1: http://127.0.0.1:8761/eureka/
+
+foo: foo version 1
+username: wangshuwen
+type: com.alibaba.druid.pool.DruidDataSource
+driver-class-name: com.mysql.jdbc.Driver
+url: jdbc:mysql://192.168.1.182:3306/zkxh_test1?useSSL=false&characterEncoding=utf8
+username: root
+password: 123456
+initial-size: 5

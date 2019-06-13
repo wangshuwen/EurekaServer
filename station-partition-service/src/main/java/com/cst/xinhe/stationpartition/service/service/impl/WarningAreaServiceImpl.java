@@ -270,7 +270,7 @@ public class WarningAreaServiceImpl implements WarningAreaService {
             Date outTime = (Date) map.get("outTime");
             Integer groupId = (Integer) map.get("groupId");
 //            String deptName = staffOrganizationService.getDeptNameByGroupId(groupId);
-            String deptName = staffGroupTerminalServiceClient.getDeptNameByGroupId(groupId);
+            String deptName = getDeptNameByGroupId(groupId);
             map.put("deptName",deptName);
            if(outTime==null){
                outTime=new Date();

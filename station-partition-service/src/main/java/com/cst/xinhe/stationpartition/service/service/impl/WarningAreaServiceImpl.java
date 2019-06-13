@@ -24,7 +24,6 @@ import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -328,9 +327,9 @@ public class WarningAreaServiceImpl implements WarningAreaService {
 
             //超员报警
             if(type==1){
-                kafkaConsumerServiceClient.overmanedAlarm(1,staffId);
+                kafkaConsumerServiceClient.overmanedAlarm(1,staffId,areaId);
             }else{
-                kafkaConsumerServiceClient.overmanedAlarm(2,staffId);
+                kafkaConsumerServiceClient.overmanedAlarm(2,staffId, areaId);
             }
 
             WebSocketData data = new WebSocketData();

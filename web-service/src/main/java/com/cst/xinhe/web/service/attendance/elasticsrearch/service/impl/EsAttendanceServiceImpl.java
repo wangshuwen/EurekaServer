@@ -1,10 +1,6 @@
 package com.cst.xinhe.web.service.attendance.elasticsrearch.service.impl;
 
-import com.cst.xinhe.attendance.service.client.StaffGroupTerminalServiceClient;
-import com.cst.xinhe.attendance.service.client.StationPartitionServiceClient;
-import com.cst.xinhe.attendance.service.elasticsrearch.entity.EsAttendanceEntity;
-import com.cst.xinhe.attendance.service.elasticsrearch.repository.AttendanceRepository;
-import com.cst.xinhe.attendance.service.elasticsrearch.service.EsAttendanceService;
+
 import com.cst.xinhe.persistence.dao.attendance.AttendanceMapper;
 import com.cst.xinhe.persistence.dao.attendance.TimeStandardMapper;
 import com.cst.xinhe.persistence.dao.base_station.BaseStationMapper;
@@ -15,6 +11,11 @@ import com.cst.xinhe.persistence.model.base_station.BaseStation;
 import com.cst.xinhe.persistence.model.staff.Staff;
 import com.cst.xinhe.persistence.model.staff.StaffJob;
 import com.cst.xinhe.persistence.vo.req.AttendanceParamsVO;
+import com.cst.xinhe.web.service.attendance.elasticsrearch.entity.EsAttendanceEntity;
+import com.cst.xinhe.web.service.attendance.elasticsrearch.repository.AttendanceRepository;
+import com.cst.xinhe.web.service.attendance.elasticsrearch.service.EsAttendanceService;
+import com.cst.xinhe.web.service.staff_group_terminal.service.StaffOrganizationService;
+import com.cst.xinhe.web.service.staff_group_terminal.service.StaffService;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.sort.FieldSortBuilder;
@@ -53,9 +54,11 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
     @Resource
     private TimeStandardMapper timeStandardMapper;
     @Resource
-    private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
+    private StaffService staffService;
     @Resource
-    private StationPartitionServiceClient stationPartitionServiceClient;
+    private StaffOrganizationService staffOrganizationService;
+
+
     @Override
     public org.springframework.data.domain.Page<EsAttendanceEntity> searchAttendanceByStaffType(Integer startPage, Integer pageSize, Integer staffType, String staffName1, String currentDate) {
 
@@ -67,7 +70,7 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
         List<Staff> staffList1=null;
         Set<Integer> set = new HashSet<>();
         if(null != staffName1 &&!"".equals(staffName1)){
-             staffList1 = staffGroupTerminalServiceClient.selectStaffByLikeName(staffName1);
+             staffList1 = staffService.selectStaffByLikeName(staffName1);
         }
 
         if(staffList!=null&&staffList.size()>0){
@@ -197,8 +200,8 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
         Integer timeStandardId = attendanceParamsVO.getTimeStandardId();
         if(orgId!=null){
             Boolean flag=true;
-            List<Integer> deptIds = staffGroupTerminalServiceClient.findSonIdsByDeptId(orgId);
-            List<Integer> staffids =staffGroupTerminalServiceClient.findAllStaffByGroupIds(deptIds);
+            List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(orgId);
+            List<Integer> staffids =staffService.findAllStaffByGroupIds(deptIds);
             if(staffids!=null&&staffids.size()>0){
                 for (Integer staffid : staffids) {
                     builder.should(QueryBuilders.termQuery("staffid",staffid));
@@ -226,7 +229,7 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
         }
 
         if(null != jobType){
-            List<Staff> staff = staffGroupTerminalServiceClient.selectStaffListByJobType(jobType);
+            List<Staff> staff = staffService.selectStaffListByJobType(jobType);
             if(null != staff &&staff.size() > 0){
                 for (Staff staff1 : staff) {
                     builder.should(QueryBuilders.termQuery("staffid",staff1.getStaffId()));
@@ -237,7 +240,7 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
         }
 
         if(null != staffName &&!"".equals(staffName)){
-            List<Staff> staffList = staffGroupTerminalServiceClient.selectStaffByLikeName(staffName);
+            List<Staff> staffList = staffService.selectStaffByLikeName(staffName);
             if(null != staffList && staffList.size()>0){
                 for (Staff staff : staffList) {
                     builder.should(QueryBuilders.termQuery("staffid",staff.getStaffId()));
@@ -258,7 +261,7 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
             list1.add(attendance.getStaffid());
         }
 
-        Map<Integer,Map<String,Object>> res = staffGroupTerminalServiceClient.findGroupNameByStaffId(list1);
+        Map<Integer,Map<String,Object>> res = staffService.findGroupNameByIds(list1);
 
         Iterator<EsAttendanceEntity> iterator = list.iterator();
         while (iterator.hasNext()){

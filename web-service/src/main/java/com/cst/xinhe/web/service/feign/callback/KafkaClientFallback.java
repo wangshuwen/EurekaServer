@@ -1,10 +1,10 @@
-package com.cst.xinhe.web.service.chat.client.callback;
+package com.cst.xinhe.web.service.feign.callback;
 
 import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.result.ResultUtil;
-import com.cst.xinhe.chatmessage.service.client.KafkaClient;
+
 import com.cst.xinhe.common.netty.data.request.RequestData;
-import com.cst.xinhe.persistence.model.chat.ChatMsg;
+import com.cst.xinhe.web.service.feign.client.KafkaClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

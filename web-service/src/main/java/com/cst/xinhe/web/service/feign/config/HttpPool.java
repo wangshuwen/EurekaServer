@@ -1,4 +1,4 @@
-package com.cst.xinhe.web.service.chat.client.config;
+package com.cst.xinhe.web.service.feign.config;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;

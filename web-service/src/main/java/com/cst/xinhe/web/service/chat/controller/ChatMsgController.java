@@ -2,13 +2,14 @@ package com.cst.xinhe.web.service.chat.controller;
 
 import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.result.ResultUtil;
-import com.cst.xinhe.chatmessage.service.service.ChatMessageService;
+
 import com.cst.xinhe.persistence.dto.chat_msg.ChatMsgHistoryDto;
 import com.cst.xinhe.persistence.model.chat.ChatMsg;
+import com.cst.xinhe.web.service.chat.service.ChatMessageService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 
-import com.sun.org.apache.bcel.internal.generic.NEW;
+
 import io.swagger.annotations.ApiOperation;
 
 import org.springframework.beans.factory.annotation.Value;

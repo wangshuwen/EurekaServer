@@ -16,7 +16,6 @@ import com.cst.xinhe.persistence.model.warning_area.WarningAreaRecord;
 import com.cst.xinhe.persistence.model.warning_area.WarningAreaRecordExample;
 import com.cst.xinhe.persistence.vo.resp.WarningAreaVO;
 import com.cst.xinhe.web.service.feign.client.KafkaConsumerServiceClient;
-import com.cst.xinhe.web.service.feign.client.StaffGroupTerminalServiceClient;
 import com.cst.xinhe.web.service.feign.client.WsPushServiceClient;
 import com.cst.xinhe.web.service.station_partition.service.WarningAreaService;
 import com.github.pagehelper.Page;

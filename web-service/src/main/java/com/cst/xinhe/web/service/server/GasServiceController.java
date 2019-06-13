@@ -1,7 +1,8 @@
-package com.cst.xinhe.web.service.gas.server;
+package com.cst.xinhe.web.service.server;
 
-import com.cst.xinhe.gas.service.service.GasInfoService;
+
 import com.cst.xinhe.persistence.vo.resp.GasWSRespVO;
+import com.cst.xinhe.web.service.gas.service.GasInfoService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;

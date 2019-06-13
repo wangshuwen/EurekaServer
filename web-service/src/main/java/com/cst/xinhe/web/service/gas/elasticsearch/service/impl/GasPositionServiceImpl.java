@@ -1,9 +1,7 @@
 package com.cst.xinhe.web.service.gas.elasticsearch.service.impl;
 
 import com.cst.xinhe.common.utils.convert.DateConvert;
-import com.cst.xinhe.gas.service.elasticsearch.entity.GasPositionEntity;
-import com.cst.xinhe.gas.service.elasticsearch.repository.GasPositionRepository;
-import com.cst.xinhe.gas.service.elasticsearch.service.GasPositionService;
+
 import com.cst.xinhe.persistence.dao.e_msg.ExceptionMessageMapper;
 import com.cst.xinhe.persistence.dao.staff.StaffMapper;
 import com.cst.xinhe.persistence.dao.staff.StaffOrganizationMapper;
@@ -11,6 +9,9 @@ import com.cst.xinhe.persistence.model.staff.Staff;
 import com.cst.xinhe.persistence.model.staff.StaffExample;
 import com.cst.xinhe.persistence.model.staff.StaffOrganization;
 import com.cst.xinhe.persistence.model.terminal_road.TerminalRoad;
+import com.cst.xinhe.web.service.gas.elasticsearch.entity.GasPositionEntity;
+import com.cst.xinhe.web.service.gas.elasticsearch.repository.GasPositionRepository;
+import com.cst.xinhe.web.service.gas.elasticsearch.service.GasPositionService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.elasticsearch.index.query.BoolQueryBuilder;

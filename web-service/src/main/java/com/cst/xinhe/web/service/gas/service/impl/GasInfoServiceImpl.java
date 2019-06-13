@@ -1,13 +1,15 @@
 package com.cst.xinhe.web.service.gas.service.impl;
 
-import com.cst.xinhe.gas.service.client.StaffGroupTerminalServiceClient;
-import com.cst.xinhe.gas.service.elasticsearch.entity.GasPositionEntity;
-import com.cst.xinhe.gas.service.elasticsearch.service.GasPositionService;
-import com.cst.xinhe.gas.service.service.GasInfoService;
+
 import com.cst.xinhe.persistence.dao.rt_gas.RtGasInfoMapper;
 import com.cst.xinhe.persistence.dao.staff.StaffMapper;
 import com.cst.xinhe.persistence.model.staff.Staff;
 import com.cst.xinhe.persistence.vo.resp.GasWSRespVO;
+import com.cst.xinhe.web.service.gas.elasticsearch.entity.GasPositionEntity;
+import com.cst.xinhe.web.service.gas.elasticsearch.service.GasPositionService;
+import com.cst.xinhe.web.service.gas.service.GasInfoService;
+import com.cst.xinhe.web.service.staff_group_terminal.service.StaffOrganizationService;
+import com.cst.xinhe.web.service.staff_group_terminal.service.StaffService;
 import com.github.pagehelper.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,14 +36,13 @@ public class GasInfoServiceImpl implements GasInfoService {
 
 
 
-//    @Autowired
-//    private StaffOrganizationService staffOrganizationService;
-//
-//    @Autowired
-//    private StaffService staffService;
+    @Autowired
+    private StaffOrganizationService staffOrganizationService;
 
-    @Resource
-    private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
+    @Autowired
+    private StaffService staffService;
+
+
 
 
     @Autowired
@@ -66,7 +67,7 @@ public class GasInfoServiceImpl implements GasInfoService {
 
         // 根据员工的ID查询所有staff ，如果staff Id 存在，才有staffName
 //        List<Map<String, Object>> staffMap = staffGroupTerminalServiceClient.findStaffByIds(staffIds);
-        Map<Integer,Map<String, String>> res = staffGroupTerminalServiceClient.findStaffNameAndGroupName(staffIds);
+        Map<Integer,Map<String, String>> res = staffService.findStaffNameAndGroupName(staffIds);
 //        staffMapper.selectByPrimaryKey(staffId);
 
        /* for (GasPositionEntity item : gasPositionList.getContent()) {
@@ -178,7 +179,7 @@ public class GasInfoServiceImpl implements GasInfoService {
         for (Map<String, Object> item : maps) {
             set.add((Integer) item.get("staff_id"));
         }
-        Map<Integer, Map<String, Object>> res = staffGroupTerminalServiceClient.findGroupNameByStaffId(set);
+        Map<Integer, Map<String, Object>> res = staffService.findGroupNameByIds(set);
 //        staffGroupTerminalServiceClient.getDeptNameByGroupId(group_id);
         for (Map<String, Object> item : maps) {
             gasWSRespVO = new GasWSRespVO();

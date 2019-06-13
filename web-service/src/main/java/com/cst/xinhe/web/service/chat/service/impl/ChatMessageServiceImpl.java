@@ -1,10 +1,12 @@
 package com.cst.xinhe.web.service.chat.service.impl;
 
-import com.cst.xinhe.chatmessage.service.client.StaffGroupTerminalServiceClient;
-import com.cst.xinhe.chatmessage.service.service.ChatMessageService;
+
 import com.cst.xinhe.persistence.dao.chat.ChatMsgMapper;
 import com.cst.xinhe.persistence.dto.chat_msg.ChatMsgHistoryDto;
 import com.cst.xinhe.persistence.model.chat.ChatMsg;
+import com.cst.xinhe.web.service.chat.service.ChatMessageService;
+import com.cst.xinhe.web.service.staff_group_terminal.service.StaffOrganizationService;
+import com.cst.xinhe.web.service.staff_group_terminal.service.StaffTerminalRelationService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -24,13 +26,12 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
     @Resource
     private ChatMsgMapper chatMsgMapper;
-//    @Resource
-//    private StaffOrganizationService staffOrganizationService;
+    @Resource
+    private StaffOrganizationService staffOrganizationService;
+
 
     @Resource
-    private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
-//    @Resource
-//    private StaffTerminalRelationService staffTerminalRelationService;
+    private StaffTerminalRelationService staffTerminalRelationService;
 
     @Override
     public PageInfo<ChatMsgHistoryDto> findMsgHistory(Integer userId, Integer staffId, Integer startPage, Integer pageSize) {
@@ -73,7 +74,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         List<Integer> deptIds=null;
         if(keyWord!=null&&!"".equals(keyWord)){
 //            deptIds = staffOrganizationService.findSonIdsByDeptName(keyWord);
-            deptIds = staffGroupTerminalServiceClient.findSonIdsByDeptName(keyWord);
+            deptIds = staffOrganizationService.findSonIdsByDeptName(keyWord);
         }
         Page page = PageHelper.startPage(startPage, pageSize);
         List<Map<String, Object>> list1 = chatMsgMapper.findChatList(keyWord, deptIds);
@@ -86,7 +87,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                 groupIds.add(groupId);
             }
             //服务调用
-            List<Map<String, Object>> groupInfo = staffGroupTerminalServiceClient.getDeptNameByGroupIds(groupIds);
+            List<Map<String, Object>> groupInfo = staffOrganizationService.getDeptNameByGroupIds(groupIds);
 
 
             for (Map<String, Object> map : list) {

@@ -1,7 +1,8 @@
 package com.cst.xinhe.web.service.gas.service;
 
-import com.cst.xinhe.gas.service.elasticsearch.entity.GasPositionEntity;
+
 import com.cst.xinhe.persistence.model.terminal_road.TerminalRoad;
+import com.cst.xinhe.web.service.gas.elasticsearch.entity.GasPositionEntity;
 import com.github.pagehelper.Page;
 
 import java.text.ParseException;

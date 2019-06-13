@@ -1,11 +1,7 @@
 package com.cst.xinhe.web.service.chat.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.cst.xinhe.chatmessage.service.client.KafkaClient;
-import com.cst.xinhe.chatmessage.service.client.TerminalMonitorClient;
-import com.cst.xinhe.chatmessage.service.service.CallService;
-import com.cst.xinhe.chatmessage.service.service.ChatMessageService;
-import com.cst.xinhe.chatmessage.service.util.IpAddr;
+
 import com.cst.xinhe.common.netty.utils.FileUtils;
 import com.cst.xinhe.common.utils.FileType;
 import com.cst.xinhe.common.utils.convert.DateConvert;
@@ -17,12 +13,17 @@ import com.cst.xinhe.persistence.dao.terminal.TerminalUpdateIpMapper;
 import com.cst.xinhe.persistence.dto.voice.VoiceDto;
 import com.cst.xinhe.persistence.model.chat.ChatMsg;
 import com.cst.xinhe.persistence.model.chat.TemporarySendList;
-import com.cst.xinhe.persistence.model.e_call.ECall;
+
 import com.cst.xinhe.persistence.model.staff.StaffOrganization;
+import com.cst.xinhe.web.service.chat.service.CallService;
+import com.cst.xinhe.web.service.chat.service.ChatMessageService;
+import com.cst.xinhe.web.service.chat.util.IpAddr;
+import com.cst.xinhe.web.service.feign.client.KafkaClient;
+import com.cst.xinhe.web.service.feign.client.TerminalMonitorClient;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import io.swagger.models.auth.In;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

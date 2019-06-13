@@ -1,8 +1,7 @@
 package com.cst.xinhe.web.service.attendance.service.impl;
 
-import com.cst.xinhe.attendance.service.client.StaffGroupTerminalServiceClient;
-import com.cst.xinhe.attendance.service.service.AttendanceRulesGenerator;
-import com.cst.xinhe.attendance.service.service.AttendanceService;
+
+
 import com.cst.xinhe.base.exception.ErrorCode;
 import com.cst.xinhe.base.exception.RuntimeServiceException;
 import com.cst.xinhe.common.utils.convert.DateConvert;
@@ -17,6 +16,8 @@ import com.cst.xinhe.persistence.model.attendance.TimeStandard;
 import com.cst.xinhe.persistence.vo.req.AttendanceParamsVO;
 import com.cst.xinhe.persistence.vo.req.TimeStandardVO;
 import com.cst.xinhe.persistence.vo.resp.AttendanceInfoVO;
+import com.cst.xinhe.web.service.attendance.service.AttendanceRulesGenerator;
+import com.cst.xinhe.web.service.attendance.service.AttendanceService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
@@ -46,9 +47,10 @@ public class AttendanceServiceImpl implements AttendanceService, AttendanceRules
     private TimeStandardMapper timeStandardMapper;
     @Resource
     private AttendanceMapper attendanceMapper;
-
     @Resource
-    private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
+    private StaffOrganizationService staffOrganizationService;
+
+
 
     @Override
     public int addTimeStandardInfo(TimeStandardVO standardVO) throws ParseException {
@@ -152,7 +154,7 @@ public class AttendanceServiceImpl implements AttendanceService, AttendanceRules
     public Page findAttendanceInfo(AttendanceParamsVO attendanceParamsVO) {
         if (null != attendanceParamsVO.getOrgId() && 0 != attendanceParamsVO.getOrgId()){
 //            List<Integer> list = staffOrganizationService.findSonIdsByDeptId(attendanceParamsVO.getOrgId());
-            List<Integer> list = staffGroupTerminalServiceClient.findSonIdsByDeptId(attendanceParamsVO.getOrgId());
+            List<Integer> list = staffOrganizationService.findSonIdsByDeptId(attendanceParamsVO.getOrgId());
             if (list != null && !list.isEmpty())
                 attendanceParamsVO.setStaffIdOfList(list);
         }

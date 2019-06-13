@@ -1,9 +1,11 @@
 package com.cst.xinhe.web.service.gas.elasticsearch.service;
 
-import com.cst.xinhe.gas.service.elasticsearch.entity.GasPositionEntity;
+
 import com.cst.xinhe.persistence.model.terminal_road.TerminalRoad;
+import com.cst.xinhe.web.service.gas.elasticsearch.entity.GasPositionEntity;
 import com.github.pagehelper.PageInfo;
 import org.springframework.data.domain.Page;
+
 
 import java.text.ParseException;
 import java.util.Date;

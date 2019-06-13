@@ -1,6 +1,7 @@
 package com.cst.xinhe.web.service.attendance.elasticsrearch.repository;
 
-import com.cst.xinhe.attendance.service.elasticsrearch.entity.EsAttendanceEntity;
+
+import com.cst.xinhe.web.service.attendance.elasticsrearch.entity.EsAttendanceEntity;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.stereotype.Repository;
 

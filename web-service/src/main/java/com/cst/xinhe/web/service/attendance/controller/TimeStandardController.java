@@ -1,12 +1,13 @@
 package com.cst.xinhe.web.service.attendance.controller;
 
-import com.cst.xinhe.attendance.service.client.StaffGroupTerminalServiceClient;
-import com.cst.xinhe.attendance.service.service.AttendanceService;
+
 import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.result.ResultUtil;
 import com.cst.xinhe.common.utils.convert.DateConvert;
 import com.cst.xinhe.persistence.model.staff.Staff;
 import com.cst.xinhe.persistence.vo.req.TimeStandardVO;
+import com.cst.xinhe.web.service.attendance.service.AttendanceService;
+import com.cst.xinhe.web.service.staff_group_terminal.service.StaffService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
@@ -34,11 +35,10 @@ public class TimeStandardController {
     @Resource
     private AttendanceService attendanceService;
 
-//    @Resource
-//    private StaffService staffService;
-
     @Resource
-    private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
+    private StaffService staffService;
+
+
 
     @GetMapping("getInfo")
     @ApiOperation(value = "获取所有的时间标准", notes = "实现多参数多条件查询，可以分页查询")
@@ -82,7 +82,7 @@ public class TimeStandardController {
     public String deleteTimeStandard(@RequestParam("ids") Integer[] ids){
         int len = ids.length;
         if (len > 0){
-            Map<Integer, List<Staff>> map = staffGroupTerminalServiceClient.findStaffByTimeStandardIds(ids);
+            Map<Integer, List<Staff>> map = staffService.findStaffByTimeStandardIds(ids);
             if(null != map &&map.size()>0){
                 for (Integer key: map.keySet()){
                     List<Staff> staffList = map.get(key);

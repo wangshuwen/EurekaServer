@@ -1,6 +1,6 @@
 package com.cst.xinhe.web.service.attendance.task;
 
-import com.cst.xinhe.attendance.service.service.AttendanceRulesGenerator;
+import com.cst.xinhe.web.service.attendance.service.AttendanceRulesGenerator;
 import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;

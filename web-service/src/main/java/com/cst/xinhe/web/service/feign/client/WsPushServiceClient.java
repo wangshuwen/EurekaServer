@@ -3,8 +3,10 @@ package com.cst.xinhe.web.service.feign.client;
 import com.cst.xinhe.web.service.feign.callback.WsPushServiceClientFallback;
 import com.cst.xinhe.web.service.feign.config.FeignConfig;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @program: EurekaServer
@@ -34,5 +36,17 @@ public interface WsPushServiceClient {
 
     @PostMapping("sendInfo")
     String sendInfo(@RequestBody String jsonObject);
+
+    @GetMapping("setOrdId")
+    void setOrgId(@RequestParam(name = "o") Integer o);
+
+    @GetMapping("setZoneId")
+    void setZoneId(@RequestParam(name = "o") Integer o);
+
+    @GetMapping("setOrgIdIsNull")
+    void setOrgIdIsNull();
+
+    @GetMapping("setZoneIdIsNull")
+    void setZoneIdIsNull();
 
 }

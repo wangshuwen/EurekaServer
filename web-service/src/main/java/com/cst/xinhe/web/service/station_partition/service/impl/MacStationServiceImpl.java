@@ -5,7 +5,6 @@ import com.cst.xinhe.persistence.dao.staff.StaffJobMapper;
 import com.cst.xinhe.persistence.dao.terminal.StaffTerminalMapper;
 import com.cst.xinhe.persistence.model.mac_station.MacStation;
 import com.cst.xinhe.persistence.model.staff.StaffJob;
-import com.cst.xinhe.web.service.feign.client.StaffGroupTerminalServiceClient;
 import com.cst.xinhe.web.service.station_partition.service.MacStationService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;

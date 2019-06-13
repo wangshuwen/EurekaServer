@@ -1,10 +1,7 @@
 package com.cst.xinhe.web.service.attendance.controller;
 
 
-import com.cst.xinhe.attendance.service.client.StaffGroupTerminalServiceClient;
-import com.cst.xinhe.attendance.service.elasticsrearch.entity.EsAttendanceEntity;
-import com.cst.xinhe.attendance.service.elasticsrearch.service.EsAttendanceService;
-import com.cst.xinhe.attendance.service.service.AttendanceService;
+
 import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.result.ResultUtil;
 import com.cst.xinhe.persistence.dao.staff.StaffOrganizationMapper;
@@ -12,6 +9,10 @@ import com.cst.xinhe.persistence.model.attendance.Attendance;
 import com.cst.xinhe.persistence.model.staff.StaffOrganization;
 import com.cst.xinhe.persistence.model.staff.StaffOrganizationExample;
 import com.cst.xinhe.persistence.vo.req.AttendanceParamsVO;
+import com.cst.xinhe.web.service.attendance.elasticsrearch.entity.EsAttendanceEntity;
+import com.cst.xinhe.web.service.attendance.elasticsrearch.service.EsAttendanceService;
+import com.cst.xinhe.web.service.attendance.service.AttendanceService;
+import com.cst.xinhe.web.service.staff_group_terminal.service.StaffOrganizationService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -40,8 +41,8 @@ public class AttendanceController {
     @Resource
     private AttendanceService attendanceService;
 
-//    @Resource
-//    private StaffOrganizationService staffOrganizationService;
+   @Resource
+    private StaffOrganizationService staffOrganizationService;
 
     @Resource
     private EsAttendanceService esAttendanceService;
@@ -49,8 +50,6 @@ public class AttendanceController {
     @Resource
     private StaffOrganizationMapper staffOrganizationMapper;
 
-    @Resource
-    private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
 
     @GetMapping("getInfoByParams")
     @ApiOperation("多条件查询考勤信息")
@@ -85,6 +84,7 @@ public class AttendanceController {
 
         org.springframework.data.domain.Page<EsAttendanceEntity> page = esAttendanceService.searchAttendanceByParams(attendanceParamsVO);
 
+
         return  ResultUtil.jsonToStringSuccess(page);
     }
 
@@ -102,7 +102,7 @@ public class AttendanceController {
 //        List<StaffOrganization> list  = staffGroupTerminalServiceClient.getOneSonByParent(1);
         for (StaffOrganization org : list) {
            // List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(org.getId());
-            List<Integer> deptIds = staffGroupTerminalServiceClient.findSonIdsByDeptId(org.getId());
+            List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(org.getId());
             //根据部门id的到该部门下的所有员工数
             Integer count= attendanceService.getAttendanceDept(deptIds);
             Map<String, Object> map = new HashMap<>();
@@ -125,7 +125,7 @@ public class AttendanceController {
 //        List<StaffOrganization> list= staffGroupTerminalServiceClient.getOneSonByParent(1);
         for (StaffOrganization org : list) {
 //            List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(org.getId());
-            List<Integer> deptIds = staffGroupTerminalServiceClient.findSonIdsByDeptId(org.getId());
+            List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(org.getId());
             //根据部门id的到该部门下的所有员工数
             Integer count= attendanceService.getUnAttendanceDept(deptIds);
             Map<String, Object> map = new HashMap<>();
@@ -149,7 +149,7 @@ public class AttendanceController {
         //        List<StaffOrganization> list= staffGroupTerminalServiceClient.getOneSonByParent(1);
         for (StaffOrganization org : list) {
 //            List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(org.getId());
-            List<Integer> deptIds = staffGroupTerminalServiceClient.findSonIdsByDeptId(org.getId());
+            List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(org.getId());
             //根据部门id的到该部门下的所有员工数
             Integer count= attendanceService.getOverTimeDept(deptIds);
             Map<String, Object> map = new HashMap<>();
@@ -174,7 +174,7 @@ public class AttendanceController {
         //        List<StaffOrganization> list= staffGroupTerminalServiceClient.getOneSonByParent(1);
         for (StaffOrganization org : list) {
 //            List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(org.getId());
-            List<Integer> deptIds = staffGroupTerminalServiceClient.findSonIdsByDeptId(org.getId());
+            List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(org.getId());
             //根据部门id的到该部门下的所有员工数
             Integer count= attendanceService.getSeriousTimeDept(deptIds);
             Map<String, Object> map = new HashMap<>();
@@ -200,7 +200,7 @@ public class AttendanceController {
             deptId=0;
         }
 //        List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(deptId);
-        List<Integer> deptIds = staffGroupTerminalServiceClient.findSonIdsByDeptId(deptId);
+        List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(deptId);
 
         Page page = PageHelper.startPage(startPage, pageSize);
         List<HashMap<String,Object>> list= attendanceService.getAttendanceStaff(deptIds,staffName);
@@ -208,7 +208,7 @@ public class AttendanceController {
         for (HashMap<String, Object> map : result) {
             Integer groupId= (Integer) map.get("groupId");
           //  String deptName = staffOrganizationService.getDeptNameByGroupId(groupId);
-            String deptName = staffGroupTerminalServiceClient.getDeptNameByGroupId(groupId);
+            String deptName = staffOrganizationService.getDeptNameByGroupId(groupId);
             map.put("deptName",deptName);
             //入矿时间
             Integer staffId = (Integer) map.get("staffId");
@@ -241,14 +241,14 @@ public class AttendanceController {
             deptId=0;
         }
 //        List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(deptId);
-        List<Integer> deptIds = staffGroupTerminalServiceClient.findSonIdsByDeptId(deptId);
+        List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(deptId);
         Page page = PageHelper.startPage(startPage, pageSize);
         List<HashMap<String,Object>> list= attendanceService.getUnAttendanceStaff(deptIds,staffName);
         List<HashMap<String,Object>> result = page.getResult();
         for (HashMap<String, Object> map : result) {
             Integer groupId= (Integer) map.get("groupId");
 //            String deptName = staffOrganizationService.getDeptNameByGroupId(groupId);
-            String deptName = staffGroupTerminalServiceClient.getDeptNameByGroupId(groupId);
+            String deptName = staffOrganizationService.getDeptNameByGroupId(groupId);
             map.put("deptName",deptName);
         }
         PageInfo pageInfo = new PageInfo(page);
@@ -264,7 +264,7 @@ public class AttendanceController {
             deptId=0;
         }
 //        List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(deptId);
-        List<Integer> deptIds = staffGroupTerminalServiceClient.findSonIdsByDeptId(deptId);
+        List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(deptId);
         Page page = PageHelper.startPage(startPage, pageSize);
         List<HashMap<String,Object>> list= attendanceService.getOverTimeStaff(deptIds,staffName);
 
@@ -272,7 +272,7 @@ public class AttendanceController {
         for (HashMap<String, Object> map : result) {
             Integer groupId= (Integer) map.get("groupId");
 //            String deptName = staffOrganizationService.getDeptNameByGroupId(groupId);
-            String deptName =  staffGroupTerminalServiceClient.getDeptNameByGroupId(deptId);
+            String deptName =  staffOrganizationService.getDeptNameByGroupId(deptId);
             map.put("deptName",deptName);
             //入矿时间
             Integer staffId = (Integer) map.get("staffId");
@@ -304,7 +304,7 @@ public class AttendanceController {
             deptId=0;
         }
 //        List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(deptId);
-        List<Integer> deptIds = staffGroupTerminalServiceClient.findSonIdsByDeptId(deptId);
+        List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(deptId);
         Page page = PageHelper.startPage(startPage, pageSize);
         List<HashMap<String,Object>> list= attendanceService.getSeriousTimeStaff(deptIds,staffName);
 
@@ -312,7 +312,7 @@ public class AttendanceController {
         for (HashMap<String, Object> map : result) {
             Integer groupId= (Integer) map.get("groupId");
 //            String deptName = staffOrganizationService.getDeptNameByGroupId(groupId);
-            String deptName = staffGroupTerminalServiceClient.getDeptNameByGroupId(groupId);
+            String deptName = staffOrganizationService.getDeptNameByGroupId(groupId);
             map.put("deptName",deptName);
             //入矿时间
             Integer staffId = (Integer) map.get("staffId");

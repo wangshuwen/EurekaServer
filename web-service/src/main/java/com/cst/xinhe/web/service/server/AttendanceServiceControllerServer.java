@@ -1,9 +1,9 @@
-package com.cst.xinhe.web.service.attendance.server;
+package com.cst.xinhe.web.service.server;
 
-import com.cst.xinhe.attendance.service.service.AttendanceService;
 import com.cst.xinhe.persistence.model.attendance.Attendance;
 import com.cst.xinhe.persistence.model.attendance.StaffAttendanceRealRule;
 import com.cst.xinhe.persistence.vo.req.TimeStandardVO;
+import com.cst.xinhe.web.service.attendance.service.AttendanceService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;

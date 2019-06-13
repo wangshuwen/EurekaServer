@@ -1,6 +1,7 @@
 package com.cst.xinhe.web.service.gas.elasticsearch.repository;
 
-import com.cst.xinhe.gas.service.elasticsearch.entity.GasPositionEntity;
+
+import com.cst.xinhe.web.service.gas.elasticsearch.entity.GasPositionEntity;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.stereotype.Repository;
 

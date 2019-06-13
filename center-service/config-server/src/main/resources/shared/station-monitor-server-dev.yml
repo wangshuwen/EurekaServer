@@ -1,10 +1,3 @@
-constant:
-  webBaseUrl: https://127.0.0.1:8443/
-  basePath: d:/voice/file/
-  rangBasePath: D:/idea/ideaProject/vue2
-ipPrefix: 192.168.
-server:
-  port: 8777
 management:
   endpoints:
     web:
@@ -22,7 +15,7 @@ spring:
       client:
         url: http://127.0.0.1:5000
   application:
-    name: chat-message-service
+    name: station-monitor-server
   datasource:
     # 使用阿里的Druid连接池
     type: com.alibaba.druid.pool.DruidDataSource
@@ -83,15 +76,10 @@ pagehelper:
   helper-dialect: mysql
   reasonable: true
   support-methods-arguments: count=countSql
-webBaseUrl: webBaseUrl
-basePath: basePath
-rangBasePath: rangBasePath
-#打印日志
-logging:
-  level:
-    #org.springframework.web: DEBUG
-    com.cst.xinhe.persistence.dao: DEBUG
-  config: classpath:logback-boot.xml
+netty:
+  port: 7777
+server:
+  port: 8765
 eureka:
   instance:
     lease-expiration-duration-in-seconds: 2
@@ -142,3 +130,9 @@ feign:
     max-connections-per-route: 50
   okhttp:
     enabled: false
+#打印日志
+logging:
+  level:
+    #org.springframework.web: DEBUG
+    com.cst.xinhe.persistence.dao: DEBUG
+  config: classpath:logback-boot.xml

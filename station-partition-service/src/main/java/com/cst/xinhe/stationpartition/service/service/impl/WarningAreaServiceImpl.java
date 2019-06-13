@@ -179,7 +179,9 @@ public class WarningAreaServiceImpl implements WarningAreaService {
             WarningAreaExample example = new WarningAreaExample();
             WarningAreaExample.Criteria criteria = example.createCriteria();
             criteria.andWarningAreaTypeEqualTo(type);
-            criteria.andWarningAreaIdEqualTo(areaId);
+            if(null != areaId){
+                criteria.andWarningAreaIdEqualTo(areaId);
+            }
             List<WarningArea> areaList = warningAreaMapper.selectByExample(example);
             if(null != areaList &&areaList.size()>0){
                 for (WarningArea warningArea : areaList) {

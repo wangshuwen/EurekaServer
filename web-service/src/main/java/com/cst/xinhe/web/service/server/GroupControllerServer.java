@@ -1,9 +1,9 @@
-package com.cst.xinhe.web.service.staff_group_terminal.server;
+package com.cst.xinhe.web.service.server;
 
 import com.cst.xinhe.persistence.model.staff.StaffOrganization;
-import com.cst.xinhe.staffgroupterminal.service.service.StaffJobService;
-import com.cst.xinhe.staffgroupterminal.service.service.StaffOrganizationService;
-import com.cst.xinhe.staffgroupterminal.service.service.StaffService;
+import com.cst.xinhe.web.service.staff_group_terminal.service.StaffJobService;
+import com.cst.xinhe.web.service.staff_group_terminal.service.StaffOrganizationService;
+import com.cst.xinhe.web.service.staff_group_terminal.service.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;

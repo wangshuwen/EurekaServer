@@ -4,7 +4,7 @@ import com.cst.xinhe.persistence.dao.staff_terminal_relation.StaffTerminalRelati
 import com.cst.xinhe.persistence.dao.terminal.StaffTerminalMapper;
 import com.cst.xinhe.persistence.model.staff_terminal_relation.StaffTerminalRelation;
 import com.cst.xinhe.persistence.model.staff_terminal_relation.StaffTerminalRelationExample;
-import com.cst.xinhe.staffgroupterminal.service.service.StaffTerminalRelationService;
+import com.cst.xinhe.web.service.staff_group_terminal.service.StaffTerminalRelationService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

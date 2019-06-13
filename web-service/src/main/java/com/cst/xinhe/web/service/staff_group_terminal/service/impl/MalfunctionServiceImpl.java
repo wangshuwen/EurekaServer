@@ -2,7 +2,7 @@ package com.cst.xinhe.web.service.staff_group_terminal.service.impl;
 
 import com.cst.xinhe.persistence.dao.malfunction.MalfunctionMapper;
 import com.cst.xinhe.persistence.model.malfunction.Malfunction;
-import com.cst.xinhe.staffgroupterminal.service.service.MalfunctionService;
+import com.cst.xinhe.web.service.staff_group_terminal.service.MalfunctionService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

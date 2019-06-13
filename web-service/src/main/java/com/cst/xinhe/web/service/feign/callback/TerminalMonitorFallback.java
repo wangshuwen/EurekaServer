@@ -31,6 +31,13 @@ public class TerminalMonitorFallback implements TerminalMonitorClient {
     }
 
     @Override
+    public Integer getSequenceId() {
+
+        logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
+        return null;
+    }
+
+    @Override
     public Integer getBatteryByTerminalNum(Integer terminalNum) {
         logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
         return null;

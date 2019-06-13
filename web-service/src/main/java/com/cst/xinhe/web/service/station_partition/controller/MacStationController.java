@@ -3,7 +3,7 @@ package com.cst.xinhe.web.service.station_partition.controller;
 import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.result.ResultUtil;
 import com.cst.xinhe.persistence.model.mac_station.MacStation;
-import com.cst.xinhe.stationpartition.service.service.MacStationService;
+import com.cst.xinhe.web.service.station_partition.service.MacStationService;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

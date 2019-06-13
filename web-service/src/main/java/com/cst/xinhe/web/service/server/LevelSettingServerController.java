@@ -1,4 +1,4 @@
-package com.cst.xinhe.web.service.system.server;
+package com.cst.xinhe.web.service.server;
 
 import com.cst.xinhe.persistence.vo.resp.GasLevelVO;
 import com.cst.xinhe.web.service.system.service.LevelSettingService;

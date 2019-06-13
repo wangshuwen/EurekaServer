@@ -6,7 +6,7 @@ import com.cst.xinhe.persistence.model.coordinate.Coordinate;
 import com.cst.xinhe.persistence.model.warning_area.WarningArea;
 import com.cst.xinhe.persistence.model.warning_area.WarningAreaRecord;
 import com.cst.xinhe.persistence.vo.resp.WarningAreaVO;
-import com.cst.xinhe.stationpartition.service.service.WarningAreaService;
+import com.cst.xinhe.web.service.station_partition.service.WarningAreaService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;

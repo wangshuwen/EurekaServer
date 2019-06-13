@@ -3,7 +3,7 @@ package com.cst.xinhe.web.service.staff_group_terminal.service.impl;
 import com.cst.xinhe.persistence.dao.staff.StaffOrganizationMapper;
 import com.cst.xinhe.persistence.model.staff.StaffOrganization;
 import com.cst.xinhe.persistence.model.staff.StaffOrganizationExample;
-import com.cst.xinhe.staffgroupterminal.service.service.StaffOrganizationService;
+import com.cst.xinhe.web.service.staff_group_terminal.service.StaffOrganizationService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

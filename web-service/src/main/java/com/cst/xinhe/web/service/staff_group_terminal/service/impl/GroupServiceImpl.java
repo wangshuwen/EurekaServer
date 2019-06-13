@@ -1,6 +1,6 @@
 package com.cst.xinhe.web.service.staff_group_terminal.service.impl;
 
-import com.cst.xinhe.staffgroupterminal.service.service.GroupService;
+import com.cst.xinhe.web.service.staff_group_terminal.service.GroupService;
 import org.springframework.stereotype.Service;
 
 /**

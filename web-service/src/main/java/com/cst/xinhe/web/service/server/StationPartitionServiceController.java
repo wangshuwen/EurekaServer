@@ -1,8 +1,8 @@
-package com.cst.xinhe.web.service.station_partition.server;
+package com.cst.xinhe.web.service.server;
 
 import com.cst.xinhe.persistence.model.base_station.BaseStation;
-import com.cst.xinhe.stationpartition.service.service.BaseStationService;
-import com.cst.xinhe.stationpartition.service.service.PartitionService;
+import com.cst.xinhe.web.service.station_partition.service.BaseStationService;
+import com.cst.xinhe.web.service.station_partition.service.PartitionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

@@ -3,7 +3,7 @@ package com.cst.xinhe.web.service.staff_group_terminal.controller;
 import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.result.ResultUtil;
 import com.cst.xinhe.persistence.model.staff.StaffJob;
-import com.cst.xinhe.staffgroupterminal.service.service.StaffJobService;
+import com.cst.xinhe.web.service.staff_group_terminal.service.StaffJobService;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

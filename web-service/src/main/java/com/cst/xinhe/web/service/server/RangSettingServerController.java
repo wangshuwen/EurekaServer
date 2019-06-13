@@ -1,4 +1,4 @@
-package com.cst.xinhe.web.service.system.server;
+package com.cst.xinhe.web.service.server;
 
 import com.cst.xinhe.persistence.model.rang_setting.RangSetting;
 import com.cst.xinhe.web.service.system.service.LevelDataService;

@@ -2,7 +2,7 @@ package com.cst.xinhe.web.service.staff_group_terminal.controller;
 
 import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.result.ResultUtil;
-import com.cst.xinhe.staffgroupterminal.service.service.LackElectricService;
+import com.cst.xinhe.web.service.staff_group_terminal.service.LackElectricService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;

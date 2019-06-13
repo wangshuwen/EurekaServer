@@ -11,9 +11,9 @@ import com.cst.xinhe.persistence.model.staff_terminal_relation.StaffTerminalRela
 import com.cst.xinhe.persistence.model.staff_terminal_relation.StaffTerminalRelationExample;
 import com.cst.xinhe.persistence.vo.req.StaffInfoVO;
 import com.cst.xinhe.persistence.vo.resp.GasWSRespVO;
-import com.cst.xinhe.staffgroupterminal.service.service.StaffJobService;
-import com.cst.xinhe.staffgroupterminal.service.service.StaffOrganizationService;
-import com.cst.xinhe.staffgroupterminal.service.service.StaffService;
+import com.cst.xinhe.web.service.staff_group_terminal.service.StaffJobService;
+import com.cst.xinhe.web.service.staff_group_terminal.service.StaffOrganizationService;
+import com.cst.xinhe.web.service.staff_group_terminal.service.StaffService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;

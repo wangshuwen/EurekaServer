@@ -3,7 +3,7 @@ package com.cst.xinhe.web.service.staff_group_terminal.service.impl;
 import com.cst.xinhe.persistence.dao.lack_electric.LackElectricMapper;
 import com.cst.xinhe.persistence.model.lack_electric.LackElectric;
 import com.cst.xinhe.persistence.model.lack_electric.LackElectricExample;
-import com.cst.xinhe.staffgroupterminal.service.service.LackElectricService;
+import com.cst.xinhe.web.service.staff_group_terminal.service.LackElectricService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;

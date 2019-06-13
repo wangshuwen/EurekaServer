@@ -1,12 +1,12 @@
-package com.cst.xinhe.web.service.staff_group_terminal.server;
+package com.cst.xinhe.web.service.server;
 
 import com.cst.xinhe.persistence.model.lack_electric.LackElectric;
 import com.cst.xinhe.persistence.model.malfunction.Malfunction;
 import com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp;
-import com.cst.xinhe.staffgroupterminal.service.service.LackElectricService;
-import com.cst.xinhe.staffgroupterminal.service.service.MalfunctionService;
-import com.cst.xinhe.staffgroupterminal.service.service.StaffService;
-import com.cst.xinhe.staffgroupterminal.service.service.TerminalService;
+import com.cst.xinhe.web.service.staff_group_terminal.service.LackElectricService;
+import com.cst.xinhe.web.service.staff_group_terminal.service.MalfunctionService;
+import com.cst.xinhe.web.service.staff_group_terminal.service.StaffService;
+import com.cst.xinhe.web.service.staff_group_terminal.service.TerminalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

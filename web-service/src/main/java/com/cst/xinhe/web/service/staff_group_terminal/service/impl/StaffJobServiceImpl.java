@@ -2,7 +2,7 @@ package com.cst.xinhe.web.service.staff_group_terminal.service.impl;
 
 import com.cst.xinhe.persistence.dao.staff.StaffJobMapper;
 import com.cst.xinhe.persistence.model.staff.StaffJob;
-import com.cst.xinhe.staffgroupterminal.service.service.StaffJobService;
+import com.cst.xinhe.web.service.staff_group_terminal.service.StaffJobService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;

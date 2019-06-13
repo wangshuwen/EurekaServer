@@ -15,6 +15,7 @@
   ##**staff-group-terminal-service:   192.168.1.106:8772**
  ##**attendance-service:   192.168.1.106:8775**
  ##**station-partition-service:  192.168.1.106:8776**
+ ##** monitor-admin:      192.168.1.106:5000  **
 
    
  

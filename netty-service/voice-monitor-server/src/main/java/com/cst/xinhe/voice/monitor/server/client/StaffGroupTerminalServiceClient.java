@@ -2,6 +2,7 @@ package com.cst.xinhe.voice.monitor.server.client;
 
 import com.cst.xinhe.persistence.model.staff.Staff;
 import com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp;
+import com.cst.xinhe.persistence.model.terminal_road.TerminalRoad;
 import com.cst.xinhe.voice.monitor.server.client.callback.StaffGroupTerminalServiceClientFallback;
 import com.cst.xinhe.voice.monitor.server.client.config.FeignConfig;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -49,4 +50,10 @@ public interface StaffGroupTerminalServiceClient {
 
     @GetMapping("selectTerminalIpInfoByTerminalId")
     Map<String, Object> selectTerminalIpInfoByTerminalId(@RequestParam("terminalId") Integer terminalId);
+
+    @GetMapping("selectGasInfoByTerminalLastTime")
+    Map<String, Object> selectGasInfoByTerminalLastTime(@RequestParam("terminalId") Integer terminalId);
+
+    @GetMapping("selectRoadById")
+    TerminalRoad selectRoadById(Integer positionId);
 }

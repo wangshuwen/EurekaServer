@@ -4,6 +4,7 @@ import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.result.ResultUtil;
 import com.cst.xinhe.persistence.model.staff.Staff;
 import com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp;
+import com.cst.xinhe.persistence.model.terminal_road.TerminalRoad;
 import com.cst.xinhe.voice.monitor.server.client.StaffGroupTerminalServiceClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,6 +76,16 @@ public class StaffGroupTerminalServiceClientFallback implements StaffGroupTermin
     @Override
     public Map<String, Object> selectTerminalIpInfoByTerminalId(Integer terminalId) {
         logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
+        return null;
+    }
+
+    @Override
+    public Map<String, Object> selectGasInfoByTerminalLastTime(Integer terminalId) {
+        return null;
+    }
+
+    @Override
+    public TerminalRoad selectRoadById(Integer positionId) {
         return null;
     }
 }

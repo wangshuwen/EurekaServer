@@ -12,7 +12,6 @@ import com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp;
 import com.cst.xinhe.persistence.model.terminal_road.TerminalRoad;
 import com.cst.xinhe.voice.monitor.server.channel.VoiceChannelMap;
 import com.cst.xinhe.voice.monitor.server.client.StaffGroupTerminalServiceClient;
-import com.cst.xinhe.voice.monitor.server.client.GasServiceClient;
 import com.cst.xinhe.voice.monitor.server.context.SpringContextUtil;
 import com.cst.xinhe.voice.monitor.server.service.VoiceMonitorService;
 import com.cst.xinhe.voice.monitor.server.ws.WSVoiceStatus;
@@ -48,7 +47,9 @@ public class ProcessRtVoice {
 
     private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
 
-    private GasServiceClient gasServiceClient;
+//    private GasServiceClient gasServiceClient;
+
+//    private StaffGroupTerminalServiceClient staffGroupTerminalServiceClient;
 
     private VoiceMonitorService voiceMonitorService;
 
@@ -57,7 +58,7 @@ public class ProcessRtVoice {
     public ProcessRtVoice() {
         this.voiceMonitorService = SpringContextUtil.getBean(VoiceMonitorService.class);
         this.staffGroupTerminalServiceClient = SpringContextUtil.getBean(StaffGroupTerminalServiceClient.class);
-        this.gasServiceClient=SpringContextUtil.getBean(GasServiceClient.class);
+//        this.staffGroupTerminalServiceClient=SpringContextUtil.getBean(StaffGroupTerminalServiceClient.class);
         this.rangSettingMapper=SpringContextUtil.getBean(RangSettingMapper.class);
     }
 
@@ -170,7 +171,7 @@ public class ProcessRtVoice {
             HashMap<String, Object> nameInfo = staffGroupTerminalServiceClient.getDeptAndGroupNameByStaffId(staffId);
             //气体信息
 //            Map<String, Object> gasInfo = rtGasInfoMapper.selectGasInfoByTerminalLastTime(terminalId);
-            Map<String, Object> gasInfo = gasServiceClient.selectGasInfoByTerminalLastTime(terminalId);
+            Map<String, Object> gasInfo = staffGroupTerminalServiceClient.selectGasInfoByTerminalLastTime(terminalId);
             String tempPositionName = (String)gasInfo.get("temp_position_name");
 //            Integer positionId = (Integer) gasInfo.get("position_id");
 //            //终端路线信息

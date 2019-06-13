@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
         fallback = TerminalMonitorFallback.class,
         url = "http://127.0.0.1:8766/")
 //@RequestMapping("terminal-monitor-server")
-public interface TerminalMonitorClient {
+public interface TerminalMonitorClient  {
 
     /**
      * 向终端服务发送响应信息

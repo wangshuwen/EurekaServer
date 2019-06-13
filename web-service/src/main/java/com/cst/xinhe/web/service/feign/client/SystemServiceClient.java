@@ -2,6 +2,7 @@ package com.cst.xinhe.web.service.feign.client;
 
 import com.cst.xinhe.persistence.model.rang_setting.RangSetting;
 import com.cst.xinhe.web.service.feign.callback.SystemServiceClientFallback;
+import com.cst.xinhe.web.service.feign.config.FeignConfig;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;

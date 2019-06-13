@@ -2,6 +2,7 @@ package com.cst.xinhe.web.service.feign.client;
 
 import com.cst.xinhe.common.netty.data.response.ResponseData;
 import com.cst.xinhe.web.service.feign.callback.StationMonitorServerClientFallback;
+import com.cst.xinhe.web.service.feign.config.FeignConfig;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

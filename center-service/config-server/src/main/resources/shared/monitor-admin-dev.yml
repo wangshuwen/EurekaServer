@@ -7,17 +7,17 @@ spring:
       #user:
       #name: 'admin'
     #password: 'admin'
-  mail:
-    host: smtp.qq.com
-    username: 1447273837@qq.com
-    password: jjqgiuumteirhhei
-    properties:
-      mail:
-       smtp:
-         auth: true
-         starttls:
-           enable: true
-           required: true
+  #mail:
+    #host: smtp.qq.com
+    #username: 1447273837@qq.com
+    #password: jjqgiuumteirhhei
+    #properties:
+      #mail:
+       #smtp:
+         #auth: true
+         #starttls:
+           #enable: true
+           #required: true
   # 发送给谁
   boot:
     admin:

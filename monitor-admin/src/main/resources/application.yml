@@ -1,0 +1,34 @@
+server:
+  port: 5000
+spring:
+  application:
+    name: monitor-admin
+  security:
+    user:
+      name: admin
+      password: admin
+  boot:
+    admin:
+      ui:
+        title: 集群监控中心
+eureka:
+  instance:
+    metadata-map:
+      user.name: admin
+      user.password: admin
+    lease-expiration-duration-in-seconds: 2
+    lease-renewal-interval-in-seconds: 1
+    health-check-url-path: /actuator/health
+    instance-id: ${eureka.instance.ip-address}:${server.port}
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka/
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
+

@@ -73,7 +73,7 @@ public class MalfunctionController {
     @ApiOperation(value = "获取所有故障信息", notes = "根据终端编号查找故障信息，没有终端编号则查找全部，做到分页查询")
     public String getMalfunctionInfo(@RequestParam(name = "page", defaultValue = "1", required = false) Integer startPage,
                                @RequestParam(name = "limit", defaultValue = "10", required = false) Integer pageSize,
-                               @RequestParam(name = "terminalId", defaultValue = "", required = false) Integer terminalId,
+                               @RequestParam(name = "terminalId", required = false) Integer terminalId,
                                @RequestParam(name = "status", defaultValue = "", required = false) Integer status) {
 
 

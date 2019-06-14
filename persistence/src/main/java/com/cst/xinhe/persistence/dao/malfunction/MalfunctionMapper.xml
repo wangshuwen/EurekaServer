@@ -425,12 +425,19 @@
     <where>
       <if test="status != null ">
         AND status = #{status}
+        <if test="status == 1">
+          AND (wifi_error = 0 OR voice_error = 0 OR co_error = 0 OR co2_error = 0
+          OR ch4_error = 0 OR t_error = 0 OR h_error = 0 OR o2_error = 0)
+        </if>
+        <if test="status == 0">
+          AND (wifi_error = 1 OR voice_error = 1 OR co_error = 1 OR co2_error = 1
+          OR ch4_error = 1 OR t_error = 1 OR h_error = 1 OR o2_error = 1)
+        </if>
       </if>
       <if test="terminalId != null and terminalId neq ''">
         AND terminal_id = #{terminalId}
       </if>
-      AND (wifi_error = 1 OR voice_error = 1 OR co_error = 1 OR co2_error = 1
-      OR ch4_error = 1 OR t_error = 1 OR h_error = 1 OR o2_error = 1)
+
     </where>
   </select>
 

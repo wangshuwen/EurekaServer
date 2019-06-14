@@ -7,6 +7,26 @@ spring:
       #user:
       #name: 'admin'
     #password: 'admin'
+  mail:
+    host: smtp.qq.com
+    username: 1447273837@qq.com
+    password: jjqgiuumteirhhei
+    properties:
+      mail:
+       smtp:
+         auth: true
+         starttls:
+           enable: true
+           required: true
+  # 发送给谁
+  boot:
+    admin:
+      notify:
+       mail:
+         to: 70150451@qq.com
+  # 是谁发送出去的
+         from: 1447273837@qq.com
+
 eureka:
   instance:
     lease-expiration-duration-in-seconds: 2

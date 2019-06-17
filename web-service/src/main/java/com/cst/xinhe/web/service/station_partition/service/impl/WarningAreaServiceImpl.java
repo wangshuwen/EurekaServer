@@ -299,7 +299,7 @@ public class WarningAreaServiceImpl implements WarningAreaService {
         return page;
     }
 
-    @Override
+    /*@Override
     public Integer addAreaRecord(WarningAreaRecord warningAreaRecord) {
         //推送前端，该区域人数+1
         Integer areaId = warningAreaRecord.getWarningAreaId();
@@ -357,7 +357,7 @@ public class WarningAreaServiceImpl implements WarningAreaService {
 
 
         return result;
-    }
+    }*/
 
     @Override
     public Integer findStaffNumByType(Integer type) {

@@ -9,12 +9,13 @@ import com.cst.xinhe.base.exception.RuntimeServiceException;
 import com.cst.xinhe.common.constant.ConstantValue;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
-import com.cst.xinhe.common.netty.utils.NettyDataUtils;
 import com.cst.xinhe.common.utils.array.ArrayQueue;
 import com.cst.xinhe.common.utils.convert.DateConvert;
 import com.cst.xinhe.common.ws.WebSocketData;
 import com.cst.xinhe.kafka.consumer.service.client.*;
 import com.cst.xinhe.kafka.consumer.service.service.RSTL;
+import com.cst.xinhe.kafka.consumer.service.util.CheckPointWithPolygon;
+import com.cst.xinhe.kafka.consumer.service.util.WarningAreaCoordinate;
 import com.cst.xinhe.persistence.dao.attendance.StaffAttendanceRealRuleMapper;
 import com.cst.xinhe.persistence.dao.attendance.TimeStandardMapper;
 import com.cst.xinhe.persistence.dao.base_station.BaseStationMapper;
@@ -58,6 +59,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.awt.geom.Point2D;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -142,6 +144,9 @@ public class GasKafka {
 
     @Resource
     private StaffMapper staffMapper;
+
+    @Resource
+    private CheckPointWithPolygon checkPointWithPolygon;
 
 
     private volatile boolean isWarn = false;
@@ -325,15 +330,8 @@ public class GasKafka {
                     String t_deptName = getDeptNameByGroupId(staff.getGroupId());
                     gasPosition.setDeptName(t_deptName);
 
-                    //判断员工出入重点限制区域时刻（由前端改为后端判断）
 
-
-
-
-
-
-
-                  TerminalRoad road = new TerminalRoad();
+                  TerminalRoad road = null;
                     try {
                         road = rstl.locateConvert(gasPosition.getTerminalId(), baseStation1, baseStation2, rssi1, rssi2);
                     }catch (RuntimeServiceException e){
@@ -377,65 +375,84 @@ public class GasKafka {
                         }
 
                     }
-                    gasPosition.setInfoType(0);
-                    gasPosition.setTempPositionName(road.getTempPositionName());
-                    gasPosition.setPositionX(road.getPositionX());
-                    gasPosition.setPositionY(road.getPositionY());
-                    gasPosition.setPositionZ(road.getPositionZ());
-                    road.setStationId(gasPosition.getStationId());
-                    sendTempRoadName(requestData.getTerminalId(),requestData.getTerminalIp(),requestData.getTerminalPort(),road.getTempPositionName());
 
-                    //----------------------------------以下是判断出入问题------------------------------------
-                    //去除staffGroupTerminalServiceClient
 
-                    //---------------------判断该员工是否在限制区域，滞留时间过长，则报警开始-----------------------
-                    WarningAreaRecordExample example = WarningAreaRecordExample.getInstance();
-                    WarningAreaRecordExample.Criteria criteria = example.createCriteria();
-                    criteria.andStaffIdEqualTo(staffId);
-                    criteria.andOutTimeIsNull();
-                    List<WarningAreaRecord> warningAreaRecords = warningAreaRecordMapper.findWarningAreaRecordByStaffAndOutTime(staffId);
-                    if (null != warningAreaRecords && warningAreaRecords.size() > 0) {
-                        WarningAreaRecord warningAreaRecord = warningAreaRecords.get(0);
-                        WarningArea warningArea = warningAreaMapper.selectByPrimaryKey(warningAreaRecord.getWarningAreaId());
-                        if (warningArea != null) {
-                            if (warningArea.getWarningAreaType() == 1) {
 
+                    //判断员工出入重点限制区域时刻(由前端改为后端判断)
+
+                    WarningAreaCoordinate judgeArea = checkPointWithPolygon.judgeExistence(new Point2D.Double(gasPosition.getPositionX(), gasPosition.getPositionY()), 1);
+                    boolean contains = areaSet.contains(staffId);
+                    if(judgeArea.isResult()){
+                        //在重点或者限制区域
+                        Integer areaId = judgeArea.getWarningAreaId();
+                        WarningArea area = warningAreaMapper.selectByPrimaryKey(areaId);
+                        Integer type = area.getWarningAreaType();
+
+                        if(!contains){
+                            //首次进入重点或者限制区域
+                            areaSet.add(staffId);
+                            WarningAreaRecord areaRecord = new WarningAreaRecord();
+                            areaRecord.setWarningAreaId(areaId);
+                            areaRecord.setInTime(new Date());
+                            areaRecord.setStaffId(staffId);
+                            warningAreaRecordMapper.insertSelective(areaRecord);
+
+                            if(type==1){
                                 //重点区域超员报警
                                 importantArea.add(staffId);
-                                if(importantArea.size()>warningArea.getContainNumber()){
+                                if(importantArea.size()>area.getContainNumber()){
                                     WebSocketData data = WebSocketData.getInstance();
                                     HashMap<String, Object> map = new HashMap<>();
-                                    map.put("areaInfo",warningArea);
+                                    map.put("areaInfo",area);
                                     map.put("personNum",importantArea.size());
                                     data.setType(9);
                                     data.setData(map);
                                     wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
                                 }
-
                                 //在重点区域内
                                 road.setIsOre(3);
                                 gasPosition.setIsOre(3);
-                            } else {
+
+                            }else {
                                 //限制区域超员报警
                                 limitArea.add(staffId);
-                                if(limitArea.size()>warningArea.getContainNumber()){
+                                if(limitArea.size()>area.getContainNumber()){
                                     WebSocketData data = WebSocketData.getInstance();
                                     HashMap<String, Object> map = new HashMap<>();
-                                    map.put("areaInfo",warningArea);
+                                    map.put("areaInfo",area);
                                     map.put("personNum",limitArea.size());
                                     data.setType(10);
                                     data.setData(map);
                                     wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
                                 }
 
+                            }
+                            //推送前端,重点区域人数加一
+                            WebSocketData data = new WebSocketData();
+                            data.setType(6);
+                            HashMap<String, Object> map = new HashMap<>();
+                            map.put("code",judgeArea.getWarningAreaType());
+                            map.put("data",1);
+                            data.setData(map);
+                            wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
 
-                                road.setIsOre(4);
-                                gasPosition.setIsOre(4);
+                        }else{
+                            //一直在重点区域或者限制区域
+                            road.setIsOre(4);
+                            gasPosition.setIsOre(4);
+
+                            WarningAreaRecordExample example = new WarningAreaRecordExample();
+                            WarningAreaRecordExample.Criteria criteria = example.createCriteria();
+                            criteria.andOutTimeIsNull();
+                            criteria.andStaffIdEqualTo(staffId);
+                            List<WarningAreaRecord> inRecords = warningAreaRecordMapper.selectByExample(example);
+                            if(null != inRecords && inRecords.size() > 0){
+                                WarningAreaRecord inRecord = inRecords.get(0);
                                 //在限制区域内
-                                String time = warningArea.getResidenceTime();
+                                String time = area.getResidenceTime();
                                 double residenceTime = Double.parseDouble(time);//单位分钟
                                 Date now = new Date();
-                                long realLong = now.getTime() - warningAreaRecord.getInTime().getTime();
+                                long realLong = now.getTime() - inRecord.getInTime().getTime();
                                 if (realLong > residenceTime) {
                                     WebSocketData data = WebSocketData.getInstance();
                                     data.setType(7);
@@ -451,7 +468,7 @@ public class GasKafka {
                                     staffInfo.put("staffId", staffId);
                                     staffInfo.put("staffName", staffName);
                                     staffInfo.put("deptName", deptName);
-                                    staffInfo.put("areaName", warningArea.getWarningAreaName());
+                                    staffInfo.put("areaName", area.getWarningAreaName());
                                     //封装时长
                                     long nd = 1000 * 24 * 60 * 60;
                                     long nh = 1000 * 60 * 60;
@@ -470,8 +487,84 @@ public class GasKafka {
                                 }
                             }
                         }
+
+                    }else{
+                        //没有在重点或者限制区域
+                        if(contains){
+                            //刚离开重点或者限制区域
+                            areaSet.remove(staffId);
+                            WarningAreaRecordExample example = new WarningAreaRecordExample();
+                            WarningAreaRecordExample.Criteria criteria = example.createCriteria();
+                            criteria.andOutTimeIsNull();
+                            criteria.andStaffIdEqualTo(staffId);
+                            List<WarningAreaRecord> inRecords = warningAreaRecordMapper.selectByExample(example);
+                            if(null != inRecords && inRecords.size() > 0){
+                                WarningAreaRecord inRecord = inRecords.get(0);
+                                inRecord.setOutTime(new Date());
+                               warningAreaRecordMapper.updateByPrimaryKeySelective(inRecord);
+
+
+                                //推送前端，该区域人数-1
+                                Integer areaId = inRecord.getWarningAreaId();
+                                WarningArea area = warningAreaMapper.selectByPrimaryKey(areaId);
+                                Integer type = area.getWarningAreaType();
+
+                                //超员报警
+                                if(type==1){
+                                    importantArea.remove(staffId);
+                                    if(importantArea.size()>area.getContainNumber()){
+                                        WebSocketData data = WebSocketData.getInstance();
+                                        HashMap<String, Object> map = new HashMap<>();
+                                        map.put("areaInfo",area);
+                                        map.put("personNum",importantArea.size());
+                                        data.setType(9);
+                                        data.setData(data);
+                                        wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
+                                    }
+                                }else{
+                                    limitArea.remove(staffId);
+                                    if(GasKafka.limitArea.size()>area.getContainNumber()){
+                                        WebSocketData data = WebSocketData.getInstance();
+                                        HashMap<String, Object> map = new HashMap<>();
+                                        map.put("areaInfo",area);
+                                        map.put("personNum",limitArea.size());
+                                        data.setType(10);
+                                        data.setData(data);
+                                        wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
+                                    }
+                                }
+                                //推送前端人数减一
+                                WebSocketData data = new WebSocketData();
+                                data.setType(6);
+                                HashMap<String, Object> map = new HashMap<>();
+                                map.put("code",type);
+                                map.put("data",-1);
+                                data.setData(map);
+//                WSPersonNumberServer.sendInfo(JSON.toJSONString(data));
+                                wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
+                            }
+
+                        }
+
                     }
+
+
+
+                    //----------------------------------以下是判断出入问题------------------------------------
+
+
+
                     //------------------------判断出入问题结束--------------------------------------
+
+                    gasPosition.setInfoType(0);
+                    gasPosition.setTempPositionName(road.getTempPositionName());
+                    gasPosition.setPositionX(road.getPositionX());
+                    gasPosition.setPositionY(road.getPositionY());
+                    gasPosition.setPositionZ(road.getPositionZ());
+                    road.setStationId(gasPosition.getStationId());
+                    sendTempRoadName(requestData.getTerminalId(),requestData.getTerminalIp(),requestData.getTerminalPort(),road.getTempPositionName());
+
+
 
                     //--------------------------------判断员工是否是出矿入矿---------------------------------
                     Map<String, Object> entryStation = baseStationMapper.selectBaseStationByType(1);
@@ -537,8 +630,8 @@ public class GasKafka {
                     if (serious_time.before(date)) {
 
                         try {
-                            boolean contains = overTimeSet.contains(staffId);
-                            if (!contains) {
+                            boolean contain = overTimeSet.contains(staffId);
+                            if (!contain) {
                                 //严重超时
                                 data.setType(2);
                                 data.setData(1);
@@ -555,8 +648,8 @@ public class GasKafka {
                         }
 
                     } else if (over_time.before(date)) {
-                        boolean contains = seriousTimeSet.contains(staffId);
-                        if (!contains) {
+                        boolean contain = seriousTimeSet.contains(staffId);
+                        if (!contain) {
                             seriousTimeSet.add(staffId);
                             //超时
                             data.setType(1);

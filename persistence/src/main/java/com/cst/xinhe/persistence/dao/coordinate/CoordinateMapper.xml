@@ -15,6 +15,7 @@
     <result column="warning_area_type" jdbcType="INTEGER" property="warningAreaType" />
 
   </resultMap>
+  <cache eviction="LRU" flushInterval="100000" size="1024" readOnly="true"/>
   <sql id="Example_Where_Clause">
     <!--
       WARNING - @mbg.generated
@@ -283,7 +284,7 @@
     <result column="coordinate_y" property="y"/>
     <result column="coordinate_z" property="z"/>
   </resultMap>
-  <select id="selectCoordinateInfoByAreaId" parameterType="java.lang.Integer" resultMap="customMap">
+  <select id="selectCoordinateInfoByAreaId" parameterType="java.lang.Integer" resultMap="customMap" useCache="false">
     SELECT coordinate_x,coordinate_y,coordinate_z FROM coordinate
     WHERE warning_area_id = #{areaId}
   </select>

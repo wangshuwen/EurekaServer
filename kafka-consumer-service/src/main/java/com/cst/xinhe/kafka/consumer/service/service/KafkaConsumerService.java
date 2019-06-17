@@ -12,5 +12,4 @@ public interface KafkaConsumerService {
 
     void updateWarningAreaInfo();
 
-//    void pushRtPersonData();
 }

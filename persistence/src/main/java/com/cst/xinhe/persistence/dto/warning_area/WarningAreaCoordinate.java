@@ -1,6 +1,9 @@
 package com.cst.xinhe.persistence.dto.warning_area;
 
 
+import com.cst.xinhe.persistence.model.coordinate.Coordinate;
+import com.cst.xinhe.persistence.vo.resp.CoordinateVO;
+
 import java.awt.geom.Point2D;
 import java.util.List;
 
@@ -25,7 +28,7 @@ public class WarningAreaCoordinate {
 
     private Integer warningAreaId;
 
-    private List<Point2D.Double> doubleList;
+    private List<CoordinateVO> doubleList;
 
     private String warningAreaName;
 
@@ -45,11 +48,11 @@ public class WarningAreaCoordinate {
         this.warningAreaId = warningAreaId;
     }
 
-    public List<Point2D.Double> getDoubleList() {
+    public List<CoordinateVO> getDoubleList() {
         return doubleList;
     }
 
-    public void setDoubleList(List<Point2D.Double> doubleList) {
+    public void setDoubleList(List<CoordinateVO> doubleList) {
         this.doubleList = doubleList;
     }
 

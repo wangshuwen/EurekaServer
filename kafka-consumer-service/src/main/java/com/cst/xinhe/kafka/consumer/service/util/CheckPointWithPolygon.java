@@ -3,8 +3,7 @@ package com.cst.xinhe.kafka.consumer.service.util;
 import com.cst.xinhe.persistence.dto.warning_area.WarningAreaCoordinate;
 import org.springframework.stereotype.Component;
 
-import java.awt.*;
-import java.awt.geom.GeneralPath;
+
 import java.awt.geom.Point2D;
 import java.util.List;
 

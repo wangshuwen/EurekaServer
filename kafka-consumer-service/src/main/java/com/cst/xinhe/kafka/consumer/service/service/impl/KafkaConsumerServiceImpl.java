@@ -26,12 +26,13 @@ public class KafkaConsumerServiceImpl implements KafkaConsumerService, Observera
 
     private List<ICheckPointWithPolygon> list;
 
-    public KafkaConsumerServiceImpl(List<ICheckPointWithPolygon> list) {
+//    CheckPointWithPolygon checkPointWithPolygon;
+    public KafkaConsumerServiceImpl() {
         this.list = new ArrayList<>();
-        register(SpringContextUtil.getBean(CheckPointWithPolygon.class));
+//        this.checkPointWithPolygon = SpringContextUtil.getBean(CheckPointWithPolygon.class);
+//        register(this.checkPointWithPolygon);
     }
 
-//    CheckPointWithPolygon checkPointWithPolygon;
     private List<WarningAreaCoordinate> doubleList;
 
     @Resource

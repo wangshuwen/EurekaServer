@@ -331,8 +331,9 @@
     FROM warning_area
   </select>
 
-  <select id="findWarningAreaInfo" resultMap="tempOfMap">
+  <select id="findWarningAreaInfo" resultMap="tempOfMap" useCache="false">
     SELECT * FROM warning_area
+    WHERE warning_area_id IN (SELECT warning_area_id FROM coordinate GROUP BY warning_area_id)
   </select>
 
   <resultMap id="tempOfMap" type="com.cst.xinhe.persistence.dto.warning_area.WarningAreaCoordinate">
@@ -341,7 +342,7 @@
     <result column="warning_area_type" jdbcType="INTEGER" property="warningAreaType" />
     <result column="residence_time" jdbcType="VARCHAR" property="residenceTime" />
     <result column="contain_number" jdbcType="INTEGER" property="containNumber" />
-    <collection column="warning_area_id" javaType="java.util.List" ofType="java.awt.geom.Point2D.Double" property="doubleList" select="com.cst.xinhe.persistence.dao.coordinate.CoordinateMapper.selectCoordinateInfoByAreaId">
+    <collection column="warning_area_id" javaType="java.util.List" ofType="com.cst.xinhe.persistence.vo.resp.CoordinateVO" property="doubleList" select="com.cst.xinhe.persistence.dao.coordinate.CoordinateMapper.selectCoordinateInfoByAreaId">
       <result column="coordinate_x" property="x" />
       <result column="coordinate_y" property="y" />
     </collection>

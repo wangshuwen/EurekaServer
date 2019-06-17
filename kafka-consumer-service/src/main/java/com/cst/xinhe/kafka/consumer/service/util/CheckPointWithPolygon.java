@@ -1,10 +1,9 @@
 package com.cst.xinhe.kafka.consumer.service.util;
 
 import com.cst.xinhe.persistence.dto.warning_area.WarningAreaCoordinate;
+import com.cst.xinhe.persistence.vo.resp.CoordinateVO;
 import org.springframework.stereotype.Component;
 
-import java.awt.*;
-import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.util.List;
 
@@ -36,9 +35,10 @@ public class CheckPointWithPolygon implements ICheckPointWithPolygon {
      * @return
      */
     public WarningAreaCoordinate judgeExistence(Point2D.Double coordinate) {
-        WarningAreaCoordinate result = WarningAreaCoordinate.getInstance();
+        WarningAreaCoordinate result = new WarningAreaCoordinate();
 
-        for (WarningAreaCoordinate item : areaInfo) {
+
+        for (WarningAreaCoordinate item : this.areaInfo) {
             boolean f = isPointInPolygon(coordinate, item.getDoubleList());
             result.setResult(f);
             result.setContainNumber(item.getContainNumber());
@@ -51,7 +51,7 @@ public class CheckPointWithPolygon implements ICheckPointWithPolygon {
         return result;
     }
 
-    private boolean isPointInPolygon(Point2D.Double coordinate, List<Point2D.Double> doubleList) {
+    private boolean isPointInPolygon(Point2D.Double coordinate, List<CoordinateVO> doubleList) {
 
         int N = doubleList.size();
         //如果点位于多边形的顶点或边上，也算做点在多边形内，直接返回true
@@ -61,12 +61,14 @@ public class CheckPointWithPolygon implements ICheckPointWithPolygon {
         //浮点类型计算时候与0比较时候的容差
         double precision = 2e-10;
         //neighbour bound vertices
-        Point2D.Double p1, p2;
+        Point2D.Double p1 = new Point2D.Double(), p2 = new Point2D.Double();
         //当前点
         Point2D.Double p = coordinate;
 
         //left vertex
-        p1 = doubleList.get(0);
+        p1.x = doubleList.get(0).getX();
+        p1.y = doubleList.get(0).getY();
+//        p1 = doubleList.get(0);
         //check all rays
         for (int i = 1; i <= N; ++i) {
             if (p.equals(p1)) {
@@ -75,7 +77,8 @@ public class CheckPointWithPolygon implements ICheckPointWithPolygon {
             }
 
             //right vertex
-            p2 = doubleList.get(i % N);
+            p2.x = doubleList.get(i % N).getX();
+            p2.y = doubleList.get(i % N).getY();
             //ray is outside of our interests
             if (p.x < Math.min(p1.x, p2.x) || p.x > Math.max(p1.x, p2.x)) {
                 p1 = p2;
@@ -120,7 +123,9 @@ public class CheckPointWithPolygon implements ICheckPointWithPolygon {
                 //p crossing over p2
                 if (p.x == p2.x && p.y <= p2.y) {
                     //next vertex
-                    Point2D.Double p3 = doubleList.get((i + 1) % N);
+                    Point2D.Double p3 = new Point2D.Double();
+                    p3.x= doubleList.get((i + 1) % N).getX();
+                    p3.y= doubleList.get((i + 1) % N).getY();
                     //p.x lies between p1.x & p3.x
                     if (p.x >= Math.min(p1.x, p3.x) && p.x <= Math.max(p1.x, p3.x)) {
                         ++intersectCount;

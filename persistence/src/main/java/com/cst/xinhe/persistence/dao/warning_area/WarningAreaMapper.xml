@@ -338,7 +338,6 @@
   <resultMap id="tempOfMap" type="com.cst.xinhe.persistence.dto.warning_area.WarningAreaCoordinate">
     <id column="warning_area_id" jdbcType="INTEGER" property="warningAreaId" />
     <result column="warning_area_name" jdbcType="VARCHAR" property="warningAreaName" />
-    <result column="warning_area_desc" jdbcType="VARCHAR" property="warningAreaDesc" />
     <result column="warning_area_type" jdbcType="INTEGER" property="warningAreaType" />
     <result column="residence_time" jdbcType="VARCHAR" property="residenceTime" />
     <result column="contain_number" jdbcType="INTEGER" property="containNumber" />

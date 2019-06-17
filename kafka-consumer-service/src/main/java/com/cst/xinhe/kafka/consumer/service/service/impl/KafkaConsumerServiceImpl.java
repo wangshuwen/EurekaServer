@@ -2,7 +2,9 @@ package com.cst.xinhe.kafka.consumer.service.service.impl;
 
 
 import com.cst.xinhe.kafka.consumer.service.consumer.TerminalInfoProcess;
+import com.cst.xinhe.kafka.consumer.service.context.SpringContextUtil;
 import com.cst.xinhe.kafka.consumer.service.service.KafkaConsumerService;
+import com.cst.xinhe.kafka.consumer.service.util.CheckPointWithPolygon;
 import com.cst.xinhe.kafka.consumer.service.util.ICheckPointWithPolygon;
 import com.cst.xinhe.kafka.consumer.service.util.ObserverableOfPoint;
 import com.cst.xinhe.persistence.dao.warning_area.WarningAreaMapper;
@@ -26,8 +28,10 @@ public class KafkaConsumerServiceImpl implements KafkaConsumerService, Observera
 
     public KafkaConsumerServiceImpl(List<ICheckPointWithPolygon> list) {
         this.list = new ArrayList<>();
+        register(SpringContextUtil.getBean(CheckPointWithPolygon.class));
     }
 
+//    CheckPointWithPolygon checkPointWithPolygon;
     private List<WarningAreaCoordinate> doubleList;
 
     @Resource

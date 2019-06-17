@@ -66,7 +66,9 @@ public class WarningAreaServiceImpl implements WarningAreaService {
 
     @Override
     public Integer addAreaInfo(WarningArea warningArea) {
-        return warningAreaMapper.insertSelective(warningArea);
+        int r = warningAreaMapper.insertSelective(warningArea);
+        kafkaConsumerServiceClient.updateAreaInfoObserver();
+        return r;
     }
 
 
@@ -74,12 +76,13 @@ public class WarningAreaServiceImpl implements WarningAreaService {
     @Override
     public Integer deleteAreaInfo(Integer id) {
         //删除区域信息
-        Integer result = warningAreaMapper.deleteByPrimaryKey(id);
+        int result = warningAreaMapper.deleteByPrimaryKey(id);
         //删除坐标点
         CoordinateExample example = new CoordinateExample();
         example.createCriteria().andWarningAreaIdEqualTo(id);
          result+= coordinateMapper.deleteByExample(example);
 
+        kafkaConsumerServiceClient.updateAreaInfoObserver();
         return result;
     }
 
@@ -91,13 +94,17 @@ public class WarningAreaServiceImpl implements WarningAreaService {
         CoordinateExample example = new CoordinateExample();
         example.createCriteria().andWarningAreaIdEqualTo(id);
         Integer result = coordinateMapper.deleteByExample(example);
+        kafkaConsumerServiceClient.updateAreaInfoObserver();
         return result;
     }
 
 
     @Override
     public Integer updateAreaInfo(WarningArea warningArea) {
-        return warningAreaMapper.updateByPrimaryKeySelective(warningArea);
+        int i =  warningAreaMapper.updateByPrimaryKeySelective(warningArea);
+
+        kafkaConsumerServiceClient.updateAreaInfoObserver();
+        return i;
     }
 
 
@@ -108,6 +115,7 @@ public class WarningAreaServiceImpl implements WarningAreaService {
             result+=coordinateMapper.insertSelective(coordinate);
 
         }
+        kafkaConsumerServiceClient.updateAreaInfoObserver();
         return result;
     }
 
@@ -122,6 +130,7 @@ public class WarningAreaServiceImpl implements WarningAreaService {
         for (Coordinate coordinate : list) {
             result+=coordinateMapper.insertSelective(coordinate);
         }
+        kafkaConsumerServiceClient.updateAreaInfoObserver();
         return result;
     }
 

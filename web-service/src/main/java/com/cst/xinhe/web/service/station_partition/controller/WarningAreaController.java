@@ -106,7 +106,7 @@ public class WarningAreaController {
     @PostMapping("updateCoordinateList")
     public String updateCoordinate(@RequestBody List<Coordinate> list, @RequestParam(name ="areaId", required = false) Integer areaId){
             if(areaId==null){
-             return   ResultUtil.jsonToStringError(ResultEnum.UPDATE_AREA_FAIL);
+             return ResultUtil.jsonToStringError(ResultEnum.UPDATE_AREA_FAIL);
             }
         Integer result = warningAreaService.updateCoordinateList(list,areaId);
         return result >0 ? ResultUtil.jsonToStringSuccess(): ResultUtil.jsonToStringError(ResultEnum.BINDING_STATION_MOUTH_FAIL);

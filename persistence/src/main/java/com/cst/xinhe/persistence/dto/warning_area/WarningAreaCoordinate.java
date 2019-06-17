@@ -1,7 +1,5 @@
-package com.cst.xinhe.kafka.consumer.service.util;
+package com.cst.xinhe.persistence.dto.warning_area;
 
-
-import com.cst.xinhe.persistence.dto.RssiInfo;
 
 import java.awt.geom.Point2D;
 import java.util.List;
@@ -33,7 +31,7 @@ public class WarningAreaCoordinate {
 
     private Integer warningAreaType;
 
-    private double residenceTime;
+    private String residenceTime;
 
     private Integer containNumber;
 
@@ -71,11 +69,11 @@ public class WarningAreaCoordinate {
         this.warningAreaType = warningAreaType;
     }
 
-    public double getResidenceTime() {
+    public String getResidenceTime() {
         return residenceTime;
     }
 
-    public void setResidenceTime(double residenceTime) {
+    public void setResidenceTime(String residenceTime) {
         this.residenceTime = residenceTime;
     }
 

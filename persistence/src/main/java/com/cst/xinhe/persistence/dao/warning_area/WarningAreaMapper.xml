@@ -331,4 +331,21 @@
     FROM warning_area
   </select>
 
+  <select id="findWarningAreaInfo" resultMap="tempOfMap">
+    SELECT * FROM warning_area
+  </select>
+
+  <resultMap id="tempOfMap" type="com.cst.xinhe.persistence.dto.warning_area.WarningAreaCoordinate">
+    <id column="warning_area_id" jdbcType="INTEGER" property="warningAreaId" />
+    <result column="warning_area_name" jdbcType="VARCHAR" property="warningAreaName" />
+    <result column="warning_area_desc" jdbcType="VARCHAR" property="warningAreaDesc" />
+    <result column="warning_area_type" jdbcType="INTEGER" property="warningAreaType" />
+    <result column="residence_time" jdbcType="VARCHAR" property="residenceTime" />
+    <result column="contain_number" jdbcType="INTEGER" property="containNumber" />
+    <collection column="warning_area_id" javaType="java.util.List" ofType="java.awt.geom.Point2D.Double" property="doubleList" select="com.cst.xinhe.persistence.dao.coordinate.CoordinateMapper.selectCoordinateInfoByAreaId">
+      <result column="coordinate_x" property="x" />
+      <result column="coordinate_y" property="y" />
+    </collection>
+  </resultMap>
+
 </mapper>

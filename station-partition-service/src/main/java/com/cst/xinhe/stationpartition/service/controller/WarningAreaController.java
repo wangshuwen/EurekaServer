@@ -176,7 +176,7 @@ public class WarningAreaController {
     }
 
 
-    @PostMapping("addAreaRecord")
+   /* @PostMapping("addAreaRecord")
     @ApiOperation(value = "新增员工进入区域详细信息", notes = ".0")
     public String addAreaRecord(@RequestBody WarningAreaRecord warningAreaRecord) {
         warningAreaRecord.setInTime(new Date());
@@ -190,7 +190,7 @@ public class WarningAreaController {
         Integer result = warningAreaService.updateOutTime(staffId);
 
         return result >0 ? ResultUtil.jsonToStringSuccess(): ResultUtil.jsonToStringError(ResultEnum.FAILED);
-    }
+    }*/
 
     @GetMapping("findStaffNumByType")
     @ApiOperation(value = "根据区域类型，查看该区域现在的总人数")

@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
         url = "http://127.0.0.1:8773/")
 public interface KafkaConsumerServiceClient {
 
-    @GetMapping("overmanedAlarm")
-   void overmanedAlarm(@RequestParam("type") Integer type, @RequestParam("staffId") Integer staffId, @RequestParam("areaId") Integer areaId);
+   /* @GetMapping("overmanedAlarm")
+   void overmanedAlarm(@RequestParam("type") Integer type, @RequestParam("staffId") Integer staffId, @RequestParam("areaId") Integer areaId);*/
 
 
     @GetMapping("updateAreaInfoObserver")

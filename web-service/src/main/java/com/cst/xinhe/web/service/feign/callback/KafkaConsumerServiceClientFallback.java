@@ -17,11 +17,11 @@ public class KafkaConsumerServiceClientFallback implements KafkaConsumerServiceC
     private static final Logger logger = LoggerFactory.getLogger(KafkaConsumerServiceClientFallback.class);
 
 
-    @Override
+   /* @Override
     public void overmanedAlarm(Integer type, Integer staffId, Integer areaId) {
         logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
     }
-
+*/
     @Override
     public void updateAreaInfoObserver() {
         logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));

@@ -41,9 +41,9 @@ public interface WarningAreaService {
 
     Page findAreaRecordByStaffId(Integer type, Integer areaId, Integer pageSize, Integer startPage, Integer staffId);
 
-    Integer addAreaRecord(WarningAreaRecord warningAreaRecord);
+  /*  Integer addAreaRecord(WarningAreaRecord warningAreaRecord);
 
-    Integer updateOutTime(Integer staffId);
+    Integer updateOutTime(Integer staffId);*/
 
     WarningAreaVO getAll();
 

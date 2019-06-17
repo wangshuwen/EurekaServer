@@ -484,6 +484,12 @@ public class GasKafka {
                             HashMap<String, Object> map = new HashMap<>();
                             map.put("code",judgeArea.getWarningAreaType());
                             map.put("data",1);
+                            //某人于某时间进入了某区域
+                            HashMap<String, Object> staffInfo = new HashMap<>();
+                            staffInfo.put("staffName",staff.getStaffName());
+                            staffInfo.put("createTime",new Date());
+                            staffInfo.put("areaInfo",area);
+                            map.put("staffInfo",staffInfo);
                             data.setData(map);
                             wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
 
@@ -596,6 +602,12 @@ public class GasKafka {
                                 HashMap<String, Object> map = new HashMap<>();
                                 map.put("code",type);
                                 map.put("data",-1);
+                                //某人于某时间进入了某区域
+                                HashMap<String, Object> staffInfo = new HashMap<>();
+                                staffInfo.put("staffName",staff.getStaffName());
+                                staffInfo.put("createTime",new Date());
+                                staffInfo.put("areaInfo",area);
+                                map.put("staffInfo",staffInfo);
                                 data.setData(map);
                                 wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
                             }

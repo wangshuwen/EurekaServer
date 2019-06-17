@@ -82,4 +82,9 @@ public class KafkaConsumerController {
 //    public void pushRtPersonData(){
 //        kafkaConsumerService.pushRtPersonData();
 //    }
+
+    @GetMapping("updateAreaInfoObserver")
+    public void updateAreaInfo(){
+        kafkaConsumerService.updateWarningAreaInfo();
+    }
 }

@@ -14,11 +14,16 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class KafkaConsumerServiceClientFallback implements KafkaConsumerServiceClient {
-    Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger logger = LoggerFactory.getLogger(KafkaConsumerServiceClientFallback.class);
 
 
     @Override
     public void overmanedAlarm(Integer type, Integer staffId, Integer areaId) {
+        logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
+    }
+
+    @Override
+    public void updateAreaInfoObserver() {
         logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
     }
 }

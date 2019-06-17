@@ -1,6 +1,7 @@
 package com.cst.xinhe.persistence.dao.warning_area;
 
 import com.cst.xinhe.persistence.dto.warning_area.CoordinateDto;
+import com.cst.xinhe.persistence.dto.warning_area.WarningAreaCoordinate;
 import com.cst.xinhe.persistence.model.warning_area.WarningArea;
 import com.cst.xinhe.persistence.model.warning_area.WarningAreaExample;
 import java.util.List;
@@ -100,4 +101,6 @@ public interface WarningAreaMapper {
     List<CoordinateDto> getOtherAreaInfoByAreaId(Integer areaId);
 
     List<CoordinateDto> getAll();
+
+    List<WarningAreaCoordinate> findWarningAreaInfo();
 }

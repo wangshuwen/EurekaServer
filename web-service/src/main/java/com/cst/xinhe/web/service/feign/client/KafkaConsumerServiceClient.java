@@ -21,4 +21,6 @@ public interface KafkaConsumerServiceClient {
    void overmanedAlarm(@RequestParam("type") Integer type, @RequestParam("staffId") Integer staffId, @RequestParam("areaId") Integer areaId);
 
 
+    @GetMapping("updateAreaInfoObserver")
+    void updateAreaInfoObserver();
 }

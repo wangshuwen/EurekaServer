@@ -1,5 +1,8 @@
 package com.cst.xinhe.kafka.consumer.service.util;
 
+
+import com.cst.xinhe.persistence.dto.warning_area.WarningAreaCoordinate;
+
 import java.util.List;
 
 /**

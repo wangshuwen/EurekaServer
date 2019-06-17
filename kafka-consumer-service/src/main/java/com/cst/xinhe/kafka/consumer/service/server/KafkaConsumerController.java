@@ -31,7 +31,7 @@ public class KafkaConsumerController {
     @Autowired
     WarningAreaMapper warningAreaMapper;
 
-    @PutMapping("overmanedAlarm")
+   /* @PutMapping("overmanedAlarm")
     public void overmanedAlarm(@RequestParam("type") Integer type,@RequestParam("staffId") Integer staffId,@RequestParam("areaId") Integer areaId){
         WarningArea warningArea = warningAreaMapper.selectByPrimaryKey(areaId);
         if(type==1){
@@ -57,7 +57,7 @@ public class KafkaConsumerController {
                 wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
             }
         }
-    }
+    }*/
 
     @PutMapping("removeCarSet")
     public void removeCarSet(@RequestParam Integer staffId){

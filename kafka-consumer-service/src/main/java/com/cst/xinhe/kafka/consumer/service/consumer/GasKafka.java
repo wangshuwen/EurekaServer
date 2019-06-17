@@ -15,7 +15,6 @@ import com.cst.xinhe.common.ws.WebSocketData;
 import com.cst.xinhe.kafka.consumer.service.client.*;
 import com.cst.xinhe.kafka.consumer.service.service.RSTL;
 import com.cst.xinhe.kafka.consumer.service.util.CheckPointWithPolygon;
-import com.cst.xinhe.kafka.consumer.service.util.WarningAreaCoordinate;
 import com.cst.xinhe.persistence.dao.attendance.StaffAttendanceRealRuleMapper;
 import com.cst.xinhe.persistence.dao.attendance.TimeStandardMapper;
 import com.cst.xinhe.persistence.dao.base_station.BaseStationMapper;
@@ -34,6 +33,7 @@ import com.cst.xinhe.persistence.dto.GasInfo;
 import com.cst.xinhe.persistence.dto.RssiInfo;
 import com.cst.xinhe.persistence.dto.UpLoadGasDto;
 import com.cst.xinhe.persistence.dto.warn_level_setting.GasWarnSettingDto;
+import com.cst.xinhe.persistence.dto.warning_area.WarningAreaCoordinate;
 import com.cst.xinhe.persistence.model.attendance.StaffAttendanceRealRule;
 import com.cst.xinhe.persistence.model.base_station.BaseStation;
 import com.cst.xinhe.persistence.model.e_msg.ExceptionMessage;
@@ -433,7 +433,7 @@ public class GasKafka {
 
 
                     //判断员工出入重点限制区域时刻(由前端改为后端判断)
-                    WarningAreaCoordinate judgeArea = checkPointWithPolygon.judgeExistence(new Point2D.Double(gasPosition.getPositionX(), gasPosition.getPositionY()), 1);
+                    WarningAreaCoordinate judgeArea = checkPointWithPolygon.judgeExistence(new Point2D.Double(gasPosition.getPositionX(), gasPosition.getPositionY()));
                     boolean containArea = areaSet.contains(staffId);
                     if(judgeArea.isResult()){
                         //在重点或者限制区域

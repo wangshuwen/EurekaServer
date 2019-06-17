@@ -78,6 +78,11 @@ public class GasKafka {
     public static Set<Integer> importantArea  = Collections.synchronizedSet(new HashSet<Integer>());
     public static Set<Integer> limitArea  = Collections.synchronizedSet(new HashSet<Integer>());
 
+
+    public static Set<Integer> areaSet  = Collections.synchronizedSet(new HashSet<Integer>());
+
+
+
     @Resource
     private StaffOrganizationMapper staffOrganizationMapper;
 
@@ -319,7 +324,16 @@ public class GasKafka {
                     gasPosition.setStaffName(staff.getStaffName());
                     String t_deptName = getDeptNameByGroupId(staff.getGroupId());
                     gasPosition.setDeptName(t_deptName);
-                    TerminalRoad road = new TerminalRoad();
+
+                    //判断员工出入重点限制区域时刻（由前端改为后端判断）
+
+
+
+
+
+
+
+                  TerminalRoad road = new TerminalRoad();
                     try {
                         road = rstl.locateConvert(gasPosition.getTerminalId(), baseStation1, baseStation2, rssi1, rssi2);
                     }catch (RuntimeServiceException e){

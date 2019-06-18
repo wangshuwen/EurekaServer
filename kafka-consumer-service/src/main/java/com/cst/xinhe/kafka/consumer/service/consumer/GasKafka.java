@@ -489,6 +489,7 @@ public class GasKafka {
                             staffInfo.put("staffName",staff.getStaffName());
                             staffInfo.put("createTime",new Date());
                             staffInfo.put("areaInfo",area);
+                            staffInfo.put("deptName",t_deptName);
                             map.put("staffInfo",staffInfo);
                             data.setData(map);
                             wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
@@ -607,6 +608,7 @@ public class GasKafka {
                                 staffInfo.put("staffName",staff.getStaffName());
                                 staffInfo.put("createTime",new Date());
                                 staffInfo.put("areaInfo",area);
+                                staffInfo.put("deptName",t_deptName);
                                 map.put("staffInfo",staffInfo);
                                 data.setData(map);
                                 wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
@@ -1046,9 +1048,6 @@ public class GasKafka {
             requestData.setBody(body);
 
             responseData.setCustomMsg(requestData);
-//            NettyDataUtils.toHexByteByStrings();
-//            requestData.setLength();
-//            responseData.setCustomMsg();
             try {
                 terminalMonitorClient.sendResponseData(responseData);
             }catch (Exception e){

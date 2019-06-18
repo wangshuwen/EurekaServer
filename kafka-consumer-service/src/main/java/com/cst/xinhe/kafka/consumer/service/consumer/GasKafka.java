@@ -698,8 +698,7 @@ public class GasKafka {
                     gasWSRespVO.setRt(gasPosition.getTerminalRealTime());
                     gasWSRespVO.setCreateTime(gasPosition.getCreateTime());
                     gasWSRespVO.setIsPerson(staff.getIsPerson());
-                    gasWSRespVO.setGroupName(staff.getGroupName());
-                    gasWSRespVO.setDeptName(staff.getDeptName());
+                    gasWSRespVO.setGroupName(gasPosition.getDeptName());
 
                     String tempPositionName = road.getTempPositionName();
                     Integer terminalRoadId = road.getTerminalRoadId();

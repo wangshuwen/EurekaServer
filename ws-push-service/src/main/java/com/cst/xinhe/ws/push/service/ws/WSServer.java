@@ -1,5 +1,7 @@
 package com.cst.xinhe.ws.push.service.ws;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Component;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -25,8 +28,10 @@ public class WSServer {
     public static Integer orgId=null;
     public static Integer zoneId=null;
 
+    public static Integer  pushGasNum=0;
 
-    private static final Logger log = LoggerFactory.getLogger(WSServer.class);
+
+   private static final Logger log = LoggerFactory.getLogger(WSServer.class);
 
     //静态变量，用来记录当前在线连接数。应该把它设计成线程安全的。
     private static int onlineCount = 0;
@@ -111,6 +116,11 @@ public class WSServer {
      */
     public static void sendInfo(String message) throws IOException {
         log.info(message);
+        pushGasNum++;
+        System.out.println("----------------已推送气体到前端------------------");
+        System.out.println(pushGasNum*10);
+        System.out.println("-------------------------------------------");
+
         for (WSServer item : webSocketSet) {
             try {
                 item.sendMessage(message);

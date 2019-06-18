@@ -23,6 +23,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class WSSiteServer {
     public static Integer orgId=null;
     public static Integer zoneId=null;
+    public  static Integer pushSiteNum=0;
 
     private static final Logger log = LoggerFactory.getLogger(WSSiteServer.class);
 
@@ -119,7 +120,12 @@ public class WSSiteServer {
      * 群发自定义消息
      */
     public  static void sendInfo(String message) throws IOException {
+        pushSiteNum++;
         log.info(message);
+        System.out.println("-------------------推送定位次数------------------");
+        System.out.println(pushSiteNum);
+        System.out.println("-------------------------------------------------");
+
         for (WSSiteServer item : webSocketSet) {
             try {
                 item.sendMessage(message);

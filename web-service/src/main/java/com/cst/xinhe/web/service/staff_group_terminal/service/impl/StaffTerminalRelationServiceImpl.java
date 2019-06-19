@@ -25,9 +25,6 @@ public class StaffTerminalRelationServiceImpl implements StaffTerminalRelationSe
     @Resource
     StaffTerminalRelationMapper staffTerminalRelationMapper;
 
-    @Resource
-    StaffTerminalMapper staffTerminalMapper;
-
     @Override
     public StaffTerminalRelation insert(StaffTerminalRelation staffTerminalRelation) {
         staffTerminalRelation.setCreateTime(new Date());

@@ -30,9 +30,6 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     private StaffOrganizationService staffOrganizationService;
 
 
-    @Resource
-    private StaffTerminalRelationService staffTerminalRelationService;
-
     @Override
     public PageInfo<ChatMsgHistoryDto> findMsgHistory(Integer userId, Integer staffId, Integer startPage, Integer pageSize) {
 

@@ -46,8 +46,6 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
     @Resource
     private StaffMapper staffMapper;
     @Resource
-    private AttendanceMapper attendanceMapper;
-    @Resource
     private StaffJobMapper staffJobMapper;
     @Resource
     private BaseStationMapper baseStationMapper;

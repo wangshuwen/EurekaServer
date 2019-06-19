@@ -29,21 +29,13 @@ import java.util.*;
 public class GasInfoServiceImpl implements GasInfoService {
 
     @Resource
-    private RtGasInfoMapper rtGasInfoMapper;
-
-    @Resource
     private StaffMapper staffMapper;
-
-
 
     @Autowired
     private StaffOrganizationService staffOrganizationService;
 
     @Autowired
     private StaffService staffService;
-
-
-
 
     @Autowired
     private GasPositionService gasPositionService;

@@ -564,12 +564,14 @@ public class GasKafka {
                             criteria.andStaffIdEqualTo(staffId);
                             List<WarningAreaRecord> inRecords = warningAreaRecordMapper.selectByExample(example);
                             if(null != inRecords && inRecords.size() > 0){
-                                WarningAreaRecord inRecord = inRecords.get(0);
-                                inRecord.setOutTime(new Date());
-                                warningAreaRecordMapper.updateByPrimaryKeySelective(inRecord);
+                                for (WarningAreaRecord inRecord : inRecords) {
+                                    inRecord.setOutTime(new Date());
+                                    warningAreaRecordMapper.updateByPrimaryKeySelective(inRecord);
+                                }
+
 
                                 //推送前端，该区域人数-1
-                                Integer areaId = inRecord.getWarningAreaId();
+                                Integer areaId = inRecords.get(0).getWarningAreaId();
                                 WarningArea area = warningAreaMapper.selectByPrimaryKey(areaId);
                                 Integer type = area.getWarningAreaType();
 

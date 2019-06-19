@@ -40,15 +40,21 @@ public class CheckPointWithPolygon implements ICheckPointWithPolygon {
 
         for (WarningAreaCoordinate item : this.areaInfo) {
             boolean f = isPointInPolygon(coordinate, item.getDoubleList());
-            result.setResult(f);
-            result.setContainNumber(item.getContainNumber());
-            result.setResidenceTime(item.getResidenceTime());
-            result.setWarningAreaId(item.getWarningAreaId());
-            result.setWarningAreaName(item.getWarningAreaName());
-            result.setWarningAreaType(item.getWarningAreaType());
-        }
+            if (f){
+                result.setResult(true);
+                result.setContainNumber(item.getContainNumber());
+                result.setResidenceTime(item.getResidenceTime());
+                result.setWarningAreaId(item.getWarningAreaId());
+                result.setWarningAreaName(item.getWarningAreaName());
+                result.setWarningAreaType(item.getWarningAreaType());
+                break;
+            }else {
+                result.setResult(false);
+            }
 
+        }
         return result;
+
     }
 
     private boolean isPointInPolygon(Point2D.Double coordinate, List<CoordinateVO> doubleList) {

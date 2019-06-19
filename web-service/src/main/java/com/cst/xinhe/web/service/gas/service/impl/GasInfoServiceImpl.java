@@ -60,14 +60,14 @@ public class GasInfoServiceImpl implements GasInfoService {
 
         //根据员工id查找员工姓名
         List<GasPositionEntity> content = gasPositionList.getContent();
-        Set<Integer> staffIds = new HashSet<>();
-        for (GasPositionEntity item : content) {
-            staffIds.add(item.getStaffid());
-        }
+//        Set<Integer> staffIds = new HashSet<>();
+//        for (GasPositionEntity item : content) {
+//            staffIds.add(item.getStaffid());
+//        }
 
         // 根据员工的ID查询所有staff ，如果staff Id 存在，才有staffName
 //        List<Map<String, Object>> staffMap = staffGroupTerminalServiceClient.findStaffByIds(staffIds);
-        Map<Integer,Map<String, String>> res = staffService.findStaffNameAndGroupName(staffIds);
+//        Map<Integer,Map<String, String>> res = staffService.findStaffNameAndGroupName(staffIds);
 //        staffMapper.selectByPrimaryKey(staffId);
 
        /* for (GasPositionEntity item : gasPositionList.getContent()) {
@@ -78,9 +78,11 @@ public class GasInfoServiceImpl implements GasInfoService {
                 }*/
         for (GasPositionEntity item : content) {
             Integer id = item.getStaffid();
-            Map<String, String > map = res.get(id);
-            item.setGroupName(map.get("deptName"));
-            item.setStaffname(map.get("staffName"));
+//            Map<String, String > map = res.get(id);
+            Staff staff = staffService.findStaffById(id);
+            String deptName = staffOrganizationService.getDeptNameByGroupId(staff.getGroupId());
+            item.setGroupName(deptName);
+            item.setStaffname(staff.getStaffName());
 //            for (Map<String, Object> staff : staffMap) {
 //                Integer staffId = (Integer) staff.get("staffId");
 //                if (item.getStaffid().equals(staffId)) {

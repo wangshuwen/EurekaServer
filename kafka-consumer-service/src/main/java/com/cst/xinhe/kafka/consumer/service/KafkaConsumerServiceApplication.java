@@ -1,11 +1,17 @@
 package com.cst.xinhe.kafka.consumer.service;
 
+import com.cst.xinhe.kafka.consumer.service.consumer.GasKafka;
 import com.cst.xinhe.kafka.consumer.service.context.SpringContextUtil;
 import com.cst.xinhe.kafka.consumer.service.service.KafkaConsumerService;
 import com.cst.xinhe.kafka.consumer.service.service.impl.KafkaConsumerServiceImpl;
 import com.cst.xinhe.kafka.consumer.service.util.CheckPointWithPolygon;
 import com.cst.xinhe.kafka.consumer.service.util.ICheckPointWithPolygon;
 import com.cst.xinhe.kafka.consumer.service.util.ObserverableOfPoint;
+import com.cst.xinhe.persistence.dao.warning_area.WarningAreaMapper;
+import com.cst.xinhe.persistence.dao.warning_area.WarningAreaRecordMapper;
+import com.cst.xinhe.persistence.model.warning_area.WarningArea;
+import com.cst.xinhe.persistence.model.warning_area.WarningAreaRecord;
+import com.cst.xinhe.persistence.model.warning_area.WarningAreaRecordExample;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -18,6 +24,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @EnableTransactionManagement
 @MapperScan("com.cst.xinhe.persistence.dao")
@@ -28,6 +35,12 @@ import javax.annotation.Resource;
 @SpringBootApplication
 public class KafkaConsumerServiceApplication implements ApplicationRunner {
 
+
+    @Resource
+    private WarningAreaRecordMapper warningAreaRecordMapper;
+
+    @Resource
+    private WarningAreaMapper warningAreaMapper;
 
     @Resource
     private KafkaConsumerService kafkaConsumerService;
@@ -44,5 +57,23 @@ public class KafkaConsumerServiceApplication implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         observerableOfPoint.register(SpringContextUtil.getBean(CheckPointWithPolygon.class));
         kafkaConsumerService.updateWarningAreaInfo();
+
+        //项目启动后执行，解决项目重启后，重点限制区域的set为空
+        WarningAreaRecordExample example = new WarningAreaRecordExample();
+        example.createCriteria().andOutTimeIsNull();
+        List<WarningAreaRecord> records = warningAreaRecordMapper.selectByExample(example);
+        if(records!=null&&records.size()>0){
+            for (WarningAreaRecord record : records) {
+                Integer staffId = record.getStaffId();
+                GasKafka.areaSet.add(staffId);
+                WarningArea warningArea = warningAreaMapper.selectByPrimaryKey(record.getWarningAreaId());
+                if(warningArea.getWarningAreaType()==1){
+                    GasKafka.importantArea.add(staffId);
+                }else{
+                    GasKafka.limitArea.add(staffId);
+                }
+            }
+        }
+
     }
 }

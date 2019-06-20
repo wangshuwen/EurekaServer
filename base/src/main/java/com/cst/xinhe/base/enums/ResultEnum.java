@@ -60,6 +60,7 @@ public enum ResultEnum {
     CALL_REMOTE_SERVER_FAIL(149, "调用远程服务失败！"),
     RT_SELECT_TERMINAL_BATTERY_FAIL(150, "实时查询终端剩余电量失败！"),
     GET_SEQUENCE_ID_FAIL(151, "实时查询终端剩余电量失败！"),
+    LICENSE_ERROR(152, "您的证书无效，请核查服务器是否取得授权或重新申请证书！"),
     ;
 
     private Integer code;

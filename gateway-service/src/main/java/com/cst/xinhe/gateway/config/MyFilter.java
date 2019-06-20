@@ -2,6 +2,7 @@ package com.cst.xinhe.gateway.config;
 
 import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.result.ResultUtil;
+import com.cst.xinhe.gateway.license.LicenseVerify;
 import com.cst.xinhe.gateway.utils.RedisUtils;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -64,7 +67,19 @@ public class MyFilter extends ZuulFilter {
         //此处判断是否要拦截**************
         //过滤登录方法
         if(url.contains("/login")){
-            return null;
+            LicenseVerify licenseVerify = new LicenseVerify();
+
+            //校验证书是否有效
+            boolean verifyResult = licenseVerify.verify();
+
+            if(verifyResult){
+                return null;
+            }else{
+                ctx.setSendZuulResponse(false);
+                ctx.setResponseStatusCode(200);
+                ctx.setResponseBody(ResultUtil.jsonToStringError(ResultEnum.LICENSE_ERROR));
+                ctx.getResponse().setContentType("text/html;charset=UTF-8");
+            }
         }
         if(url.contains("/logout")){
             return null;

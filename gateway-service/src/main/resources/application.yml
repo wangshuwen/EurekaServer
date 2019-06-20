@@ -1,0 +1,6 @@
+license:
+  subject: ccx-models
+  publicAlias: publicCert
+  storePass: public_password1234
+  licensePath: license.lic
+  publicKeysStorePath: publicCerts.keystore

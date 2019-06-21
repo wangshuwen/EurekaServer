@@ -67,19 +67,20 @@ public class MyFilter extends ZuulFilter {
         //此处判断是否要拦截**************
         //过滤登录方法
         if(url.contains("/login")){
-            LicenseVerify licenseVerify = new LicenseVerify();
-
-            //校验证书是否有效
-            boolean verifyResult = licenseVerify.verify();
-
-            if(verifyResult){
-                return null;
-            }else{
-                ctx.setSendZuulResponse(false);
-                ctx.setResponseStatusCode(200);
-                ctx.setResponseBody(ResultUtil.jsonToStringError(ResultEnum.LICENSE_ERROR));
-                ctx.getResponse().setContentType("text/html;charset=UTF-8");
-            }
+//            LicenseVerify licenseVerify = new LicenseVerify();
+//
+//            //校验证书是否有效
+//            boolean verifyResult = licenseVerify.verify();
+//
+//            if(verifyResult){
+//                return null;
+//            }else{
+//                ctx.setSendZuulResponse(false);
+//                ctx.setResponseStatusCode(200);
+//                ctx.setResponseBody(ResultUtil.jsonToStringError(ResultEnum.LICENSE_ERROR));
+//                ctx.getResponse().setContentType("text/html;charset=UTF-8");
+//            }
+            return null;
         }
         if(url.contains("/logout")){
             return null;

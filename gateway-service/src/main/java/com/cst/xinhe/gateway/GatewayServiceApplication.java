@@ -79,21 +79,21 @@ public class GatewayServiceApplication implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        if(StringUtils.isNotBlank(licensePath)){
-            logger.info("++++++++ 开始安装证书 ++++++++");
-
-            LicenseVerifyParam param = new LicenseVerifyParam();
-            param.setSubject(subject);
-            param.setPublicAlias(publicAlias);
-            param.setStorePass(storePass);
-            param.setLicensePath(licensePath);
-            param.setPublicKeysStorePath(publicKeysStorePath);
-
-            LicenseVerify licenseVerify = new LicenseVerify();
-            //安装证书
-            licenseVerify.install(param);
-
-            logger.info("++++++++ 证书安装结束 ++++++++");
-        }
+//        if(StringUtils.isNotBlank(licensePath)){
+//            logger.info("++++++++ 开始安装证书 ++++++++");
+//
+//            LicenseVerifyParam param = new LicenseVerifyParam();
+//            param.setSubject(subject);
+//            param.setPublicAlias(publicAlias);
+//            param.setStorePass(storePass);
+//            param.setLicensePath(licensePath);
+//            param.setPublicKeysStorePath(publicKeysStorePath);
+//
+//            LicenseVerify licenseVerify = new LicenseVerify();
+//            //安装证书
+//            licenseVerify.install(param);
+//
+//            logger.info("++++++++ 证书安装结束 ++++++++");
+//        }
     }
 }

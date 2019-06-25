@@ -262,8 +262,9 @@ public class GasPositionServiceImpl implements GasPositionService {
     @Override
     public List<Map<String, Object>> selectGasInfoLastTenData(int number) {
 
+        Pageable pageable = new PageRequest(0,number);
         SortBuilder sortBuilder = SortBuilders.fieldSort("gaspositionid").order(SortOrder.DESC);
-        NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withSort(sortBuilder);
+        NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withSort(sortBuilder).withPageable(pageable);
 
         Map<String, Object> result;
         List<Map<String, Object>> list = new ArrayList<>();

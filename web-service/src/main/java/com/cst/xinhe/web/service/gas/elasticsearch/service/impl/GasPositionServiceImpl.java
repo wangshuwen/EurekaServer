@@ -17,10 +17,14 @@ import com.github.pagehelper.PageInfo;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.aggregations.AggregationBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
+import org.reflections.util.FilterBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -257,8 +261,8 @@ public class GasPositionServiceImpl implements GasPositionService {
 
     @Override
     public List<Map<String, Object>> selectGasInfoLastTenData(int number) {
-        SortBuilder sortBuilder = SortBuilders.fieldSort("gaspositionid").order(SortOrder.DESC);
 
+        SortBuilder sortBuilder = SortBuilders.fieldSort("gaspositionid").order(SortOrder.DESC);
         NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withSort(sortBuilder);
 
         Map<String, Object> result;

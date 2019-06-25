@@ -162,7 +162,7 @@ public class TerminalController {
                 staffTerminal.setSoftwareVersion(version);
 
                 if ("".equals(powerDesc) || "".equals(wifiDesc) || "".equals(version) || "".equals(hardware)) {
-                    return ResultUtil.jsonToStringError(ResultEnum.REQUEST_DATA_IS_NULL);
+                    return ResultUtil.jsonToStringError(ResultEnum.SOME_PARAMETERS_ARE_NULL);
                 }
                 staffTerminal.setBattery(1);
                 staffTerminal.setBatteryDesc(powerDesc);

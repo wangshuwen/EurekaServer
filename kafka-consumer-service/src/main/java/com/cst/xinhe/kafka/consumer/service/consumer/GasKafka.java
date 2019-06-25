@@ -3,6 +3,7 @@ package com.cst.xinhe.kafka.consumer.service.consumer;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.exception.RuntimeOtherException;
 import com.cst.xinhe.base.exception.RuntimeServiceException;
@@ -460,7 +461,7 @@ public class GasKafka {
                                     map.put("personNum",importantArea.size());
                                     data.setType(9);
                                     data.setData(map);
-                                    wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
+                                    wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data, SerializerFeature.DisableCircularReferenceDetect));
                                 }
 
 
@@ -474,7 +475,7 @@ public class GasKafka {
                                     map.put("personNum",limitArea.size());
                                     data.setType(10);
                                     data.setData(map);
-                                    wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
+                                    wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data,SerializerFeature.DisableCircularReferenceDetect));
                                 }
 
                             }
@@ -492,7 +493,7 @@ public class GasKafka {
                             staffInfo.put("deptName",t_deptName);
                             map.put("staffInfo",staffInfo);
                             data.setData(map);
-                            wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
+                            wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data,SerializerFeature.DisableCircularReferenceDetect));
 
                         }else{
                             if(type==1){
@@ -544,7 +545,7 @@ public class GasKafka {
                                         map.put("data", staffInfo);
                                         data.setData(map);
                                         try {
-                                            wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
+                                            wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data,SerializerFeature.DisableCircularReferenceDetect));
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
@@ -585,7 +586,7 @@ public class GasKafka {
                                         map.put("personNum",importantArea.size());
                                         data.setType(9);
                                         data.setData(data);
-                                        wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
+                                        wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data,SerializerFeature.DisableCircularReferenceDetect));
                                     }
                                 }else{
                                     limitArea.remove(staffId);
@@ -596,7 +597,7 @@ public class GasKafka {
                                         map.put("personNum",limitArea.size());
                                         data.setType(10);
                                         data.setData(data);
-                                        wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
+                                        wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data,SerializerFeature.DisableCircularReferenceDetect));
                                     }
                                 }
                                 //推送前端人数减一
@@ -613,7 +614,7 @@ public class GasKafka {
                                 staffInfo.put("deptName",t_deptName);
                                 map.put("staffInfo",staffInfo);
                                 data.setData(map);
-                                wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
+                                wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data,SerializerFeature.DisableCircularReferenceDetect));
                             }
 
                         }
@@ -657,7 +658,7 @@ public class GasKafka {
                                 realRule.setFinalTime(new Date());
                                 staffAttendanceRealRuleMapper.updateByPrimaryKeySelective(realRule);
                                 overTimeSet.add(staffId);
-                                wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
+                                wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data,SerializerFeature.DisableCircularReferenceDetect));
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -675,7 +676,7 @@ public class GasKafka {
                             realRule.setFinalTime(new Date());
                             staffAttendanceRealRuleMapper.updateByPrimaryKeySelective(realRule);
                             try {
-                                wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
+                                wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data,SerializerFeature.DisableCircularReferenceDetect));
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }

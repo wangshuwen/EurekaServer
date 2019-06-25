@@ -161,29 +161,17 @@ public class GasInfoServiceImpl implements GasInfoService {
      * @auther lifeng
      **/
     public List<GasWSRespVO> findGasInfoLastTenRecords(int number) {
-        /*Integer orgId = WSSiteServer.orgId;
-        Integer zoneId = WSSiteServer.zoneId;*/
-
-        //多表查询改为单表查询
-//        List<Map<String, Object>> maps = rtGasInfoMapper.selectGasInfoLastTenData(number);
         List<Map<String, Object>> maps = gasPositionService.selectGasInfoLastTenData(number);
         List<GasWSRespVO> list = Collections.synchronizedList(new ArrayList<>());
         GasWSRespVO gasWSRespVO;
-        Set<Integer> set = new HashSet<>();
-        for (Map<String, Object> item : maps) {
-            set.add((Integer) item.get("staff_id"));
-        }
-        Map<Integer, Map<String, Object>> res = staffService.findGroupNameByIds(set);
-//        staffGroupTerminalServiceClient.getDeptNameByGroupId(group_id);
         for (Map<String, Object> item : maps) {
             gasWSRespVO = new GasWSRespVO();
             Staff staff = staffMapper.selectByPrimaryKey((Integer) item.get("staff_id"));
-//              Staff staff = staffGroupTerminalServiceClient.findStaffById(staffId);
             if (null == staff) {
                 continue;
             }
             gasWSRespVO.setStaffName(staff.getStaffName());
-            gasWSRespVO.setDeptName((String) res.get(staff.getStaffId()).get("deptName"));
+            gasWSRespVO.setDeptName(staffOrganizationService.getDeptNameByGroupId(staff.getGroupId()));
 
 
             gasWSRespVO.setStaffId((Integer) item.get("staff_id"));

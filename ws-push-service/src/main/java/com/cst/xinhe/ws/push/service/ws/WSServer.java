@@ -28,8 +28,14 @@ public class WSServer {
     public static Integer orgId=null;
     public static Integer zoneId=null;
 
-    public static Integer  pushGasNum=0;
+    public volatile static Integer  pushGasNum=0;
 
+    public synchronized static void setPush(){
+        pushGasNum++;
+    }
+    public synchronized static Integer getPush(){
+        return pushGasNum;
+    }
 
    private static final Logger log = LoggerFactory.getLogger(WSServer.class);
 
@@ -116,9 +122,9 @@ public class WSServer {
      */
     public static void sendInfo(String message) throws IOException {
         log.info(message);
-        pushGasNum++;
+        setPush();
         System.out.println("----------------已推送气体到前端------------------");
-        System.out.println(pushGasNum*10);
+        System.out.println(getPush()*10);
         System.out.println("-------------------------------------------");
 
         for (WSServer item : webSocketSet) {

@@ -165,9 +165,7 @@ public class ResultUtil {
         Result result = new Result();
         result.setCode(resultEnum.getCode());
         result.setMsg(resultEnum.getMsg());
-        result.setData(null);
-        String str = JSON.toJSONString(result);
-        return str;
+        return JSON.toJSONString(result);
     }
 
 

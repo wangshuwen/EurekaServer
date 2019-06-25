@@ -61,6 +61,7 @@ public enum ResultEnum {
     RT_SELECT_TERMINAL_BATTERY_FAIL(150, "实时查询终端剩余电量失败！"),
     GET_SEQUENCE_ID_FAIL(151, "实时查询终端剩余电量失败！"),
     LICENSE_ERROR(152, "您的证书无效，请核查服务器是否取得授权或重新申请证书！"),
+    SOME_PARAMETERS_ARE_NULL(153, "部分参数为空！"),
     ;
 
     private Integer code;

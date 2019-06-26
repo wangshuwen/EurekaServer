@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @DATE 2018/8/28 15:24
  * @Vserion v0.0.1
  */
-public class ResponseData implements Serializable {
+public class ResponseData {
 
     private volatile static ResponseData responseData;
 

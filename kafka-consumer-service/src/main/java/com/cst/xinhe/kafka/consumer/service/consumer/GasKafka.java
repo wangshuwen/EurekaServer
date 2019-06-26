@@ -1007,7 +1007,7 @@ public class GasKafka {
         }
 
         private void sendTempRoadName(Integer terminalId, String ip,Integer port, String tempPositionName) {
-            ResponseData responseData = ResponseData.getResponseData();
+            ResponseData responseData = new ResponseData();
             RequestData requestData = new RequestData();
 
             char[] charArr = tempPositionName.toCharArray();

@@ -13,10 +13,9 @@ import java.util.Date;
  * @DATE 2018/9/25 19:17
  * @Vserion v0.0.1
  */
-public class RequestData implements Serializable,Cloneable {
+public class RequestData implements Cloneable {
 
 
-    private static final long serialVersionUID = -598577800887819771L;
     private static RequestData requestData = new RequestData();
 
     public static RequestData getInstance(){

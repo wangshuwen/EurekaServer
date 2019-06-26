@@ -14,10 +14,9 @@ import java.util.Date;
  * @Vserion v0.0.1
  */
 
-public class GasWSRespVO implements Serializable,Cloneable {
+public class GasWSRespVO implements Cloneable {
 
 
-    private static final long serialVersionUID = -6986597351575219641L;
     private static GasWSRespVO gasWSRespVO = new GasWSRespVO();
 
     public static GasWSRespVO getInstance(){

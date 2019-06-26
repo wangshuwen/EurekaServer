@@ -143,7 +143,7 @@ public class GasPositionServiceImpl implements GasPositionService {
 
 
 
-        FieldSortBuilder sortBuilder = SortBuilders.fieldSort("gaspositionid").order(SortOrder.DESC);
+        SortBuilder sortBuilder = SortBuilders.fieldSort("createtime").order(SortOrder.DESC);
         NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder().withSort(sortBuilder).withQuery(builder).withPageable(pageable);
         Page<GasPositionEntity> page = gasPositionRepository.search(nativeSearchQueryBuilder.build());
         return page;
@@ -167,7 +167,7 @@ public class GasPositionServiceImpl implements GasPositionService {
 //        if (null != endTime){
 //            queryBuilder2 = QueryBuilders.rangeQuery("createtime").format("yyyy-MM-dd").lte(endTime);
 //        }
-        FieldSortBuilder sortBuilder = SortBuilders.fieldSort("createtime").order(SortOrder.DESC);
+        SortBuilder sortBuilder = SortBuilders.fieldSort("createtime").order(SortOrder.DESC);
         Pageable pageable = new PageRequest(startPage - 1,pageSize);
         NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withPageable(pageable).withQuery(queryBuilder).withQuery(queryBuilder1).withSort(sortBuilder).withFields("createtime","temppositionname", "isore");
         Page<GasPositionEntity> iterable = gasPositionRepository.search(searchQueryBuilder.build());
@@ -228,7 +228,7 @@ public class GasPositionServiceImpl implements GasPositionService {
 
     @Override
     public Map<String, Object> findRecentlyGasInfoByStaffId(Integer staffId) {
-        SortBuilder sortBuilder = SortBuilders.fieldSort("gaspositionid").order(SortOrder.DESC);
+        SortBuilder sortBuilder = SortBuilders.fieldSort("createtime").order(SortOrder.DESC);
         QueryBuilder queryBuilder = QueryBuilders.termQuery("staffid", staffId);
         Pageable pageable = new PageRequest(0,1);
         NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withQuery(queryBuilder).withSort(sortBuilder).withPageable(pageable);
@@ -264,7 +264,7 @@ public class GasPositionServiceImpl implements GasPositionService {
     public List<Map<String, Object>> selectGasInfoLastTenData(int number) {
 
         Pageable pageable = new PageRequest(0,number);
-        SortBuilder sortBuilder = SortBuilders.fieldSort("gaspositionid").order(SortOrder.DESC);
+        SortBuilder sortBuilder = SortBuilders.fieldSort("createtime").order(SortOrder.DESC);
         NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withSort(sortBuilder).withPageable(pageable);
 
         Map<String, Object> result;

@@ -182,7 +182,7 @@ public class GasKafka {
 
                     String str = (String) message;
                     JSONObject jsonObject = JSON.parseObject(str);
-                    RequestData requestData = RequestData.getInstance();
+                    RequestData requestData = new RequestData();
                     requestData.setTime(jsonObject.getDate("time"));
                     requestData.setBody(jsonObject.getBytes("body"));
                     requestData.setLength(jsonObject.getInteger("length"));
@@ -207,7 +207,7 @@ public class GasKafka {
                     gasPosition.setGasPositionId(GetUUID.getUuid());
                     byte[] body = requestData.getBody();
 
-                    GasInfo gasInfo = GasInfo.getInstance();
+                    GasInfo gasInfo = new GasInfo();
                     double co0 = ((long) (((body[0] & 0xff) << 8) + (body[1] & 0xff)) / 10.0);
                     gasInfo.setCo(co0);
                     gasPosition.setCo(co0);
@@ -283,7 +283,7 @@ public class GasKafka {
                     double rssi2 = Double.parseDouble(t_rssi2);
                     gasPosition.setWifiStrength2(rssi2);
 
-                    UpLoadGasDto upLoadGasDto = UpLoadGasDto.getInstance();
+                    UpLoadGasDto upLoadGasDto = new UpLoadGasDto();
 
                     upLoadGasDto.setSequenceId(requestData.getSequenceId());
 
@@ -316,7 +316,7 @@ public class GasKafka {
                     upLoadGasDto.setGasInfo(gasInfo);
 
 
-                    RssiInfo rssiInfo = RssiInfo.getInstance();
+                    RssiInfo rssiInfo = new RssiInfo();
                     rssiInfo.setUpLoadGasDto(upLoadGasDto);
                     rssiInfo.setTerminalId(requestData.getTerminalId());
                     rssiInfo.setStationId1(baseStation1);
@@ -457,7 +457,7 @@ public class GasKafka {
                                 //重点区域超员报警
                                 importantArea.add(staffId);
                                 if(importantArea.size()>area.getContainNumber()){
-                                    WebSocketData data = WebSocketData.getInstance();
+                                    WebSocketData data = new WebSocketData();
                                     HashMap<String, Object> map = new HashMap<>();
                                     map.put("areaInfo",area);
                                     map.put("personNum",importantArea.size());
@@ -471,7 +471,7 @@ public class GasKafka {
                                 //限制区域超员报警
                                 limitArea.add(staffId);
                                 if(limitArea.size()>area.getContainNumber()){
-                                    WebSocketData data = WebSocketData.getInstance();
+                                    WebSocketData data = new WebSocketData();
                                     HashMap<String, Object> map = new HashMap<>();
                                     map.put("areaInfo",area);
                                     map.put("personNum",limitArea.size());
@@ -521,7 +521,7 @@ public class GasKafka {
                                     Date now = new Date();
                                     long realLong = now.getTime() - inRecord.getInTime().getTime();
                                     if (realLong > residenceTime) {
-                                        WebSocketData data = WebSocketData.getInstance();
+                                        WebSocketData data = new WebSocketData();
                                         data.setType(7);
                                         HashMap<String, Object> map = new HashMap<>();
                                         map.put("code", 2);
@@ -582,7 +582,7 @@ public class GasKafka {
                                 if(type==1){
                                     importantArea.remove(staffId);
                                     if(importantArea.size()>area.getContainNumber()){
-                                        WebSocketData data = WebSocketData.getInstance();
+                                        WebSocketData data = new WebSocketData();
                                         HashMap<String, Object> map = new HashMap<>();
                                         map.put("areaInfo",area);
                                         map.put("personNum",importantArea.size());
@@ -593,7 +593,7 @@ public class GasKafka {
                                 }else{
                                     limitArea.remove(staffId);
                                     if(GasKafka.limitArea.size()>area.getContainNumber()){
-                                        WebSocketData data = WebSocketData.getInstance();
+                                        WebSocketData data = new WebSocketData();
                                         HashMap<String, Object> map = new HashMap<>();
                                         map.put("areaInfo",area);
                                         map.put("personNum",limitArea.size());
@@ -644,7 +644,7 @@ public class GasKafka {
                     serious_time.setTime(endTime.getTime() + seriousTime * 60 * 60 * 1000);
 
                     Date date = new Date();
-                    WebSocketData data = WebSocketData.getInstance();
+                    WebSocketData data = new WebSocketData();
 
                     if (serious_time.before(date)) {
 
@@ -686,7 +686,7 @@ public class GasKafka {
                     }
 
                     //---------------------------------------判断员工是否超时未上井结束------------------------------------
-                    GasWSRespVO gasWSRespVO = GasWSRespVO.getInstance();
+                    GasWSRespVO gasWSRespVO = new GasWSRespVO();
                     gasWSRespVO.setO2(gasPosition.getO2());
                     gasWSRespVO.setO2_type(gasPosition.getO2Unit());
                     gasWSRespVO.setTemperature(gasPosition.getTemperature());

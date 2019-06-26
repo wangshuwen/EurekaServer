@@ -8,10 +8,8 @@ import java.io.Serializable;
  * @author: lifeng
  * @create: 2019-04-28 09:35
  **/
-public class WebSocketData implements Serializable,Cloneable {
+public class WebSocketData implements Cloneable {
 
-
-    private static final long serialVersionUID = 7761484423546704280L;
     private static WebSocketData webSocketData = new WebSocketData();
 
     public static WebSocketData getInstance(){

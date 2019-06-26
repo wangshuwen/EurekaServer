@@ -18,6 +18,7 @@ import com.cst.xinhe.persistence.vo.req.AttendanceParamsVO;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.sort.FieldSortBuilder;
+import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.Page;
@@ -115,7 +116,7 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
                 e.printStackTrace();
             }
         }
-        FieldSortBuilder sort = SortBuilders.fieldSort("attendanceid").order(SortOrder.ASC);
+        SortBuilder sort = SortBuilders.fieldSort("starttime").order(SortOrder.ASC);
         NativeSearchQueryBuilder nativeBuilder = new NativeSearchQueryBuilder().withSort(sort).withQuery(builder).withPageable(pageable);
         Page<EsAttendanceEntity> page = attendanceRepository.search(nativeBuilder.build());
 
@@ -249,7 +250,7 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
 
         }
 
-        FieldSortBuilder sort = SortBuilders.fieldSort("attendanceid").order(SortOrder.ASC);
+        SortBuilder sort = SortBuilders.fieldSort("starttime").order(SortOrder.ASC);
         NativeSearchQueryBuilder nativeBuilder = new NativeSearchQueryBuilder().withSort(sort).withQuery(builder).withPageable(pageable);
         Page<EsAttendanceEntity> page = attendanceRepository.search(nativeBuilder.build());
        // attendanceRepository.

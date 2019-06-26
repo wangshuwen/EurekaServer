@@ -19,6 +19,7 @@ import com.cst.xinhe.web.service.staff_group_terminal.service.StaffService;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.sort.FieldSortBuilder;
+import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.Page;
@@ -115,7 +116,7 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
                 e.printStackTrace();
             }
         }
-        FieldSortBuilder sort = SortBuilders.fieldSort("attendanceid").order(SortOrder.ASC);
+        SortBuilder sort = SortBuilders.fieldSort("starttime").order(SortOrder.ASC);
         NativeSearchQueryBuilder nativeBuilder = new NativeSearchQueryBuilder().withSort(sort).withQuery(builder).withPageable(pageable);
         Page<EsAttendanceEntity> page = attendanceRepository.search(nativeBuilder.build());
 
@@ -186,21 +187,17 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
         Pageable pageable = new PageRequest(attendanceParamsVO.getStartPage()-1,attendanceParamsVO.getPageSize());
         BoolQueryBuilder builder = QueryBuilders.boolQuery();
         Integer orgId = attendanceParamsVO.getOrgId();
-
-
-
-
         String currentDate = attendanceParamsVO.getCurrentDate1();
         String startTime = attendanceParamsVO.getStartTime1();
         String endTime = attendanceParamsVO.getEndTime1();
         Integer jobType = attendanceParamsVO.getJobType();
         String staffName = attendanceParamsVO.getStaffName();
         Integer timeStandardId = attendanceParamsVO.getTimeStandardId();
-        if(orgId!=null){
-            Boolean flag=true;
+        if(null != orgId){
+            boolean flag=true;
             List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(orgId);
             List<Integer> staffids =staffService.findAllStaffByGroupIds(deptIds);
-            if(staffids!=null&&staffids.size()>0){
+            if(null != staffids &&staffids.size()>0){
                 for (Integer staffid : staffids) {
                     builder.should(QueryBuilders.termQuery("staffid",staffid));
                 }
@@ -249,47 +246,41 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
 
         }
 
-        FieldSortBuilder sort = SortBuilders.fieldSort("attendanceid").order(SortOrder.ASC);
+        SortBuilder sort = SortBuilders.fieldSort("starttime").order(SortOrder.ASC);
         NativeSearchQueryBuilder nativeBuilder = new NativeSearchQueryBuilder().withSort(sort).withQuery(builder).withPageable(pageable);
         Page<EsAttendanceEntity> page = attendanceRepository.search(nativeBuilder.build());
        // attendanceRepository.
         List<EsAttendanceEntity> list = page.getContent();
-        Set<Integer> list1 = new HashSet<>();
+//        Set<Integer> list1 = new HashSet<>();
+//        for (EsAttendanceEntity attendance : list) {
+//            list1.add(attendance.getStaffid());
+//        }
+
+//        Map<Integer,Map<String,Object>> res = staffService.findGroupNameByIds(list1);
+
         for (EsAttendanceEntity attendance : list) {
-            list1.add(attendance.getStaffid());
-        }
-
-        Map<Integer,Map<String,Object>> res = staffService.findGroupNameByIds(list1);
-
-        Iterator<EsAttendanceEntity> iterator = list.iterator();
-        while (iterator.hasNext()){
-            EsAttendanceEntity attendance = iterator.next();
-            Integer staffid = attendance.getStaffid();
             Integer basestationid = attendance.getBasestationid();
             Integer ruleid = attendance.getRuleid();
-            Map<String, Object> obj = res.get(staffid);
-           if(obj!=null){
-               Integer jobId = (Integer)obj.get("jobId");
-               StaffJob staffJob = staffJobMapper.selectByPrimaryKey(jobId);
+            Integer staffId = attendance.getStaffid();
+            if (null != staffId) {
+                Staff staff = staffMapper.selectByPrimaryKey(staffId);
+                Integer jobId = staff.getStaffJobId();
+                StaffJob staffJob = staffJobMapper.selectByPrimaryKey(jobId);
 
-               if(staffJob!=null)
-                   attendance.setJobname(staffJob.getJobName());
+                if (staffJob != null)
+                    attendance.setJobname(staffJob.getJobName());
 
-               String staffName1 = (String) obj.get("staffName");
-               attendance.setStaffname(staffName1);
+                attendance.setStaffname(staff.getStaffName());
+                attendance.setDeptname(staffOrganizationService.getDeptNameByGroupId(staff.getGroupId()));
+            }
 
-               String deptName = (String) obj.get("deptName");
-               attendance.setDeptname(deptName);
-           }
-
-               BaseStation station = baseStationMapper.findBaseStationByNum(basestationid);
-               TimeStandard timeStandard = timeStandardMapper.selectByPrimaryKey(ruleid);
-               if(timeStandard!=null){
-                   attendance.setTimestandardname(timeStandard.getTimeStandardName());
-               }
-               if(station!=null)
-                   attendance.setStationname(station.getBaseStationName());
-
+            BaseStation station = baseStationMapper.findBaseStationByNum(basestationid);
+            TimeStandard timeStandard = timeStandardMapper.selectByPrimaryKey(ruleid);
+            if (null != timeStandard) {
+                attendance.setTimestandardname(timeStandard.getTimeStandardName());
+            }
+            if (null != station)
+                attendance.setStationname(station.getBaseStationName());
 
         }
         return page;

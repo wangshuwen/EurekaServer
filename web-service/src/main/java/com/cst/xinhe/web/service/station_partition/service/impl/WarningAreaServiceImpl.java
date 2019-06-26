@@ -186,7 +186,7 @@ public class WarningAreaServiceImpl implements WarningAreaService {
 //        List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(deptId);
         List<Integer> deptIds = staffOrganizationService.findSonIdsByDeptId(deptId);
 
-        if(null != type){
+        if(null != areaId){
             WarningAreaExample example = new WarningAreaExample();
             WarningAreaExample.Criteria criteria = example.createCriteria();
             criteria.andWarningAreaTypeEqualTo(type);

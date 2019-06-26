@@ -91,7 +91,6 @@ public class GasController {
     @ApiOperation(value = "修改气体筛选条件静态变量zoneId和orgId的值", notes = "")
     @GetMapping("updateOrgIdAndDeptId")
     public String updateOrgIdAndDeptId() {
-        System.out.println("修改气体ID");
 //        WSServer.orgId = null;
 //        WSServer.zoneId = null;
         wsPushServiceClient.setOrgIdIsNull();

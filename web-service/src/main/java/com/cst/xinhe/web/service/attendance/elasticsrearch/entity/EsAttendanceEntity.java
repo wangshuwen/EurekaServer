@@ -17,7 +17,7 @@ public class EsAttendanceEntity {
      * @mbg.generated
      */
     @Id
-    private Long attendanceid;
+    private String attendanceid;
 
     //后补
     private String staffname;

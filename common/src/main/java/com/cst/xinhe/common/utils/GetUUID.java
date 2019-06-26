@@ -34,4 +34,8 @@ public class GetUUID {
         UUID uuidString = UUID.randomUUID();
         return uuidString.toString();
     }
+
+    public static void main(String[] args) {
+        System.out.println(GetUUID.getUuid());
+    }
 }

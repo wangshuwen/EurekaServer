@@ -7,7 +7,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import java.util.Date;
 
 @Data
-@Document(indexName = "attendance", type = "doc")
+@Document(indexName = "attendance", type = "attendance")
 public class EsAttendanceEntity {
     /**
      *

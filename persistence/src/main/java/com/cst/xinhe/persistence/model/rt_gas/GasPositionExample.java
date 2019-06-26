@@ -205,52 +205,62 @@ public class GasPositionExample {
             return (Criteria) this;
         }
 
-        public Criteria andGasPositionIdEqualTo(Long value) {
+        public Criteria andGasPositionIdEqualTo(String value) {
             addCriterion("gas_position_id =", value, "gasPositionId");
             return (Criteria) this;
         }
 
-        public Criteria andGasPositionIdNotEqualTo(Long value) {
+        public Criteria andGasPositionIdNotEqualTo(String value) {
             addCriterion("gas_position_id <>", value, "gasPositionId");
             return (Criteria) this;
         }
 
-        public Criteria andGasPositionIdGreaterThan(Long value) {
+        public Criteria andGasPositionIdGreaterThan(String value) {
             addCriterion("gas_position_id >", value, "gasPositionId");
             return (Criteria) this;
         }
 
-        public Criteria andGasPositionIdGreaterThanOrEqualTo(Long value) {
+        public Criteria andGasPositionIdGreaterThanOrEqualTo(String value) {
             addCriterion("gas_position_id >=", value, "gasPositionId");
             return (Criteria) this;
         }
 
-        public Criteria andGasPositionIdLessThan(Long value) {
+        public Criteria andGasPositionIdLessThan(String value) {
             addCriterion("gas_position_id <", value, "gasPositionId");
             return (Criteria) this;
         }
 
-        public Criteria andGasPositionIdLessThanOrEqualTo(Long value) {
+        public Criteria andGasPositionIdLessThanOrEqualTo(String value) {
             addCriterion("gas_position_id <=", value, "gasPositionId");
             return (Criteria) this;
         }
 
-        public Criteria andGasPositionIdIn(List<Long> values) {
+        public Criteria andGasPositionIdLike(String value) {
+            addCriterion("gas_position_id like", value, "gasPositionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andGasPositionIdNotLike(String value) {
+            addCriterion("gas_position_id not like", value, "gasPositionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andGasPositionIdIn(List<String> values) {
             addCriterion("gas_position_id in", values, "gasPositionId");
             return (Criteria) this;
         }
 
-        public Criteria andGasPositionIdNotIn(List<Long> values) {
+        public Criteria andGasPositionIdNotIn(List<String> values) {
             addCriterion("gas_position_id not in", values, "gasPositionId");
             return (Criteria) this;
         }
 
-        public Criteria andGasPositionIdBetween(Long value1, Long value2) {
+        public Criteria andGasPositionIdBetween(String value1, String value2) {
             addCriterion("gas_position_id between", value1, value2, "gasPositionId");
             return (Criteria) this;
         }
 
-        public Criteria andGasPositionIdNotBetween(Long value1, Long value2) {
+        public Criteria andGasPositionIdNotBetween(String value1, String value2) {
             addCriterion("gas_position_id not between", value1, value2, "gasPositionId");
             return (Criteria) this;
         }

@@ -205,52 +205,62 @@ public class AttendanceExample {
             return (Criteria) this;
         }
 
-        public Criteria andAttendanceIdEqualTo(Integer value) {
+        public Criteria andAttendanceIdEqualTo(String value) {
             addCriterion("attendance_id =", value, "attendanceId");
             return (Criteria) this;
         }
 
-        public Criteria andAttendanceIdNotEqualTo(Integer value) {
+        public Criteria andAttendanceIdNotEqualTo(String value) {
             addCriterion("attendance_id <>", value, "attendanceId");
             return (Criteria) this;
         }
 
-        public Criteria andAttendanceIdGreaterThan(Integer value) {
+        public Criteria andAttendanceIdGreaterThan(String value) {
             addCriterion("attendance_id >", value, "attendanceId");
             return (Criteria) this;
         }
 
-        public Criteria andAttendanceIdGreaterThanOrEqualTo(Integer value) {
+        public Criteria andAttendanceIdGreaterThanOrEqualTo(String value) {
             addCriterion("attendance_id >=", value, "attendanceId");
             return (Criteria) this;
         }
 
-        public Criteria andAttendanceIdLessThan(Integer value) {
+        public Criteria andAttendanceIdLessThan(String value) {
             addCriterion("attendance_id <", value, "attendanceId");
             return (Criteria) this;
         }
 
-        public Criteria andAttendanceIdLessThanOrEqualTo(Integer value) {
+        public Criteria andAttendanceIdLessThanOrEqualTo(String value) {
             addCriterion("attendance_id <=", value, "attendanceId");
             return (Criteria) this;
         }
 
-        public Criteria andAttendanceIdIn(List<Integer> values) {
+        public Criteria andAttendanceIdLike(String value) {
+            addCriterion("attendance_id like", value, "attendanceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAttendanceIdNotLike(String value) {
+            addCriterion("attendance_id not like", value, "attendanceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAttendanceIdIn(List<String> values) {
             addCriterion("attendance_id in", values, "attendanceId");
             return (Criteria) this;
         }
 
-        public Criteria andAttendanceIdNotIn(List<Integer> values) {
+        public Criteria andAttendanceIdNotIn(List<String> values) {
             addCriterion("attendance_id not in", values, "attendanceId");
             return (Criteria) this;
         }
 
-        public Criteria andAttendanceIdBetween(Integer value1, Integer value2) {
+        public Criteria andAttendanceIdBetween(String value1, String value2) {
             addCriterion("attendance_id between", value1, value2, "attendanceId");
             return (Criteria) this;
         }
 
-        public Criteria andAttendanceIdNotBetween(Integer value1, Integer value2) {
+        public Criteria andAttendanceIdNotBetween(String value1, String value2) {
             addCriterion("attendance_id not between", value1, value2, "attendanceId");
             return (Criteria) this;
         }

@@ -22,7 +22,7 @@ import java.util.GregorianCalendar;
  **/
 public class HandlingAttendanceRules {
 
-    public static void process(Integer attendanceId) throws ParseException {
+    public static void process(String attendanceId) throws ParseException {
         //获取考勤dao操作
         AttendanceMapper attendanceMapper = SpringContextUtil.getBean(AttendanceMapper.class);
         //根据ID获取具体的考勤内容

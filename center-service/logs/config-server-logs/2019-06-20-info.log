@@ -1,0 +1,11 @@
+2019-06-20 11:24:39.882 [main] INFO  com.cst.xinhe.config.server.ConfigServerApplicationTests - The following profiles are active: native
+2019-06-20 11:24:41.033 [main] INFO  org.springframework.cloud.context.scope.GenericScope - BeanFactory id=5cf1ece0-0255-33e6-a64d-0adc2017e2ff
+2019-06-20 11:24:41.233 [main] INFO  org.springframework.context.support.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.cloud.autoconfigure.ConfigurationPropertiesRebinderAutoConfiguration' of type [org.springframework.cloud.autoconfigure.ConfigurationPropertiesRebinderAutoConfiguration$$EnhancerBySpringCGLIB$$bb839316] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-06-20 11:24:41.545 [main] INFO  com.netflix.config.sources.URLConfigurationSource - To enable URLs as dynamic configuration sources, define System property archaius.configurationSource.additionalUrls or make config.properties available on classpath.
+2019-06-20 11:24:41.553 [main] INFO  com.netflix.config.sources.URLConfigurationSource - To enable URLs as dynamic configuration sources, define System property archaius.configurationSource.additionalUrls or make config.properties available on classpath.
+2019-06-20 11:24:42.086 [main] INFO  org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor - Initializing ExecutorService 'applicationTaskExecutor'
+2019-06-20 11:24:45.468 [main] INFO  org.springframework.boot.actuate.endpoint.web.EndpointLinksResolver - Exposing 2 endpoint(s) beneath base path '/actuator'
+2019-06-20 11:24:45.552 [main] INFO  com.cst.xinhe.config.server.ConfigServerApplicationTests - Started ConfigServerApplicationTests in 8.119 seconds (JVM running for 8.995)
+2019-06-20 11:24:45.904 [Thread-5] INFO  org.springframework.cloud.netflix.eureka.InstanceInfoFactory - Setting initial instance status as: STARTING
+2019-06-20 11:24:45.907 [Thread-5] INFO  org.springframework.cloud.netflix.eureka.serviceregistry.EurekaServiceRegistry - Unregistering application CONFIG-SERVER with eureka with status DOWN
+2019-06-20 11:24:45.912 [Thread-5] INFO  org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor - Shutting down ExecutorService 'applicationTaskExecutor'

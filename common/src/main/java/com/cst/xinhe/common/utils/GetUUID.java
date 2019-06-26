@@ -18,7 +18,7 @@ public class GetUUID {
      * @date 10:28 2018/8/17
      * @auther lifeng
      **/
-    public static String getUuidReplace() {
+    public synchronized static String getUuidReplace() {
         UUID uuidString = UUID.randomUUID();
         return uuidString.toString().replace("-", "");
     }
@@ -30,7 +30,7 @@ public class GetUUID {
      * @date 10:28 2018/8/17
      * @auther lifeng
      **/
-    public static String getUuid() {
+    public synchronized static String getUuid() {
         UUID uuidString = UUID.randomUUID();
         return uuidString.toString();
     }

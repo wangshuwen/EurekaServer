@@ -84,7 +84,7 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
                 }
             }
         }
-        if(set!=null&&set.size()>0){
+        if(set.size() > 0){
                 for (Integer integer : set) {
                     builder.should(QueryBuilders.termQuery("staffid",integer).boost(100));
                 }

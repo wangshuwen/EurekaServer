@@ -2,6 +2,7 @@ package com.cst.xinhe.kafka.consumer.service.consumer;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.cst.xinhe.common.utils.GetUUID;
 import com.cst.xinhe.common.utils.array.ArrayQueue;
 import com.cst.xinhe.common.ws.WebSocketData;
 import com.cst.xinhe.kafka.consumer.service.client.WebServiceClient;
@@ -212,6 +213,7 @@ public class UpdateIpProcess {
                 //上班
                 if(head.getStationId().equals(entryId) && end.getStationId().equals(attendanceId)){
                     Attendance attendance = new Attendance();
+                    attendance.setAttendanceId(GetUUID.getUuid());
                     attendance.setStaffId(staffId);
                     attendance.setRuleId(timeStandardId);
                     attendance.setStartTime(end.getUpdateTime());
@@ -344,7 +346,7 @@ public class UpdateIpProcess {
 //                        attendanceService.updateAttendance(attendance);
                         attendanceMapper.updateByPrimaryKeySelective(attendance);
 //                        attendanceServiceClient.updateAttendance(attendance);
-                        Integer aid = attendance.getAttendanceId();
+                        String aid = attendance.getAttendanceId();
                         HandlingAttendanceRules.process(aid);
                     }
                 }
@@ -598,6 +600,7 @@ public class UpdateIpProcess {
                         //上班
                         if (head.getStationId().equals(entryId) && end.getStationId().equals(attendanceId)) {
                             Attendance attendance = new Attendance();
+                            attendance.setAttendanceId(GetUUID.getUuid());
                             attendance.setStaffId(staffId);
                             attendance.setRuleId(timeStandardId);
                             attendance.setStartTime(end.getUpdateTime());
@@ -727,7 +730,7 @@ public class UpdateIpProcess {
                                 //添加下班时间
 //                                attendanceService.updateAttendance(attendance);
                                 attendanceServiceClient.updateAttendance(attendance);
-                                Integer aid = attendance.getAttendanceId();
+                                String aid = attendance.getAttendanceId();
                                 try {
                                     HandlingAttendanceRules.process(aid);
                                 } catch (ParseException e) {

@@ -10,7 +10,7 @@ public class Attendance {
      *
      * @mbg.generated
      */
-    private Integer attendanceId;
+    private String attendanceId;
 
     /**
      *
@@ -110,7 +110,7 @@ public class Attendance {
      *
      * @mbg.generated
      */
-    public Integer getAttendanceId() {
+    public String getAttendanceId() {
         return attendanceId;
     }
 
@@ -122,8 +122,8 @@ public class Attendance {
      *
      * @mbg.generated
      */
-    public void setAttendanceId(Integer attendanceId) {
-        this.attendanceId = attendanceId;
+    public void setAttendanceId(String attendanceId) {
+        this.attendanceId = attendanceId == null ? null : attendanceId.trim();
     }
 
     /**

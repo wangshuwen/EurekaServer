@@ -10,7 +10,7 @@ import java.util.Date;
  **/
 public class AttendanceInfoVO {
 
-    private Integer attendanceId;
+    private String attendanceId;
 
     private String timeStandardName;
 
@@ -43,7 +43,7 @@ public class AttendanceInfoVO {
     public AttendanceInfoVO() {
     }
 
-    public AttendanceInfoVO(Integer attendanceId, String timeStandardName, Integer staffId, String staffName, String stationName, Date startTime, Date endTime, Date inOre, Date outOre, String jobName, String deptName, String backUp1, String backUp2, Integer orgId, String attendanceRecord) {
+    public AttendanceInfoVO(String attendanceId, String timeStandardName, Integer staffId, String staffName, String stationName, Date startTime, Date endTime, Date inOre, Date outOre, String jobName, String deptName, String backUp1, String backUp2, Integer orgId, String attendanceRecord) {
         this.attendanceId = attendanceId;
         this.timeStandardName = timeStandardName;
         this.staffId = staffId;
@@ -61,11 +61,11 @@ public class AttendanceInfoVO {
         this.attendanceRecord = attendanceRecord;
     }
 
-    public Integer getAttendanceId() {
+    public String getAttendanceId() {
         return attendanceId;
     }
 
-    public void setAttendanceId(Integer attendanceId) {
+    public void setAttendanceId(String attendanceId) {
         this.attendanceId = attendanceId;
     }
 

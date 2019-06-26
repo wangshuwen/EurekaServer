@@ -10,6 +10,7 @@ import com.cst.xinhe.base.exception.RuntimeServiceException;
 import com.cst.xinhe.common.constant.ConstantValue;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
+import com.cst.xinhe.common.utils.GetUUID;
 import com.cst.xinhe.common.utils.array.ArrayQueue;
 import com.cst.xinhe.common.utils.convert.DateConvert;
 import com.cst.xinhe.common.ws.WebSocketData;
@@ -203,6 +204,7 @@ public class GasKafka {
                     requestData.setTerminalId(jsonObject.getInteger("terminalId"));
 
                     GasPosition gasPosition = new GasPosition();
+                    gasPosition.setGasPositionId(GetUUID.getUuid());
                     byte[] body = requestData.getBody();
 
                     GasInfo gasInfo = GasInfo.getInstance();

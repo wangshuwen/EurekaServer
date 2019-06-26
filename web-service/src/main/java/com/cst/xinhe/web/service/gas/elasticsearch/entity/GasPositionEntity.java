@@ -13,7 +13,7 @@ import java.util.Date;
  * @create: 2019-04-10 09:26
  **/
 @Data
-@Document(indexName = "gas_position", type = "doc")
+@Document(indexName = "gas_position", type = "gas")
 public class GasPositionEntity  {
 
 
@@ -31,7 +31,7 @@ public class GasPositionEntity  {
 
 
     @Id
-    private Long gaspositionid;
+    private String gaspositionid;
 
     private Double co;
 

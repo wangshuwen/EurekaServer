@@ -187,7 +187,8 @@ public class GasPositionServiceImpl implements GasPositionService {
         TerminalRoad terminalRoad = new TerminalRoad();
         SortBuilder sortBuilder = SortBuilders.fieldSort("createtime").order(SortOrder.DESC);
         QueryBuilder queryBuilder = QueryBuilders.termQuery("staffid", staffId);
-        NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withQuery(queryBuilder).withSort(sortBuilder).withMinScore(1);
+        Pageable pageable = new PageRequest(0,1);
+        NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withQuery(queryBuilder).withSort(sortBuilder).withPageable(pageable);
         Iterable<GasPositionEntity> iterable = gasPositionRepository.search(searchQueryBuilder.build());
         for (GasPositionEntity gasPositionEntity : iterable) {
             terminalRoad.setPositionX(gasPositionEntity.getPositionx());
@@ -201,8 +202,8 @@ public class GasPositionServiceImpl implements GasPositionService {
     public Map<String, Object> selectGasInfoByTerminalLastTime(Integer terminalId) {
         SortBuilder sortBuilder = SortBuilders.fieldSort("terminalrealtime").order(SortOrder.DESC);
         QueryBuilder queryBuilder = QueryBuilders.termQuery("terminalid", terminalId);
-
-        NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withQuery(queryBuilder).withSort(sortBuilder).withMinScore(1);
+        Pageable pageable = new PageRequest(0,1);
+        NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withQuery(queryBuilder).withSort(sortBuilder).withPageable(pageable);
 
         Map<String, Object> result = new HashMap<>();
         Iterable<GasPositionEntity> iterable = gasPositionRepository.search(searchQueryBuilder.build());
@@ -229,8 +230,8 @@ public class GasPositionServiceImpl implements GasPositionService {
     public Map<String, Object> findRecentlyGasInfoByStaffId(Integer staffId) {
         SortBuilder sortBuilder = SortBuilders.fieldSort("gaspositionid").order(SortOrder.DESC);
         QueryBuilder queryBuilder = QueryBuilders.termQuery("staffid", staffId);
-
-        NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withQuery(queryBuilder).withSort(sortBuilder).withMinScore(1);
+        Pageable pageable = new PageRequest(0,1);
+        NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withQuery(queryBuilder).withSort(sortBuilder).withPageable(pageable);
 
         Map<String, Object> result = new HashMap<>();
         Iterable<GasPositionEntity> iterable = gasPositionRepository.search(searchQueryBuilder.build());

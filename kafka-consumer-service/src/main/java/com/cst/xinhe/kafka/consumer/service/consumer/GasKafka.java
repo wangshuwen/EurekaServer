@@ -635,6 +635,8 @@ public class GasKafka {
                     }else {
                         standard = new TimeStandardVO();
                         standard = timeStandardMapper.selectTimeStandardInfoByStaffId(staffId);
+                        overTime = standard.getOverTime();
+                        seriousTime = standard.getSeriousTime();
                     }
                     //超时时长
 //                    Integer overTime = standard.getOverTime();

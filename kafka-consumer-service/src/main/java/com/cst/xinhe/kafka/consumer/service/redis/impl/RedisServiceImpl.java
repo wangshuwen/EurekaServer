@@ -65,6 +65,20 @@ public class RedisServiceImpl implements RedisService {
     /**
      * 更新缓存
      */
+    public boolean getAndSetExpireTime(final String key, String value,Long expireTime) {
+        boolean result = false;
+        try {
+            redisTemplate.opsForValue().getAndSet(key, value);
+            redisTemplate.expire(key,expireTime,TimeUnit.HOURS);
+            result = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+    /**
+     * 更新缓存
+     */
     public boolean getAndSet(final String key, String value) {
         boolean result = false;
         try {

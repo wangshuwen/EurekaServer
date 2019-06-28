@@ -172,7 +172,7 @@ public class UpdateIpProcess {
                 rtStaffInfo.setStaffJobName((String)staffMap.get("job_name"));
                 String key = String.valueOf(staffId);
                 if (redisService.hasKey(key)){
-                    redisService.getAndSet(key,JSON.toJSONString(rtStaffInfo));
+                    redisService.getAndSetExpireTime(key,JSON.toJSONString(rtStaffInfo),1L);
                 }else {
                     redisService.set(key,JSON.toJSONString(rtStaffInfo),1L);
                 }

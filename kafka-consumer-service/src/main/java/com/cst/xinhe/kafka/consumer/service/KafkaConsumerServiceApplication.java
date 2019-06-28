@@ -1,5 +1,8 @@
 package com.cst.xinhe.kafka.consumer.service;
 
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson.support.config.FastJsonConfig;
+import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import com.cst.xinhe.kafka.consumer.service.consumer.GasKafka;
 import com.cst.xinhe.kafka.consumer.service.context.SpringContextUtil;
 import com.cst.xinhe.kafka.consumer.service.service.KafkaConsumerService;
@@ -20,9 +23,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.netflix.hystrix.EnableHystrix;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 @EnableTransactionManagement
@@ -31,7 +38,7 @@ import java.util.List;
 @EnableHystrix
 @EnableEurekaClient
 @SpringBootApplication
-public class KafkaConsumerServiceApplication implements ApplicationRunner {
+public class KafkaConsumerServiceApplication  implements ApplicationRunner  {
 
 
     @Resource
@@ -74,4 +81,29 @@ public class KafkaConsumerServiceApplication implements ApplicationRunner {
         }
 
     }
+
+//    @Override
+//    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+//        System.out.println("fastjson配置读取");
+//        super.configureMessageConverters(converters);
+//        //调用父类的配置
+//        //创建fastJson消息转换器
+//        FastJsonHttpMessageConverter fastConverter = new FastJsonHttpMessageConverter();
+//        //创建配置类
+//        FastJsonConfig fastJsonConfig = new FastJsonConfig();
+//        //修改配置返回内容的过滤
+//        fastJsonConfig.setSerializerFeatures(
+////                SerializerFeature.DisableCircularReferenceDetect,
+//                SerializerFeature.WriteMapNullValue,
+//                SerializerFeature.WriteNullStringAsEmpty
+//        );
+//        fastConverter.setFastJsonConfig(fastJsonConfig);
+//        //处理中文乱码问题
+//        List<MediaType> fastMediaTypes = new ArrayList<>();
+//        fastMediaTypes.add(MediaType.APPLICATION_JSON_UTF8);
+//        fastConverter.setSupportedMediaTypes(fastMediaTypes);
+//        converters.add(fastConverter);
+//        //将FastJson添加到视图消息转换器列表内
+//        converters.add(fastConverter);
+//    }
 }

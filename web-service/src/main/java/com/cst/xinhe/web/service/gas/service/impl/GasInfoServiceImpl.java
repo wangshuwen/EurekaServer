@@ -71,7 +71,7 @@ public class GasInfoServiceImpl implements GasInfoService {
         for (GasPositionEntity item : content) {
             Integer id = item.getStaffid();
 //            Map<String, String > map = res.get(id);
-            Staff staff = staffService.findStaffById(id);
+            Staff staff = staffMapper.selectByPrimaryKey(id);
             String deptName = staffOrganizationService.getDeptNameByGroupId(staff.getGroupId());
             item.setGroupName(deptName);
             item.setStaffname(staff.getStaffName());
@@ -176,7 +176,7 @@ public class GasInfoServiceImpl implements GasInfoService {
 
             gasWSRespVO.setStaffId((Integer) item.get("staff_id"));
             gasWSRespVO.setTempRoadName((String) item.get("temppositionname"));
-            gasWSRespVO.setRtGasInfoId((Long) item.get("rtGasInfoId"));
+            gasWSRespVO.setRtGasInfoId((String) item.get("rtGasInfoId"));
             gasWSRespVO.setRt((Date) item.get("terminal_real_time"));
             gasWSRespVO.setCo((double) item.get("co"));
             gasWSRespVO.setCo_type((Integer) item.get("co_unit"));

@@ -68,8 +68,6 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
     private StaffMapper staffMapper;
 
-    private TerminalUpdateIpMapper terminalUpdateIpMapper;
-
     private TerminalIpPortMapper terminalIpPortMapper;
 
     //    private static NettyServerHandler nettyServerHandler;
@@ -102,7 +100,6 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
         this.processVoice = ProcessVoice.getProcessVoice();
         this.terminalMonitorService = SpringContextUtil.getBean(TerminalMonitorServiceImpl.class);
-        this.terminalUpdateIpMapper = SpringContextUtil.getBean(TerminalUpdateIpMapper.class);
         this.staffMapper = SpringContextUtil.getBean(StaffMapper.class);
         this.terminalIpPortMapper = SpringContextUtil.getBean(TerminalIpPortMapper.class);
 //        this.processRealTimeVoice = ProcessRealTimeVoice.getProcessRealTimeVoice();

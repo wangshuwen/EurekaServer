@@ -62,10 +62,6 @@ public class GasController {
         return pageInfo.getSize() > 0 ? ResultUtil.jsonToStringSuccess(pageInfo): ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
     }
 
-
-
-
-
     @ApiOperation(value = "获取最近的气体信息", notes = "解决数据开始空白问题")
     @GetMapping("getRecentlyGasInfo/{num}")
     public String getRecentlyGasInfo(@PathVariable(name = "num", required = false) Integer number) {

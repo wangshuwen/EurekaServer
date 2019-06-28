@@ -199,19 +199,7 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
     @Override
     public void sendUpLoadIp(RequestData customMsg) {
 
-//        String key = customMsg.getTerminalIp() + ":" + customMsg.getTerminalPort();
-//        String key1 = String.valueOf(customMsg.getTerminalId());
-//        String val = JSON.toJSONString(customMsg);
         kafkaClient.send("updateIp.tut",JSON.toJSONString(customMsg),customMsg.getTerminalPort());
-//        boolean flag = redisService.hasKey(key);
-//        if (flag){
-//            redisService.getAndSet(key,val);
-//            redisService.getAndSet(key1,val);
-//        }else {
-//            redisService.setNoTime(key1,val);
-//            redisService.setNoTime(key,val);
-//        }
-
     }
 
     @Override

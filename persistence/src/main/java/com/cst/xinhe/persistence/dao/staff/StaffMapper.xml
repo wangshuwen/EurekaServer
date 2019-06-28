@@ -101,7 +101,7 @@
     -->
     staff.staff_id, staff_number, staff_name, staff_sex, staff_birthday, staff_id_card, staff_wedlock,
     staff_email, staff_address, staff_phone, staff_job_id, staff_native_place, staff_type_id,
-    is_person, staff.create_time, group_id,attendance_station_id,time_standard_id
+    is_person, staff.create_time, group_id,attendance_station_id,staff.time_standard_id
   </sql>
   <select id="selectByExample" parameterType="com.cst.xinhe.persistence.model.staff.StaffExample" resultMap="BaseResultMap" useCache="true">
     <!--
@@ -569,8 +569,22 @@
 
   <select id="selectStaffInfoByTerminalId" resultType="java.util.Map" parameterType="java.lang.Integer" useCache="false">
       SELECT
-    <include refid="Base_Column_List"/>
-    FROM staff INNER JOIN staff_terminal ON staff.staff_id = staff_terminal.staff_id
+    <include refid="Base_Column_List"/>,staff_job.job_name,staff_job.job_desc,staff_job.remark,
+    time_standard.time_standard_name,
+    time_standard.start_time,
+    time_standard.end_time,
+    time_standard.elastic_time,
+    time_standard.late_time,
+    time_standard.serious_late_time,
+    time_standard.leave_early_time,
+    time_standard.serious_leave_early_time,
+    time_standard.flag,
+    time_standard.over_time,
+    time_standard.serious_time
+    FROM staff
+    INNER JOIN staff_terminal ON staff.staff_id = staff_terminal.staff_id
+    INNER JOIN staff_job ON staff.staff_job_id =staff_job.job_id
+    INNER JOIN time_standard ON time_standard.time_standard_id = staff.time_standard_id
     WHERE terminal_id = #{terminalId}
   </select>
 

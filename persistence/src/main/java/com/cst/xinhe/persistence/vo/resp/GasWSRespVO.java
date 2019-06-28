@@ -28,7 +28,7 @@ public class GasWSRespVO implements Cloneable {
         return new GasWSRespVO();
     }
 
-    private Long rtGasInfoId;
+    private String rtGasInfoId;
 
     private Integer groupId;
 
@@ -148,14 +148,13 @@ public class GasWSRespVO implements Cloneable {
         this.rangUrl = rangUrl;
     }
 
-    public Long getRtGasInfoId() {
+    public String getRtGasInfoId() {
         return rtGasInfoId;
     }
 
-    public void setRtGasInfoId(Long rtGasInfoId) {
+    public void setRtGasInfoId(String rtGasInfoId) {
         this.rtGasInfoId = rtGasInfoId;
     }
-
 
     //TODO 定位信息
 

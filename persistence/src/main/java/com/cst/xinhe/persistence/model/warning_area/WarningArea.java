@@ -1,5 +1,7 @@
 package com.cst.xinhe.persistence.model.warning_area;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.util.Date;
 
 public class WarningArea {
@@ -41,6 +43,7 @@ public class WarningArea {
      *
      * @mbg.generated
      */
+
     private String warningAreaName;
 
     /**

@@ -56,6 +56,7 @@ import com.cst.xinhe.persistence.vo.resp.GasWSRespVO;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.TopicPartition;
 import org.springframework.stereotype.Component;
@@ -80,10 +81,10 @@ public class GasKafka {
     //存储更新基站 队列
     public static final Map<Integer, ArrayQueue<TerminalRoad>> attendanceMap = Collections.synchronizedMap(new HashMap<>());
 
-    public static final Set<Integer> importantArea  = Collections.synchronizedSet(new HashSet<>());
-    public static final Set<Integer> limitArea  = Collections.synchronizedSet(new HashSet<>());
+    public static final Set<Integer> importantArea = Collections.synchronizedSet(new HashSet<>());
+    public static final Set<Integer> limitArea = Collections.synchronizedSet(new HashSet<>());
 
-    public static final Set<Integer> areaSet  = Collections.synchronizedSet(new HashSet<>());
+    public static final Set<Integer> areaSet = Collections.synchronizedSet(new HashSet<>());
 
     @Resource
     private StaffOrganizationMapper staffOrganizationMapper;
@@ -156,6 +157,7 @@ public class GasKafka {
     class GasProcess implements Runnable {
 
         private List<ConsumerRecord<?, ?>> records;
+
         GasProcess(List<ConsumerRecord<?, ?>> records) {
             this.records = records;
         }
@@ -164,6 +166,7 @@ public class GasKafka {
         public void run() {
             process(this.records);
         }
+
         private void process(List<ConsumerRecord<?, ?>> records) {
             for (ConsumerRecord<?, ?> record : records) {
                 boolean isWarn = false;
@@ -323,26 +326,26 @@ public class GasKafka {
                     Integer staffId = staff.getStaffId();
                     String keyOfStaffIdWithRedis = String.valueOf(staffId);
                     String staffInfoOfRedis;
-                    RTStaffInfo  rtStaffInfo = new RTStaffInfo();
-                    if (redisService.hasKey(keyOfStaffIdWithRedis)){
+                    RTStaffInfo rtStaffInfo = new RTStaffInfo();
+                    if (redisService.hasKey(keyOfStaffIdWithRedis)) {
                         staffInfoOfRedis = redisService.get(keyOfStaffIdWithRedis);
-                        rtStaffInfo = JSONObject.parseObject(staffInfoOfRedis,RTStaffInfo.class);
+                        rtStaffInfo = JSONObject.parseObject(staffInfoOfRedis, RTStaffInfo.class);
                     }
                     gasPosition.setStaffId(staffId);
                     gasPosition.setStaffName(staff.getStaffName());
                     String t_deptName;
-                    if (redisService.hasKey(keyOfStaffIdWithRedis)){
+                    if (redisService.hasKey(keyOfStaffIdWithRedis)) {
                         t_deptName = rtStaffInfo.getGroupName();
                         gasPosition.setDeptName(t_deptName);
-                    }else {
+                    } else {
                         t_deptName = getDeptNameByGroupId(staff.getGroupId());
                         gasPosition.setDeptName(t_deptName);
                     }
 
-                  TerminalRoad road = null;
+                    TerminalRoad road = null;
                     try {
                         road = rstl.locateConvert(gasPosition.getTerminalId(), baseStation1, baseStation2, rssi1, rssi2);
-                    }catch (RuntimeServiceException e){
+                    } catch (RuntimeServiceException e) {
                         ExceptionMessage exceptionMessage = new ExceptionMessage();
                         exceptionMessage.setCh4(gasPosition.getCh4());
                         exceptionMessage.setCh4Unit(gasPosition.getCh4Unit());
@@ -374,17 +377,17 @@ public class GasKafka {
                         exceptionMessage.setPositionY(gasPosition.getPositionY());
                         exceptionMessage.setPositionZ(gasPosition.getPositionZ());
                         String b;
-                        if (redisService.hasKey(keyOfStaffIdWithRedis)){
+                        if (redisService.hasKey(keyOfStaffIdWithRedis)) {
                             b = rtStaffInfo.getRemark();
-                        }else {
+                        } else {
                             b = staffMapper.findStaffTypeById(staffId);
                         }
                         exceptionMessageMapper.insert(exceptionMessage);
 
-                        if ("1".equals(b)){
-                            wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(new WebSocketData(11,gasPosition)));
+                        if ("1".equals(b)) {
+                            wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(new WebSocketData(11, gasPosition)));
                         } else {
-                            wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(new WebSocketData(10,gasPosition)));
+                            wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(new WebSocketData(10, gasPosition)));
                         }
 
                     }
@@ -395,7 +398,7 @@ public class GasKafka {
                     gasPosition.setPositionY(road.getPositionY());
                     gasPosition.setPositionZ(road.getPositionZ());
                     road.setStationId(gasPosition.getStationId());
-                    sendTempRoadName(requestData.getTerminalId(),requestData.getTerminalIp(),requestData.getTerminalPort(),road.getTempPositionName());
+                    sendTempRoadName(requestData.getTerminalId(), requestData.getTerminalIp(), requestData.getTerminalPort(), road.getTempPositionName());
 
                     //--------------------------------判断员工是否是出矿入矿---------------------------------
                     Map<String, Object> entryStation = baseStationMapper.selectBaseStationByType(1);
@@ -441,13 +444,13 @@ public class GasKafka {
                     //判断员工出入重点限制区域时刻(由前端改为后端判断)
                     WarningAreaCoordinate judgeArea = checkPointWithPolygon.judgeExistence(new Point2D.Double(gasPosition.getPositionX(), gasPosition.getPositionY()));
                     boolean containArea = areaSet.contains(staffId);
-                    if(judgeArea.isResult()){
+                    if (judgeArea.isResult()) {
                         //在重点或者限制区域
                         Integer areaId = judgeArea.getWarningAreaId();
                         WarningArea area = warningAreaMapper.selectByPrimaryKey(areaId);
                         Integer type = area.getWarningAreaType();
 
-                        if(!containArea){
+                        if (!containArea) {
                             //首次进入重点或者限制区域
                             areaSet.add(staffId);
                             WarningAreaRecord areaRecord = new WarningAreaRecord();
@@ -456,28 +459,34 @@ public class GasKafka {
                             areaRecord.setStaffId(staffId);
                             warningAreaRecordMapper.insertSelective(areaRecord);
 
-                            if(type==1){
+                            if (type == 1) {
                                 //重点区域超员报警
                                 importantArea.add(staffId);
-                                if(importantArea.size()>area.getContainNumber()){
+                                if (importantArea.size() > area.getContainNumber()) {
                                     WebSocketData data = new WebSocketData();
                                     HashMap<String, Object> map = new HashMap<>();
-                                    map.put("areaInfo",area);
-                                    map.put("personNum",importantArea.size());
+                                    WarningArea warningArea = new WarningArea();
+
+                                    BeanUtils.copyProperties(area,warningArea);
+                                    map.put("areaInfo", warningArea);
+                                    map.put("personNum", importantArea.size());
                                     data.setType(9);
                                     data.setData(map);
                                     wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
                                 }
 
 
-                            }else {
+                            } else {
                                 //限制区域超员报警
                                 limitArea.add(staffId);
-                                if(limitArea.size()>area.getContainNumber()){
+                                if (limitArea.size() > area.getContainNumber()) {
                                     WebSocketData data = new WebSocketData();
                                     HashMap<String, Object> map = new HashMap<>();
-                                    map.put("areaInfo",area);
-                                    map.put("personNum",limitArea.size());
+                                    WarningArea warningArea = new WarningArea();
+
+                                    BeanUtils.copyProperties(area,warningArea);
+                                    map.put("areaInfo", warningArea);
+                                    map.put("personNum", limitArea.size());
                                     data.setType(10);
                                     data.setData(map);
                                     wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
@@ -488,24 +497,24 @@ public class GasKafka {
                             WebSocketData data = new WebSocketData();
                             data.setType(6);
                             HashMap<String, Object> map = new HashMap<>();
-                            map.put("code",judgeArea.getWarningAreaType());
-                            map.put("data",1);
+                            map.put("code", judgeArea.getWarningAreaType());
+                            map.put("data", 1);
                             //某人于某时间进入了某区域
                             HashMap<String, Object> staffInfo = new HashMap<>();
-                            staffInfo.put("staffName",staff.getStaffName());
-                            staffInfo.put("createTime",new Date());
-                            staffInfo.put("areaInfo",area);
-                            staffInfo.put("deptName",t_deptName);
-                            map.put("staffInfo",staffInfo);
+                            staffInfo.put("staffName", staff.getStaffName());
+                            staffInfo.put("createTime", new Date());
+                            staffInfo.put("areaInfo", area);
+                            staffInfo.put("deptName", t_deptName);
+                            map.put("staffInfo", staffInfo);
                             data.setData(map);
                             wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
 
-                        }else{
-                            if(type==1){
+                        } else {
+                            if (type == 1) {
                                 //一直在重点区域内
                                 road.setIsOre(3);
                                 gasPosition.setIsOre(3);
-                            }else{
+                            } else {
                                 //一直在限制区域
                                 road.setIsOre(4);
                                 gasPosition.setIsOre(4);
@@ -516,7 +525,7 @@ public class GasKafka {
                                 criteria.andOutTimeIsNull();
                                 criteria.andStaffIdEqualTo(staffId);
                                 List<WarningAreaRecord> inRecords = warningAreaRecordMapper.selectByExample(example);
-                                if(null != inRecords && inRecords.size() > 0){
+                                if (null != inRecords && inRecords.size() > 0) {
                                     WarningAreaRecord inRecord = inRecords.get(0);
                                     //在限制区域内
                                     String time = area.getResidenceTime();
@@ -557,9 +566,9 @@ public class GasKafka {
                             }
                         }
 
-                    }else{
+                    } else {
                         //没有在重点或者限制区域
-                        if(containArea){
+                        if (containArea) {
                             //刚离开重点或者限制区域
                             areaSet.remove(staffId);
                             WarningAreaRecordExample example = new WarningAreaRecordExample();
@@ -567,7 +576,7 @@ public class GasKafka {
                             criteria.andOutTimeIsNull();
                             criteria.andStaffIdEqualTo(staffId);
                             List<WarningAreaRecord> inRecords = warningAreaRecordMapper.selectByExample(example);
-                            if(null != inRecords && inRecords.size() > 0){
+                            if (null != inRecords && inRecords.size() > 0) {
                                 for (WarningAreaRecord inRecord : inRecords) {
                                     inRecord.setOutTime(new Date());
                                     warningAreaRecordMapper.updateByPrimaryKeySelective(inRecord);
@@ -579,24 +588,28 @@ public class GasKafka {
                                 Integer type = area.getWarningAreaType();
 
                                 //超员报警
-                                if(type==1){
+                                if (type == 1) {
                                     importantArea.remove(staffId);
-                                    if(importantArea.size()>area.getContainNumber()){
+                                    if (importantArea.size() > area.getContainNumber()) {
                                         WebSocketData data = new WebSocketData();
                                         HashMap<String, Object> map = new HashMap<>();
-                                        map.put("areaInfo",area);
-                                        map.put("personNum",importantArea.size());
+                                        WarningArea warningArea = new WarningArea();
+                                        BeanUtils.copyProperties(area,warningArea);
+                                        map.put("areaInfo", warningArea);
+                                        map.put("personNum", importantArea.size());
                                         data.setType(9);
                                         data.setData(data);
                                         wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
                                     }
-                                }else{
+                                } else {
                                     limitArea.remove(staffId);
-                                    if(GasKafka.limitArea.size()>area.getContainNumber()){
+                                    if (GasKafka.limitArea.size() > area.getContainNumber()) {
                                         WebSocketData data = new WebSocketData();
                                         HashMap<String, Object> map = new HashMap<>();
-                                        map.put("areaInfo",area);
-                                        map.put("personNum",limitArea.size());
+                                        WarningArea warningArea = new WarningArea();
+                                        BeanUtils.copyProperties(area,warningArea);
+                                        map.put("areaInfo", warningArea);
+                                        map.put("personNum", limitArea.size());
                                         data.setType(10);
                                         data.setData(data);
                                         wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
@@ -606,33 +619,30 @@ public class GasKafka {
                                 WebSocketData data = new WebSocketData();
                                 data.setType(6);
                                 HashMap<String, Object> map = new HashMap<>();
-                                map.put("code",type);
-                                map.put("data",-1);
+                                map.put("code", type);
+                                map.put("data", -1);
                                 //某人于某时间进入了某区域
                                 HashMap<String, Object> staffInfo = new HashMap<>();
-                                staffInfo.put("staffName",staff.getStaffName());
-                                staffInfo.put("createTime",new Date());
-                                staffInfo.put("areaInfo",area);
-                                staffInfo.put("deptName",t_deptName);
-                                map.put("staffInfo",staffInfo);
+                                staffInfo.put("staffName", staff.getStaffName());
+                                staffInfo.put("createTime", new Date());
+                                staffInfo.put("areaInfo", area);
+                                staffInfo.put("deptName", t_deptName);
+                                map.put("staffInfo", staffInfo);
                                 data.setData(map);
                                 wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
                             }
-
                         }
-
                     }
-
                     //---------------------------------------判断员工是否超时未上井开始------------------------------------
                     StaffAttendanceRealRule realRule = staffAttendanceRealRuleMapper.selectByPrimaryKey(staffId);
 //                    TimeStandardVO standard = timeStandardMapper.selectTimeStandardInfoByStaffId(staffId);
                     Integer overTime = null;
                     Integer seriousTime = null;
                     TimeStandardVO standard;
-                    if (redisService.hasKey(keyOfStaffIdWithRedis)){
+                    if (redisService.hasKey(keyOfStaffIdWithRedis)) {
                         overTime = rtStaffInfo.getOverTime();
                         seriousTime = rtStaffInfo.getSeriousTime();
-                    }else {
+                    } else {
                         standard = new TimeStandardVO();
                         standard = timeStandardMapper.selectTimeStandardInfoByStaffId(staffId);
                         overTime = standard.getOverTime();
@@ -834,7 +844,7 @@ public class GasKafka {
                             //去除服务远程调用
                             System.out.println("实际计算的等级：" + contrastParameter);
                             Map<String, Object> map = levelDataMapper.selectRangUrlByLevelDataId(contrastParameter);
-                            if(null != map && !map.isEmpty()){
+                            if (null != map && !map.isEmpty()) {
                                 String url = (String) map.get("url");
 
                                 if (null != url && !"".equals(url)) {
@@ -1014,7 +1024,7 @@ public class GasKafka {
             }
         }
 
-        private void sendTempRoadName(Integer terminalId, String ip,Integer port, String tempPositionName) {
+        private void sendTempRoadName(Integer terminalId, String ip, Integer port, String tempPositionName) {
             ResponseData responseData = new ResponseData();
             RequestData requestData = new RequestData();
 
@@ -1028,13 +1038,13 @@ public class GasKafka {
                 if (charArr[j] <= 128) {
                     body[i] = 0;
                     body[i + 1] = 0;
-                    body[i + 2] = (byte) (charArr[j] &0xff);
+                    body[i + 2] = (byte) (charArr[j] & 0xff);
                 } else {
                     String s = String.valueOf(charArr[j]);
                     byte[] t_s_b = s.getBytes();
-                    body[i] = (byte)(t_s_b[0]&0xff);
-                    body[i + 1] = (byte)(t_s_b[1]&0xff);
-                    body[i + 2] = (byte)(t_s_b[2]&0xff);
+                    body[i] = (byte) (t_s_b[0] & 0xff);
+                    body[i + 1] = (byte) (t_s_b[1] & 0xff);
+                    body[i + 2] = (byte) (t_s_b[2] & 0xff);
                 }
             }
             int realLen = 34 + body.length;
@@ -1062,7 +1072,7 @@ public class GasKafka {
             responseData.setCustomMsg(requestData);
             try {
                 terminalMonitorClient.sendResponseData(responseData);
-            }catch (Exception e){
+            } catch (Exception e) {
                 System.out.println(responseData.toString());
                 e.printStackTrace();
 
@@ -1070,8 +1080,6 @@ public class GasKafka {
 
         }
     }
-
-
 
 
     @KafkaListener(groupId = "gas_kafka", id = "gas_kafka01", topicPartitions = {@TopicPartition(topic = TOPIC, partitions = {"0"})})
@@ -1121,7 +1129,6 @@ public class GasKafka {
 
         return gasLevelVO;
     }
-
 
 
     public GasWSRespVO findStaffNameByTerminalId(Integer terminalId) {

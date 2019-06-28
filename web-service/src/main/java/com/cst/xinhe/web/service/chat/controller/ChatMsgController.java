@@ -84,7 +84,6 @@ public class ChatMsgController {
         Page page = chatMsgService.findChatRecord(staffId,startPage,pageSize);
         List<HashMap<String,Object>> result = page.getResult();
         for (HashMap<String, Object> map : result) {
-
             String postMsg = (String) map.get("postMsg");
             if(null != postMsg){
                 postMsg = postMsg.replace(basePath,webBaseUrl);

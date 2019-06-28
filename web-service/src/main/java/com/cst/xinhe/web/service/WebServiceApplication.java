@@ -30,12 +30,12 @@ import java.util.List;
 @SpringBootApplication
 @RestController
 @MapperScan("com.cst.xinhe.persistence.dao")
-public class WebServiceApplication  {
+public class WebServiceApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(WebServiceApplication.class, args);
     }
-
+//
 //    @Override
 //    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
 //        System.out.println("fastjson配置读取");

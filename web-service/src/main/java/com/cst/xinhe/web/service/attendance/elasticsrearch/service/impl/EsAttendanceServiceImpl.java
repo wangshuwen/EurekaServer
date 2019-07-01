@@ -184,6 +184,9 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
      */
     public Page<EsAttendanceEntity> searchAttendanceByParams(AttendanceParamsVO attendanceParamsVO) {
 
+        Integer startCount=(attendanceParamsVO.getStartPage()-1)*attendanceParamsVO.getPageSize()+1;
+
+
         Pageable pageable = new PageRequest(attendanceParamsVO.getStartPage()-1,attendanceParamsVO.getPageSize());
         BoolQueryBuilder builder = QueryBuilders.boolQuery();
         Integer orgId = attendanceParamsVO.getOrgId();
@@ -259,6 +262,9 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
 //        Map<Integer,Map<String,Object>> res = staffService.findGroupNameByIds(list1);
 
         for (EsAttendanceEntity attendance : list) {
+            attendance.setAttendanceid(Integer.toString(startCount));
+            startCount++;
+
             Integer basestationid = attendance.getBasestationid();
             Integer ruleid = attendance.getRuleid();
             Integer staffId = attendance.getStaffid();

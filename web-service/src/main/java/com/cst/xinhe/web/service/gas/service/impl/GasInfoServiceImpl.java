@@ -42,6 +42,8 @@ public class GasInfoServiceImpl implements GasInfoService {
 
     @Override
     public Page findGasInfoByStaffName(Integer gasFlag, String staffName, Integer startPage, Integer pageSize) {
+        Integer startCount=(startPage-1)*pageSize+1;
+
 
         Page page = new Page();
         //todo es分页查询
@@ -69,6 +71,7 @@ public class GasInfoServiceImpl implements GasInfoService {
                     item.setStaffname(staff.getStaffName());
                 }*/
         for (GasPositionEntity item : content) {
+            item.setGaspositionid(Integer.toString(startCount));
             Integer id = item.getStaffid();
 //            Map<String, String > map = res.get(id);
             Staff staff = staffMapper.selectByPrimaryKey(id);

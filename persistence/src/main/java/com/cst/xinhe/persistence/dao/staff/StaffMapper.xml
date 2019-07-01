@@ -555,8 +555,11 @@
             AND  a.is_person = 2
           </if>
           <if test="isPerson != null and isPerson == 0">
-            AND   <![CDATA[  is_person <> 3   ]]>
+            AND  a.is_person = 0
           </if>
+          <!--<if test="isPerson != null and isPerson == 0">-->
+            <!--AND   <![CDATA[  is_person <> 3   ]]>-->
+          <!--</if>-->
         </where>
     </select>
 

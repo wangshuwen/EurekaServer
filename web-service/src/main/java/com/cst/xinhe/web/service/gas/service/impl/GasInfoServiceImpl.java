@@ -72,6 +72,7 @@ public class GasInfoServiceImpl implements GasInfoService {
                 }*/
         for (GasPositionEntity item : content) {
             item.setGaspositionid(Integer.toString(startCount));
+            startCount++;
             Integer id = item.getStaffid();
 //            Map<String, String > map = res.get(id);
             Staff staff = staffMapper.selectByPrimaryKey(id);

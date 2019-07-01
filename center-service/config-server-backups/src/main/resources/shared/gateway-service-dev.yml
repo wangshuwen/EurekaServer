@@ -151,8 +151,8 @@ zuul:
   prefix: /v1
   retryable: true #开启重试开关
 ribbon:
-  ReadTimeout: 120000 #请求处理的超时时间
-  ConnectTimeout: 30000 #请求连接的超时时间
+  ReadTimeout: 2000 #请求处理的超时时间
+  ConnectTimeout: 250 #请求连接的超时时间
   OkToRetryOnAllOperations: true # 对所有的操作请求都进行重试，如果是get则可以，如果是post,put等操作没有实现幂等的情况下是很危险的，所以设置为false
   SocketTimeout: 3500
   MaxAutoRetries: 1 #最大重试次数，当Eureka中可以找到服务，但是服务连不上时将会重试

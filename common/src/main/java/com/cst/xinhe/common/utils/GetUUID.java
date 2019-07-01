@@ -20,8 +20,10 @@ public class GetUUID {
      **/
     public synchronized static String getUuidReplace() {
         UUID uuidString = UUID.randomUUID();
-        return uuidString.toString().replace("-", "");
+        return uuidString.toString().replaceAll("-", "");
     }
+
+
 
     /**
      * @param []
@@ -36,6 +38,6 @@ public class GetUUID {
     }
 
     public static void main(String[] args) {
-        System.out.println(GetUUID.getUuid());
+        System.out.println(GetUUID.getUuidReplace());
     }
 }

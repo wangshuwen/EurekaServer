@@ -6,3 +6,6 @@ spring:
       uri: http://127.0.0.1:8769
       enabled: true
       profile: dev
+eureka:
+  instance:
+    instance-id: ${spring.application.name}

@@ -5,6 +5,7 @@ eureka:
     health-check-url: http://127.0.0.1:8080/actuator/health
     status-page-url: http://127.0.0.1:8080/actuator/info
     home-page-url: http://127.0.0.1:8080/
+    instance-id: ${spring.application.name}
   client :
     serviceUrl:
       defaultZone: http://127.0.0.1:8761/eureka/,http://127.0.0.1:8762/eureka/

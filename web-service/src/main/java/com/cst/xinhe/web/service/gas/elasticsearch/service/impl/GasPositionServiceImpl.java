@@ -308,12 +308,13 @@ public class GasPositionServiceImpl implements GasPositionService {
 
     @Override
     public PageInfo<Map<String, Object>> getEMsgList(Integer pageSize, Integer startPage, String staffName, Integer staffId,Integer type) {
-        com.github.pagehelper.Page<Map<String, Object>> page = PageHelper.startPage(startPage,pageSize);
+
         Map<String, Object> params = new HashMap<>();
         params.put("staffName", staffName);
         params.put("staffId", staffId);
         params.put("type", type);
 //        List<Map<String, Object>> mapList = eCallMapper.selectByParams(params);
+        com.github.pagehelper.Page<Map<String, Object>> page = PageHelper.startPage(startPage,pageSize);
         List<Map<String, Object>> mapList = exceptionMessageMapper.selectByParams(params);
         for (Map<String, Object> item : page.getResult()){
             Integer groupId = (Integer) item.get("group_id");

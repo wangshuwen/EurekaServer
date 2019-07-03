@@ -25,15 +25,14 @@ public class KafkaSenderServiceImpl implements KafkaSenderService {
 
     @Override
     public void sendData(String topic, RequestData requestData) {
-        Integer partition = Math.abs(requestData.getTerminalPort().hashCode()) % partitions;
+        Integer partition = Math.abs(requestData.getTerminalId().hashCode()) % partitions;
         kafkaTemplate.send(topic,partition,partition+ "", JSON.toJSONString(requestData));
     }
 
     @Override
-    public void sendByPort(String topic, String obj, Integer port) {
-        Integer partition = Math.abs(port.hashCode()) % partitions;
+    public void sendByTerminalId(String topic, String obj, Integer terminalId) {
+        Integer partition = Math.abs(terminalId.hashCode()) % partitions;
         kafkaTemplate.send(topic,partition,partition+ "",obj);
-//        logger.info("kafka_producer send msg: {}",obj);
     }
 
     @Override
@@ -43,6 +42,6 @@ public class KafkaSenderServiceImpl implements KafkaSenderService {
 
     @Override
     public void sendChatMsgData(String topic, String chatMsg) {
-        kafkaTemplate.send(topic,partitions,partitions+ "",chatMsg);
+        kafkaTemplate.send(topic,0,partitions+ "",chatMsg);
     }
 }

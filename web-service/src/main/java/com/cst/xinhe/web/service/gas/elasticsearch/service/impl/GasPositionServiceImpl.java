@@ -111,11 +111,11 @@ public class GasPositionServiceImpl implements GasPositionService {
 
         BoolQueryBuilder builder = QueryBuilders.boolQuery();
        // builder.filter(QueryBuilders.termQuery("gasflag",1));
-        if(staffName!=null&&!"".equals(staffName)){
+        if(null != staffName &&!"".equals(staffName)){
             StaffExample example = new StaffExample();
             example.createCriteria().andStaffNameLike("%"+staffName+"%");
             List<Staff> staffList = staffMapper.selectByExample(example);
-            if(staffList!=null&&staffList.size()>0){
+            if(null != staffList &&staffList.size()>0){
                 for (Staff staff : staffList) {
                     builder.should(QueryBuilders.termQuery("staffid",staff.getStaffId()));
                 }
@@ -123,8 +123,8 @@ public class GasPositionServiceImpl implements GasPositionService {
                 builder.should(QueryBuilders.termQuery("staffid",0));
             }
         }
-        if(gasFlag==1){
-            builder.mustNot(QueryBuilders.termQuery("gasflag",0));
+        if(null != gasFlag){
+            builder.must(QueryBuilders.termQuery("gasflag",gasFlag));
         }
 
 

@@ -29,12 +29,12 @@ public class KafkaSenderController {
     }
 
     @PostMapping("kafka-sender-service/sendSelfCheckResult")
-    public void sendSelfCheckResult(@RequestParam String s,@RequestBody String toJSONString, @RequestParam Integer terminalPort){
-        kafkaSenderService.sendByPort(s,toJSONString,terminalPort);
+    public void sendSelfCheckResult(@RequestParam String s,@RequestBody String toJSONString, @RequestParam("terminalId") Integer terminalId){
+        kafkaSenderService.sendByTerminalId(s,toJSONString,terminalId);
     }
 
     @PostMapping("kafka-sender-service/send")
-    public void send(@RequestParam String topic, @RequestBody String obj,@RequestParam Integer port){
-        kafkaSenderService.sendByPort(topic,obj,port);
+    public void send(@RequestParam String topic, @RequestBody String obj,@RequestParam("terminalId") Integer terminalId){
+        kafkaSenderService.sendByTerminalId(topic,obj,terminalId);
     }
 }

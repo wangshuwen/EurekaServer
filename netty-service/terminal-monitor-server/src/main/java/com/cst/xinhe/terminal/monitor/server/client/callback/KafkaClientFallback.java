@@ -29,12 +29,12 @@ public class KafkaClientFallback implements KafkaClient {
     }
 
     @Override
-    public void sendSelfCheckResult(String s, String toJSONString, Integer terminalPort) {
+    public void sendSelfCheckResult(String s, String toJSONString, Integer terminalId) {
         logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
     }
 
     @Override
-    public void send(String topic, String obj, Integer port) {
+    public void send(String topic, String obj, Integer terminalId) {
         logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
     }
 }

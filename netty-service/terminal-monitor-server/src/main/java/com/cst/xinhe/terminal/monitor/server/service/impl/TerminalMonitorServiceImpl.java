@@ -183,7 +183,7 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
 
 //        kafkaSender.send(malfunction,"malfunction.tut");
     //    producerService.send("malfunction.tut", JSON.toJSONString(malfunction),customMsg.getTerminalPort());
-        kafkaClient.sendSelfCheckResult("malfunction.tut",JSON.toJSONString(malfunction),customMsg.getTerminalPort());
+        kafkaClient.sendSelfCheckResult("malfunction.tut",JSON.toJSONString(malfunction),customMsg.getTerminalId());
     }
 
     @Override
@@ -199,7 +199,7 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
     @Override
     public void sendUpLoadIp(RequestData customMsg) {
 
-        kafkaClient.send("updateIp.tut",JSON.toJSONString(customMsg),customMsg.getTerminalPort());
+        kafkaClient.send("updateIp.tut",JSON.toJSONString(customMsg),customMsg.getTerminalId());
     }
 
     @Override
@@ -209,7 +209,7 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
 
     @Override
     public void sendUpdateVoiceStatus(RequestData customMsg) {
-        kafkaClient.send("updateVoiceReadStatus.tut",JSON.toJSONString(customMsg),customMsg.getTerminalPort());
+        kafkaClient.send("updateVoiceReadStatus.tut",JSON.toJSONString(customMsg),customMsg.getTerminalId());
     }
 
     @Override
@@ -221,7 +221,7 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
         lackElectric.setLackType(1);
         lackElectric.setUploadId(customMsg.getTerminalId());
         lackElectric.setUploadTime(new Date());
-        kafkaClient.send("powerStatus.tut",JSON.toJSONString(lackElectric),customMsg.getTerminalPort());
+        kafkaClient.send("powerStatus.tut",JSON.toJSONString(lackElectric),customMsg.getTerminalId());
     }
 
     @Override
@@ -350,7 +350,7 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
                 voiceDto.setTerminalIp1(customMsg.getTerminalIp1());
                 voiceDto.setTerminalIp2(customMsg.getTerminalIp2());
                 voiceDto.setTerminalIp(customMsg.getTerminalIp());
-                kafkaClient.send("voiceSender.tut", JSON.toJSONString(voiceDto), customMsg.getTerminalPort());
+                kafkaClient.send("voiceSender.tut", JSON.toJSONString(voiceDto), customMsg.getTerminalId());
                 temporarySendListMapper.updateTemporarySendListIsSend(temporarySendList.getTemporarySendListId());
             }
         }

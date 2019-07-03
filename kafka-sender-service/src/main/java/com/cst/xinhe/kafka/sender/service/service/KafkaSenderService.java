@@ -6,7 +6,7 @@ public interface KafkaSenderService {
 
     void sendData(String topic, RequestData requestData);
 
-    void sendByPort(String topic, String obj,Integer port);
+    void sendByTerminalId(String topic, String obj,Integer port);
 
     void sendByCount(String topic,String data,int count );
 

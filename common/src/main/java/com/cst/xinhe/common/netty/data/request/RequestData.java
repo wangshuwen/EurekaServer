@@ -32,7 +32,7 @@ public class RequestData implements Cloneable {
     //信息标志  0xAB 表示心跳包    0xBC 表示超时包  0xCD 业务信息包
     //  private byte flag;
 
-    private int terminalId; //终端ID
+    private Integer terminalId; //终端ID
 
     private int stationId;  //基站ID
 
@@ -73,7 +73,7 @@ public class RequestData implements Cloneable {
     public RequestData() {
     }
 
-    public RequestData(int type, int terminalId, int stationId, int terminalIp1, int terminalIp2, int stationIp1, int stationIp2, int terminalPort, int stationPort, int length, int cmd, int sequenceId, Date time, byte result, byte nodeCount, int ndName, byte[] body) {
+    public RequestData(int type, Integer terminalId, int stationId, int terminalIp1, int terminalIp2, int stationIp1, int stationIp2, int terminalPort, int stationPort, int length, int cmd, int sequenceId, Date time, byte result, byte nodeCount, int ndName, byte[] body) {
         this.type = type;
         this.terminalId = terminalId;
         this.stationId = stationId;
@@ -105,11 +105,11 @@ public class RequestData implements Cloneable {
         this.type = type;
     }
 
-    public int getTerminalId() {
+    public Integer getTerminalId() {
         return terminalId;
     }
 
-    public void setTerminalId(int terminalId) {
+    public void setTerminalId(Integer terminalId) {
         this.terminalId = terminalId;
     }
 

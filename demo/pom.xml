@@ -45,6 +45,7 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!--短信发送开始-->
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
@@ -70,6 +71,7 @@
 			<artifactId>jetty-util</artifactId>
 			<version>9.3.7.v20160115</version>
 		</dependency>
+		<!--短信发送结束-->
 
 	</dependencies>
 

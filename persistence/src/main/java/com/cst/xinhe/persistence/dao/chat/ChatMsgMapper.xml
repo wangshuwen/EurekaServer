@@ -491,7 +491,7 @@
         left join staff s
         on s.staff_id=(select staff_id  from staff_terminal t where  t.terminal_id=c.terminal_id)
         where (post_user_id=#{staffId} or receice_user_id=#{staffId}) and is_del=0 and c.terminal_id is not  null
-        order by post_time desc
+        order by post_time asc
     </select>
 
     <update id="deleteChatRecord"  parameterType="java.lang.Integer"   >

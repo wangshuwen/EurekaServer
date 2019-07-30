@@ -156,6 +156,7 @@ public class StationServerHandler extends ChannelInboundHandlerAdapter {
         sb.append(port);
         String str = sb.toString();
         log.info("基站[" + str + "] 连接成功");
+        log.info("channelMap："+str);
         ChannelMap.addChannel(str, ctx.channel());
         log.info("基站[" + str + "] 加入session");
         log.info("当前连接基站数量" + ChannelMap.getChannelNum());

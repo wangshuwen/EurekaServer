@@ -7,9 +7,11 @@ import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
 import com.cst.xinhe.common.utils.GetUUID;
 import com.cst.xinhe.common.ws.WebSocketData;
+import com.cst.xinhe.persistence.dao.base_station.BaseStationMapper;
 import com.cst.xinhe.persistence.dao.base_station.OfflineStationMapper;
 import com.cst.xinhe.persistence.dao.mac_station.MacStationMapper;
 import com.cst.xinhe.persistence.dao.terminal.TerminalUpdateIpMapper;
+import com.cst.xinhe.persistence.model.base_station.BaseStation;
 import com.cst.xinhe.persistence.model.base_station.OfflineStationExample;
 import com.cst.xinhe.persistence.model.mac_station.MacStation;
 import com.cst.xinhe.persistence.model.mac_station.MacStationExample;
@@ -17,6 +19,7 @@ import com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp;
 import com.cst.xinhe.station.monitor.server.client.WsPushServiceClient;
 import com.cst.xinhe.station.monitor.server.request.SingletonStationClient;
 import com.cst.xinhe.station.monitor.server.service.StationMonitorServerService;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -42,6 +45,9 @@ public class StationMonitorServerServiceImpl implements StationMonitorServerServ
 
     @Resource
     WsPushServiceClient wsPushServiceClient;
+
+    @Resource
+    BaseStationMapper baseStationMapper;
 
     private Map<String, Object> map;
 
@@ -135,6 +141,14 @@ public class StationMonitorServerServiceImpl implements StationMonitorServerServ
         terminalUpdateIp.setUpdateTime(new Date());
         terminalUpdateIp.setStationPort(stationPort);
         terminalUpdateIp.setTerminalPort(terminalPort);
+
+
+        //获取基站ip更新进基站表
+        BaseStation baseStation = new BaseStation();
+        baseStation.setBaseStationNum(stationId);
+        baseStation.setBaseStationIp(stationIp);
+        baseStationMapper.updateByStationNumSelective(baseStation);
+
 
 
 

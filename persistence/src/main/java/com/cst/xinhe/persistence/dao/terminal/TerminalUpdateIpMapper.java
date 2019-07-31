@@ -27,4 +27,6 @@ public interface TerminalUpdateIpMapper {
 
     //批量插入更新IP
     int insertUpdateIpTerminals(@Param("list") List<StaffTerminal> staffTerminals);
+
+    Integer findStationIdByIpAndPort(@Param("stationIp") String stationIp,@Param("stationPort") Integer stationPort);
 }

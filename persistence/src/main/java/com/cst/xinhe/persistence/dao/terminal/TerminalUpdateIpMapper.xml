@@ -400,6 +400,12 @@
         where terminal_ip = #{terminalIp} and terminal_port=#{terminalPort}
     </select>
 
+    <select id="findStationIdByIpAndPort" resultType="java.lang.Integer">
+        select station_id
+        from station_ip_port
+        where station_ip = #{stationIp} and station_port=#{stationPort}
+    </select>
+
 
 
 <!--<select id="selectStationIpByStationId" resultType="java.util.Map" parameterType="java.lang.Integer">

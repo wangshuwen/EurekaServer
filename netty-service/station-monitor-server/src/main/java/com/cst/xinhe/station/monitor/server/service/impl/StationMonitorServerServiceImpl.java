@@ -66,8 +66,6 @@ public class StationMonitorServerServiceImpl implements StationMonitorServerServ
         List<MacStation> list = new ArrayList<>();
         StringBuffer mac_str = new StringBuffer();
       if(len>0){
-          System.out.println("mac地址数量"+len);
-          System.out.println("body的长度"+body.length);
           for (int i = 1 ; i <= len * 6 ; i++){
 
               Integer tt = (body[i] & 0xff);
@@ -128,9 +126,6 @@ public class StationMonitorServerServiceImpl implements StationMonitorServerServ
         Integer terminalPort = reqMsg.getTerminalPort();
 //        Integer stationPort = jsonObject.getInteger("stationPort");
         Integer stationPort = reqMsg.getStationPort();
-        System.out.println("-----------更新ip基站端口开始-----------");
-        System.out.println(stationPort);
-        System.out.println("----------更新ip基站端口结束----------------");
 
         TerminalUpdateIp terminalUpdateIp = new TerminalUpdateIp();
         terminalUpdateIp.setStationId(stationId);
@@ -140,6 +135,7 @@ public class StationMonitorServerServiceImpl implements StationMonitorServerServ
         terminalUpdateIp.setUpdateTime(new Date());
         terminalUpdateIp.setStationPort(stationPort);
         terminalUpdateIp.setTerminalPort(terminalPort);
+
 
 
         /**

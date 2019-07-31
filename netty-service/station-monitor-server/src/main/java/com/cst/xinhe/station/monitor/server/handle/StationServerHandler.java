@@ -3,6 +3,9 @@ package com.cst.xinhe.station.monitor.server.handle;
 import com.cst.xinhe.common.constant.ConstantValue;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
+import com.cst.xinhe.persistence.dao.base_station.OfflineStationMapper;
+import com.cst.xinhe.persistence.dao.terminal.TerminalUpdateIpMapper;
+import com.cst.xinhe.persistence.model.base_station.OfflineStation;
 import com.cst.xinhe.station.monitor.server.channel.ChannelMap;
 import com.cst.xinhe.station.monitor.server.client.KafkaClient;
 import com.cst.xinhe.station.monitor.server.context.SpringContextUtil;
@@ -18,10 +21,10 @@ import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.InetSocketAddress;
+import java.util.Date;
 
 
 /**
@@ -42,7 +45,8 @@ public class StationServerHandler extends ChannelInboundHandlerAdapter {
 //    @Autowired
     private KafkaClient kafkaClient;
 
-
+    private OfflineStationMapper offlineStationMapper;
+    private TerminalUpdateIpMapper  terminalUpdateIpMapper;
 
 //    @Autowired
     private StationMonitorServerService stationMonitorServerService;
@@ -50,6 +54,10 @@ public class StationServerHandler extends ChannelInboundHandlerAdapter {
     public StationServerHandler() {
         this.kafkaClient = SpringContextUtil.getBean(KafkaClient.class);
         this.stationMonitorServerService = SpringContextUtil.getBean(StationMonitorServerService.class);
+
+        this.offlineStationMapper=SpringContextUtil.getBean(OfflineStationMapper.class);
+        this.terminalUpdateIpMapper=SpringContextUtil.getBean(TerminalUpdateIpMapper.class);
+
     }
 //    @PostConstruct
 //    public void init(){
@@ -169,9 +177,6 @@ public class StationServerHandler extends ChannelInboundHandlerAdapter {
         sb.append(port);
         String str = sb.toString();
         log.info("基站[" + str + "] 连接成功");
-        log.info("-----------channelMap里面基站端口开始------------------");
-        System.out.println(str);
-        log.info("-----------channelMap里面基站端口结束------------------");
         ChannelMap.addChannel(str, ctx.channel());
         log.info("基站[" + str + "] 加入session");
         log.info("当前连接基站数量" + ChannelMap.getChannelNum());
@@ -195,10 +200,30 @@ public class StationServerHandler extends ChannelInboundHandlerAdapter {
         sb.append(port);
         String str = sb.toString();
         log.info("基站[" + str + "] 已断开连接");
-        //TODO 基站的掉线处理      去掉注释
-        //ProcessOfflineStationCount.getSingletonProcessOffline().process(clientIP, port);
+
+
+        //基站的掉线处理      去掉注释
+        String[] split = clientIP.split("\\.");
+        for (String s : split) {
+            System.out.println(s);
+        }
+        
+        if(split.length==4){
+            clientIP=split[2]+"."+split[3];
+        }
+        Integer stationId = terminalUpdateIpMapper.findStationIdByIpAndPort(clientIP, port);
+
+        OfflineStation offlineStation = new OfflineStation();
+        offlineStation.setOfflineStationId(stationId);
+        offlineStation.setOfflineTime(new Date());
+        offlineStationMapper.insertSelective(offlineStation);
+
+        // ProcessOfflineStationCount.getSingletonProcessOffline().process(clientIP, port);
         ChannelMap.removeChannelByName(str);
         log.info("基站[" + str + "] 被移出session");
+
+
+
 
 //        删除该基站的更新IP
 //        String[] split = clientIP.split("\\.");

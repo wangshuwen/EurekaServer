@@ -115,7 +115,7 @@ public class BaseStationController extends BaseController {
             zoneId =  Integer.parseInt((String)t_zoneId);
         }
             List<Integer> zoneIds = partitionService.getSonIdsById(zoneId);
-            params.put("zoneIds", zoneIds);
+            //params.put("zoneIds", zoneIds);
 
         String startTime = (String) params.get("startTime");
         String endTime = (String) params.get("endTime");

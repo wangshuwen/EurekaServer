@@ -65,47 +65,52 @@ public class StationMonitorServerServiceImpl implements StationMonitorServerServ
         int f = 0;  //判断计数
         List<MacStation> list = new ArrayList<>();
         StringBuffer mac_str = new StringBuffer();
-        for (int i = 1 ; i <= len * 6 ; i++){
+      if(len>0){
+          System.out.println("mac地址数量"+len);
+          System.out.println("body的长度"+body.length);
+          for (int i = 1 ; i <= len * 6 ; i++){
 
-            Integer tt = (body[i] & 0xff);
+              Integer tt = (body[i] & 0xff);
 
-            String s = Integer.toHexString(tt);
-            if (s.length() < 2){
-                s = "0" + s;
-            }
+              String s = Integer.toHexString(tt);
+              if (s.length() < 2){
+                  s = "0" + s;
+              }
 
-            mac_str.append(s.toUpperCase());
-            if (f < 5) {
-                mac_str.append("-");
-            }
-            f++;
-            if (f > 5){
-                MacStation macStation = new MacStation();
-                macStation.setMac(mac_str.toString());
-                macStation.setMacStationId(GetUUID.getUuidReplace());
-                macStation.setStationId(reqMsg.getStationId());
-                list.add(macStation);
-                mac_str = new StringBuffer();
-                f = 0;
-            }
-        }
-        MacStationExample macStationExample = new MacStationExample();
-        MacStationExample.Criteria criteria = macStationExample.createCriteria();
-        criteria.andStationIdEqualTo(reqMsg.getStationId());
+              mac_str.append(s.toUpperCase());
+              if (f < 5) {
+                  mac_str.append("-");
+              }
+              f++;
+              if (f > 5){
+                  MacStation macStation = new MacStation();
+                  macStation.setMac(mac_str.toString());
+                  macStation.setMacStationId(GetUUID.getUuidReplace());
+                  macStation.setStationId(reqMsg.getStationId());
+                  list.add(macStation);
+                  mac_str = new StringBuffer();
+                  f = 0;
+              }
+          }
+          MacStationExample macStationExample = new MacStationExample();
+          MacStationExample.Criteria criteria = macStationExample.createCriteria();
+          criteria.andStationIdEqualTo(reqMsg.getStationId());
 
-        macStationMapper.deleteByExample(macStationExample);
+          macStationMapper.deleteByExample(macStationExample);
 
-        for (MacStation item: list) {
-            String mac = item.getMac();
-            boolean flag = macStationMapper.selectMacExistByMac(mac);
+          for (MacStation item: list) {
+              String mac = item.getMac();
+              boolean flag = macStationMapper.selectMacExistByMac(mac);
 
-            if (flag) {
-                macStationMapper.deleteByMac(mac);
-            }
+              if (flag) {
+                  macStationMapper.deleteByMac(mac);
+              }
 
-            macStationMapper.insert(item);
-        }
+              macStationMapper.insert(item);
+          }
 
+
+      }
     }
 
     @Override
@@ -123,6 +128,9 @@ public class StationMonitorServerServiceImpl implements StationMonitorServerServ
         Integer terminalPort = reqMsg.getTerminalPort();
 //        Integer stationPort = jsonObject.getInteger("stationPort");
         Integer stationPort = reqMsg.getStationPort();
+        System.out.println("-----------更新ip基站端口开始-----------");
+        System.out.println(stationPort);
+        System.out.println("----------更新ip基站端口结束----------------");
 
         TerminalUpdateIp terminalUpdateIp = new TerminalUpdateIp();
         terminalUpdateIp.setStationId(stationId);

@@ -47,6 +47,7 @@ public class SingletonStationClient {
         StringBuffer stringBuffer = new StringBuffer(ip_prefix);
         stringBuffer.append(t_ip).append(":").append(responseData.getCustomMsg().getStationPort());
         String ip = stringBuffer.toString();
+        System.out.println("ChannelMap:"+ip);
         Channel channel = ChannelMap.getChannelByName(ip);
         channel.writeAndFlush(responseData);
 

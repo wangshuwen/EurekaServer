@@ -82,15 +82,19 @@ public class BaseStationServiceImpl implements BaseStationService {
         Map<String, Object> map = baseStationMapper.selectZoneNameAreaNameByStationId(station.getBaseStationId());
 //        String zoneName = (String) map.get("zone_name");
 //        String areaName = (String) map.get("area_name");
-        Integer zoneId = (Integer)map.get("zone_id");
-        String zoneNames = partitionService.geParentNamesById(zoneId);
-        zoneNames=zoneNames.replaceAll("/","#");
-        StringBuffer sb = new StringBuffer();
-        DecimalFormat df = new DecimalFormat("0.00");
-        sb.append(zoneNames).append("#")
-                .append("(").append(df.format(station.getPositionX())).append(",")
-                .append(df.format(station.getPositionY())).append(")");
-        station.setBaseStationName(sb.toString());
+
+        if(map!=null&&map.size()>0){
+            Integer zoneId = (Integer)map.get("zone_id");
+            String zoneNames = partitionService.geParentNamesById(zoneId);
+            zoneNames=zoneNames.replaceAll("/","#");
+            StringBuffer sb = new StringBuffer();
+            DecimalFormat df = new DecimalFormat("0.00");
+            sb.append(zoneNames).append("#")
+                    .append("(").append(df.format(station.getPositionX())).append(",")
+                    .append(df.format(station.getPositionY())).append(")");
+            station.setBaseStationName(sb.toString());
+        }
+
         return baseStationMapper.updateByPrimaryKeySelective(station);
     }
 

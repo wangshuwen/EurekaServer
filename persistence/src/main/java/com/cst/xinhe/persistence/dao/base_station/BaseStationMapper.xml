@@ -723,9 +723,9 @@
     </select>
 
     <select id="selectZoneNameAreaNameByStationId" parameterType="java.lang.Integer" resultType="java.util.Map" useCache="false">
-        SELECT zone_name,area_name,base_station.zone_id
-        FROM base_station LEFT JOIN area ON area.area_id = base_station.area_id
-        LEFT JOIN zone ON zone.zone_id = base_station.zone_id
+        SELECT partition_name,base_station.zone_id
+        FROM base_station
+        LEFT JOIN t_partition t ON t.id = base_station.zone_id
         WHERE base_station_id = #{baseStationId}
     </select>
     <select id="findBaseStationByZoneIds" resultMap="BaseResultMap" useCache="true" parameterType="java.util.List">

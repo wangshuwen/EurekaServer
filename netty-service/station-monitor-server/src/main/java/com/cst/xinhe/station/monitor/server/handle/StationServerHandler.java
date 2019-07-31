@@ -73,7 +73,7 @@ public class StationServerHandler extends ChannelInboundHandlerAdapter {
                     case ConstantValue.MSG_HEADER_COMMAND_ID_REQUEST:
                         log.info("采集数据上报");
                         switch (ndName) {
-                            case ConstantValue.MSG_BODY_NODE_NAME_SELF_CHECK_RESULT:
+                            /*case ConstantValue.MSG_BODY_NODE_NAME_SELF_CHECK_RESULT:
 //                                upLoadService.sendSelfCheckResult(reqMsg);
                                 kafkaClient.sendData("selfCheckResultOfStation",reqMsg);
                                 reqMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);
@@ -91,8 +91,11 @@ public class StationServerHandler extends ChannelInboundHandlerAdapter {
                                 kafkaClient.sendData("hardwareVersionOfStation",reqMsg);
 //                                upLoadService.sendHandWareVersion(reqMsg);
                                 log.info("硬件版本号");
-                                break;
+                                break;*/
                             case ConstantValue.MSG_BODY_NODE_NAME_UPDATE_IP:
+                                System.out.println("-------------1------------------------");
+                                System.out.println("-------------1------------------------");
+                                System.out.println("-------------1------------------------");
                                 log.info("更新基站的IP");
 //                                upLoadService.sendStationUpLoadIp(reqMsg);
 //                                kafkaClient.sendData("updateStationIp",reqMsg);
@@ -100,10 +103,16 @@ public class StationServerHandler extends ChannelInboundHandlerAdapter {
                                 reqMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);
                                 reqMsg.setResult(ConstantValue.MSG_BODY_RESULT_SUCCESS);
                                 resp.setCustomMsg(reqMsg);
+                                System.out.println("---------基站端口开始-------------");
+                                System.out.println(resp.getCustomMsg().getStationPort());
+                                System.out.println("----------基站端口结束------------");
                                 SingletonStationClient.getSingletonStationClient().sendCmd(resp);
                                 break;
                             case ConstantValue.MSG_BODY_NODE_NAME_MAC_STATION:
                                 log.info("基站WiFi探针搜索到基站");
+                                System.out.println("-----------------2-------------------------");
+                                System.out.println("-----------------2-------------------------");
+                                System.out.println("-----------------2-------------------------");
 //                                upLoadService.sendUpLoadMacStation(reqMsg);
 //                                kafkaClient.sendData("wifiFork",reqMsg);
                                 stationMonitorServerService.wifiForkProcess(reqMsg);
@@ -113,6 +122,7 @@ public class StationServerHandler extends ChannelInboundHandlerAdapter {
                                 SingletonStationClient.getSingletonStationClient().sendCmd(resp);
                                 break;
                             default:
+                                System.out.println("--------------------4-------------------------------");
                                 log.error("未知命令包");
                                 reqMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);
                                 reqMsg.setResult(ConstantValue.MSG_BODY_RESULT_ERROR);
@@ -122,6 +132,9 @@ public class StationServerHandler extends ChannelInboundHandlerAdapter {
                         }
                         break;
                     case ConstantValue.MSG_HEADER_COMMAND_ID_HEARTBEAT:
+                        System.out.println("-------------------------3--------------------");
+                        System.out.println("-------------------------3--------------------");
+                        System.out.println("-------------------------3--------------------");
                         log.info("心跳数据");
                         reqMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);
                         reqMsg.setLength(34);
@@ -156,7 +169,9 @@ public class StationServerHandler extends ChannelInboundHandlerAdapter {
         sb.append(port);
         String str = sb.toString();
         log.info("基站[" + str + "] 连接成功");
-        log.info("channelMap："+str);
+        log.info("-----------channelMap里面基站端口开始------------------");
+        System.out.println(str);
+        log.info("-----------channelMap里面基站端口结束------------------");
         ChannelMap.addChannel(str, ctx.channel());
         log.info("基站[" + str + "] 加入session");
         log.info("当前连接基站数量" + ChannelMap.getChannelNum());

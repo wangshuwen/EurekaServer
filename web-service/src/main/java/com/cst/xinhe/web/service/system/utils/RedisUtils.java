@@ -61,6 +61,17 @@ public class RedisUtils {
     }
 
     /**
+     * 更新缓存
+     */
+    public void updateExpireTime(final String key, Long value) {
+        try {
+            redisTemplate.expire(key,value,TimeUnit.HOURS);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * 删除缓存
      */
     public boolean delete(final String key) {

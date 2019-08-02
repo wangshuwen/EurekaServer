@@ -171,8 +171,7 @@ public class BaseStationController extends BaseController {
     @PostMapping("add")
     @ApiOperation(value = "录入基站信息", notes = ".0")
     public String addBaseStation(@RequestBody BaseStation station) {
-
-
+        station.setBaseStationName("基站"+station.getBaseStationNum());
 
         station.setType(0);
         station.setCreateTime(new Date());
@@ -187,7 +186,6 @@ public class BaseStationController extends BaseController {
                 stationIpPort.setStationId(baseStationNum);
                 stationIpPortMapper.insert(stationIpPort);
             }
-
 
             flag = baseStationService.checkStationExists(baseStationNum);
             if (!flag) {

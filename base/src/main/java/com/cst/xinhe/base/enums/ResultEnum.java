@@ -62,6 +62,12 @@ public enum ResultEnum {
     GET_SEQUENCE_ID_FAIL(151, "实时查询终端剩余电量失败！"),
     LICENSE_ERROR(152, "您的证书无效，请核查服务器是否取得授权或重新申请证书！"),
     SOME_PARAMETERS_ARE_NULL(153, "部分参数为空！"),
+    ACCOUNT_IS_EXISTS(154, "账号已存在，无需重复注册！"),
+    ACCOUNT_HAS_NOT_AUTH(155, "该账号无权限注册！"),
+    ACCOUNT_OR_PWD_IS_ERROR(156, "账号或密码错误！"),
+    ACCOUNT_IS_NOT_EXISTS(157, "账号不存在！"),
+    ID_CARD_INFO_ERROR(158, "身份证信息错误！"),
+    THIS_ACCOUNT_IS_LOGIN(159, "该账号已经登录，请勿重复登录！"),
     ;
 
     private Integer code;

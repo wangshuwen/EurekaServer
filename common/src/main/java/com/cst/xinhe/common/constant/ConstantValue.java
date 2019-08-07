@@ -45,6 +45,7 @@ public class ConstantValue {
     public static final int MSG_BODY_NODE_NAME_POSITION_SHOW = 0x3006;// 设置0x3006：临时位置显示
     public static final int MSG_BODY_NODE_NAME_PERSON_INFO_SEARCH = 0x3007;// 设置0x3007：个人信息查询
     public static final int MSG_BODY_NODE_NAME_E_CALL = 0x3008;// 设置0x3008：紧急呼叫
+    public static final int MSG_BODY_NODE_NAME_MAC_STATION_OFFLINE = 0x3009;// 设置0x3009：基站掉线后发送wifi探针检测周围终端数量
 
     //===============硬件故障代码===============
     public static final int MSG_BODY_HANDWARE_ERROR_WIFI = 0x0100; //  , "WIFI故障"),

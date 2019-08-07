@@ -118,9 +118,6 @@ public class StationServerHandler extends ChannelInboundHandlerAdapter {
                                 break;
                             case ConstantValue.MSG_BODY_NODE_NAME_MAC_STATION:
                                 log.info("基站WiFi探针搜索到基站");
-                                System.out.println("-----------------2-------------------------");
-                                System.out.println("-----------------2-------------------------");
-                                System.out.println("-----------------2-------------------------");
 //                                upLoadService.sendUpLoadMacStation(reqMsg);
 //                                kafkaClient.sendData("wifiFork",reqMsg);
                                 stationMonitorServerService.wifiForkProcess(reqMsg);
@@ -129,6 +126,18 @@ public class StationServerHandler extends ChannelInboundHandlerAdapter {
                                 resp.setCustomMsg(reqMsg);
                                 SingletonStationClient.getSingletonStationClient().sendCmd(resp);
                                 break;
+                            case ConstantValue.MSG_BODY_NODE_NAME_MAC_STATION_OFFLINE:
+                                log.info("基站掉线后------重连----发送WiFi探针搜索到终端");
+
+//                               upLoadService.sendUpLoadMacStation(reqMsg);
+//                                kafkaClient.sendData("wifiFork",reqMsg);
+                                stationMonitorServerService.wifiForkProcess(reqMsg);
+                                reqMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);
+                                reqMsg.setResult(ConstantValue.MSG_BODY_RESULT_SUCCESS);
+                                resp.setCustomMsg(reqMsg);
+                                SingletonStationClient.getSingletonStationClient().sendCmd(resp);
+                                break;
+
                             default:
                                 System.out.println("--------------------4-------------------------------");
                                 log.error("未知命令包");
@@ -148,6 +157,9 @@ public class StationServerHandler extends ChannelInboundHandlerAdapter {
                         reqMsg.setLength(34);
                         reqMsg.setResult((byte) 0x55);
                         reqMsg.setNodeCount((byte) 0x00);
+                        System.out.println("--------------心跳回复开始-----------");
+                        System.out.println(reqMsg.toString());
+                        System.out.println("--------------心跳回复结束-----------");
                         resp.setCustomMsg(reqMsg);
                         SingletonStationClient.getSingletonStationClient().sendCmd(resp);
                         break;

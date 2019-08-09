@@ -51,6 +51,8 @@ public class StationServerHandler extends ChannelInboundHandlerAdapter {
 //    @Autowired
     private StationMonitorServerService stationMonitorServerService;
 
+    static int num;
+
     public StationServerHandler() {
         this.kafkaClient = SpringContextUtil.getBean(KafkaClient.class);
         this.stationMonitorServerService = SpringContextUtil.getBean(StationMonitorServerService.class);
@@ -129,6 +131,8 @@ public class StationServerHandler extends ChannelInboundHandlerAdapter {
                             case ConstantValue.MSG_BODY_NODE_NAME_MAC_STATION_OFFLINE:
                                 log.info("基站掉线后------重连----发送WiFi探针搜索到终端");
 
+                                num++;
+                                System.out.println("----------num:"+num+"----------------");
 //                               upLoadService.sendUpLoadMacStation(reqMsg);
 //                                kafkaClient.sendData("wifiFork",reqMsg);
                                 stationMonitorServerService.wifiForkProcess(reqMsg);

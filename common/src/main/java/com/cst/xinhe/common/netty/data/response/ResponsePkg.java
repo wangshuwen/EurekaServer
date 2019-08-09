@@ -233,7 +233,7 @@ public class ResponsePkg {
 
 //        int len = msg.getLength();  //返回终端 TODO 语音下发  ，， 返回加部门和分组
         //返回封装 返回心跳结果
-        if (msg.getNdName() == ConstantValue.MSG_BODY_NODE_NAME_HEARTBEAT) {
+       /* if (msg.getNdName() == ConstantValue.MSG_BODY_NODE_NAME_HEARTBEAT) {
             byte[] resp = new byte[30];
             byte[] type = NettyDataUtils.intToByteArray(msg.getType());
             resp[0] = type[2];
@@ -289,7 +289,7 @@ public class ResponsePkg {
 //            for (int i = 0; i < resp.length; i++)
 //                System.out.printf(" 0x%02x", resp[i]);
             return resp;
-        }
+        }*/
         //封装 返回 气体信息 收到结果
         if (msg.getNdName() == ConstantValue.MSG_BODY_NODE_NAME_SENSOR_DATA) {
             byte[] resp = new byte[msg.getLength()];
@@ -354,8 +354,8 @@ public class ResponsePkg {
             return resp;
         }
 
-        //封装 更新终端IP 方法 数据
-        if (msg.getNdName() == ConstantValue.MSG_BODY_NODE_NAME_UPDATE_IP) {
+        //封装 更新终端IP 方法 数据   心跳
+        if ((msg.getNdName() == ConstantValue.MSG_BODY_NODE_NAME_UPDATE_IP)||(msg.getNdName() ==ConstantValue.MSG_BODY_NODE_NAME_HEARTBEAT)) {
             byte[] resp = new byte[msg.getLength()];
             byte[] type = NettyDataUtils.intToByteArray(msg.getType());
             resp[0] = type[2];

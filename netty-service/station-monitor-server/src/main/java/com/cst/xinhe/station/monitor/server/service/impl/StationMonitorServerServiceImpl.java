@@ -19,7 +19,6 @@ import com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp;
 import com.cst.xinhe.station.monitor.server.client.WsPushServiceClient;
 import com.cst.xinhe.station.monitor.server.request.SingletonStationClient;
 import com.cst.xinhe.station.monitor.server.service.StationMonitorServerService;
-import com.sun.org.apache.bcel.internal.generic.NEW;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -68,19 +67,17 @@ public class StationMonitorServerServiceImpl implements StationMonitorServerServ
             System.out.printf("0x%02x ",b);
         }
         int len = body[0] & 0xff;   //获取mac地址的总数量
+        System.out.println("获取mac地址的总数量:"+len);
         int f = 0;  //判断计数
         List<MacStation> list = new ArrayList<>();
         StringBuffer mac_str = new StringBuffer();
       if(len>0){
           for (int i = 1 ; i <= len * 6 ; i++){
-
               Integer tt = (body[i] & 0xff);
-
               String s = Integer.toHexString(tt);
               if (s.length() < 2){
                   s = "0" + s;
               }
-
               mac_str.append(s.toUpperCase());
               if (f < 5) {
                   mac_str.append("-");
@@ -99,17 +96,13 @@ public class StationMonitorServerServiceImpl implements StationMonitorServerServ
           MacStationExample macStationExample = new MacStationExample();
           MacStationExample.Criteria criteria = macStationExample.createCriteria();
           criteria.andStationIdEqualTo(reqMsg.getStationId());
-
           macStationMapper.deleteByExample(macStationExample);
-
           for (MacStation item: list) {
               String mac = item.getMac();
               boolean flag = macStationMapper.selectMacExistByMac(mac);
-
               if (flag) {
                   macStationMapper.deleteByMac(mac);
               }
-
               macStationMapper.insert(item);
           }
 
@@ -132,7 +125,6 @@ public class StationMonitorServerServiceImpl implements StationMonitorServerServ
         Integer terminalPort = reqMsg.getTerminalPort();
 //        Integer stationPort = jsonObject.getInteger("stationPort");
         Integer stationPort = reqMsg.getStationPort();
-
         TerminalUpdateIp terminalUpdateIp = new TerminalUpdateIp();
         terminalUpdateIp.setStationId(stationId);
         terminalUpdateIp.setStationIp(stationIp);
@@ -141,17 +133,11 @@ public class StationMonitorServerServiceImpl implements StationMonitorServerServ
         terminalUpdateIp.setUpdateTime(new Date());
         terminalUpdateIp.setStationPort(stationPort);
         terminalUpdateIp.setTerminalPort(terminalPort);
-
-
         //获取基站ip更新进基站表
         BaseStation baseStation = new BaseStation();
         baseStation.setBaseStationNum(stationId);
         baseStation.setBaseStationIp(stationIp);
         baseStationMapper.updateByStationNumSelective(baseStation);
-
-
-
-
         /**
          * @description 根据terminalId 检查是否存在terminalId;
          *                  如果存在则更新

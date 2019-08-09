@@ -155,7 +155,7 @@ public class StationServerHandler extends ChannelInboundHandlerAdapter {
                         log.info("心跳数据");
                         reqMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);
                         reqMsg.setLength(34);
-                        reqMsg.setResult((byte) 0x55);
+                        reqMsg.setResult(ConstantValue.MSG_BODY_RESULT_SUCCESS);
                         reqMsg.setNodeCount((byte) 0x00);
                         System.out.println("--------------心跳回复开始-----------");
                         System.out.println(reqMsg.toString());

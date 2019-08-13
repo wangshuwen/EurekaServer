@@ -1,11 +1,10 @@
 package com.cst.xinhe.station.monitor.server.server;
 
+import com.cst.xinhe.base.result.ResultUtil;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
+import com.cst.xinhe.station.monitor.server.request.SingletonStationClient;
 import com.cst.xinhe.station.monitor.server.service.StationMonitorServerService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -15,7 +14,7 @@ import javax.annotation.Resource;
  * @author: lifeng
  * @create: 2019-04-30 15:01
  **/
-@RequestMapping("station-monitor-server/")
+//@RequestMapping("station-monitor-server/")
 @RestController
 public class StationMonitorServerController {
 
@@ -25,5 +24,11 @@ public class StationMonitorServerController {
     @PostMapping("sendCmd")
     public void sendCmd(@RequestBody ResponseData responseData){
         stationMonitorServerService.sendCmd(responseData);
+    }
+
+    @GetMapping("sendControl")
+    public String sendControl(){
+        stationMonitorServerService.sendControlAqTest();
+        return ResultUtil.jsonToStringSuccess();
     }
 }

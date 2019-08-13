@@ -3,6 +3,7 @@ package com.cst.xinhe.station.monitor.server.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.cst.xinhe.base.exception.ErrorCode;
 import com.cst.xinhe.base.exception.RuntimeServiceException;
+import com.cst.xinhe.common.constant.ConstantValue;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
 import com.cst.xinhe.common.utils.GetUUID;
@@ -16,6 +17,7 @@ import com.cst.xinhe.persistence.model.base_station.OfflineStationExample;
 import com.cst.xinhe.persistence.model.mac_station.MacStation;
 import com.cst.xinhe.persistence.model.mac_station.MacStationExample;
 import com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp;
+import com.cst.xinhe.station.monitor.server.client.TerminalMonitorClient;
 import com.cst.xinhe.station.monitor.server.client.WsPushServiceClient;
 import com.cst.xinhe.station.monitor.server.request.SingletonStationClient;
 import com.cst.xinhe.station.monitor.server.service.StationMonitorServerService;
@@ -35,6 +37,9 @@ public class StationMonitorServerServiceImpl implements StationMonitorServerServ
 
     @Resource
     MacStationMapper macStationMapper;
+
+    @Resource
+    TerminalMonitorClient terminalMonitorClient;
 
     @Resource
     TerminalUpdateIpMapper terminalUpdateIpMapper;
@@ -168,5 +173,19 @@ public class StationMonitorServerServiceImpl implements StationMonitorServerServ
         } catch (Exception e) {
             throw new RuntimeServiceException(ErrorCode.SEND_WS_OFFLINE_STATION_ERROR);
         }
+    }
+
+    @Override
+    public void sendControlAqTest() {
+        ResponseData responseData = ResponseData.getResponseData();
+        RequestData requestData = RequestData.getInstance();
+        requestData.setType(ConstantValue.MSG_HEADER_FREAME_HEAD);
+        requestData.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_CONTROL);
+        requestData.setResult(ConstantValue.MSG_BODY_RESULT_SUCCESS);
+        requestData.setNdName(ConstantValue.MSG_BODY_NODE_NAME_AQ_TEST);
+        requestData.setLength(34);
+        requestData.setSequenceId(terminalMonitorClient.getSequenceId());
+        responseData.setCustomMsg(requestData);
+        SingletonStationClient.getSingletonStationClient().sendToAllClientCmd(responseData);
     }
 }

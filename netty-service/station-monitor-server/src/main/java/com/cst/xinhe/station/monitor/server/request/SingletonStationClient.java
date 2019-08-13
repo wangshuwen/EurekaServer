@@ -4,6 +4,8 @@ import com.cst.xinhe.common.netty.data.response.ResponseData;
 import com.cst.xinhe.station.monitor.server.channel.ChannelMap;
 import io.netty.channel.Channel;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * @program: demo
  * @description: 单例基站的响应类
@@ -62,6 +64,16 @@ public class SingletonStationClient {
         channel.writeAndFlush(bytes);
 
         return 0;
+    }
+
+
+    public int sendToAllClientCmd(ResponseData responseData) {
+
+        AtomicInteger count = new AtomicInteger();
+        ChannelMap.channelHashMap.forEach((k,v)-> {v.writeAndFlush(responseData);
+        count.incrementAndGet();});
+
+        return count.getAndDecrement();
     }
 
 

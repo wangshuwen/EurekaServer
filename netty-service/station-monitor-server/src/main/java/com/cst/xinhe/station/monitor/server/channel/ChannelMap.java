@@ -26,7 +26,7 @@ public class ChannelMap {
     }
 
 
-    private static ConcurrentHashMap<String, Channel> channelHashMap = new ConcurrentHashMap<>();
+    public static ConcurrentHashMap<String, Channel> channelHashMap = new ConcurrentHashMap<>();
 
     public static Channel getChannelByName(String name) {
         return channelHashMap.get(name);

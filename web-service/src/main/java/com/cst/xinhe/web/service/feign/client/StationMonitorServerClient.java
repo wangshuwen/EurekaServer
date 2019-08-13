@@ -4,6 +4,7 @@ import com.cst.xinhe.common.netty.data.response.ResponseData;
 import com.cst.xinhe.web.service.feign.callback.StationMonitorServerClientFallback;
 import com.cst.xinhe.web.service.feign.config.FeignConfig;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -22,4 +23,7 @@ public interface StationMonitorServerClient {
 
     @PostMapping("sendCmd")
     void sendCmd(@RequestBody ResponseData responseData);
+
+    @GetMapping("sendControl")
+    String sendControl();
 }

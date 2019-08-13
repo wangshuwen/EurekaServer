@@ -82,6 +82,21 @@ public class MyFilter extends ZuulFilter {
 //            }
             return null;
         }
+        if (url.contains("/aq")){
+            return null;
+        }
+        if (url.contains("/wx/login")){
+            return null;
+        }
+        if (url.contains("/wx/logout")){
+            return null;
+        }
+        if (url.contains("/wx/register")){
+            return null;
+        }
+        if(url.contains("/wx/forgetPassword")){
+            return null;
+        }
         if(url.contains("/logout")){
             return null;
         }

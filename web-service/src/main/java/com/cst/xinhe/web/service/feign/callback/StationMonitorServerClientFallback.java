@@ -23,4 +23,11 @@ public class StationMonitorServerClientFallback implements StationMonitorServerC
     public void sendCmd(ResponseData responseData) {
         logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
     }
+
+    @Override
+    public String sendControl() {
+//        logger.error(ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL));
+        return ResultUtil.jsonToStringError(ResultEnum.CALL_REMOTE_SERVER_FAIL);
+    }
+
 }

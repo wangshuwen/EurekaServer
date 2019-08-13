@@ -220,23 +220,23 @@ public class StationServerHandler extends ChannelInboundHandlerAdapter {
 
         //基站的掉线处理      去掉注释
         String[] split = clientIP.split("\\.");
-        for (String s : split) {
-            System.out.println(s);
-        }
-        
         if(split.length==4){
             clientIP=split[2]+"."+split[3];
         }
         Integer stationId = terminalUpdateIpMapper.findStationIdByIpAndPort(clientIP, port);
+        if (null != stationId && 0 != stationId){
+            ChannelMap.removeChannelByName(str);
+            OfflineStation offlineStation = new OfflineStation();
+            offlineStation.setOfflineStationId(stationId);
+            offlineStation.setOfflineTime(new Date());
+            offlineStationMapper.insertSelective(offlineStation);
+            log.info("基站[" + str + "] 被移出session");
 
-        OfflineStation offlineStation = new OfflineStation();
-        offlineStation.setOfflineStationId(stationId);
-        offlineStation.setOfflineTime(new Date());
-        offlineStationMapper.insertSelective(offlineStation);
+        }
+
 
         // ProcessOfflineStationCount.getSingletonProcessOffline().process(clientIP, port);
-        ChannelMap.removeChannelByName(str);
-        log.info("基站[" + str + "] 被移出session");
+
 
 
 

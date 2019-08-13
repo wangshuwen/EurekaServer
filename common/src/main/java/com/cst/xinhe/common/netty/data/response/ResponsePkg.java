@@ -624,6 +624,77 @@ public class ResponsePkg {
             return resp;
         }
 
+        if (msg.getNdName() == ConstantValue.MSG_BODY_NODE_NAME_AQ_TEST) {
+            int len = msg.getLength();
+            byte[] resp = new byte[len];
+            byte[] type = NettyDataUtils.intToByteArray(msg.getType());
+            resp[0] = type[2];
+            resp[1] = type[3];
+//            byte[] tId = NettyDataUtils.intToByteArray(msg.getTerminalId());
+//            resp[2] = tId[0];
+//            resp[3] = tId[1];
+//            resp[4] = tId[2];
+//            resp[5] = tId[3];
+//            byte[] sId = NettyDataUtils.intToByteArray(msg.getStationId());
+//            resp[6] = sId[0];
+//            resp[7] = sId[1];
+//            resp[8] = sId[2];
+//            resp[9] = sId[3];
+//            resp[10] = (byte) msg.getTerminalIp1();
+//            resp[11] = (byte) msg.getTerminalIp2();
+//            resp[12] = (byte) msg.getStationIp1();
+//            resp[13] = (byte) msg.getStationIp2();
+//            byte[] terminalPort = NettyDataUtils.intToByteArray(msg.getTerminalPort());
+//            resp[14] = terminalPort[2];
+//            resp[15] = terminalPort[3];
+//            byte[] stationPort = NettyDataUtils.intToByteArray(msg.getStationPort());
+//            resp[16] = stationPort[2];
+//            resp[17] = stationPort[3];
+            byte[] length = NettyDataUtils.intToByteArray(len);
+            resp[18] = length[2];
+            resp[19] = length[3];
+
+
+            byte[] cmd = NettyDataUtils.intToByteArray(msg.getCmd());
+            resp[20] = cmd[2];
+            resp[21] = cmd[3];
+            byte[] seq = NettyDataUtils.intToByteArray(msg.getSequenceId());
+            resp[22] = seq[2];
+            resp[23] = seq[3];
+
+            Calendar cal = Calendar.getInstance();
+            int year = cal.get(Calendar.YEAR);//获取年份
+            int rty = year - 2000;
+            int month = cal.get(Calendar.MONTH);//获取月份
+            int day = cal.get(Calendar.DATE);//获取日
+            int hour = cal.get(Calendar.HOUR);//小时
+            int minute = cal.get(Calendar.MINUTE);//分
+            int second = cal.get(Calendar.SECOND);//秒
+
+            resp[24] = (byte) rty;
+            resp[25] = (byte) month;
+            resp[26] = (byte) day;
+            resp[27] = (byte) hour;
+            resp[28] = (byte) minute;
+            resp[29] = (byte) second;
+            resp[30] = msg.getResult();
+
+            resp[31] = (byte) 0x00;
+
+            byte[] ndName = NettyDataUtils.intToByteArray(msg.getNdName());
+            resp[32] = ndName[2];
+            resp[33] = ndName[3];
+
+//            byte[] count = NettyDataUtils.intToByteArray(msg.getCount());
+//            resp[34] = count[2];
+//            resp[35] = count[3];
+
+//            byte[] body = msg.getBody();
+//
+//            System.arraycopy(body, 0, resp, 36, (body.length));
+            return resp;
+        }
+
         return null;
     }
 }

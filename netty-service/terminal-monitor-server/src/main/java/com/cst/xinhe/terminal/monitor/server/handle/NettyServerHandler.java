@@ -46,7 +46,7 @@ import java.util.concurrent.Executors;
 @Component
 public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
-    private volatile static int c = 0;
+    private volatile static int gasNum = 0;
     /**
      * 日志
      */
@@ -162,7 +162,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                                 customMsg.setNodeCount((byte) 0x00);
                                 resp.setCustomMsg(customMsg);
                                 resp.setCode((byte) 0x55);
-                                System.out.println("接收到的气体数量：" + ++c);
+                                System.out.println("接收到的气体数量：" + ++gasNum);
                                 SingletonClient.getSingletonClient().sendCmd(resp);//返回气体成功标记
                                 log.info("返回气体确认结束");
                                 break;

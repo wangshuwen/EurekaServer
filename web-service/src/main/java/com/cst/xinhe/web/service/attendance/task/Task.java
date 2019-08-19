@@ -32,7 +32,7 @@ public class Task {
      * @date: 2019-02-14
      */
     @Scheduled(cron = "0 0 0 * * ?") // 每天的零点执行一次定时任务
-//    @Scheduled(cron = "0 30/10 * * * ? ") // 每天的零点执行一次定时任务
+    //@Scheduled(cron = "0 1/10 * * * ? ") // 每个小时的一分钟开始执行，隔10分钟执行一次，如1，11，21，31，41
     public void createAttendanceData() throws ParseException {
         System.out.println("执行 " + i + " 次");
         attendanceRulesGenerator.generatorRules(new Date(), i);

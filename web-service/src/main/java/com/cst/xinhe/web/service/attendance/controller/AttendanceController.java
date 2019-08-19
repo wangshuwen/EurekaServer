@@ -271,8 +271,8 @@ public class AttendanceController {
         List<HashMap<String,Object>> result = page.getResult();
         for (HashMap<String, Object> map : result) {
             Integer groupId= (Integer) map.get("groupId");
-//            String deptName = staffOrganizationService.getDeptNameByGroupId(groupId);
-            String deptName =  staffOrganizationService.getDeptNameByGroupId(deptId);
+            String deptName = staffOrganizationService.getDeptNameByGroupId(groupId);
+            //String deptName =  staffOrganizationService.getDeptNameByGroupId(deptId);
             map.put("deptName",deptName);
             //入矿时间
             Integer staffId = (Integer) map.get("staffId");

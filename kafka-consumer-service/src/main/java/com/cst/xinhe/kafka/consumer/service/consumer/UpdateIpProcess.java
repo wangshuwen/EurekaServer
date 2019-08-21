@@ -177,6 +177,9 @@ public class UpdateIpProcess {
                     redisService.set(key,JSON.toJSONString(rtStaffInfo),1L);
                 }
 
+                //                            //插入上班时间
+                StaffAttendanceRealRule realRule = attendanceServiceClient.findStaffAttendanceRealRuleById(staffId);
+
                 //井口基站编号
 //            DecimalFormat fmt = new DecimalFormat("##0.0");// 时间小数点后截取以为小数
                 Integer entryId = (Integer) entryStation.get("baseStationNum");
@@ -205,44 +208,12 @@ public class UpdateIpProcess {
                             attendance.setStartTime(end.getUpdateTime());
                             attendance.setInOre(head.getUpdateTime());
                             attendance.setBaseStationId(end.getStationId());
-//                            //插入上班时间
-//
-//                            Date rt_Time = new Date(); // 当前时间
-//                            if (rt_Time.getTime() > (standStartTime.getTime() + standard.getElasticTime()*1000*60)){
-//                                attendance.setBackup1("迟到");
-//                            }else {
-//                                attendance.setBackup1("正常");
-//                            }
-//
-//                            String currentDate = DateFormat.getDateInstance().format(rt_Time);
-//
-//                            StringBuffer currentStartTime = new StringBuffer(currentDate);
-//                            currentStartTime.append(" ");
-//                            currentStartTime.append(standard_startTime);
-//                            Date current = DateConvert.convertStringToDate(currentStartTime.toString(),19); // 应该打卡的时间
-//
-//                            long first = (rt_Time.getTime() - current.getTime())/(1000*60);
-//                            if (first > 0){ // 可能迟到
-//                                //可能迟到
-//                                if (first <= elastic_time){
-//                                    //弹性时间内考勤
-//                                    attendance.setBackup1("正常");
-//                                }else{
-//                                    if (first <= (elastic_time +late_time) ){
-//                                        //一般迟到
-//                                        attendance.setBackup1("迟到" + fmt.format(first/60.0) + "小时" );
-//                                    }
-//                                    else if (first > (elastic_time + serious_late_time)){
-//                                        //严重迟到
-//                                        attendance.setBackup1("严重迟到" +  fmt.format(first/60.0) + "小时" );
-//                                    }
-//                                }
-//                            }else {//first < 0 正常考勤
-//                                // 正常考勤情况
-//                                attendance.setBackup1("正常，提前上班" +  fmt.format(-first/60.0) + "小时");
-//                            }
-//                            attendanceService.addAttendance(attendance);
-//                            attendanceServiceClient.addAttendance(attendance);
+
+                            //员工上班
+                            realRule.setIsAttendance(1);
+                            realRule.setFinalTime(null);
+                            staffAttendanceRealRuleMapper.updateByPrimaryKeySelective(realRule);
+
                             attendanceMapper.insertSelective(attendance);
                         }
                         //下班
@@ -253,7 +224,6 @@ public class UpdateIpProcess {
                             //------------------------------------超时处理开始--------------------------------------
                             //下班，查看该员工是否超时，如果超时，推送前端，超时人数减1
 //                            StaffAttendanceRealRule realRule = staffAttendanceRealRuleMapper.selectByPrimaryKey(staffId);
-                            StaffAttendanceRealRule realRule = attendanceServiceClient.findStaffAttendanceRealRuleById(staffId);
                             //员工下班，不再考勤
                             realRule.setIsAttendance(0);
                             realRule.setFinalTime(null);
@@ -286,7 +256,6 @@ public class UpdateIpProcess {
                                     e.printStackTrace();
                                 }
                             }
-                            staffAttendanceRealRuleMapper.updateByPrimaryKeySelective(realRule);
 //                            attendanceServiceClient.updateStaffAttendanceRealRuleById(realRule);
                             //------------------------------------超时处理结束--------------------------------------
 //                            Attendance attendance = attendanceService.findAttendanceByStaffIdAndEndTimeIsNull(staffId);
@@ -340,17 +309,22 @@ public class UpdateIpProcess {
                         }
                     }
                 }
+
+                staffAttendanceRealRuleMapper.updateByPrimaryKeySelective(realRule);
+
                 //------------------------员工考勤处理结束------------------------------
                 //------------------------将下井总人数，未考勤人数推送前端页面开始--------------------------
                 WebSocketData data = new WebSocketData();
 //                List<HashMap<String, Object>> attendanceCount = staffAttendanceRealRuleMapper.getAttendanceStaff(null, null);
                 Long attendanceCount = attendanceServiceClient.getAttendanceStaffCount();
+
                 if (null != attendanceCount) {
                     data.setData(attendanceCount);
                 } else {
                     data.setData(0);
                 }
                 data.setType(3);
+                System.out.println("推送井下总人数："+attendanceCount);
 
                 try {
 //                    WSPersonNumberServer.sendInfo(JSON.toJSONString(data));
@@ -361,7 +335,9 @@ public class UpdateIpProcess {
 
                 //本应该考勤，但未考勤总人数
                 data.setType(4);
+
                 Integer count = staffAttendanceRealRuleMapper.getUnAttendanceDept(new Date(), null);
+                System.out.println("推送未考勤人数："+count);
 //                Integer count = attendanceServiceClient.getUnAttendanceDept(new Date());
                 data.setData(count);
                 try {

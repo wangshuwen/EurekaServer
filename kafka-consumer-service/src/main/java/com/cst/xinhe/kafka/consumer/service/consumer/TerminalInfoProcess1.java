@@ -3,7 +3,6 @@ package com.cst.xinhe.kafka.consumer.service.consumer;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.cst.xinhe.kafka.consumer.service.client.WebServiceClient;
-import com.cst.xinhe.kafka.consumer.service.client.WsPushServiceClient;
 import com.cst.xinhe.persistence.dao.attendance.StaffAttendanceRealRuleMapper;
 import com.cst.xinhe.persistence.dao.staff.StaffMapper;
 import com.cst.xinhe.persistence.model.attendance.StaffAttendanceRealRule;
@@ -31,9 +30,9 @@ import java.util.concurrent.Executors;
 * @date        2018/12/10 17:21
 */
 @Component
-public class TerminalInfoProcess {
+public class TerminalInfoProcess1 {
 
-    private static final Logger logger = LoggerFactory.getLogger(TerminalInfoProcess.class);
+    private static final Logger logger = LoggerFactory.getLogger(TerminalInfoProcess1.class);
 
     public static Set<Integer> staffSet= Collections.synchronizedSet(new HashSet());
     public static Set<Integer> leaderSet= Collections.synchronizedSet(new HashSet());

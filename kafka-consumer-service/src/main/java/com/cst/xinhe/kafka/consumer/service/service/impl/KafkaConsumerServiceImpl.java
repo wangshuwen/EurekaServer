@@ -1,10 +1,8 @@
 package com.cst.xinhe.kafka.consumer.service.service.impl;
 
 
-import com.cst.xinhe.kafka.consumer.service.consumer.TerminalInfoProcess;
-import com.cst.xinhe.kafka.consumer.service.context.SpringContextUtil;
+import com.cst.xinhe.kafka.consumer.service.consumer.TerminalInfoProcess1;
 import com.cst.xinhe.kafka.consumer.service.service.KafkaConsumerService;
-import com.cst.xinhe.kafka.consumer.service.util.CheckPointWithPolygon;
 import com.cst.xinhe.kafka.consumer.service.util.ICheckPointWithPolygon;
 import com.cst.xinhe.kafka.consumer.service.util.ObserverableOfPoint;
 import com.cst.xinhe.persistence.dao.warning_area.WarningAreaMapper;
@@ -41,22 +39,22 @@ public class KafkaConsumerServiceImpl implements KafkaConsumerService, Observera
 
     @Override
     public void removeCarSet(Integer staffId) {
-        TerminalInfoProcess.carSet.remove(staffId);
+        TerminalInfoProcess1.carSet.remove(staffId);
     }
 
     @Override
     public void removeOutPersonSet(Integer staffId) {
-        TerminalInfoProcess.outPersonSet.remove(staffId);
+        TerminalInfoProcess1.outPersonSet.remove(staffId);
     }
 
     @Override
     public void removeLeaderSet(Integer staffId) {
-        TerminalInfoProcess.leaderSet.remove(staffId);
+        TerminalInfoProcess1.leaderSet.remove(staffId);
     }
 
     @Override
     public void removeStaffSet(Integer staffId) {
-        TerminalInfoProcess.staffSet.remove(staffId);
+        TerminalInfoProcess1.staffSet.remove(staffId);
     }
 
 //    @Override

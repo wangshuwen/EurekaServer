@@ -409,7 +409,7 @@
     from staff_attendance_real_rule r left join  staff s
     on r.staff_id=s.staff_id
     <where>
-      (r.is_attendance=0  or r.is_attendance is null)  and  #{nowDate} between r.real_rule_start_time and r.real_rule_end_time
+      (r.is_attendance=0  or r.is_attendance is null)  and  (#{nowDate} between r.real_rule_start_time and r.real_rule_end_time)
 
       <if test="deptIds != null and deptIds.size()!=0">
         And s.group_id in

@@ -598,7 +598,7 @@ public class GasKafka {
                                         map.put("areaInfo", warningArea);
                                         map.put("personNum", importantArea.size());
                                         data.setType(9);
-                                        data.setData(data);
+                                        data.setData(map);
                                         wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
                                     }
                                 } else {

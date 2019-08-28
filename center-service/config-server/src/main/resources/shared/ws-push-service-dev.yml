@@ -58,7 +58,7 @@ feign:
 spring:
   elasticsearch:
     rest:
-      uris: ["http://192.168.1.182:9200"]
+      uris: ["http://192.168.1.188:9200"]
   boot:
     admin:
       client:

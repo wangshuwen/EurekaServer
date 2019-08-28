@@ -25,7 +25,7 @@ public class BackUpDatabasesController {
     @ApiOperation(value = "数据库备份")
     @GetMapping("backUp")
     public String backUp() {
-        boolean backup = backUpDatabasesService.backup("192.168.1.182", "root", "123456", "d:\\", "2019-6-11", "zkxh_test1");
+        boolean backup = backUpDatabasesService.backup("192.168.1.188", "root", "123456", "d:\\", "2019-6-11", "zkxh_test1");
         if(backup){
             return ResultUtil.jsonToStringSuccess();
         }
@@ -36,7 +36,7 @@ public class BackUpDatabasesController {
     @ApiOperation(value = "数据库恢复")
     @GetMapping("recover")
     public String recover() {
-        boolean recover = backUpDatabasesService.recover("d:/2019-6-11.sql", "192.168.1.182", "zkxh_test1", "root", "123456");
+        boolean recover = backUpDatabasesService.recover("d:/2019-6-11.sql", "192.168.1.188", "zkxh_test1", "root", "123456");
         if(recover){
             return ResultUtil.jsonToStringSuccess();
         }

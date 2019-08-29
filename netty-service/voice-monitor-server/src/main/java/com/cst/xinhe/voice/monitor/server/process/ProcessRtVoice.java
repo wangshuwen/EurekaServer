@@ -153,6 +153,7 @@ public class ProcessRtVoice {
         String ip = customMsg.getTerminalIp();
         Integer port = customMsg.getTerminalPort();
         String ipPort = ip + ":" + port;
+        Integer terminalId = customMsg.getTerminalId();
         HashMap<String, Object> map = new HashMap<>();
         map.put("cmd", "2008");//2008表示发起呼叫
         map.put("ipPort", ipPort);
@@ -161,7 +162,6 @@ public class ProcessRtVoice {
         TerminalUpdateIp terminalUpdateIp = staffGroupTerminalServiceClient.findTerminalIdByIpAndPort(ip, port);
 
         if (terminalUpdateIp != null) {
-            Integer terminalId = terminalUpdateIp.getTerminalNum();
             //员工信息
            // Map<String, Object> staffInfo = staffService.findStaffIdByTerminalId(terminalId);
             Map<String, Object> staffInfo = staffGroupTerminalServiceClient.findStaffIdByTerminalId(terminalId);

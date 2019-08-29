@@ -51,7 +51,7 @@ public class NettyConfig {
                 @Override
                 protected void initChannel(SocketChannel socketChannel) throws Exception {
                     ChannelPipeline pipe = socketChannel.pipeline();
-                    pipe.addLast(new IdleStateHandler(20, 20, 40, TimeUnit.SECONDS));
+                 //   pipe.addLast(new IdleStateHandler(20, 20, 40, TimeUnit.SECONDS));
                     pipe.addLast(new StringEncoder());
                     pipe.addLast(new VoiceDataEncoder());
                     pipe.addLast(new VoiceServerHandler());

@@ -93,9 +93,11 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 //                String deptName = staffOrganizationService.getDeptNameByGroupId(groupId);
                 for (Map<String, Object> group : groupInfo) {
                     Integer group_Id= (Integer) group.get("groupId");
-                    if(group_Id.equals(groupId)){
-                        String groupName= (String) group.get("groupName");
-                        map.put("deptName",groupName);
+                    if(group_Id!=null){
+                        if(group_Id.equals(groupId)){
+                            String groupName= (String) group.get("groupName");
+                            map.put("deptName",groupName);
+                        }
                     }
                 }
 

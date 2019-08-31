@@ -266,7 +266,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                                 terminalMonitorService.sendCallInfo(customMsg);
 //                                processRealTimeVoice.sendCallInfo(customMsg);
                                 break;
-                            case ConstantValue.MSG_BODY_NODE_NAME_PERSON_INFO_SEARCH:
+                            case ConstantValue.MSG_BODY_NODE_NAME_PERSON_INFO_SEARCH://个人消息查询
                                 terminalMonitorService.searchPersonInfoByTerminalId(customMsg);
                                 break;
                         }

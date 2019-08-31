@@ -30,8 +30,9 @@ import java.util.List;
 @RestController
 public class ChatMsgController {
 
-    @Value("${constant.webBaseUrl}")
-    public String webBaseUrl ;
+   /* @Value("${constant.webBaseUrl}")
+    public String webBaseUrl ;*/
+   private  String webBaseUrl="https://192.168.1.50:8443/";
     @Value("${constant.basePath}")
     public String basePath ;
     @Value("${constant.rangBasePath}")

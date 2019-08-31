@@ -69,11 +69,10 @@ public class SingletonStationClient {
 
     public int sendToAllClientCmd(ResponseData responseData) {
 
-        AtomicInteger count = new AtomicInteger();
         ChannelMap.channelHashMap.forEach((k,v)-> {v.writeAndFlush(responseData);
-        count.incrementAndGet();});
+        });
 
-        return count.getAndDecrement();
+        return 0;
     }
 
 

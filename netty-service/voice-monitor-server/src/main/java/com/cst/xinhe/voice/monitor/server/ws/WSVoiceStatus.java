@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.cst.xinhe.common.constant.ConstantValue;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
+import com.cst.xinhe.persistence.dao.staff.StaffMapper;
+import com.cst.xinhe.persistence.dao.terminal.StaffTerminalMapper;
 import com.cst.xinhe.voice.monitor.server.channel.VoiceChannelMap;
 import com.cst.xinhe.voice.monitor.server.context.SpringContextUtil;
 import com.cst.xinhe.voice.monitor.server.process.ProcessRtVoice;
@@ -32,9 +34,12 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class WSVoiceStatus {
 
 
+    private StaffTerminalMapper staffTerminalMapper;
+
     private VoiceMonitorService voiceMonitorService;
     public WSVoiceStatus() {
         this.voiceMonitorService = SpringContextUtil.getBean(VoiceMonitorServiceImpl.class);
+        this.staffTerminalMapper=SpringContextUtil.getBean(StaffTerminalMapper.class);
     }
 
     private static final Logger log = LoggerFactory.getLogger(WSVoiceStatus.class);
@@ -121,6 +126,12 @@ public class WSVoiceStatus {
 
         }
 
+        if(staffId!=null&&staffId!=""){
+            int staffId1 = Integer.parseInt(staffId);
+            Integer terminalId = staffTerminalMapper.selectTerminalIdByStaffId(staffId1);
+            customMsg.setTerminalId(terminalId);
+        }
+
         //ip和port不为空
         if (!"".equals(ipPort) && ipPort != null) {
             //解决ipPort="null1.106"
@@ -163,7 +174,7 @@ public class WSVoiceStatus {
                     break;
                 case "88":
                     customMsg.setResult((byte) 0x22);   //拒接
-                    customMsg.setNdName(0x2005);
+                    customMsg.setNdName(0x2008);
                     responseData.setCustomMsg(customMsg);
 //                    SingletonClient.getSingletonClient().sendCmd(responseData);
                     voiceMonitorService.sendDataToTerminalMonitorServer(responseData);
@@ -183,7 +194,7 @@ public class WSVoiceStatus {
                     break;
                 case "44":
                     ProcessRtVoice.setBusyLine(true);
-                    customMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_SEARCH);
+                    customMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_CONTROL);
                     customMsg.setNdName(ConstantValue.MSG_BODY_NODE_NAME_REAL_TIME_CALL);   //上面呼叫下面
                     responseData.setCustomMsg(customMsg);
 //                    SingletonClient.getSingletonClient().sendCmd(responseData);

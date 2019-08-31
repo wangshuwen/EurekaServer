@@ -1,5 +1,5 @@
 constant:
-  webBaseUrl: https://127.0.0.1:8443/
+  webBaseUrl: https://192.168.1.50:8443/
   basePath: d:/voice/file/
   rangBasePath: D:/idea/ideaProject/vue2
 ipPrefix: 192.168.

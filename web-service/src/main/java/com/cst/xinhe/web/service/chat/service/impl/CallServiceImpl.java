@@ -10,6 +10,7 @@ import com.cst.xinhe.persistence.dao.e_call.ECallMapper;
 import com.cst.xinhe.persistence.dao.staff.StaffOrganizationMapper;
 import com.cst.xinhe.persistence.dao.terminal.StaffTerminalMapper;
 import com.cst.xinhe.persistence.dao.terminal.TerminalUpdateIpMapper;
+import com.cst.xinhe.persistence.dao.updateIp.StationIpPortMapper;
 import com.cst.xinhe.persistence.dto.voice.VoiceDto;
 import com.cst.xinhe.persistence.model.chat.ChatMsg;
 import com.cst.xinhe.persistence.model.chat.TemporarySendList;
@@ -69,14 +70,16 @@ public class CallServiceImpl implements CallService {
     @Resource
     private TerminalUpdateIpMapper terminalUpdateIpMapper;
 
+
     @Resource
     private TemporarySendListMapper temporarySendListMapper;
 
     @Resource
     private ECallMapper eCallMapper;
 
-    @Value("${constant.webBaseUrl}")
-    public String webBaseUrl ;
+   /* @Value("${constant.webBaseUrl}")
+    public String webBaseUrl ;*/
+   public String webBaseUrl="https://192.168.1.50:8443/";
     @Value("${constant.basePath}")
     public String basePath ;
     @Value("${constant.rangBasePath}")
@@ -109,12 +112,15 @@ public class CallServiceImpl implements CallService {
         Map<String, Object> terminalInfo = terminalUpdateIpMapper.selectTerminalIpInfoByTerminalId(terminalId);
         ChatMsg chatMsg = new ChatMsg();
         if (null != terminalInfo && !terminalInfo.isEmpty()) {
-
             String stationIp = (String) terminalInfo.get("station_ip");
-            String stationIps[] = stationIp.split("\\.");
-            Integer stationIp1 = Integer.parseInt(stationIps[0]);
-            Integer stationIp2 = Integer.parseInt(stationIps[1]);
+           if(stationIp!=null){
+               String stationIps[] = stationIp.split("\\.");
+               Integer stationIp1 = Integer.parseInt(stationIps[0]);
+               Integer stationIp2 = Integer.parseInt(stationIps[1]);
+               voiceDto.setStationIp1(stationIp1);
+               voiceDto.setStationIp2(stationIp2);
 
+           }
             String terminalIp = (String) terminalInfo.get("terminal_ip");
             String terminalIps[] = terminalIp.split("\\.");
             Integer terminalIp1 = Integer.parseInt(terminalIps[0]);
@@ -130,12 +136,15 @@ public class CallServiceImpl implements CallService {
             voiceDto.setVoiceUrl(realUrl);
             voiceDto.setSeqId(seq);
             voiceDto.setStationId(stationId);
-            voiceDto.setStationIp1(stationIp1);
-            voiceDto.setStationIp2(stationIp2);
+
             voiceDto.setTerminalId(terminalId);
             voiceDto.setTerminalPort(terminalPort);
             if (null == stationPort)
                 stationPort = new Integer(0);
+            if(stationIp==null){
+                voiceDto.setStationIp1(0);
+                voiceDto.setStationIp2(0);
+            }
             voiceDto.setStationPort(stationPort);
             voiceDto.setTerminalIp1(terminalIp1);
             voiceDto.setTerminalIp2(terminalIp2);
@@ -171,6 +180,7 @@ public class CallServiceImpl implements CallService {
             chatMsg.setStatus(false);
             chatMsg.setReceiveIp(terminalIp);
             chatMsgService.insertRecord(chatMsg);
+           // chatMsg.setPostMsg(realUrl.replace(basePath, webBaseUrl));
             chatMsg.setPostMsg(realUrl.replace(basePath, webBaseUrl));
 
         }

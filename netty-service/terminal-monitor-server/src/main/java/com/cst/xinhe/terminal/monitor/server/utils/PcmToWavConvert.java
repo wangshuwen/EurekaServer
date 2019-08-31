@@ -44,7 +44,7 @@ public class PcmToWavConvert {
         header.BitsPerSample = 16;
         header.Channels = 1;
         header.FormatTag = 0x0001;
-        header.SamplesPerSec = 8000;
+        header.SamplesPerSec = 44100;
         header.BlockAlign = (short) (header.Channels * header.BitsPerSample / 8); //2*16/8
         //  header.AvgBytesPerSec = 512000;
         header.AvgBytesPerSec = header.BlockAlign * header.SamplesPerSec;   //4*8000

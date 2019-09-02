@@ -9,6 +9,7 @@ package com.cst.xinhe.common.utils;
  */
 
 public enum FileType {
+    ogg,
     WAV,
     MP3,
     PCM,

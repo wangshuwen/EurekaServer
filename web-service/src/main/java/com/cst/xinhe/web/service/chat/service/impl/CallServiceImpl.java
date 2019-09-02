@@ -96,14 +96,14 @@ public class CallServiceImpl implements CallService {
         StringBuffer fileName = new StringBuffer(DateConvert.convert(currentDate, 15));
         Integer seq = terminalMonitorClient.getSequenceId();
         fileName.append(terminalId).append(seq);
-        FileUtils.createFile(folderName.toString(), fileName.toString(), FileType.WAV);
-        File sendFile = new File(folderName.toString() + fileName.toString() + "." + FileType.WAV);
+        FileUtils.createFile(folderName.toString(), fileName.toString(), FileType.ogg);
+        File sendFile = new File(folderName.toString() + fileName.toString() + "." + FileType.ogg);
         try {
             wavFile.transferTo(sendFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String realUrl = folderName.toString() + fileName.toString() + "." + FileType.WAV;
+        String realUrl = folderName.toString() + fileName.toString() + "." + FileType.ogg;
 
         VoiceDto voiceDto = new VoiceDto();
 

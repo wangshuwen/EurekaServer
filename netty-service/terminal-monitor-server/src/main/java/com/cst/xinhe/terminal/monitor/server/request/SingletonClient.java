@@ -5,6 +5,8 @@ import com.cst.xinhe.base.exception.RuntimeServiceException;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
 import com.cst.xinhe.terminal.monitor.server.channel.ChannelMap;
 import io.netty.channel.Channel;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @program: demo
@@ -13,6 +15,8 @@ import io.netty.channel.Channel;
  * @create: 2019-01-15 15:10
  **/
 public class SingletonClient {
+
+    private static Logger logger = LogManager.getLogger(SingletonClient.class);
 
     //从配置文件获取ip前缀
     private String ip_prefix;
@@ -50,6 +54,7 @@ public class SingletonClient {
 
         String ip = ip_prefix + t_ip + ":" + responseData.getCustomMsg().getTerminalPort();
         Channel channel = ChannelMap.getChannelByName(ip);
+        logger.info("终端发送数据完成！");
         try {
             channel.writeAndFlush(responseData);
         } catch (Exception e){

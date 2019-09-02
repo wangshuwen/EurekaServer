@@ -188,12 +188,14 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
 
     @Override
     public void sendSoftWareVersion(RequestData customMsg) {
-        kafkaClient.sendData("softWareVersion",customMsg);
+
+
+        kafkaClient.sendData("softWareVersion.tut",customMsg);
     }
 
     @Override
     public void sendHandWareVersion(RequestData customMsg) {
-        kafkaClient.sendData("handWareVersion",customMsg);
+        kafkaClient.sendData("handWareVersion.tut",customMsg);
     }
 
     @Override
@@ -618,6 +620,7 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
         eCall.setPositionX(gasPosition.getPositionX());
         eCall.setPositionY(gasPosition.getPositionY());
         eCall.setPositionZ(gasPosition.getPositionZ());
+        eCall.setSequenceId(gasPosition.getSequenceId());
         eCallMapper.insert(eCall);
         wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(webSocketData));
     }

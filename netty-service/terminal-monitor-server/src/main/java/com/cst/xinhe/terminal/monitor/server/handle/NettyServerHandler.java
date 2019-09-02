@@ -219,6 +219,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                                 customMsg.setResult(ConstantValue.MSG_BODY_RESULT_SUCCESS);
                                 customMsg.setLength(34);
                                 resp.setCustomMsg(customMsg);
+                                log.info("终端更新已读状态");
                                 // 终端更新已读状态
                                 break;
                             case ConstantValue.MSG_BODY_NODE_NAME_POWER_STATUS:
@@ -229,6 +230,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                                 customMsg.setLength(34);
                                 resp.setCustomMsg(customMsg);
                                 SingletonClient.getSingletonClient().sendCmd(resp);
+                                log.info("终端欠电提醒");
                                 // 终端欠电提醒
                                 break;
                             case ConstantValue.MSG_BODY_NODE_NAME_E_CALL:
@@ -240,6 +242,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                                 customMsg.setLength(34);
                                 resp.setCustomMsg(customMsg);
                                 SingletonClient.getSingletonClient().sendCmd(resp);
+                                log.info("紧急呼叫");
                                 break;
                             default:
                                 log.error("未知命令包");
@@ -260,36 +263,42 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                         switch (ndName) {
                             case ConstantValue.MSG_BODY_NODE_NAME_CHECK_ONLINE: //  检测是否在线
                                 terminalMonitorService.checkSendCheckOnline(customMsg);
+                                log.info("检测浏览器是否在线");
 //                                processRealTimeVoice.sendCheckOnline(customMsg);
                                 break;
                             case ConstantValue.MSG_BODY_NODE_NAME_REAL_TIME_CALL: // 发起呼叫
                                 terminalMonitorService.sendCallInfo(customMsg);
 //                                processRealTimeVoice.sendCallInfo(customMsg);
+                                log.info("下面对上面发起呼叫");
                                 break;
                             case ConstantValue.MSG_BODY_NODE_NAME_PERSON_INFO_SEARCH://个人消息查询
                                 terminalMonitorService.searchPersonInfoByTerminalId(customMsg);
+                                log.info("个人信息查询");
                                 break;
                         }
                         break;
-                    case ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE:
+                    case ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE://应答
                         switch (ndName) {
                             case ConstantValue.MSG_BODY_NODE_NAME_CHECK_POWER:
                                 battery.put(customMsg.getTerminalId(), (int) customMsg.getBody()[0]);
+                                log.info("终端设备应答：查询设备端电量");
                                 break;
                             case ConstantValue.MSG_BODY_NODE_NAME_CHECK_ONLINE:
+                                log.info("终端设备应答：检查在线情况");
                                 // 检查在线情况
                                 break;
                             case ConstantValue.MSG_BODY_NODE_NAME_REAL_TIME_CALL:
 //                                upLoadService.processResponse(customMsg);
                                 terminalMonitorService.processResponse(customMsg);
+                                log.info("终端设备应答：响应状态值处理已经接听");
                                 // 终端响应状态值处理已经接听
                                 break;
                             case ConstantValue.MSG_BODY_NODE_NAME_CONFIGURED:
                                 terminalMonitorService.sendConfiguredResponse(customMsg);
+                                log.info("终端设备应答：配置基站子网掩码和IP");
 //                                upLoadService.sendConfiguredResponse(customMsg);
                                 break;
                         }
-
                         break;
                     default:
                         log.error("未知命令");

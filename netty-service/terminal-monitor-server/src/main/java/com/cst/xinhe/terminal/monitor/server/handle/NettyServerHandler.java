@@ -283,11 +283,11 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                                 battery.put(customMsg.getTerminalId(), (int) customMsg.getBody()[0]);
                                 log.info("终端设备应答：查询设备端电量");
                                 break;
-                            case ConstantValue.MSG_BODY_NODE_NAME_CHECK_ONLINE:
+                            case ConstantValue.MSG_BODY_NODE_NAME_REAL_TIME_CALL:
                                 log.info("终端设备应答：检查在线情况");
                                 // 检查在线情况
                                 break;
-                            case ConstantValue.MSG_BODY_NODE_NAME_REAL_TIME_CALL:
+                            case ConstantValue.MSG_BODY_NODE_NAME_CHECK_ONLINE:
 //                                upLoadService.processResponse(customMsg);
                                 terminalMonitorService.processResponse(customMsg);
                                 log.info("终端设备应答：响应状态值处理已经接听");

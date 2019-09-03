@@ -16,6 +16,7 @@ import com.cst.xinhe.persistence.model.chat.ChatMsg;
 import com.cst.xinhe.persistence.model.chat.TemporarySendList;
 
 import com.cst.xinhe.persistence.model.staff.StaffOrganization;
+import com.cst.xinhe.persistence.model.updateIp.StationIpPort;
 import com.cst.xinhe.web.service.chat.service.CallService;
 import com.cst.xinhe.web.service.chat.service.ChatMessageService;
 import com.cst.xinhe.web.service.chat.util.IpAddr;
@@ -25,6 +26,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -77,6 +79,9 @@ public class CallServiceImpl implements CallService {
     @Resource
     private ECallMapper eCallMapper;
 
+    @Autowired
+    public StationIpPortMapper  stationIpPortMapper;
+
    /* @Value("${constant.webBaseUrl}")
     public String webBaseUrl ;*/
    public String webBaseUrl="https://192.168.1.50:8443/";
@@ -84,6 +89,8 @@ public class CallServiceImpl implements CallService {
     public String basePath ;
     @Value("${constant.rangBasePath}")
     public String rangBasePath ;
+
+
 
     @Override
     public ChatMsg callStaffByStaffId(MultipartFile wavFile, Integer staffId, Integer userId) {
@@ -112,15 +119,30 @@ public class CallServiceImpl implements CallService {
         Map<String, Object> terminalInfo = terminalUpdateIpMapper.selectTerminalIpInfoByTerminalId(terminalId);
         ChatMsg chatMsg = new ChatMsg();
         if (null != terminalInfo && !terminalInfo.isEmpty()) {
-            String stationIp = (String) terminalInfo.get("station_ip");
-           if(stationIp!=null){
-               String stationIps[] = stationIp.split("\\.");
-               Integer stationIp1 = Integer.parseInt(stationIps[0]);
-               Integer stationIp2 = Integer.parseInt(stationIps[1]);
-               voiceDto.setStationIp1(stationIp1);
-               voiceDto.setStationIp2(stationIp2);
+            Integer stationId = (Integer)terminalInfo.get("station_id");
+            voiceDto.setStationId(stationId);
+            if(stationId!=null){
+                StationIpPort stationIpPort =stationIpPortMapper.selectByPrimaryKey(stationId);
+                if(stationIpPort!=null){
+                    String stationIp = stationIpPort.getStationIp();
+                    chatMsg.setStationIp(stationIp);
+                    if(stationIp!=null){
+                        String stationIps[] = stationIp.split("\\.");
+                        Integer stationIp1 = Integer.parseInt(stationIps[0]);
+                        Integer stationIp2 = Integer.parseInt(stationIps[1]);
+                        voiceDto.setStationIp1(stationIp1);
+                        voiceDto.setStationIp2(stationIp2);
+                        voiceDto.setStationPort(stationIpPort.getStationPort());
+                    }else{
+                        voiceDto.setStationIp1(0);
+                        voiceDto.setStationIp2(0);
+                    }
 
-           }
+                }
+
+            }
+
+
             String terminalIp = (String) terminalInfo.get("terminal_ip");
             String terminalIps[] = terminalIp.split("\\.");
             Integer terminalIp1 = Integer.parseInt(terminalIps[0]);
@@ -128,24 +150,19 @@ public class CallServiceImpl implements CallService {
 
             Integer terminalPort = (Integer) terminalInfo.get("terminal_port");
 
-            Integer stationPort = (Integer) terminalInfo.get("station_port");
+         ;
 
-            Integer stationId = (Integer) terminalInfo.get("station_id");
             voiceDto.setStaffId(staffId);
             voiceDto.setUserId(userId);
             voiceDto.setVoiceUrl(realUrl);
             voiceDto.setSeqId(seq);
-            voiceDto.setStationId(stationId);
+
 
             voiceDto.setTerminalId(terminalId);
             voiceDto.setTerminalPort(terminalPort);
-            if (null == stationPort)
-                stationPort = new Integer(0);
-            if(stationIp==null){
-                voiceDto.setStationIp1(0);
-                voiceDto.setStationIp2(0);
-            }
-            voiceDto.setStationPort(stationPort);
+
+
+
             voiceDto.setTerminalIp1(terminalIp1);
             voiceDto.setTerminalIp2(terminalIp2);
             voiceDto.setTerminalIp(terminalIp);
@@ -158,7 +175,7 @@ public class CallServiceImpl implements CallService {
             ipPort.append(terminalIp1).append(".").append(terminalIp2).append(":").append(terminalPort);
             boolean flag = terminalMonitorClient.getChanelByName(ipPort.toString());
             if (flag){
-                kafkaClient.send("voiceSender.tut", JSON.toJSONString(voiceDto), terminalPort);
+                kafkaClient.send("voiceSender.tut", JSON.toJSONString(voiceDto), terminalId);
             }else {
                 TemporarySendList temporarySendList = new TemporarySendList();
                 temporarySendList.setType(0);
@@ -170,7 +187,6 @@ public class CallServiceImpl implements CallService {
             chatMsg.setTerminalId(terminalId);
             chatMsg.setSequenceId(seq + "" + currentDate.getTime() + terminalId);
             chatMsg.setConvertTime(new Date());
-            chatMsg.setStationIp(stationIp);
             chatMsg.setReceiceUserId(staffId);
             chatMsg.setIsDel(0);
             chatMsg.setPostUserId(userId);

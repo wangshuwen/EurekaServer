@@ -30,5 +30,5 @@ public interface KafkaClient {
     void sendSelfCheckResult(@RequestParam("s") String s, @RequestBody String toJSONString, @RequestParam("terminalPort") Integer terminalPort);
 
     @PostMapping("kafka-sender-service/send")
-    void send(@RequestParam("topic") String topic, @RequestBody String obj, @RequestParam("port") Integer port);
+    void send(@RequestParam("topic") String topic, @RequestBody String obj, @RequestParam("terminalId") Integer terminalId);
 }

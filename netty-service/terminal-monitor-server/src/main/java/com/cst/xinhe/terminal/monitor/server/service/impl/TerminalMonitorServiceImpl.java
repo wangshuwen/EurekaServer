@@ -188,14 +188,30 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
 
     @Override
     public void sendSoftWareVersion(RequestData customMsg) {
+        byte[] body = customMsg.getBody();
+        int first = body[0] & 0xff;
+        int second = body[1] & 0xff;
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("first",first);
 
+        map.put("second",second);
+        map.put("terminalId",customMsg.getTerminalId());
 
-        kafkaClient.sendData("softWareVersion.tut",customMsg);
+        kafkaClient.sendSelfCheckResult("softWareVersion.tut",JSON.toJSONString(map),customMsg.getTerminalId());
     }
 
     @Override
     public void sendHandWareVersion(RequestData customMsg) {
-        kafkaClient.sendData("handWareVersion.tut",customMsg);
+        byte[] body = customMsg.getBody();
+        int first = body[0] & 0xff;
+        int second = body[1] & 0xff;
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("first",first);
+        map.put("second",second);
+        map.put("terminalId",customMsg.getTerminalId());
+
+        kafkaClient.sendSelfCheckResult("handWareVersion.tut",JSON.toJSONString(map),customMsg.getTerminalId());
+
     }
 
     @Override

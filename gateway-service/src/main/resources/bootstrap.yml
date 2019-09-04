@@ -10,6 +10,10 @@ spring:
       uri: http://127.0.0.1:8769
       enabled: true
       profile: dev
+  mvc:
+    static-path-pattern: /**
+  resources:
+    static-locations: file:D:/voice/file/,classpath:/META-INF/resources/,classpath:/resources/, classpath:/static/, classpath:/public/
 eureka:
   instance:
     instance-id: ${spring.application.name}

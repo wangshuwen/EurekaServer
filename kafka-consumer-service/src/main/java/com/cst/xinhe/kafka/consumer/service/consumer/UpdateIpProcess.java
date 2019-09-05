@@ -143,6 +143,16 @@ public class UpdateIpProcess {
 //                Map<String, Object> staffMap = staffGroupTerminalServiceClient.findStaffIdByTerminalId(terminalId);
                 Map<String, Object> staffMap = staffMapper.selectStaffInfoByTerminalId(terminalId);
                 Integer staffId = (Integer) staffMap.get("staff_id");
+
+                //实时推送通讯录此人在线
+                HashMap<String, Object> map = new HashMap<>();
+                map.put("staffId",staffId);
+                map.put("code",1);
+                wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(new WebSocketData(12, map)));
+
+
+
+
                 // 根据ID 查找当前人的考勤标准，根据标准计算具体考勤情况
                 TimeStandardVO standard =  timeStandardMapper.selectTimeStandardInfoByStaffId(staffId);
 //

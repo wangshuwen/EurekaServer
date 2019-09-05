@@ -6,11 +6,13 @@ import com.cst.xinhe.base.exception.RuntimeServiceException;
 import com.cst.xinhe.common.constant.ConstantValue;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
+import com.cst.xinhe.common.ws.WebSocketData;
 import com.cst.xinhe.persistence.dao.staff.StaffMapper;
 import com.cst.xinhe.persistence.dao.terminal.TerminalUpdateIpMapper;
 import com.cst.xinhe.persistence.dao.updateIp.TerminalIpPortMapper;
 import com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp;
 import com.cst.xinhe.terminal.monitor.server.channel.ChannelMap;
+import com.cst.xinhe.terminal.monitor.server.client.WsPushServiceClient;
 import com.cst.xinhe.terminal.monitor.server.context.SpringContextUtil;
 import com.cst.xinhe.terminal.monitor.server.process.ProcessVoice;
 import com.cst.xinhe.terminal.monitor.server.request.SingletonClient;
@@ -29,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.net.InetSocketAddress;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -70,6 +73,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
     private TerminalIpPortMapper terminalIpPortMapper;
 
+    private WsPushServiceClient  wsPushServiceClient;
+
     //    private static NettyServerHandler nettyServerHandler;
 //
 //    //注入上传数据服务
@@ -102,6 +107,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         this.terminalMonitorService = SpringContextUtil.getBean(TerminalMonitorServiceImpl.class);
         this.staffMapper = SpringContextUtil.getBean(StaffMapper.class);
         this.terminalIpPortMapper = SpringContextUtil.getBean(TerminalIpPortMapper.class);
+
+        this.wsPushServiceClient=SpringContextUtil.getBean(WsPushServiceClient.class);
 //        this.processRealTimeVoice = ProcessRealTimeVoice.getProcessRealTimeVoice();
     }
 
@@ -160,6 +167,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                                 customMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);
                                 customMsg.setResult(ConstantValue.MSG_BODY_RESULT_SUCCESS);
                                 customMsg.setNodeCount((byte) 0x00);
+
+                                customMsg.setTime(new Date());
                                 resp.setCustomMsg(customMsg);
                                 resp.setCode((byte) 0x55);
                                 System.out.println("接收到的气体数量：" + ++gasNum);
@@ -331,6 +340,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         String str = clientIP + ":" +
                 port;
         ChannelMap.addChannel(str, ctx.channel());
+
+
         log.info("终端[" + str + "] 连接成功");
         log.info("终端[" + str + "] 加入session");
         log.info("当前连接终端数量" + ChannelMap.getChannelNum());
@@ -375,6 +386,13 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 //                Map<String, Object> map = terminalMonitorService.selectStaffInfoByTerminalId(terminalId);
                 Integer isPerson = (Integer) map.get("is_person");
                 Integer staffId = (Integer) map.get("staff_id");
+                //实时推送通讯录此人在线
+                HashMap<String, Object> map1 = new HashMap<>();
+                map1.put("staffId",staffId);
+                map1.put("code",0);
+                wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(new WebSocketData(12, map1)));
+
+
                 if (null != staffId) {
                     switch (isPerson) {
                         case 0:

@@ -54,8 +54,8 @@ public class ProcessVoiceFile {
             RequestData requestData = new RequestData();
             responseData.setCode(ConstantValue.MSG_BODY_RESULT_SUCCESS);
             requestData.setType(ConstantValue.MSG_HEADER_FREAME_HEAD);
-            requestData.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_SEND_VOICE);
-            requestData.setLength(548);
+            requestData.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_NULL);
+            requestData.setLength(546);
             requestData.setStationId(stationId);
             requestData.setStationIp1(stationIp1);
             requestData.setStationIp2(stationIp2);
@@ -77,15 +77,19 @@ public class ProcessVoiceFile {
             FileInputStream inputStream = null;
             int i = 1;
             int len;
+            Boolean flag=false;
             try {
                 inputStream = new FileInputStream(send);
                 byte[] bo = new byte[512];
                 while (true) {
                     len = inputStream.read(bo);
+                    if(flag==true){
+                        break;
+                    }
 
                     System.out.println(len);
                     if (len < 512)
-                        break;
+                    flag=true;
 
                     requestData.setBody(bo);
                     requestData.setCount(i);
@@ -108,7 +112,7 @@ public class ProcessVoiceFile {
                     }
                     i++;
                 }
-                requestData.setLength(40);
+                requestData.setLength(38);
                 requestData.setCount(i);
                 byte[] b = new byte[4];
                 b[0] = (byte) 0x55;

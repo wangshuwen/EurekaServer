@@ -16,6 +16,7 @@ import com.cst.xinhe.terminal.monitor.server.utils.SequenceIdGenerate;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -73,6 +74,8 @@ public class ProcessSettingGasLevel {
                     customMsg.setTerminalIp2(requestData.getTerminalIp2());
                     customMsg.setTerminalPort(requestData.getTerminalPort());
                     customMsg.setSequenceId(SequenceIdGenerate.getSequenceId());
+
+                    customMsg.setTime(new Date());
 
                     customMsg.setStationId(requestData.getStationId());
                     customMsg.setStationIp1(requestData.getStationIp1());

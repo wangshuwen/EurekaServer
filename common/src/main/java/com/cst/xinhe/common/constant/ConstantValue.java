@@ -16,7 +16,7 @@ public class ConstantValue {
     public static final int MSG_HEADER_COMMAND_ID_RESPONSE = 0x0016;   //  , "应答"),
 
     public static final int MSG_HEADER_COMMAND_ID_HEARTBEAT = 0x001c; //  , "心跳数据"),
-    public static final int MSG_HEADER_COMMAND_ID_SEND_VOICE = 0x001d; //  , "心跳数据"),
+    public static final int MSG_HEADER_COMMAND_ID_SEND_VOICE = 0x001d; //  , ),
 
 
     //===============数据体===============

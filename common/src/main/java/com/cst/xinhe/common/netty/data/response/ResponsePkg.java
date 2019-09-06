@@ -550,15 +550,12 @@ public class ResponsePkg {
                 resp[35]=body[1];
                 resp[36]=body[2];
                 resp[37]=body[3];
-            }
-            if(msg.getLength()==546){
+            }else if(msg.getLength()>34){
                 byte[] body = msg.getBody();
-                for (int i = 34; i < 546; i++) {
+                for (int i = 34; i < msg.getLength(); i++) {
                     resp[i]=body[i-34];
                 }
             }
-
-
 
             return resp;
         }

@@ -77,20 +77,12 @@ public class ProcessVoiceFile {
             FileInputStream inputStream = null;
             int i = 1;
             int len;
-            Boolean flag=false;
             try {
                 inputStream = new FileInputStream(send);
                 byte[] bo = new byte[512];
                 while (true) {
                     len = inputStream.read(bo);
-                    if(flag==true){
-                        break;
-                    }
-
                     System.out.println(len);
-                    if (len < 512)
-                    flag=true;
-
                     requestData.setBody(bo);
                     requestData.setCount(i);
                     System.out.println("\n===========================");
@@ -104,7 +96,10 @@ public class ProcessVoiceFile {
                     System.out.println("\n===========================");
                     responseData.setCustomMsg(requestData);
                     SingletonClient.getSingletonClient().sendCmd(responseData);
-//                    terminalMonitorClient.sendResponseData(responseData);
+                    //如果长度小于512表示最后一个语音数据包，结束循环
+                    if (len < 512)
+                        break;
+
                     try {
                         Thread.sleep((long) 15);
                     } catch (InterruptedException e) {
@@ -142,11 +137,7 @@ public class ProcessVoiceFile {
                     }
             }
         }
-//        else {
-//            //暂存队列数据
-//
-//        }
-//    }
+
   //  @KafkaListener(id = "voiceProcess", topics = "voiceSender.tut")
   @KafkaListener(id = "ProcessVoiceFileid0", topicPartitions = { @TopicPartition(topic = TOPIC, partitions = { "0" }) })
     public void sendVoiceToTerminal0(List<ConsumerRecord<?, ?>> records) {

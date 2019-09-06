@@ -2,6 +2,7 @@ package com.cst.xinhe.web.service.chat.service.impl;
 
 import com.alibaba.fastjson.JSON;
 
+import com.cst.xinhe.common.constant.ConstantUrl;
 import com.cst.xinhe.common.netty.utils.FileUtils;
 import com.cst.xinhe.common.utils.FileType;
 import com.cst.xinhe.common.utils.convert.DateConvert;
@@ -82,13 +83,6 @@ public class CallServiceImpl implements CallService {
     @Autowired
     public StationIpPortMapper  stationIpPortMapper;
 
-   /* @Value("${constant.webBaseUrl}")
-    public String webBaseUrl ;*/
-   public String webBaseUrl="https://192.168.1.50:8443/";
-    @Value("${constant.basePath}")
-    public String basePath ;
-    @Value("${constant.rangBasePath}")
-    public String rangBasePath ;
 
 
 
@@ -98,7 +92,7 @@ public class CallServiceImpl implements CallService {
         Date currentDate = new Date();
         Integer terminalId = staffTerminalMapper.selectTerminalIdByStaffId(staffId);
 //        Integer terminalId = staffGroupTerminalServiceClient.findTerminalInfoByStaffId(staffId);
-        StringBuffer folderName = new StringBuffer(basePath);
+        StringBuffer folderName = new StringBuffer(ConstantUrl.basePath);
         folderName.append(terminalId).append(File.separator);
         StringBuffer fileName = new StringBuffer(DateConvert.convert(currentDate, 15));
         Integer seq = terminalMonitorClient.getSequenceId();
@@ -196,8 +190,7 @@ public class CallServiceImpl implements CallService {
             chatMsg.setStatus(false);
             chatMsg.setReceiveIp(terminalIp);
             chatMsgService.insertRecord(chatMsg);
-           // chatMsg.setPostMsg(realUrl.replace(basePath, webBaseUrl));
-            chatMsg.setPostMsg(realUrl.replace(basePath, webBaseUrl));
+            chatMsg.setPostMsg(realUrl.replace(ConstantUrl.basePath, ConstantUrl.webBaseUrl));
 
         }
         return chatMsg;

@@ -1,7 +1,3 @@
-constant:
-  webBaseUrl: https://192.168.1.50:8443/
-  basePath: d:/voice/file/
-  rangBasePath: D:/idea/ideaProject/vue2
 ipPrefix: 192.168.
 server:
   port: 8777
@@ -83,9 +79,6 @@ pagehelper:
   helper-dialect: mysql
   reasonable: true
   support-methods-arguments: count=countSql
-webBaseUrl: webBaseUrl
-basePath: basePath
-rangBasePath: rangBasePath
 #打印日志
 logging:
   level:

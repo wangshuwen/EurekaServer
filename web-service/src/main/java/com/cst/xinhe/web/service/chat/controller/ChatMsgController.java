@@ -3,6 +3,7 @@ package com.cst.xinhe.web.service.chat.controller;
 import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.result.ResultUtil;
 
+import com.cst.xinhe.common.constant.ConstantUrl;
 import com.cst.xinhe.persistence.dto.chat_msg.ChatMsgHistoryDto;
 import com.cst.xinhe.persistence.model.chat.ChatMsg;
 import com.cst.xinhe.web.service.chat.service.ChatMessageService;
@@ -29,14 +30,6 @@ import java.util.List;
  */
 @RestController
 public class ChatMsgController {
-
-   /* @Value("${constant.webBaseUrl}")
-    public String webBaseUrl ;*/
-   private  String webBaseUrl="https://192.168.1.50:8443/";
-    @Value("${constant.basePath}")
-    public String basePath ;
-    @Value("${constant.rangBasePath}")
-    public String rangBasePath ;
 
     @Resource
     private ChatMessageService chatMsgService;
@@ -87,7 +80,7 @@ public class ChatMsgController {
         for (HashMap<String, Object> map : result) {
             String postMsg = (String) map.get("postMsg");
             if(null != postMsg){
-                postMsg = postMsg.replace(basePath,webBaseUrl);
+                postMsg = postMsg.replace(ConstantUrl.basePath,ConstantUrl.webBaseUrl);
                 map.put("postMsg",postMsg);
             }
         }

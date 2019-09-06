@@ -137,8 +137,6 @@ pagehelper:
   helper-dialect: mysql
   reasonable: true
   support-methods-arguments: count=countSql
-basePath: basePath
-webBaseUrl: webBaseUrl
 #打印日志
 logging:
   level:

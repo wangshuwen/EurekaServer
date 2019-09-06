@@ -2,6 +2,7 @@ package com.cst.xinhe.kafka.consumer.service.consumer;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.cst.xinhe.common.constant.ConstantUrl;
 import com.cst.xinhe.common.ws.WebSocketData;
 import com.cst.xinhe.kafka.consumer.service.client.*;
 import com.cst.xinhe.persistence.dao.chat.ChatMsgMapper;
@@ -53,22 +54,6 @@ public class VoiceInfoProcess {
     private ChatMsgMapper chatMsgMapper;
 
 
-
-//    @Resource
-//    private StaffTerminalRelationService staffTerminalRelationService;
-//    @Resource
-//    private RangSettingService rangSettingService;
-
-
-//    @Resource
-//    private Constant constant;
-
-    @Value("basePath")
-    String basePath;
-    @Value("webBaseUrl")
-    String webBaseUrl;
-//    @Resource
-//    KafkaSender kafkaSender;
 
     private static final String TOPIC = "voice.tut";
     private void process(String str){
@@ -123,7 +108,7 @@ public class VoiceInfoProcess {
         gasWSRespVO.setStaffName(staffInfo.getStaffName());
         //TODO 封装WS 数据
 
-        String voiceUrl = postMsg.replace(basePath, webBaseUrl);
+        String voiceUrl = postMsg.replace(ConstantUrl.basePath, ConstantUrl.webBaseUrl);
         VoiceWSRespVo voiceWSRespVo = new VoiceWSRespVo();
         voiceWSRespVo.setStaffId(gasWSRespVO.getStaffId());
         voiceWSRespVo.setStatus(status);

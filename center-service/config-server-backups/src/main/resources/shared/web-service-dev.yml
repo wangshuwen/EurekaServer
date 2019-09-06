@@ -153,9 +153,4 @@ logging:
   config: classpath:logback-boot.xml
 redis:
   expireTime: 12
-rangBasePath: D:/idea/ideaProject/vue2/
-constant:
-  webBaseUrl: https://192.168.1.50:8443/
-  basePath: d:/voice/file/
-  rangBasePath: D:/idea/ideaProject/vue2
 ipPrefix: 192.168.

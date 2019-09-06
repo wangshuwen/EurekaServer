@@ -1,7 +1,7 @@
 package com.cst.xinhe.terminal.monitor.server.process;
 
 import com.alibaba.fastjson.JSON;
-import com.cst.xinhe.base.context.SpringContextUtil;
+import com.cst.xinhe.common.constant.ConstantUrl;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.utils.FileType;
 import com.cst.xinhe.common.utils.convert.DateConvert;
@@ -32,21 +32,13 @@ public class ProcessVoice {
 
 
     private volatile static ProcessVoice processVoice;
-//    @Resource
-    @Resource
-    private Constant constant;
-
-//    private UpLoadService upLoadService;
     @Resource
     private KafkaClient kafkaClient;
 
-    //    Client client = new Client();
-//    @Resource
-//    private Client client;
+
     @PostConstruct //通过@PostConstruct实现初始化bean之前进行的操作
     public void init() {
         processVoice = this;
-        processVoice.constant = this.constant;
         processVoice.kafkaClient = this.kafkaClient;
 //        processVoice.client = this.client;
     }
@@ -88,7 +80,7 @@ public class ProcessVoice {
         logger.info("来自[" + requestData.getTerminalId() + "]的第[" + count + "]个语音数据包");
 
         //创建根目录文件夹
-        StringBuilder folderName = new StringBuilder(constant.getBasePath());
+        StringBuilder folderName = new StringBuilder(ConstantUrl.basePath);
         folderName.append(requestData.getTerminalId()); //根路径
 
         String currentTime = DateConvert.convert(new Date(), 15);

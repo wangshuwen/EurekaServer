@@ -2,6 +2,7 @@ package com.cst.xinhe.web.service.system.controller;
 
 import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.result.ResultUtil;
+import com.cst.xinhe.common.constant.ConstantUrl;
 import com.cst.xinhe.common.netty.utils.WriteFileUtil;
 import com.cst.xinhe.persistence.model.rang_setting.RangSetting;
 import com.cst.xinhe.persistence.model.warn_level.LevelData;
@@ -29,11 +30,9 @@ public class RangSettingController {
 
     @Resource
     private RangSettingService rangSettingService;
-//    @Resource
-//    private Constant constant;
 
-    @Value("${rangBasePath}")
-    private String rangBasePath;
+
+
     @PostMapping("upload")
     @ApiOperation(value = "上传铃声", notes = "上传铃声")
     public String insert (@RequestParam("file") MultipartFile[] file, /*@RequestParam("type") Integer type,
@@ -41,7 +40,7 @@ public class RangSettingController {
     ) {
         if(file!=null) {
             //保存文件
-            StringBuffer sb = new StringBuffer(rangBasePath);
+            StringBuffer sb = new StringBuffer(ConstantUrl.rangBasePath);
             //文件夹名
             sb.append(url);
             //文件名

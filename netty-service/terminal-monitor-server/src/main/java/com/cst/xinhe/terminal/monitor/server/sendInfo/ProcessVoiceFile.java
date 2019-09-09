@@ -13,11 +13,11 @@ import org.springframework.kafka.annotation.TopicPartition;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
+import java.util.UUID;
 
 /**
  * @program: demo
@@ -75,13 +75,18 @@ public class ProcessVoiceFile {
             //Speex
             File send = new File(voiceUrl);
             FileInputStream inputStream = null;
-            int i = 1;
+        FileOutputStream outStream= null;
+
+
+        int i = 1;
             int len;
             try {
+                outStream = new FileOutputStream("d:/aaa/"+ UUID.randomUUID());
                 inputStream = new FileInputStream(send);
                 byte[] bo = new byte[512];
                 while (true) {
                     len = inputStream.read(bo);
+                    outStream.write(bo,0,len);
                     System.out.println(len);
                     requestData.setBody(bo);
                     requestData.setCount(i);
@@ -132,6 +137,7 @@ public class ProcessVoiceFile {
                 if (inputStream != null)
                     try {
                         inputStream.close();
+                        outStream.close();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

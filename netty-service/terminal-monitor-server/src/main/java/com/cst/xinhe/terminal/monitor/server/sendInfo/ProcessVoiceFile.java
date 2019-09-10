@@ -76,12 +76,14 @@ public class ProcessVoiceFile {
             File send = new File(voiceUrl);
             FileInputStream inputStream = null;
         FileOutputStream outStream= null;
-
-
+        String  url= "d:/aaa/"+ UUID.randomUUID();
+        File file = new File(url);
         int i = 1;
             int len;
+
             try {
-                outStream = new FileOutputStream("d:/aaa/"+ UUID.randomUUID());
+                file.createNewFile();
+                outStream = new FileOutputStream(file);
                 inputStream = new FileInputStream(send);
                 byte[] bo = new byte[512];
                 while (true) {

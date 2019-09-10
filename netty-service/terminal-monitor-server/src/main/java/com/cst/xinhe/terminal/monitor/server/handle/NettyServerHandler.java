@@ -260,10 +260,10 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                         break;
                     case ConstantValue.MSG_HEADER_COMMAND_ID_HEARTBEAT:
                         log.info("心跳数据");
-                        customMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);
+                      /*  customMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);
                         customMsg.setLength(34);
                         customMsg.setResult((byte) 0x55);
-                        customMsg.setNodeCount((byte) 0x00);
+                        customMsg.setNodeCount((byte) 0x00);*/
                         resp.setCustomMsg(customMsg);
                         SingletonClient.getSingletonClient().sendCmd(resp);
                         log.info("返回心跳包确认结束");

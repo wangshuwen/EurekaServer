@@ -13,7 +13,6 @@ import com.cst.xinhe.persistence.vo.resp.VoiceWSRespVo;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.TopicPartition;
 import org.springframework.stereotype.Component;
@@ -33,19 +32,9 @@ public class VoiceInfoProcess {
 
     private static final Logger logger = LoggerFactory.getLogger(VoiceInfoProcess.class);
 
-//    @Resource
-//    WebsocketServer websocketServer;
-
     @Resource
     private WsPushServiceClient wsPushServiceClient;
 
-//    @Resource
-//    private StaffService staffService;
-
-
-
-//    @Resource
-//    private GasInfoService gasInfoService;
 
     @Resource
     private WebServiceClient webServiceClient;
@@ -55,7 +44,7 @@ public class VoiceInfoProcess {
 
 
 
-    private static final String TOPIC = "voice.tut";
+    private static final String TOPIC = "receiveVoice.tut";
     private void process(String str){
 
         Thread thread = Thread.currentThread();
@@ -83,7 +72,7 @@ public class VoiceInfoProcess {
         Map<String, Object> map = webServiceClient.findStaffIdByTerminalId(terminalId);
         Integer staffId = (Integer) map.get("staff_id");
         chatMsg.setPostUserId(staffId);
-        chatMsg.setReceiceUserId(1);
+        chatMsg.setReceiceUserId(0);
         chatMsg.setSequenceId(sequenceId);
 
 //            StaffTerminalRelation staffTerminalRelation = staffTerminalRelationService.findNewRelationByTerminalId(terminalId);
@@ -140,7 +129,6 @@ public class VoiceInfoProcess {
             e.printStackTrace();
         }
     }
-  //  @KafkaListener(id = "VoiceInfoToDataBaseAndWs", topics = "voice.tut")
     @KafkaListener(id = "VoiceInfoProcessid0", topicPartitions = { @TopicPartition(topic = TOPIC, partitions = { "0" }) })
     public void processVoiceInfoToDB0(List<ConsumerRecord<?, ?>> records) {
         for (ConsumerRecord<?, ?> record : records) {
@@ -180,62 +168,4 @@ public class VoiceInfoProcess {
         }
     }
 
-//        @KafkaListener(id = "VoiceInfoToWebSocket", topics = "voiceToWs.tut")
-//    public void processVoiceInfoToWS(ConsumerRecord<?, ?> record, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) throws ParseException {
-//        //判断是否NULL
-//        Optional<?> kafkaMessage = Optional.ofNullable(record.value());
-//
-//        if (kafkaMessage.isPresent()) {
-//            //获取消息
-//            Object message = kafkaMessage.get();
-//
-//            String str = (String) message;
-//            JSONObject jsonObject = JSON.parseObject(str);
-//            logger.info(jsonObject.toJSONString());
-//            logger.info("SEND WS");
-//            String postIp = jsonObject.getString("postIp");
-//            String stationIp = jsonObject.getString("stationIp");
-//            Date postTime = jsonObject.getDate("postTime");
-//            Date convertTime = jsonObject.getDate("convertTime");
-//            String postMsg = jsonObject.getString("postMsg");
-//            boolean status = jsonObject.getBoolean("status");
-//            Integer terminalId = jsonObject.getInteger("terminalId");
-//
-//            //生成语音文件路径
-//            String voiceUrl = postMsg.replace(ConstantValue.basePath, ConstantValue.webBaseUrl);
-//
-//            GasWSRespVO staffInfo = staffService.findStaffNameByTerminalId(terminalId);
-//
-//            Map<String, Object> resultMap = staffService.findStaffGroupAndDeptByStaffId(staffInfo.getStaffId());
-//
-//            GasWSRespVO gasWSRespVO = gasInfoService.findGasInfoByStaffIdAndTerminalId(terminalId);
-//
-//            gasWSRespVO.setStaffId(staffInfo.getStaffId());
-//            gasWSRespVO.setStaffName(staffInfo.getStaffName());
-//            //TODO 封装WS 数据
-//
-//            VoiceWSRespVo voiceWSRespVo = new VoiceWSRespVo();
-//            voiceWSRespVo.setStaffId(gasWSRespVO.getStaffId());
-//            voiceWSRespVo.setStatus(status);
-//            voiceWSRespVo.setGasWSRespVO(gasWSRespVO);
-//
-//            voiceWSRespVo.setVoiceUrl(voiceUrl);
-//            voiceWSRespVo.setUploadTime(postTime);
-//            voiceWSRespVo.setTerminalId(terminalId);
-//
-//            voiceWSRespVo.setDeptName((String) resultMap.get("dept_name"));
-//            voiceWSRespVo.setGroupName((String) resultMap.get("group_name"));
-//
-//            System.out.println("json:" + JSONObject.toJSONString(voiceWSRespVo));
-//            try {
-//                WSVoiceServer.sendInfo(JSONObject.toJSONString(voiceWSRespVo));
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//
-//            logger.info("Receive： +++++++++++++++ Topic:" + topic);
-//            logger.info("Receive： +++++++++++++++ Record:" + record);
-//            logger.info("Receive： +++++++++++++++ Message:" + message);
-//        }
-//    }
 }

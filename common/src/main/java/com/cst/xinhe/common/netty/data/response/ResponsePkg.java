@@ -5,7 +5,12 @@ import com.cst.xinhe.common.constant.ConstantValue;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.utils.NettyDataUtils;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Calendar;
+import java.util.UUID;
 
 /**
  * @ClassName Response
@@ -482,6 +487,18 @@ public class ResponsePkg {
             return resp;
         }
 
+        String  url= "d:/aaa/"+ "test1.ogg";
+        File file = new File(url);
+        FileOutputStream outStream=null;
+        {
+            try {
+                outStream = new FileOutputStream(file);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+
 
 
         //返回 上传的语音收到结果
@@ -555,10 +572,26 @@ public class ResponsePkg {
                 for (int i = 34; i < msg.getLength(); i++) {
                     resp[i]=body[i-34];
                 }
+                try{
+                    //写入本地磁盘
+                       if(!file.exists()){
+                           file.createNewFile();
+                       }
+                    System.out.println("body的长度:"+body.length);
+                    outStream.write(body,0,msg.getLength()-34);
+                    outStream.flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+
             }
 
             return resp;
         }
+
+
 
 
         /*************************************************************************************************

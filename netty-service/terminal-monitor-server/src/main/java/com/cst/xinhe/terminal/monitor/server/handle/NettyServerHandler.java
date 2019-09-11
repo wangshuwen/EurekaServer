@@ -392,6 +392,10 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 map1.put("code",0);
                 wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(new WebSocketData(12, map1)));
 
+                System.out.println("-------------------------------");
+                System.out.println("推送终端不在线");
+                System.out.println("-------------------------------");
+
 
                 if (null != staffId) {
                     switch (isPerson) {

@@ -55,7 +55,7 @@ public class ProcessVoiceFile {
             responseData.setCode(ConstantValue.MSG_BODY_RESULT_SUCCESS);
             requestData.setType(ConstantValue.MSG_HEADER_FREAME_HEAD);
             requestData.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_NULL);
-            requestData.setLength(546);
+           // requestData.setLength(546);
             requestData.setStationId(stationId);
             requestData.setStationIp1(stationIp1);
             requestData.setStationIp2(stationIp2);
@@ -75,20 +75,16 @@ public class ProcessVoiceFile {
             //Speex
             File send = new File(voiceUrl);
             FileInputStream inputStream = null;
-        FileOutputStream outStream= null;
-        String  url= "d:/aaa/"+ UUID.randomUUID();
-        File file = new File(url);
+
         int i = 1;
             int len;
 
             try {
-                file.createNewFile();
-                outStream = new FileOutputStream(file);
+
                 inputStream = new FileInputStream(send);
                 byte[] bo = new byte[512];
                 while (true) {
                     len = inputStream.read(bo);
-                    outStream.write(bo,0,len);
                     System.out.println(len);
                     requestData.setBody(bo);
                     requestData.setCount(i);
@@ -96,6 +92,8 @@ public class ProcessVoiceFile {
                     for (int j = 0; j < bo.length; j++) {
                         System.out.printf("0x%02x ", bo[j]);
                     }
+                        requestData.setLength(34+len);
+
                     System.out.println("\n---------------------------");
                     System.out.println("\n发送的第 " + i + " 个语音包");
                     System.out.println("\n包总长度为： " + requestData.getLength());
@@ -132,14 +130,12 @@ public class ProcessVoiceFile {
                 System.out.println("\n包总长度为： " + requestData.getLength());
                 System.out.println("\n发送的语音数据： " + requestData.toString());
                 System.out.println("\n===========================");
-                i = 1;
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
                 if (inputStream != null)
                     try {
                         inputStream.close();
-                        outStream.close();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

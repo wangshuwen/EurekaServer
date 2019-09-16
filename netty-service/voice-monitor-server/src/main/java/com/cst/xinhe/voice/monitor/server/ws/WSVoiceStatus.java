@@ -17,9 +17,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.sound.midi.VoiceStatus;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.security.PublicKey;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -33,6 +35,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @Component
 public class WSVoiceStatus {
 
+
+    public static  Boolean voiceStatus=false;
 
     private StaffTerminalMapper staffTerminalMapper;
 
@@ -180,6 +184,8 @@ public class WSVoiceStatus {
                     voiceMonitorService.sendDataToTerminalMonitorServer(responseData);
                     break;
                 case "99":
+                    System.out.println("s设置voiceStatus为true");
+                    voiceStatus=true;
                     ProcessRtVoice.setBusyLine(false);
                     Channel channel = VoiceChannelMap.getChannelByName("channel");
                     if (null != channel){

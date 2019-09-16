@@ -1,11 +1,15 @@
 package com.cst.xinhe.voice.monitor.server.ws;
 
 import com.cst.xinhe.voice.monitor.server.channel.VoiceChannelMap;
+import com.cst.xinhe.voice.monitor.server.context.SpringContextUtil;
 import com.cst.xinhe.voice.monitor.server.process.ProcessRtVoice;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
+import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
@@ -27,6 +31,9 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @Component
 public class WSVoiceServer {
 
+    @Autowired
+    private WSVoiceServer  wSVoiceServer;
+
     private static ObjectMapper json= new ObjectMapper();
 
     private static final Logger log = LoggerFactory.getLogger(WSVoiceServer.class);
@@ -38,6 +45,9 @@ public class WSVoiceServer {
     private static final Map<String, Session> sessions = Collections.synchronizedMap(new HashMap<String, Session>());
     //与某个客户端的连接会话，需要通过它来给客户端发送数据
     private Session session;
+    public WSVoiceServer() {
+        this.wSVoiceServer = SpringContextUtil.getBean(WSVoiceServer.class);
+    }
 
     /**
      * 连接建立成功调用的方法
@@ -75,6 +85,19 @@ public class WSVoiceServer {
         Channel channel = VoiceChannelMap.getChannelByName("channel");
         if (null != channel)
             channel.writeAndFlush(message);
+
+
+       /* for (byte b : req) {
+            System.out.printf(" 0x%02x", b);
+        }*/
+      /*  try {
+            wSVoiceServer.sendMessage(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (EncodeException e) {
+            e.printStackTrace();
+        }*/
+
 
     }
 

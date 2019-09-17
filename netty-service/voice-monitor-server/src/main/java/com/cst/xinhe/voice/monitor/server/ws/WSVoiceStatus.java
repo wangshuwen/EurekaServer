@@ -6,6 +6,8 @@ import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
 import com.cst.xinhe.persistence.dao.staff.StaffMapper;
 import com.cst.xinhe.persistence.dao.terminal.StaffTerminalMapper;
+import com.cst.xinhe.persistence.dao.updateIp.TerminalIpPortMapper;
+import com.cst.xinhe.persistence.model.updateIp.TerminalIpPort;
 import com.cst.xinhe.voice.monitor.server.channel.VoiceChannelMap;
 import com.cst.xinhe.voice.monitor.server.context.SpringContextUtil;
 import com.cst.xinhe.voice.monitor.server.process.ProcessRtVoice;
@@ -39,11 +41,13 @@ public class WSVoiceStatus {
     public static  Boolean voiceStatus=false;
 
     private StaffTerminalMapper staffTerminalMapper;
+    private TerminalIpPortMapper  terminalIpPortMapper;
 
     private VoiceMonitorService voiceMonitorService;
     public WSVoiceStatus() {
         this.voiceMonitorService = SpringContextUtil.getBean(VoiceMonitorServiceImpl.class);
         this.staffTerminalMapper=SpringContextUtil.getBean(StaffTerminalMapper.class);
+        this.terminalIpPortMapper=SpringContextUtil.getBean(TerminalIpPortMapper.class);
     }
 
     private static final Logger log = LoggerFactory.getLogger(WSVoiceStatus.class);
@@ -110,6 +114,7 @@ public class WSVoiceStatus {
         String ipPort = "";
         String result = "";
         String staffId = "";
+        Integer terminalId=null;
         log.info("来自客户端的消息:" + message);
         JSONObject jsonObject = JSONObject.parseObject(message);
         //将json字符串转成json对象后遍历键值对
@@ -132,8 +137,9 @@ public class WSVoiceStatus {
 
         if(staffId!=null&&staffId!=""){
             int staffId1 = Integer.parseInt(staffId);
-            Integer terminalId = staffTerminalMapper.selectTerminalIdByStaffId(staffId1);
+             terminalId = staffTerminalMapper.selectTerminalIdByStaffId(staffId1);
             customMsg.setTerminalId(terminalId);
+
         }
 
         //ip和port不为空
@@ -155,6 +161,15 @@ public class WSVoiceStatus {
                 customMsg.setTerminalIp(ip[0] + "." + ip[1]);
             }
 
+        }else{
+            TerminalIpPort terminalIpPort = terminalIpPortMapper.selectByPrimaryKey(terminalId);
+            String terminalIp = terminalIpPort.getTerminalIp();
+            Integer terminalPort = terminalIpPort.getTerminalPort();
+            customMsg.setTerminalPort(terminalPort);
+            String ip[] = terminalIp.split("\\.");
+            customMsg.setTerminalIp(terminalIp);
+            customMsg.setTerminalIp1(Integer.parseInt(ip[0]));
+            customMsg.setTerminalIp2(Integer.parseInt(ip[1]));
         }
 
         customMsg.setType(ConstantValue.MSG_HEADER_FREAME_HEAD);
@@ -194,6 +209,14 @@ public class WSVoiceStatus {
                         channel.closeFuture();
                         VoiceChannelMap.removeChannelByName("channel");//挂断
                     }
+
+                    break;
+                case "77":
+                    customMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_CONTROL);
+                    customMsg.setNdName(ConstantValue.MSG_BODY_NODE_NAME_REAL_TIME_server);   //服务端呼叫终端，终端未响应，服务端挂断
+                    responseData.setCustomMsg(customMsg);
+//                    SingletonClient.getSingletonClient().sendCmd(responseData);
+                    voiceMonitorService.sendDataToTerminalMonitorServer(responseData);
                     break;
                 case "33":
                     ProcessRtVoice.checkOnline(staffId);  //上面呼叫下面查询：  返回55成功   66终端语音占线，77终端不在线

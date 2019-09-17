@@ -35,7 +35,8 @@ public class ResponsePkg {
                 || msg.getNdName() == ConstantValue.MSG_BODY_NODE_NAME_REAL_TIME_CALL
                 || msg.getNdName() == ConstantValue.MSG_BODY_NODE_NAME_POWER_STATUS
                 || msg.getNdName() == ConstantValue.MSG_BODY_NODE_NAME_CHECK_POWER
-                || msg.getNdName() == ConstantValue.MSG_BODY_NODE_NAME_E_CALL) {
+                || msg.getNdName() == ConstantValue.MSG_BODY_NODE_NAME_E_CALL
+        || msg.getNdName()==ConstantValue.MSG_BODY_NODE_NAME_REAL_TIME_server) {
 
             byte[] data = new byte[34];
 

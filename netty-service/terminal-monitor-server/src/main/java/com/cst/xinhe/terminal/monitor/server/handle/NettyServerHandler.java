@@ -134,6 +134,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             if (customMsg.getType() == ConstantValue.MSG_HEADER_FREAME_HEAD) {
                 int cmd = customMsg.getCmd();
                 int ndName = customMsg.getNdName();
+                log.info("终端发送的cmd："+cmd+"ndName："+ndName);
                 switch (cmd) {
                     case ConstantValue.MSG_HEADER_COMMAND_ID_NULL:  //对讲语音数据
                         if (ndName != ConstantValue.MSG_BODY_NODE_NAME_VOICE_DATA) {
@@ -160,8 +161,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                         switch (ndName) {
                             case ConstantValue.MSG_BODY_NODE_NAME_SENSOR_DATA:
                                 log.info("气体信息");
-                                //upLoadService.sendGasInfoToQueue(customMsg);
-                                terminalMonitorService.sendGasInfoToQueue(customMsg);
+
                                 //实时查询领导、员工、车辆的数量
                                 customMsg.setLength(34);
                                 customMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);
@@ -174,6 +174,9 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                                 System.out.println("接收到的气体数量：" + ++gasNum);
                                 SingletonClient.getSingletonClient().sendCmd(resp);//返回气体成功标记
                                 log.info("返回气体确认结束");
+
+                                //upLoadService.sendGasInfoToQueue(customMsg);
+                                terminalMonitorService.sendGasInfoToQueue(customMsg);
                                 break;
                             case ConstantValue.MSG_BODY_NODE_NAME_SELF_CHECK_RESULT:
 //                                upLoadService.sendSelfCheckResult(customMsg);
@@ -259,14 +262,28 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                         }
                         break;
                     case ConstantValue.MSG_HEADER_COMMAND_ID_HEARTBEAT:
-                        log.info("心跳数据");
-                      /*  customMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);
+                       /* log.info("心跳数据");
+                      *//*  customMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);
                         customMsg.setLength(34);
                         customMsg.setResult((byte) 0x55);
-                        customMsg.setNodeCount((byte) 0x00);*/
+                        customMsg.setNodeCount((byte) 0x00);*//*
                         resp.setCustomMsg(customMsg);
                         SingletonClient.getSingletonClient().sendCmd(resp);
-                        log.info("返回心跳包确认结束");
+                        log.info("返回心跳包确认结束");*/
+
+                        System.out.println("-------------------------3--------------------");
+                        System.out.println("-------------------------3--------------------");
+                        System.out.println("-------------------------3--------------------");
+                        log.info("心跳数据");
+                        customMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);
+                        customMsg.setLength(34);
+                        customMsg.setResult(ConstantValue.MSG_BODY_RESULT_SUCCESS);
+                        customMsg.setNodeCount((byte) 0x00);
+                        System.out.println("--------------心跳回复开始-----------");
+                        System.out.println(customMsg.toString());
+                        System.out.println("--------------心跳回复结束-----------");
+                        resp.setCustomMsg(customMsg);
+                        SingletonClient.getSingletonClient().sendCmd(resp);
                         break;
                     case ConstantValue.MSG_HEADER_COMMAND_ID_SEARCH:    // 协议 查询
                         switch (ndName) {
@@ -284,6 +301,9 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                                 terminalMonitorService.searchPersonInfoByTerminalId(customMsg);
                                 log.info("个人信息查询");
                                 break;
+                            case   ConstantValue.MSG_BODY_NODE_NAME_REAL_TIME_client://终端呼叫服务端，服务端未响应，终端挂断
+                                terminalMonitorService.terminalHangUp(customMsg);
+                                log.info("终端呼叫服务端，服务端未响应，终端挂断");
                         }
                         break;
                     case ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE://应答
@@ -354,11 +374,11 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
      * @date 9:50 2018/12/6
      * @auther lifeng
      **/
-    private ExecutorService executorService = Executors.newFixedThreadPool(6);
+  //  private ExecutorService executorService = Executors.newFixedThreadPool(6);
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
-        executorService.execute(() -> {
+    //    executorService.execute(() -> {
             InetSocketAddress inSocket = (InetSocketAddress) ctx.channel().remoteAddress();
             String clientIP = inSocket.getAddress().getHostAddress();
             int port = inSocket.getPort();
@@ -419,10 +439,9 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 }
                 //实时查询：数据推送到前端页面
                 //TerminalInfoProcess.pushRtPersonData();
-//                terminalMonitorService.pushRtPersonData();
-
+                //terminalMonitorService.pushRtPersonData();
             }
-        });
+        // });
 
     }
 

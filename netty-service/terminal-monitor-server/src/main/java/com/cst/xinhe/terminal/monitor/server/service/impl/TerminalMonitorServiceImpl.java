@@ -99,6 +99,33 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
 
     @Resource
     private StaffTerminalMapper staffTerminalMapper;
+
+    @Override
+    public void terminalHangUp(RequestData customMsg) {
+        String ip = customMsg.getTerminalIp();
+        Integer port = customMsg.getTerminalPort();
+        String ipPort=ip+":"+port;
+        int terminalId = customMsg.getTerminalId();
+//        Map<String, Object> staffInfo = staffService.findStaffIdByTerminalId(terminalId);
+
+//        Map<String, Object> staffInfo = staffGroupTerminalServiceClient.findStaffIdByTerminalId(terminalId);
+        Map<String, Object> staffInfo = staffMapper.selectStaffInfoByTerminalId(terminalId);
+//        customMsg.getTerminalIp();
+        //定义map储存数据
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("cmd","2008");//2008表示发起呼叫
+        map.put("ipPort",ipPort);
+        map.put("staffInfo",staffInfo);
+
+            map.put("result","10");
+            //发送给浏览器，终端已接听
+//            WSVoiceStatusServer.
+        String keyStr= JSON.toJSONString(new WebSocketData(3,map));
+        voiceMonitorServerClient.sendInfoToWs(keyStr);
+        //WSVoiceStatusServer.sendInfo(keyStr);
+
+    }
+
     /**
      * 根据端口和Ip判断是否在线
      * @param ipPort

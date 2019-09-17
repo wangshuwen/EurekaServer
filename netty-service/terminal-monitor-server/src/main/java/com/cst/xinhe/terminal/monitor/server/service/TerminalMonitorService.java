@@ -65,4 +65,6 @@ public interface TerminalMonitorService {
     void searchPersonInfoByTerminalId(RequestData customMsg);
 
     void eCall(RequestData customMsg);
+
+    void terminalHangUp(RequestData customMsg);
 }

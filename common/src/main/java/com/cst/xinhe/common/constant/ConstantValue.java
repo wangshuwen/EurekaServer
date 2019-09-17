@@ -35,6 +35,8 @@ public class ConstantValue {
     public static final int MSG_BODY_NODE_NAME_CHECK_POWER = 0x2007;//  ,查询设备端电量),
 
     public static final int MSG_BODY_NODE_NAME_REAL_TIME_CALL = 0x2008;//  ,发起呼叫),
+    public static final int MSG_BODY_NODE_NAME_REAL_TIME_server = 0x3010;//  ,服务端呼叫终端，终端未响应，服务端挂断),
+    public static final int MSG_BODY_NODE_NAME_REAL_TIME_client = 0x3011;//  ,终端呼叫服务端，服务端未响应，终端挂断),
     public static final int MSG_BODY_NODE_NAME_MSG_READ_STATUS = 0x2009;//  ,单条语音阅读状态),
 
     public static final int MSG_BODY_NODE_NAME_HEARTBEAT = 0x3001;//  , "心跳"),

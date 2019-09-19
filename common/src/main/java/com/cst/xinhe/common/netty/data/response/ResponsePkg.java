@@ -22,6 +22,17 @@ import java.util.UUID;
 
 public class ResponsePkg {
 
+    String  url= "d:/aaa/"+ "test6.ogg";
+    File file = new File(url);
+    FileOutputStream outStream=null;
+    {
+        try {
+            outStream = new FileOutputStream(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * @param
      * @return byte[]
@@ -490,16 +501,7 @@ public class ResponsePkg {
             return resp;
         }
 
-        String  url= "d:/aaa/"+ "test1.ogg";
-        File file = new File(url);
-        FileOutputStream outStream=null;
-        {
-            try {
-                outStream = new FileOutputStream(file);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
+
 
 
 
@@ -581,7 +583,7 @@ public class ResponsePkg {
                            file.createNewFile();
                        }
                     System.out.println("body的长度:"+body.length);
-                    outStream.write(body,0,msg.getLength()-34);
+                    outStream.write(body,0,body.length);
                     outStream.flush();
                 } catch (IOException e) {
                     e.printStackTrace();

@@ -33,6 +33,8 @@ public class ResponsePkg {
         }
     }
 
+    private static Integer num=0;
+
     /**
      * @param
      * @return byte[]
@@ -573,6 +575,11 @@ public class ResponsePkg {
                 resp[36]=body[2];
                 resp[37]=body[3];
             }else if(msg.getLength()>34){
+                System.out.println("---------------------------------");
+                System.out.println("发出"+(num++) +"个语音数据包");
+                System.out.println("---------------------------------");
+                System.out.println("---------------------------------");
+
                 byte[] body = msg.getBody();
                 for (int i = 34; i < msg.getLength(); i++) {
                     resp[i]=body[i-34];

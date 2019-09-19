@@ -4,8 +4,10 @@ import com.cst.xinhe.common.constant.ConstantValue;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
 import com.cst.xinhe.common.ws.WebSocketData;
+import com.cst.xinhe.persistence.dao.chat.ChatMsgMapper;
 import com.cst.xinhe.persistence.dao.rang_setting.RangSettingMapper;
 import com.cst.xinhe.persistence.dao.terminal.TerminalUpdateIpMapper;
+import com.cst.xinhe.persistence.model.chat.ChatMsg;
 import com.cst.xinhe.persistence.model.rang_setting.RangSetting;
 import com.cst.xinhe.persistence.model.rang_setting.RangSettingExample;
 import com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp;
@@ -19,6 +21,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,11 +59,14 @@ public class ProcessRtVoice {
 
     private RangSettingMapper rangSettingMapper;
 
+    private static ChatMsgMapper chatMsgMapper;
+
     public ProcessRtVoice() {
         this.voiceMonitorService = SpringContextUtil.getBean(VoiceMonitorService.class);
         this.staffGroupTerminalServiceClient = SpringContextUtil.getBean(StaffGroupTerminalServiceClient.class);
 //        this.staffGroupTerminalServiceClient=SpringContextUtil.getBean(StaffGroupTerminalServiceClient.class);
         this.rangSettingMapper=SpringContextUtil.getBean(RangSettingMapper.class);
+        this.chatMsgMapper=SpringContextUtil.getBean(ChatMsgMapper.class);
     }
 
     public static ProcessRtVoice getProcessRealTimeVoice() {
@@ -216,6 +223,20 @@ public class ProcessRtVoice {
      */
     public static void checkOnline(String staffId) {
         int parseInt = Integer.parseInt(staffId);
+
+        //该员工在通讯录页置顶位置
+        /*List<Map<String, Object>> chatRecord = chatMsgMapper.findChatRecord(parseInt);
+        if(chatRecord!=null){
+            Map<String, Object> map = chatRecord.get(chatRecord.size() - 1);
+            Integer msgId = (Integer) map.get("msgId");
+
+            ChatMsg chatMsg = new ChatMsg();
+            chatMsg.setPostTime(new Date());
+            chatMsg.setMsgId(msgId);
+            chatMsgMapper.updateByPrimaryKeySelective(chatMsg);
+
+        }*/
+
 
         //根据员工id查询对应的ip和port
 //        Integer terminalId = getProcessRealTimeVoice().terminalService.findTerminalInfoByStaffId(Integer.parseInt(staffId));

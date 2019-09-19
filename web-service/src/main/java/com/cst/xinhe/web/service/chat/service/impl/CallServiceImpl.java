@@ -144,7 +144,7 @@ public class CallServiceImpl implements CallService {
 
             Integer terminalPort = (Integer) terminalInfo.get("terminal_port");
 
-         ;
+
 
             voiceDto.setStaffId(staffId);
             voiceDto.setUserId(userId);

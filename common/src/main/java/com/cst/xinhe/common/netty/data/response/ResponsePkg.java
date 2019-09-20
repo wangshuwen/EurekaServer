@@ -584,7 +584,7 @@ public class ResponsePkg {
                 for (int i = 34; i < msg.getLength(); i++) {
                     resp[i]=body[i-34];
                 }
-                try{
+              /*  try{
                     //写入本地磁盘
                        if(!file.exists()){
                            file.createNewFile();
@@ -594,7 +594,7 @@ public class ResponsePkg {
                     outStream.flush();
                 } catch (IOException e) {
                     e.printStackTrace();
-                }
+                }*/
 
 
 

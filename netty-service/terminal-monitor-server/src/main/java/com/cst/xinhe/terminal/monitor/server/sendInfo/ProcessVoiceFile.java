@@ -76,7 +76,7 @@ public class ProcessVoiceFile {
             File send = new File(voiceUrl);
             FileInputStream inputStream = null;
 
-        int i = 1;
+            int i = 1;
             int len;
 
             try {
@@ -93,6 +93,7 @@ public class ProcessVoiceFile {
                         System.out.printf("0x%02x ", bo[j]);
                     }
                         requestData.setLength(34+len);
+
 
                     System.out.println("\n---------------------------");
                     System.out.println("\n发送的第 " + i + " 个语音包");

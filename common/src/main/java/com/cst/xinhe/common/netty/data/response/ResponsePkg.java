@@ -22,16 +22,6 @@ import java.util.UUID;
 
 public class ResponsePkg {
 
-    String  url= "d:/aaa/"+ "test6.ogg";
-    File file = new File(url);
-    FileOutputStream outStream=null;
-    {
-        try {
-            outStream = new FileOutputStream(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
 
     private static Integer num=0;
 
@@ -576,25 +566,16 @@ public class ResponsePkg {
                 resp[37]=body[3];
             }else if(msg.getLength()>34){
                 System.out.println("---------------------------------");
-                System.out.println("发出"+(num++) +"个语音数据包");
+                System.out.println("最终发出"+(num++) +"个语音数据包");
                 System.out.println("---------------------------------");
                 System.out.println("---------------------------------");
 
                 byte[] body = msg.getBody();
-                for (int i = 34; i < msg.getLength(); i++) {
+               /* for (int i = 34; i < msg.getLength(); i++) {
                     resp[i]=body[i-34];
-                }
-              /*  try{
-                    //写入本地磁盘
-                       if(!file.exists()){
-                           file.createNewFile();
-                       }
-                    System.out.println("body的长度:"+body.length);
-                    outStream.write(body,0,body.length);
-                    outStream.flush();
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }*/
+                System.arraycopy(body, 0, resp, 34, (body.length));
+
 
 
 

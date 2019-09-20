@@ -148,13 +148,13 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                             log.info("生成文件路径" + wavPath);
                         }
                         //向终端响应信息
-                        customMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);
+                        /*customMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);
                         customMsg.setLength(34);
                         customMsg.setResult((byte) 0x55);
                         customMsg.setNodeCount((byte) 0x00);
                         customMsg.setNdName(ConstantValue.MSG_BODY_NODE_NAME_VOICE_DATA);
                         resp.setCustomMsg(customMsg);
-                        SingletonClient.getSingletonClient().sendCmd(resp);
+                        SingletonClient.getSingletonClient().sendCmd(resp);*/
                         break;
                     case ConstantValue.MSG_HEADER_COMMAND_ID_REQUEST:
                         log.info("采集数据上报");

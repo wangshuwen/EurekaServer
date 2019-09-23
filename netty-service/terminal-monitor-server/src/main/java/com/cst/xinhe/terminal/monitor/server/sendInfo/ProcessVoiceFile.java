@@ -86,11 +86,13 @@ public class ProcessVoiceFile {
                 byte[] bo = new byte[512];
                 while (true) {
                     len = inputStream.read(bo);
-                    System.out.println(len);
+
+                    System.out.print("\n发送的第 " + i + " 个语音包");
+                    System.out.println("语音包body的长度："+len);
                     requestData.setBody(bo);
                     requestData.setCount(i);
                     System.out.println("\n===========================");
-                    System.out.print("\n发送的第 " + i + " 个语音包");
+
                     for (int j = 0; j < len; j++) {
                         System.out.printf("0x%02x ", bo[j]);
                     }

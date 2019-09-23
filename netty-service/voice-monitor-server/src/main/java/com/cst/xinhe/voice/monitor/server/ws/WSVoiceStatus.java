@@ -163,14 +163,16 @@ public class WSVoiceStatus {
 
         }else{
             TerminalIpPort terminalIpPort = terminalIpPortMapper.selectByPrimaryKey(terminalId);
-            String terminalIp = terminalIpPort.getTerminalIp();
-            if(terminalId!=null&&!"".equals(terminalIp)){
-                Integer terminalPort = terminalIpPort.getTerminalPort();
-                customMsg.setTerminalPort(terminalPort);
-                String ip[] = terminalIp.split("\\.");
-                customMsg.setTerminalIp(terminalIp);
-                customMsg.setTerminalIp1(Integer.parseInt(ip[0]));
-                customMsg.setTerminalIp2(Integer.parseInt(ip[1]));
+            if(terminalIpPort!=null){
+                String terminalIp = terminalIpPort.getTerminalIp();
+                if(terminalId!=null&&!"".equals(terminalIp)){
+                    Integer terminalPort = terminalIpPort.getTerminalPort();
+                    customMsg.setTerminalPort(terminalPort);
+                    String ip[] = terminalIp.split("\\.");
+                    customMsg.setTerminalIp(terminalIp);
+                    customMsg.setTerminalIp1(Integer.parseInt(ip[0]));
+                    customMsg.setTerminalIp2(Integer.parseInt(ip[1]));
+                }
             }
         }
 

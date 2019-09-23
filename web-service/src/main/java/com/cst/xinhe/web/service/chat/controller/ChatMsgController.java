@@ -37,6 +37,29 @@ public class ChatMsgController {
    /* @Autowired
     private Constant constant;*/
 
+
+
+
+    @PostMapping("call/newCallRecord")
+    @ApiOperation(value = "新增实时语音通话记录", notes = ".0")
+    public String newCallRecord(@RequestParam(name = "userId") Integer userId,
+                                @RequestParam(name = "timeLong")  String  timeLong,@RequestParam(name = "type") Integer type) {
+
+
+        ChatMsg chatMsg = new ChatMsg();
+        chatMsg.setPostUserId(userId);
+        chatMsg.setPostMsg(timeLong);
+        chatMsg.setPostTime(new Date());
+        chatMsg.setLengthMsg(type);
+        Integer result = chatMsgService.insertRecord(chatMsg);
+
+
+
+        return result == 1 ? ResultUtil.jsonToStringSuccess() : ResultUtil.jsonToStringError(ResultEnum.FAILED);
+    }
+
+
+
     /**
      * @param
      * @return
@@ -52,6 +75,9 @@ public class ChatMsgController {
         PageInfo<ChatMsgHistoryDto> pageInfo = chatMsgService.findMsgHistory(userId, staffId, startPage, pageSize);
         return ResultUtil.jsonToStringSuccess(pageInfo);
     }
+
+
+
 
     @GetMapping("call/{staffId}")
     @ApiOperation(value = "对员工呼叫实现实时语音", notes = "根据系统用户ID，员工ID查询历史聊天记录")

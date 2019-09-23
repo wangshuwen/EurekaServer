@@ -6,8 +6,11 @@ import com.cst.xinhe.common.constant.ConstantUrl;
 import com.cst.xinhe.common.ws.WebSocketData;
 import com.cst.xinhe.kafka.consumer.service.client.*;
 import com.cst.xinhe.persistence.dao.chat.ChatMsgMapper;
+import com.cst.xinhe.persistence.dao.staff.StaffMapper;
+import com.cst.xinhe.persistence.dao.staff.StaffOrganizationMapper;
 import com.cst.xinhe.persistence.model.chat.ChatMsg;
 import com.cst.xinhe.persistence.model.rang_setting.RangSetting;
+import com.cst.xinhe.persistence.model.staff.StaffOrganization;
 import com.cst.xinhe.persistence.vo.resp.GasWSRespVO;
 import com.cst.xinhe.persistence.vo.resp.VoiceWSRespVo;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -41,6 +44,12 @@ public class VoiceInfoProcess {
 
     @Resource
     private ChatMsgMapper chatMsgMapper;
+
+    @Resource
+    private StaffMapper  staffMapper;
+
+    @Resource
+    private StaffOrganizationMapper staffOrganizationMapper;
 
 
 
@@ -83,32 +92,38 @@ public class VoiceInfoProcess {
 //        GasWSRespVO staffInfo = staffService.findStaffNameByTerminalId(terminalId);
         GasWSRespVO staffInfo = webServiceClient.findStaffNameByTerminalId(terminalId);
 
-//        Map<String, Object> resultMap = staffService.findStaffGroupAndDeptByStaffId(staffInfo.getStaffId());
-        Map<String, Object> resultMap = webServiceClient.findStaffGroupAndDeptByStaffId(staffInfo.getStaffId());
+        Integer groupId = staffInfo.getGroupId();
+        String deptName= getDeptNameByGroupId(groupId);
 
-        GasWSRespVO gasWSRespVO = null;
-        try {
-//            gasWSRespVO = gasInfoService.findGasInfoByStaffIdAndTerminalId(terminalId);
+//        Map<String, Object> resultMap = staffService.findStaffGroupAndDeptByStaffId(staffInfo.getStaffId());
+       // Map<String, Object> resultMap = webServiceClient.findStaffGroupAndDeptByStaffId(staffInfo.getStaffId());
+
+       // GasWSRespVO gasWSRespVO = null;
+        /*try {
+
             gasWSRespVO = webServiceClient.findGasInfoByStaffIdAndTerminalId(terminalId);
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        gasWSRespVO.setStaffId(staffInfo.getStaffId());
-        gasWSRespVO.setStaffName(staffInfo.getStaffName());
+        }*/
+     //   gasWSRespVO.setStaffId(staffInfo.getStaffId());
+      //  gasWSRespVO.setStaffName(staffInfo.getStaffName());
         //TODO 封装WS 数据
 
         String voiceUrl = postMsg.replace(ConstantUrl.basePath, ConstantUrl.webBaseUrl);
         VoiceWSRespVo voiceWSRespVo = new VoiceWSRespVo();
-        voiceWSRespVo.setStaffId(gasWSRespVO.getStaffId());
+        voiceWSRespVo.setStaffId(staffInfo.getStaffId());
         voiceWSRespVo.setStatus(status);
-        voiceWSRespVo.setGasWSRespVO(gasWSRespVO);
+     //   voiceWSRespVo.setGasWSRespVO(gasWSRespVO);
 
         voiceWSRespVo.setVoiceUrl(voiceUrl);
         voiceWSRespVo.setUploadTime(postTime);
         voiceWSRespVo.setTerminalId(terminalId);
-
-        voiceWSRespVo.setDeptName((String) resultMap.get("dept_name"));
-        voiceWSRespVo.setGroupName((String) resultMap.get("group_name"));
+        String staffName = staffMapper.selectStaffNameById(staffId);
+        voiceWSRespVo.setStaffName(staffName);
+        voiceWSRespVo.setDeptName(deptName);
+        voiceWSRespVo.setSequenceId(sequenceId);
+       // voiceWSRespVo.setDeptName((String) resultMap.get("dept_name"));
+      //  voiceWSRespVo.setGroupName((String) resultMap.get("group_name"));
         HashMap<Object, Object> voiceMap = new HashMap<>();
         voiceMap.put("voiceInfo",voiceWSRespVo);
         voiceMap.put("code",1);//code=1,表示单条语音
@@ -119,7 +134,8 @@ public class VoiceInfoProcess {
 
         for (RangSetting rang : rangs) {
             if(rang.getStatus()==1){
-                voiceMap.put("url",rang.getUrl());
+                //voiceMap.put("url",rang.getUrl());
+                voiceWSRespVo.setRangUrl(rang.getUrl());
             }
         }
         try {
@@ -129,6 +145,22 @@ public class VoiceInfoProcess {
             e.printStackTrace();
         }
     }
+
+
+    public String getDeptNameByGroupId(Integer groupId) {
+        String deptName = "";
+        StaffOrganization staffOrganization = staffOrganizationMapper.selectByPrimaryKey(groupId);
+        if (staffOrganization != null) {
+            deptName = staffOrganization.getName();
+            if (staffOrganization.getParentId() != 0) {
+                String parentName = getDeptNameByGroupId(staffOrganization.getParentId());
+                deptName = parentName + "/" + deptName;
+            }
+        }
+
+        return deptName;
+    }
+
     @KafkaListener(id = "VoiceInfoProcessid0", topicPartitions = { @TopicPartition(topic = TOPIC, partitions = { "0" }) })
     public void processVoiceInfoToDB0(List<ConsumerRecord<?, ?>> records) {
         for (ConsumerRecord<?, ?> record : records) {
@@ -167,5 +199,8 @@ public class VoiceInfoProcess {
             }
         }
     }
+
+
+
 
 }

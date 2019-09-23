@@ -178,9 +178,12 @@ public class StaffServiceImpl implements StaffService {
             Integer staffId = (Integer) resultMap.get("staff_id");
             String staffName = (String) resultMap.get("staff_name");
             Integer isPerson = (Integer) resultMap.get("is_person");
+            Integer groupId = (Integer) resultMap.get("group_id");
+
             gasWSRespVO.setStaffName(staffName);
             gasWSRespVO.setStaffId(staffId);
             gasWSRespVO.setIsPerson(isPerson);
+            gasWSRespVO.setGroupId(groupId);
             return gasWSRespVO;
         } else {
             gasWSRespVO.setStaffName("未知人员");

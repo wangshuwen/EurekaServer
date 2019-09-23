@@ -76,6 +76,7 @@ public class VoiceServerHandler extends ChannelInboundHandlerAdapter {
        /* for (byte b : req) {
             System.out.printf(" 0x%02x", b);
         }*/
+       log.info("收到语音数据"+msg);
         wSVoiceServer.sendMessage(req);
         ReferenceCountUtil.release(msg);
     }

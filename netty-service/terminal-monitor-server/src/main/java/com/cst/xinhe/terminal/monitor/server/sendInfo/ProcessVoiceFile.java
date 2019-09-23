@@ -32,6 +32,7 @@ public class ProcessVoiceFile {
 
 
     private static final String TOPIC = "voiceSender.tut";
+    private  Integer byteLength=0;
 
     private void process(String str_msg){
             JSONObject jsonObject = JSONObject.parseObject(str_msg);
@@ -89,9 +90,15 @@ public class ProcessVoiceFile {
                     requestData.setBody(bo);
                     requestData.setCount(i);
                     System.out.println("\n===========================");
-                    for (int j = 0; j < bo.length; j++) {
+                    System.out.print("\n发送的第 " + i + " 个语音包");
+                    for (int j = 0; j < len; j++) {
                         System.out.printf("0x%02x ", bo[j]);
                     }
+                    byteLength+=len;
+                    System.out.println();
+                    System.out.println("语音数据的总长度："+byteLength);
+
+
                         requestData.setLength(34+len);
 
 
@@ -112,6 +119,11 @@ public class ProcessVoiceFile {
                         e.printStackTrace();
                     }
                     i++;
+                }
+                try {
+                    Thread.sleep((long) 100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
                 requestData.setLength(38);
                 requestData.setCount(i);

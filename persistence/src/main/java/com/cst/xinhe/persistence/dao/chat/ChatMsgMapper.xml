@@ -441,12 +441,11 @@
         ORDER BY post_time ASC
     </select>
 
-    <select id=" selectChatListByUserIdAndStaffId" parameterType="java.lang.Integer" resultType="java.util.Map">
+    <select id="selectChatListByUserIdAndStaffId" parameterType="java.lang.Integer" resultType="java.util.Map">
         SELECT
         <include refid="Base_Column_List"/>
         FROM chat_msg
-        WHERE ( post_user_id = #{staffId} AND receice_user_id = #{userId} )
-         AND  is_del=0  and  terminal_id  is null
+        WHERE ( post_user_id = #{staffId} AND receice_user_id = #{userId} )   and  terminal_id  is null
     </select>
 
 

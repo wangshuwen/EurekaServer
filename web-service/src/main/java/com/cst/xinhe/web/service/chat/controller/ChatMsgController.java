@@ -56,9 +56,6 @@ public class ChatMsgController {
         }else{
             terminalId = staffTerminalMapper.selectTerminalIdByStaffId(receiceUserId);
         }
-
-
-
         ChatMsg chatMsg = new ChatMsg();
         chatMsg.setPostUserId(postUserId);
         chatMsg.setReceiceUserId(receiceUserId);

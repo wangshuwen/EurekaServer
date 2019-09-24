@@ -4,9 +4,11 @@ import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.result.ResultUtil;
 
 import com.cst.xinhe.common.constant.ConstantUrl;
+import com.cst.xinhe.persistence.dao.terminal.StaffTerminalMapper;
 import com.cst.xinhe.persistence.dto.chat_msg.ChatMsgHistoryDto;
 import com.cst.xinhe.persistence.model.chat.ChatMsg;
 import com.cst.xinhe.web.service.chat.service.ChatMessageService;
+import com.cst.xinhe.web.service.staff_group_terminal.service.StaffService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 
@@ -38,21 +40,36 @@ public class ChatMsgController {
     private Constant constant;*/
 
 
+     @Resource
+    private StaffTerminalMapper staffTerminalMapper;
 
 
-    @PostMapping("call/newCallRecord")
+
+    @GetMapping ("call/newCallRecord")
     @ApiOperation(value = "新增实时语音通话记录", notes = ".0")
-    public String newCallRecord(@RequestParam(name = "userId") Integer userId,
+    public String newCallRecord(@RequestParam(name = "postUserId") Integer postUserId,
+                                @RequestParam(name = "receiceUserId") Integer receiceUserId,
                                 @RequestParam(name = "timeLong")  String  timeLong,@RequestParam(name = "type") Integer type) {
+        Integer terminalId;
+        if(postUserId!=null&&postUserId!=0){
+            terminalId = staffTerminalMapper.selectTerminalIdByStaffId(postUserId);
+        }else{
+            terminalId = staffTerminalMapper.selectTerminalIdByStaffId(receiceUserId);
+        }
+
 
 
         ChatMsg chatMsg = new ChatMsg();
-        chatMsg.setPostUserId(userId);
+        chatMsg.setPostUserId(postUserId);
+        chatMsg.setReceiceUserId(receiceUserId);
         chatMsg.setPostMsg(timeLong);
         chatMsg.setPostTime(new Date());
         chatMsg.setLengthMsg(type);
-        Integer result = chatMsgService.insertRecord(chatMsg);
+        if(terminalId!=null){
+            chatMsg.setTerminalId(terminalId);
+        }
 
+        Integer result = chatMsgService.insertRecord(chatMsg);
 
 
         return result == 1 ? ResultUtil.jsonToStringSuccess() : ResultUtil.jsonToStringError(ResultEnum.FAILED);

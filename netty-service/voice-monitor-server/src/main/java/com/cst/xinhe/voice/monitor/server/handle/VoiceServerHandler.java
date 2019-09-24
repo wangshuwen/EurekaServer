@@ -133,19 +133,22 @@ public class VoiceServerHandler extends ChannelInboundHandlerAdapter {
 //
 //        }
         if(WSVoiceStatus.voiceStatus==false){
+
             map.put("cmd", "2008");
             map.put("result", "99");
             map.put("ipPort", str);
             wsVoiceStatus.sendInfo(JSON.toJSONString(new WebSocketData(3, map)));
+
+            log.info("语音[" + str + "] 已断开连接");
+            VoiceChannelMap.removeChannelByName("channel");
+            log.info("语音[" + str + "] 被移出session");
         }else{
             WSVoiceStatus.voiceStatus=false;
             System.out.println("voiceStatus设置为true");
         }
 
 
-        log.info("语音[" + str + "] 已断开连接");
-        VoiceChannelMap.removeChannelByName("channel");
-        log.info("语音[" + str + "] 被移出session");
+
     }
 
     /**

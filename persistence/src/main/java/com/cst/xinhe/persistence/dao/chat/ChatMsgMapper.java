@@ -97,6 +97,7 @@ public interface ChatMsgMapper {
     int updateByPrimaryKey(ChatMsg record);
 
     List<Map<String, Object>> selectMsgByUserIdAndStaffId(@Param("userId") Integer userId, @Param("staffId") Integer staffId);
+    List<Map<String, Object>> selectChatListByUserIdAndStaffId(@Param("userId") Integer userId, @Param("staffId") Integer staffId);
 
     List<Map<String, Object>> findChatList(@Param("keyWord") String keyWord, @Param("deptIds") List<Integer> deptIds);
 
@@ -108,4 +109,6 @@ public interface ChatMsgMapper {
     Integer updateChatMegStatusBySeqId(ChatMsg chatMsg);
 
     Integer findUnReadCount(Integer staffId);
+
+
 }

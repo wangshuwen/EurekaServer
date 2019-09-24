@@ -139,11 +139,13 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     @Override
     public Integer addChatRecord(ChatMsg chatMsg) {
         chatMsg.setReceiceUserId(0);
-        List<Map<String, Object>> list = chatMsgMapper.selectMsgByUserIdAndStaffId(0, chatMsg.getPostUserId());
+
+        //查询通讯录左边列表的信息，并不是真实语音数据（terminal为null，receiceUserId为0）
+        List<Map<String, Object>> list = chatMsgMapper.selectChatListByUserIdAndStaffId(0, chatMsg.getPostUserId());
 
         if(list==null||list.size()==0){
             return chatMsgMapper.insertSelective(chatMsg);
-        }else{
+        }else {
             Map<String, Object> map = list.get(0);
             Integer msgId = (Integer) map.get("msgId");
             ChatMsg chatMsg1 = new ChatMsg();

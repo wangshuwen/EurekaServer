@@ -441,6 +441,17 @@
         ORDER BY post_time ASC
     </select>
 
+    <select id=" selectChatListByUserIdAndStaffId" parameterType="java.lang.Integer" resultType="java.util.Map">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM chat_msg
+        WHERE ( post_user_id = #{staffId} AND receice_user_id = #{userId} )
+         AND  is_del=0  and  terminal_id  is null
+    </select>
+
+
+
+
     <select id="findChatList"  resultType="java.util.Map">
        select * from  ((select  <include refid="Base_Column_List"/>,staff_id as staffId,staff_name as staffName,group_id as groupId  from (
             select c.*,s.staff_id,s.staff_name,s.group_id  from chat_msg c left join staff s

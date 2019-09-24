@@ -203,7 +203,7 @@ public class WSVoiceStatus {
                     voiceMonitorService.sendDataToTerminalMonitorServer(responseData);
                     break;
                 case "99":
-                    System.out.println("s设置voiceStatus为true");
+                    System.out.println("s设置voiceStatus为true,接收到99");
                     voiceStatus=true;
                     ProcessRtVoice.setBusyLine(false);
                     Channel channel = VoiceChannelMap.getChannelByName("channel");
@@ -212,6 +212,7 @@ public class WSVoiceStatus {
                         channel.close();
                         channel.closeFuture();
                         VoiceChannelMap.removeChannelByName("channel");//挂断
+                        System.out.println("把9999端口从终端移除");
                     }
 
                     break;

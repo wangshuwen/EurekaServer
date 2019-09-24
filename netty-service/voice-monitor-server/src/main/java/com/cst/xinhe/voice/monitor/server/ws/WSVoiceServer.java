@@ -42,7 +42,7 @@ public class WSVoiceServer {
     private static int onlineCount = 0;
     //concurrent包的线程安全Set，用来存放每个客户端对应的MyWebSocket对象。
     private static CopyOnWriteArraySet<WSVoiceServer> webSocketSet = new CopyOnWriteArraySet<>();
-    private static final Map<String, Session> sessions = Collections.synchronizedMap(new HashMap<String, Session>());
+    private static  Map<String, Session> sessions = Collections.synchronizedMap(new HashMap<>());
     //与某个客户端的连接会话，需要通过它来给客户端发送数据
     private Session session;
     public WSVoiceServer() {
@@ -68,7 +68,7 @@ public class WSVoiceServer {
     @OnClose
     public void onClose() {
         //设置房间没人，不可呼叫
-        ProcessRtVoice.closeRoom();
+      //  ProcessRtVoice.closeRoom();
         webSocketSet.remove(this);  //从set中删除
         subOnlineCount();           //在线数减1
         log.info("有一连接关闭！当前在线人数为" + getOnlineCount());

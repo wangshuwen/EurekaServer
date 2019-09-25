@@ -49,7 +49,7 @@ public class ChatMsgController {
     @ApiOperation(value = "新增实时语音通话记录", notes = ".0")
     public String newCallRecord(@RequestParam(name = "postUserId") Integer postUserId,
                                 @RequestParam(name = "receiceUserId") Integer receiceUserId,
-                                @RequestParam(name = "timeLong")  String  timeLong,@RequestParam(name = "type") Integer type) {
+                                @RequestParam(name = "timeLong",required = false)  String  timeLong,@RequestParam(name = "type") Integer type) {
         Integer terminalId;
         if(postUserId!=null&&postUserId!=0){
             terminalId = staffTerminalMapper.selectTerminalIdByStaffId(postUserId);

@@ -83,7 +83,7 @@ public class WSVoiceStatus {
     @OnClose
     public void onClose() {
         //设置房间没人，不可呼叫
-        ProcessRtVoice.closeRoom();
+       // ProcessRtVoice.closeRoom();
         webSocketSet.remove(this);  //从set中删除
         subOnlineCount();           //在线数减1
         log.info("有一连接关闭！当前在线人数为" + getOnlineCount());

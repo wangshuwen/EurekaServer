@@ -344,9 +344,10 @@ public class ResponsePkg {
             int rty = year - 2000;
             int month = cal.get(Calendar.MONTH)+1;//获取月份
             int day = cal.get(Calendar.DATE);//获取日
-            int hour = cal.get(Calendar.HOUR);//小时
+            int hour = cal.get(Calendar.HOUR_OF_DAY);//小时
             int minute = cal.get(Calendar.MINUTE);//分
             int second = cal.get(Calendar.SECOND);//秒
+
 
             resp[24] = (byte) rty;
             resp[25] = (byte) month;

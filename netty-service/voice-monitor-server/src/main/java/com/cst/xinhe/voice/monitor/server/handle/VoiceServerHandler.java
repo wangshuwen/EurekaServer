@@ -190,7 +190,7 @@ public class VoiceServerHandler extends ChannelInboundHandlerAdapter {
 //        sb.append(":");
 //        sb.append(port);
 //        String str = sb.toString();
-        if (evt instanceof IdleStateEvent) {
+        /*if (evt instanceof IdleStateEvent) {
             IdleStateEvent event = (IdleStateEvent) evt;
             if (event.state() == IdleState.READER_IDLE) {
                 //TODO 读超时
@@ -215,7 +215,7 @@ public class VoiceServerHandler extends ChannelInboundHandlerAdapter {
         } else {
             super.userEventTriggered(ctx, evt);
             VoiceChannelMap.removeChannelByName("channel");
-        }
+        }*/
     }
 
     /**
@@ -233,7 +233,7 @@ public class VoiceServerHandler extends ChannelInboundHandlerAdapter {
         String str = clientIP + ":" +
                 port;
         log.error("语音[" + str + "] 出现异常" + cause.getLocalizedMessage());
-        VoiceChannelMap.removeChannelByName("channel");
+       // VoiceChannelMap.removeChannelByName("channel");
         cause.printStackTrace();
     }
 }

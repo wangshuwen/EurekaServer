@@ -117,7 +117,10 @@ public class WSVoiceServer {
     }
 
     public void sendMessage(byte[] message) throws IOException, EncodeException {
-        sessions.get("a").getBasicRemote().sendBinary(ByteBuffer.wrap(message));
+        if(webSocketSet!=null&&webSocketSet.size()>0){
+            sessions.get("a").getBasicRemote().sendBinary(ByteBuffer.wrap(message));
+        }
+
     }
 
 

@@ -394,11 +394,14 @@ public class GasKafka {
                     }
 
                     gasPosition.setInfoType(0);
-                    gasPosition.setTempPositionName(road.getTempPositionName());
-                    gasPosition.setPositionX(road.getPositionX());
-                    gasPosition.setPositionY(road.getPositionY());
-                    gasPosition.setPositionZ(road.getPositionZ());
-                    road.setStationId(gasPosition.getStationId());
+                   if(road!=null){
+                       gasPosition.setTempPositionName(road.getTempPositionName());
+                       gasPosition.setPositionX(road.getPositionX());
+                       gasPosition.setPositionY(road.getPositionY());
+                       gasPosition.setPositionZ(road.getPositionZ());
+                       road.setStationId(gasPosition.getStationId());
+                   }
+
                     sendTempRoadName(requestData.getTerminalId(), requestData.getTerminalIp(), requestData.getTerminalPort(), road.getTempPositionName());
 
                     //--------------------------------判断员工是否是出矿入矿---------------------------------

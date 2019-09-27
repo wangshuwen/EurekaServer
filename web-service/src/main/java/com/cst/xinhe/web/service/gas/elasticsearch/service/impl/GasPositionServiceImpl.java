@@ -116,11 +116,15 @@ public class GasPositionServiceImpl implements GasPositionService {
             example.createCriteria().andStaffNameLike("%"+staffName+"%");
             List<Staff> staffList = staffMapper.selectByExample(example);
             if(null != staffList &&staffList.size()>0){
-                for (Staff staff : staffList) {
-                    builder.should(QueryBuilders.termQuery("staffid",staff.getStaffId()));
+                if(staffList.size()==1){
+                    builder.must(QueryBuilders.termQuery("staffid",staffList.get(0).getStaffId()));
+                }else{
+                    for (Staff staff : staffList) {
+                        builder.should(QueryBuilders.termQuery("staffid",staff.getStaffId()));
+                    }
                 }
             }else{
-                builder.should(QueryBuilders.termQuery("staffid",0));
+                builder.must(QueryBuilders.termQuery("staffid",0));
             }
         }
         if(null != gasFlag){

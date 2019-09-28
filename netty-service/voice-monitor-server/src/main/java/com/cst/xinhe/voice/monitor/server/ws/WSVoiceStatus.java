@@ -111,7 +111,7 @@ public class WSVoiceStatus {
         RequestData customMsg = new RequestData();
 
         String cmd = "";
-        String ipPort = "";
+       // String ipPort = "";
         String result = "";
         String staffId = "";
         Integer terminalId=null;
@@ -123,9 +123,9 @@ public class WSVoiceStatus {
             if ("cmd".equals(entry.getKey())) {
                 cmd = (String) entry.getValue();
             }
-            if ("ipPort".equals(entry.getKey())) {
+          /*  if ("ipPort".equals(entry.getKey())) {
                 ipPort = (String) entry.getValue();
-            }
+            }*/
             if ("result".equals(entry.getKey())) {
                 result = (String) entry.getValue();
             }
@@ -142,7 +142,9 @@ public class WSVoiceStatus {
 
         }
 
-        //ip和port不为空
+       // log.info("ipPort:"+ipPort);
+
+       /* //ip和port不为空
         if (!"".equals(ipPort) && ipPort != null) {
             //解决ipPort="null1.106"
             ipPort= ipPort.replace("null","");
@@ -161,7 +163,7 @@ public class WSVoiceStatus {
                 customMsg.setTerminalIp(ip[0] + "." + ip[1]);
             }
 
-        }else{
+        }else{*/
             TerminalIpPort terminalIpPort = terminalIpPortMapper.selectByPrimaryKey(terminalId);
             if(terminalIpPort!=null){
                 String terminalIp = terminalIpPort.getTerminalIp();
@@ -174,7 +176,7 @@ public class WSVoiceStatus {
                     customMsg.setTerminalIp2(Integer.parseInt(ip[1]));
                 }
             }
-        }
+       /* }*/
 
         customMsg.setType(ConstantValue.MSG_HEADER_FREAME_HEAD);
         customMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);

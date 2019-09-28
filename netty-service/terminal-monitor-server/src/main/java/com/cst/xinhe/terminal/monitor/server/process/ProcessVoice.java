@@ -64,7 +64,9 @@ public class ProcessVoice {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-
+    /**
+     * 创建语音文件，语音数据写入本地
+     */
     public String process(RequestData requestData) {
         Integer sequenceId = requestData.getSequenceId();
         Integer terminalId = requestData.getTerminalId();

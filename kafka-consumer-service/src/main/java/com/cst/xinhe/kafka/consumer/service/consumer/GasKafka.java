@@ -391,6 +391,8 @@ public class GasKafka {
                             wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(new WebSocketData(10, gasPosition)));
                         }
 
+                        e.printStackTrace();
+
                     }
 
                     gasPosition.setInfoType(0);
@@ -400,9 +402,10 @@ public class GasKafka {
                        gasPosition.setPositionY(road.getPositionY());
                        gasPosition.setPositionZ(road.getPositionZ());
                        road.setStationId(gasPosition.getStationId());
+                       sendTempRoadName(requestData.getTerminalId(), requestData.getTerminalIp(), requestData.getTerminalPort(), road.getTempPositionName());
                    }
 
-                    sendTempRoadName(requestData.getTerminalId(), requestData.getTerminalIp(), requestData.getTerminalPort(), road.getTempPositionName());
+
 
                     //--------------------------------判断员工是否是出矿入矿---------------------------------
                     Map<String, Object> entryStation = baseStationMapper.selectBaseStationByType(1);

@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -120,6 +121,8 @@ public class ChatMsgController {
                              @RequestParam(name = "pageSize", defaultValue = "5", required = false) Integer pageSize) {
         Page page = chatMsgService.findChatRecord(staffId,startPage,pageSize);
         List<HashMap<String,Object>> result = page.getResult();
+        Collections.reverse(result);
+
         for (HashMap<String, Object> map : result) {
             Date postTime = (Date) map.get("postTime");
 
@@ -159,6 +162,10 @@ public class ChatMsgController {
     @PostMapping("call/addChatRecord")
     @ApiOperation(value = "新增聊天列表，无聊天记录", notes = ".0")
     public String addChatRecord(@RequestBody ChatMsg chatMsg) {
+        if(chatMsg.getPostUserId()==null){
+            return ResultUtil.jsonToStringSuccess();
+        }
+
         long now = new Date().getTime();
         //防止点击多次，多次添加
         if(now-date.getTime()<1000){

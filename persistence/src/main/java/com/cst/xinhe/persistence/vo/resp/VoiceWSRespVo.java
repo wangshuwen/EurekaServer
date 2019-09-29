@@ -16,7 +16,7 @@ public class VoiceWSRespVo {
 
     private Integer terminalId;
 
-    private String voiceUrl;
+    private String postMsg;
 
     private boolean status;
 
@@ -79,12 +79,12 @@ public class VoiceWSRespVo {
         this.terminalId = terminalId;
     }
 
-    public String getVoiceUrl() {
-        return voiceUrl;
+    public String getPostMsg() {
+        return postMsg;
     }
 
-    public void setVoiceUrl(String voiceUrl) {
-        this.voiceUrl = voiceUrl;
+    public void setPostMsg(String postMsg) {
+        this.postMsg = postMsg;
     }
 
     public boolean isStatus() {

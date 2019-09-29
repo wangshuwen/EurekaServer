@@ -4,6 +4,7 @@ import com.cst.xinhe.base.enums.ResultEnum;
 import com.cst.xinhe.base.result.ResultUtil;
 
 import com.cst.xinhe.common.constant.ConstantUrl;
+import com.cst.xinhe.persistence.dao.chat.ChatMsgMapper;
 import com.cst.xinhe.persistence.dao.terminal.StaffTerminalMapper;
 import com.cst.xinhe.persistence.dto.chat_msg.ChatMsgHistoryDto;
 import com.cst.xinhe.persistence.model.chat.ChatMsg;
@@ -40,9 +41,31 @@ public class ChatMsgController {
    /* @Autowired
     private Constant constant;*/
 
+   @Resource
+   private ChatMsgMapper chatMsgMapper;
 
      @Resource
     private StaffTerminalMapper staffTerminalMapper;
+
+
+    @PutMapping("call/updateMsgByChatMsgId")
+    @ApiOperation(value = "更新实时语音通话，type=3的已读未读状态", notes = "更新实时通话的已读未读状态")
+    public String updateMsgByChatMsgId(@RequestParam(name = "msgIds") Integer[] msgIds ) {
+        Integer result=0;
+        if(msgIds!=null){
+            for (Integer msgId : msgIds) {
+                ChatMsg chatMsg = new ChatMsg();
+                chatMsg.setStatus(true);
+                chatMsg.setMsgId(msgId);
+                result = chatMsgMapper.updateByPrimaryKeySelective(chatMsg);
+            }
+
+        }
+
+        return result > 0 ? ResultUtil.jsonToStringSuccess() : ResultUtil.jsonToStringError(ResultEnum.FAILED);
+    }
+
+
 
 
 
@@ -57,12 +80,17 @@ public class ChatMsgController {
         }else{
             terminalId = staffTerminalMapper.selectTerminalIdByStaffId(receiceUserId);
         }
+
         ChatMsg chatMsg = new ChatMsg();
         chatMsg.setPostUserId(postUserId);
         chatMsg.setReceiceUserId(receiceUserId);
         chatMsg.setPostMsg(timeLong);
         chatMsg.setPostTime(new Date());
         chatMsg.setLengthMsg(type);
+
+        if(type==3){
+            chatMsg.setStatus(false);
+        }
         if(terminalId!=null){
             chatMsg.setTerminalId(terminalId);
         }

@@ -120,7 +120,7 @@ public class VoiceInfoProcess {
         voiceWSRespVo.setStatus(status);
      //   voiceWSRespVo.setGasWSRespVO(gasWSRespVO);
 
-        voiceWSRespVo.setVoiceUrl(voiceUrl);
+        voiceWSRespVo.setPostMsg(voiceUrl);
         voiceWSRespVo.setUploadTime(postTime);
         voiceWSRespVo.setTerminalId(terminalId);
         String staffName = staffMapper.selectStaffNameById(staffId);

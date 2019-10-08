@@ -398,7 +398,9 @@ public class GasKafka {
                     gasPosition.setPositionY(road.getPositionY());
                     gasPosition.setPositionZ(road.getPositionZ());
                     road.setStationId(gasPosition.getStationId());
-                    sendTempRoadName(requestData.getTerminalId(), requestData.getTerminalIp(), requestData.getTerminalPort(), road.getTempPositionName());
+                    if(road.getTempPositionName()!=null||!"".equals(road.getTempPositionName())){
+                        sendTempRoadName(requestData.getTerminalId(), requestData.getTerminalIp(), requestData.getTerminalPort(), road.getTempPositionName());
+                    }
 
                     //--------------------------------判断员工是否是出矿入矿---------------------------------
                     Map<String, Object> entryStation = baseStationMapper.selectBaseStationByType(1);

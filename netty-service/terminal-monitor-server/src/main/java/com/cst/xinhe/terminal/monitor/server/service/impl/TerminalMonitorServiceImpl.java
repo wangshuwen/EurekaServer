@@ -620,7 +620,10 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
         gasPosition.setPositionY(road.getPositionY());
         gasPosition.setPositionZ(road.getPositionZ());
         road.setStationId(gasPosition.getStationId());
-        sendTempRoadName(customMsg.getTerminalId(),customMsg.getTerminalIp(),customMsg.getTerminalPort(),road.getTempPositionName());
+        if(road.getTempPositionName()!=null||!"".equals(road.getTempPositionName())){
+            sendTempRoadName(customMsg.getTerminalId(),customMsg.getTerminalIp(),customMsg.getTerminalPort(),road.getTempPositionName());
+        }
+
 
         //----------------------------------以下是判断出入问题------------------------------------
         //去除staffGroupTerminalServiceClient

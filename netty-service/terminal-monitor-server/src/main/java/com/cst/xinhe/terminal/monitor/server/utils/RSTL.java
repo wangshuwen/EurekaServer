@@ -39,6 +39,9 @@ public class RSTL {
 //        BaseStation station2 = stationPartitionServiceClient.findBaseStationByNum(stationId2);
         BaseStation station2 = baseStationMapper.findBaseStationByNum(stationId2);
 
+        if(station1==null||station2==null)
+            return teminalRoad;
+
         double distance = 0D;
         double positionX1 = station1.getPositionX();
         double positionY1 = station1.getPositionY();

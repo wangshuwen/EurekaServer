@@ -1,9 +1,7 @@
 package com.cst.xinhe.gateway;
 
-import com.cst.xinhe.gateway.license.LicenseVerify;
-import com.cst.xinhe.gateway.license.LicenseVerifyParam;
+
 import org.apache.catalina.connector.Connector;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,11 +15,13 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @EnableTransactionManagement
 @SpringBootApplication
 @EnableEurekaClient
 @EnableZuulProxy
+@EnableSwagger2
 //@MapperScan("com.cst.xinhe.persistence.dao")
 public class GatewayServiceApplication implements ApplicationRunner {
 

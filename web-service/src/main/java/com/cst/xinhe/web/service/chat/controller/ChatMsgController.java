@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -105,6 +106,9 @@ public class ChatMsgController {
     @GetMapping("call/singleVoiceNum")
     @ApiOperation(value = "获取当前未读单条语音的数量", notes = "获取当前未读单条语音的数量")
     public String singleVoiceNum(@Param("staffId") Integer staffId) {
+        if(staffId==null){
+            return ResultUtil.jsonToStringError(ResultEnum.FAILED);
+        }
         Integer count =chatMsgService.getSingleVoiceNum(staffId);
         return ResultUtil.jsonToStringSuccess(count);
     }
@@ -127,6 +131,9 @@ public class ChatMsgController {
         return ResultUtil.jsonToStringSuccess(pageInfo);
     }
 
+
+
+
     @GetMapping("call/{staffId}")
     @ApiOperation(value = "对员工呼叫实现实时语音", notes = "根据系统用户ID，员工ID查询历史聊天记录")
     public String realTimeCall(@PathVariable(name = "staffId") Integer staffId) {
@@ -144,6 +151,9 @@ public class ChatMsgController {
         return pageInfo.getSize() > 0 ? ResultUtil.jsonToStringSuccess(pageInfo):ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
     }
 
+
+    long tempTime=0;
+
     @GetMapping("call/chatRecord")
     @ApiOperation(value = "获取聊天记录", notes = "根据员工id，分页查询聊天记录")
     public String chatRecord( @RequestParam(name = "staffId") Integer staffId,
@@ -151,13 +161,29 @@ public class ChatMsgController {
                              @RequestParam(name = "pageSize", defaultValue = "5", required = false) Integer pageSize) {
         Page page = chatMsgService.findChatRecord(staffId,startPage,pageSize);
         List<HashMap<String,Object>> result = page.getResult();
+        Collections.reverse(result);
+
         for (HashMap<String, Object> map : result) {
+            Date postTime = (Date) map.get("postTime");
+
+            //两条消息记录时间大于10分钟，不显示时间
+            long nowTime = postTime.getTime();
+            if(nowTime-tempTime<10*60*1000){
+                map.put("isShow",false);
+            }else{
+                map.put("isShow",true);
+            }
+            tempTime=nowTime;
+
+
             String postMsg = (String) map.get("postMsg");
             if(null != postMsg){
                 postMsg = postMsg.replace(ConstantUrl.basePath,ConstantUrl.webBaseUrl);
                 map.put("postMsg",postMsg);
             }
         }
+
+        tempTime=0;
 
         PageInfo pageInfo = new PageInfo(page);
         return pageInfo.getSize() > 0 ?ResultUtil.jsonToStringSuccess(pageInfo):ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
@@ -176,6 +202,10 @@ public class ChatMsgController {
     @PostMapping("call/addChatRecord")
     @ApiOperation(value = "新增聊天列表，无聊天记录", notes = ".0")
     public String addChatRecord(@RequestBody ChatMsg chatMsg) {
+        if(chatMsg.getPostUserId()==null){
+            return ResultUtil.jsonToStringSuccess();
+        }
+
         long now = new Date().getTime();
         //防止点击多次，多次添加
         if(now-date.getTime()<1000){

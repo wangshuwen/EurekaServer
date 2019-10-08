@@ -164,7 +164,8 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
     @Override
     public Integer getSingleVoiceNum(Integer staffId) {
-
+        //把所有的实时通话记录改为已读
+        chatMsgMapper.updateAllChatReaded(staffId);
      Integer count= chatMsgMapper.getSingleVoiceNum(staffId);
         return count;
     }

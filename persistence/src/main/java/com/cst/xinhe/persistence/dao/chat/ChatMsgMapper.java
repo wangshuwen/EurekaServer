@@ -113,4 +113,6 @@ public interface ChatMsgMapper {
 
 
     Integer getSingleVoiceNum(@Param("staffId") Integer staffId);
+
+    void updateAllChatReaded(@Param("staffId") Integer staffId);
 }

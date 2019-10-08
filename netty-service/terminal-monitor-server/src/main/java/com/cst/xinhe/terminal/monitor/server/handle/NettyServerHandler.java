@@ -50,6 +50,7 @@ import java.util.concurrent.Executors;
 public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
     private volatile static int gasNum = 0;
+    private volatile static int offNum = 0;
     /**
      * 日志
      */
@@ -174,6 +175,9 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                                 System.out.println("接收到的气体数量：" + ++gasNum);
                                 SingletonClient.getSingletonClient().sendCmd(resp);//返回气体成功标记
                                 log.info("返回气体确认结束");
+
+                                log.info("终端短线数量："+offNum);
+                                log.info("终端短线数量："+offNum);
 
                                 //upLoadService.sendGasInfoToQueue(customMsg);
                                 terminalMonitorService.sendGasInfoToQueue(customMsg);
@@ -415,6 +419,9 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 System.out.println("-------------------------------");
                 System.out.println("推送终端不在线");
                 System.out.println("-------------------------------");
+
+                offNum++;
+                log.info("终端短线数量："+offNum);
 
 
                 if (null != staffId) {

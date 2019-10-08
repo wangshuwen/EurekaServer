@@ -76,6 +76,7 @@ public class VoiceServerHandler extends ChannelInboundHandlerAdapter {
        /* for (byte b : req) {
             System.out.printf(" 0x%02x", b);
         }*/
+       log.info("收到语音数据"+msg);
         wSVoiceServer.sendMessage(req);
         ReferenceCountUtil.release(msg);
     }
@@ -132,19 +133,22 @@ public class VoiceServerHandler extends ChannelInboundHandlerAdapter {
 //
 //        }
         if(WSVoiceStatus.voiceStatus==false){
+
             map.put("cmd", "2008");
             map.put("result", "99");
             map.put("ipPort", str);
             wsVoiceStatus.sendInfo(JSON.toJSONString(new WebSocketData(3, map)));
+
+            log.info("语音[" + str + "] 已断开连接");
+            VoiceChannelMap.removeChannelByName("channel");
+            log.info("语音[" + str + "] 被移出session");
         }else{
             WSVoiceStatus.voiceStatus=false;
             System.out.println("voiceStatus设置为true");
         }
 
 
-        log.info("语音[" + str + "] 已断开连接");
-        VoiceChannelMap.removeChannelByName("channel");
-        log.info("语音[" + str + "] 被移出session");
+
     }
 
     /**
@@ -186,7 +190,7 @@ public class VoiceServerHandler extends ChannelInboundHandlerAdapter {
 //        sb.append(":");
 //        sb.append(port);
 //        String str = sb.toString();
-        if (evt instanceof IdleStateEvent) {
+        /*if (evt instanceof IdleStateEvent) {
             IdleStateEvent event = (IdleStateEvent) evt;
             if (event.state() == IdleState.READER_IDLE) {
                 //TODO 读超时
@@ -211,7 +215,7 @@ public class VoiceServerHandler extends ChannelInboundHandlerAdapter {
         } else {
             super.userEventTriggered(ctx, evt);
             VoiceChannelMap.removeChannelByName("channel");
-        }
+        }*/
     }
 
     /**
@@ -229,7 +233,7 @@ public class VoiceServerHandler extends ChannelInboundHandlerAdapter {
         String str = clientIP + ":" +
                 port;
         log.error("语音[" + str + "] 出现异常" + cause.getLocalizedMessage());
-        VoiceChannelMap.removeChannelByName("channel");
+       // VoiceChannelMap.removeChannelByName("channel");
         cause.printStackTrace();
     }
 }

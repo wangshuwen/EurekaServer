@@ -131,39 +131,25 @@ public class CallServiceImpl implements CallService {
                         voiceDto.setStationIp1(0);
                         voiceDto.setStationIp2(0);
                     }
-
                 }
-
             }
-
 
             String terminalIp = (String) terminalInfo.get("terminal_ip");
             String terminalIps[] = terminalIp.split("\\.");
             Integer terminalIp1 = Integer.parseInt(terminalIps[0]);
             Integer terminalIp2 = Integer.parseInt(terminalIps[1]);
-
             Integer terminalPort = (Integer) terminalInfo.get("terminal_port");
-
-
-
             voiceDto.setStaffId(staffId);
             voiceDto.setUserId(userId);
             voiceDto.setVoiceUrl(realUrl);
             voiceDto.setSeqId(seq);
-
-
             voiceDto.setTerminalId(terminalId);
             voiceDto.setTerminalPort(terminalPort);
-
-
-
             voiceDto.setTerminalIp1(terminalIp1);
             voiceDto.setTerminalIp2(terminalIp2);
             voiceDto.setTerminalIp(terminalIp);
 
 //            kafkaSender.send(voiceDto, "voiceSender.tut");
-
-
 //            terminalMonitorClient.sendUrl(voiceDto); //发送 URL
             StringBuffer ipPort = new StringBuffer(ipPrefix);
             ipPort.append(terminalIp1).append(".").append(terminalIp2).append(":").append(terminalPort);

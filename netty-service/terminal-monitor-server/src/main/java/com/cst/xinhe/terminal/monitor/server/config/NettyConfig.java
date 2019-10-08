@@ -71,6 +71,9 @@ public class NettyConfig {
 
             //语音服务配置
 
+            //netty参数配置
+            //https://www.cnblogs.com/xiaoyongsz/p/6133266.html?utm_source=itdadao&utm_medium=referral
+
 
             //参数TCP设置
 //            ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.ADVANCED);

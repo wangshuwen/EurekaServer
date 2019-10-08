@@ -83,7 +83,7 @@ public class WSVoiceStatus {
     @OnClose
     public void onClose() {
         //设置房间没人，不可呼叫
-        ProcessRtVoice.closeRoom();
+       // ProcessRtVoice.closeRoom();
         webSocketSet.remove(this);  //从set中删除
         subOnlineCount();           //在线数减1
         log.info("有一连接关闭！当前在线人数为" + getOnlineCount());
@@ -111,7 +111,7 @@ public class WSVoiceStatus {
         RequestData customMsg = new RequestData();
 
         String cmd = "";
-        String ipPort = "";
+       // String ipPort = "";
         String result = "";
         String staffId = "";
         Integer terminalId=null;
@@ -123,9 +123,9 @@ public class WSVoiceStatus {
             if ("cmd".equals(entry.getKey())) {
                 cmd = (String) entry.getValue();
             }
-            if ("ipPort".equals(entry.getKey())) {
+          /*  if ("ipPort".equals(entry.getKey())) {
                 ipPort = (String) entry.getValue();
-            }
+            }*/
             if ("result".equals(entry.getKey())) {
                 result = (String) entry.getValue();
             }
@@ -142,7 +142,9 @@ public class WSVoiceStatus {
 
         }
 
-        //ip和port不为空
+       // log.info("ipPort:"+ipPort);
+
+       /* //ip和port不为空
         if (!"".equals(ipPort) && ipPort != null) {
             //解决ipPort="null1.106"
             ipPort= ipPort.replace("null","");
@@ -161,16 +163,20 @@ public class WSVoiceStatus {
                 customMsg.setTerminalIp(ip[0] + "." + ip[1]);
             }
 
-        }else{
+        }else{*/
             TerminalIpPort terminalIpPort = terminalIpPortMapper.selectByPrimaryKey(terminalId);
-            String terminalIp = terminalIpPort.getTerminalIp();
-            Integer terminalPort = terminalIpPort.getTerminalPort();
-            customMsg.setTerminalPort(terminalPort);
-            String ip[] = terminalIp.split("\\.");
-            customMsg.setTerminalIp(terminalIp);
-            customMsg.setTerminalIp1(Integer.parseInt(ip[0]));
-            customMsg.setTerminalIp2(Integer.parseInt(ip[1]));
-        }
+            if(terminalIpPort!=null){
+                String terminalIp = terminalIpPort.getTerminalIp();
+                if(terminalId!=null&&!"".equals(terminalIp)){
+                    Integer terminalPort = terminalIpPort.getTerminalPort();
+                    customMsg.setTerminalPort(terminalPort);
+                    String ip[] = terminalIp.split("\\.");
+                    customMsg.setTerminalIp(terminalIp);
+                    customMsg.setTerminalIp1(Integer.parseInt(ip[0]));
+                    customMsg.setTerminalIp2(Integer.parseInt(ip[1]));
+                }
+            }
+       /* }*/
 
         customMsg.setType(ConstantValue.MSG_HEADER_FREAME_HEAD);
         customMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);
@@ -199,7 +205,7 @@ public class WSVoiceStatus {
                     voiceMonitorService.sendDataToTerminalMonitorServer(responseData);
                     break;
                 case "99":
-                    System.out.println("s设置voiceStatus为true");
+                    System.out.println("s设置voiceStatus为true,接收到99");
                     voiceStatus=true;
                     ProcessRtVoice.setBusyLine(false);
                     Channel channel = VoiceChannelMap.getChannelByName("channel");
@@ -208,6 +214,7 @@ public class WSVoiceStatus {
                         channel.close();
                         channel.closeFuture();
                         VoiceChannelMap.removeChannelByName("channel");//挂断
+                        System.out.println("把9999端口从终端移除");
                     }
 
                     break;

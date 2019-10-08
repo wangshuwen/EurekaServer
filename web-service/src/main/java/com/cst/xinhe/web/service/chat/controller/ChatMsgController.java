@@ -13,7 +13,6 @@ import com.github.pagehelper.PageInfo;
 
 import io.swagger.annotations.ApiOperation;
 
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,6 +36,68 @@ public class ChatMsgController {
 
    /* @Autowired
     private Constant constant;*/
+
+   @Resource
+   private ChatMsgMapper chatMsgMapper;
+
+     @Resource
+    private StaffTerminalMapper staffTerminalMapper;
+
+
+    @PutMapping("call/updateMsgByChatMsgId")
+    @ApiOperation(value = "更新实时语音通话，type=3的已读未读状态", notes = "更新实时通话的已读未读状态")
+    public String updateMsgByChatMsgId(@RequestParam(name = "msgIds") Integer[] msgIds ) {
+        Integer result=0;
+        if(msgIds!=null){
+            for (Integer msgId : msgIds) {
+                ChatMsg chatMsg = new ChatMsg();
+                chatMsg.setStatus(true);
+                chatMsg.setMsgId(msgId);
+                result = chatMsgMapper.updateByPrimaryKeySelective(chatMsg);
+            }
+
+        }
+
+        return result > 0 ? ResultUtil.jsonToStringSuccess() : ResultUtil.jsonToStringError(ResultEnum.FAILED);
+    }
+
+
+
+
+
+    @GetMapping ("call/newCallRecord")
+    @ApiOperation(value = "新增实时语音通话记录", notes = ".0")
+    public String newCallRecord(@RequestParam(name = "postUserId") Integer postUserId,
+                                @RequestParam(name = "receiceUserId") Integer receiceUserId,
+                                @RequestParam(name = "timeLong",required = false)  String  timeLong,@RequestParam(name = "type") Integer type) {
+        Integer terminalId;
+        if(postUserId!=null&&postUserId!=0){
+            terminalId = staffTerminalMapper.selectTerminalIdByStaffId(postUserId);
+        }else{
+            terminalId = staffTerminalMapper.selectTerminalIdByStaffId(receiceUserId);
+        }
+
+        ChatMsg chatMsg = new ChatMsg();
+        chatMsg.setPostUserId(postUserId);
+        chatMsg.setReceiceUserId(receiceUserId);
+        chatMsg.setPostMsg(timeLong);
+        chatMsg.setPostTime(new Date());
+        chatMsg.setLengthMsg(type);
+
+        if(type==3){
+            chatMsg.setStatus(false);
+        }
+        if(terminalId!=null){
+            chatMsg.setTerminalId(terminalId);
+        }
+
+        Integer result = chatMsgService.insertRecord(chatMsg);
+
+
+        return result == 1 ? ResultUtil.jsonToStringSuccess() : ResultUtil.jsonToStringError(ResultEnum.FAILED);
+    }
+
+
 
     @GetMapping("call/singleVoiceNum")
     @ApiOperation(value = "获取当前未读单条语音的数量", notes = "获取当前未读单条语音的数量")

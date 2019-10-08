@@ -16,7 +16,7 @@ public class VoiceWSRespVo {
 
     private Integer terminalId;
 
-    private String voiceUrl;
+    private String postMsg;
 
     private boolean status;
 
@@ -24,10 +24,28 @@ public class VoiceWSRespVo {
 
     private String deptName;
 
-    private String groupName;
+    private String staffName;
+
+    private String sequenceId;
 
     private GasWSRespVO gasWSRespVO;
+    private String rangUrl;
 
+    public String getRangUrl() {
+        return rangUrl;
+    }
+
+    public void setRangUrl(String rangUrl) {
+        this.rangUrl = rangUrl;
+    }
+
+    public String getSequenceId() {
+        return sequenceId;
+    }
+
+    public void setSequenceId(String sequenceId) {
+        this.sequenceId = sequenceId;
+    }
 
     public String getDeptName() {
         return deptName;
@@ -37,12 +55,12 @@ public class VoiceWSRespVo {
         this.deptName = deptName;
     }
 
-    public String getGroupName() {
-        return groupName;
+    public String getStaffName() {
+        return staffName;
     }
 
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
+    public void setStaffName(String staffName) {
+        this.staffName = staffName;
     }
 
     public Integer getStaffId() {
@@ -61,12 +79,12 @@ public class VoiceWSRespVo {
         this.terminalId = terminalId;
     }
 
-    public String getVoiceUrl() {
-        return voiceUrl;
+    public String getPostMsg() {
+        return postMsg;
     }
 
-    public void setVoiceUrl(String voiceUrl) {
-        this.voiceUrl = voiceUrl;
+    public void setPostMsg(String postMsg) {
+        this.postMsg = postMsg;
     }
 
     public boolean isStatus() {

@@ -11,8 +11,8 @@ import com.cst.xinhe.persistence.dao.chat.TemporarySendListMapper;
 import com.cst.xinhe.persistence.dao.e_call.ECallMapper;
 import com.cst.xinhe.persistence.dao.rang_setting.RangSettingMapper;
 import com.cst.xinhe.persistence.dao.staff.StaffMapper;
+import com.cst.xinhe.persistence.dao.staff.StaffOrganizationMapper;
 import com.cst.xinhe.persistence.dao.terminal.StaffTerminalMapper;
-import com.cst.xinhe.persistence.dao.terminal.TerminalUpdateIpMapper;
 import com.cst.xinhe.persistence.dao.updateIp.TerminalIpPortMapper;
 import com.cst.xinhe.persistence.dto.voice.VoiceDto;
 import com.cst.xinhe.persistence.model.chat.TemporarySendList;
@@ -21,13 +21,13 @@ import com.cst.xinhe.persistence.model.lack_electric.LackElectric;
 import com.cst.xinhe.persistence.model.malfunction.Malfunction;
 import com.cst.xinhe.persistence.model.rang_setting.RangSetting;
 import com.cst.xinhe.persistence.model.rt_gas.GasPosition;
+import com.cst.xinhe.persistence.model.staff.StaffOrganization;
 import com.cst.xinhe.persistence.model.terminal_road.TerminalRoad;
 import com.cst.xinhe.persistence.vo.resp.GasLevelVO;
 import com.cst.xinhe.persistence.vo.resp.GasWSRespVO;
 import com.cst.xinhe.terminal.monitor.server.channel.ChannelMap;
 import com.cst.xinhe.terminal.monitor.server.client.*;
 import com.cst.xinhe.terminal.monitor.server.handle.NettyServerHandler;
-import com.cst.xinhe.terminal.monitor.server.redis.RedisService;
 import com.cst.xinhe.terminal.monitor.server.request.SingletonClient;
 import com.cst.xinhe.terminal.monitor.server.service.TerminalMonitorService;
 import com.cst.xinhe.terminal.monitor.server.utils.RSTL;
@@ -86,14 +86,12 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
     @Resource
     private StaffMapper staffMapper;
 
-    @Resource
-    private RedisService redisService;
 
     @Resource
     private ECallMapper eCallMapper;
 
     @Resource
-    private TerminalUpdateIpMapper terminalUpdateIpMapper;
+    private StaffOrganizationMapper staffOrganizationMapper;
     @Resource
     private TerminalIpPortMapper terminalIpPortMapper;
 
@@ -112,6 +110,9 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
         Map<String, Object> staffInfo = staffMapper.selectStaffInfoByTerminalId(terminalId);
 //        customMsg.getTerminalIp();
         //定义map储存数据
+        Integer groupId = (Integer) staffInfo.get("group_id");
+        String dept_name = getDeptNameByGroupId(groupId);
+        staffInfo.put("dept_name",dept_name);
         HashMap<String, Object> map = new HashMap<>();
         map.put("cmd","2008");//2008表示发起呼叫
         map.put("ipPort",ipPort);
@@ -125,6 +126,21 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
         //WSVoiceStatusServer.sendInfo(keyStr);
 
     }
+
+
+    public String getDeptNameByGroupId(Integer groupId) {
+        String deptName = "";
+        StaffOrganization staffOrganization = staffOrganizationMapper.selectByPrimaryKey(groupId);
+        if (staffOrganization != null) {
+            deptName = staffOrganization.getName();
+            if (staffOrganization.getParentId() != 0) {
+                String parentName = getDeptNameByGroupId(staffOrganization.getParentId());
+                deptName = parentName + "/" + deptName;
+            }
+        }
+        return deptName;
+    }
+
 
     /**
      * 根据端口和Ip判断是否在线

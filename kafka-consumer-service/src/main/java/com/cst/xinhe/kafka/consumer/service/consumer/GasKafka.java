@@ -345,7 +345,7 @@ public class GasKafka {
                     TerminalRoad road = null;
                     try {
                         road = rstl.locateConvert(gasPosition.getTerminalId(), baseStation1, baseStation2, rssi1, rssi2);
-                    } catch (RuntimeServiceException e) {
+                    } catch (Exception e) {
                         ExceptionMessage exceptionMessage = new ExceptionMessage();
                         exceptionMessage.setCh4(gasPosition.getCh4());
                         exceptionMessage.setCh4Unit(gasPosition.getCh4Unit());
@@ -376,6 +376,7 @@ public class GasKafka {
                         exceptionMessage.setPositionX(gasPosition.getPositionX());
                         exceptionMessage.setPositionY(gasPosition.getPositionY());
                         exceptionMessage.setPositionZ(gasPosition.getPositionZ());
+                        exceptionMessage.setSequenceId(requestData.getSequenceId());
                         String b;
                         if (redisService.hasKey(keyOfStaffIdWithRedis)) {
                             b = rtStaffInfo.getRemark();
@@ -390,9 +391,21 @@ public class GasKafka {
                             wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(new WebSocketData(10, gasPosition)));
                         }
 
+                        e.printStackTrace();
+
                     }
 
                     gasPosition.setInfoType(0);
+                   if(road!=null){
+                       gasPosition.setTempPositionName(road.getTempPositionName());
+                       gasPosition.setPositionX(road.getPositionX());
+                       gasPosition.setPositionY(road.getPositionY());
+                       gasPosition.setPositionZ(road.getPositionZ());
+                       road.setStationId(gasPosition.getStationId());
+                       sendTempRoadName(requestData.getTerminalId(), requestData.getTerminalIp(), requestData.getTerminalPort(), road.getTempPositionName());
+                   }
+
+
                     gasPosition.setTempPositionName(road.getTempPositionName());
                     gasPosition.setPositionX(road.getPositionX());
                     gasPosition.setPositionY(road.getPositionY());

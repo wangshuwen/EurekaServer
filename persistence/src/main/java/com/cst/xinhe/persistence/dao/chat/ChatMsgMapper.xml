@@ -502,6 +502,11 @@
         UPDATE chat_msg SET status = 1 where sequence_id = #{sequenceId}
     </update>
     <select id="findUnReadCount"  resultType="java.lang.Integer">
-        select count(*) from chat_msg  where post_user_id=#{staffId}  and receice_user_id=0  and status=0
+        select count(*) from chat_msg  where post_user_id=#{staffId}  and receice_user_id=0  and status=0 and is_del=0
+    </select>
+
+
+    <select id="getSingleVoiceNum"  resultType="java.lang.Integer">
+        select count(*) from chat_msg  where post_user_id=#{staffId}  and receice_user_id=0  and status=0 and is_del=0  and length_msg=0
     </select>
 </mapper>

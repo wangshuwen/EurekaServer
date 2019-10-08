@@ -20,4 +20,6 @@ public interface ChatMessageService {
     Integer addChatRecord(ChatMsg chatMsg);
 
     Integer insertRecord(ChatMsg chatMsg);
+
+    Integer getSingleVoiceNum(Integer staffId);
 }

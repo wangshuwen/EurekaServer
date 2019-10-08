@@ -13,6 +13,7 @@ import com.github.pagehelper.PageInfo;
 
 import io.swagger.annotations.ApiOperation;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,6 +37,15 @@ public class ChatMsgController {
 
    /* @Autowired
     private Constant constant;*/
+
+    @GetMapping("call/singleVoiceNum")
+    @ApiOperation(value = "获取当前未读单条语音的数量", notes = "获取当前未读单条语音的数量")
+    public String singleVoiceNum(@Param("staffId") Integer staffId) {
+        Integer count =chatMsgService.getSingleVoiceNum(staffId);
+        return ResultUtil.jsonToStringSuccess(count);
+    }
+
+
 
     /**
      * @param

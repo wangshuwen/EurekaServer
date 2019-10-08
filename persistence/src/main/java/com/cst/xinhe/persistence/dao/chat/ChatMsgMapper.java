@@ -108,4 +108,6 @@ public interface ChatMsgMapper {
     Integer updateChatMegStatusBySeqId(ChatMsg chatMsg);
 
     Integer findUnReadCount(Integer staffId);
+
+    Integer getSingleVoiceNum(@Param("staffId") Integer staffId);
 }

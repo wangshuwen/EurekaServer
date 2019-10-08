@@ -159,4 +159,11 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     public Integer insertRecord(ChatMsg chatMsg) {
         return chatMsgMapper.insertSelective(chatMsg);
     }
+
+    @Override
+    public Integer getSingleVoiceNum(Integer staffId) {
+
+     Integer count= chatMsgMapper.getSingleVoiceNum(staffId);
+        return count;
+    }
 }

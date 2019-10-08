@@ -108,7 +108,7 @@ public interface ChatMsgMapper {
 
     Integer updateChatMegStatusBySeqId(ChatMsg chatMsg);
 
-    Integer findUnReadCount(Integer staffId);
+    Integer findUnReadCount(@Param("staffId") Integer staffId);
 
 
 

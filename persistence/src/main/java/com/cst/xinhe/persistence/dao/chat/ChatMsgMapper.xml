@@ -513,7 +513,6 @@
     </update>
     <select id="findUnReadCount"  resultType="java.lang.Integer">
         select count(*) from chat_msg  where post_user_id=#{staffId}  and receice_user_id=0  and status=0  and is_del=0
-        select count(*) from chat_msg  where post_user_id=#{staffId}  and receice_user_id=0  and status=0 and is_del=0
     </select>
 
 

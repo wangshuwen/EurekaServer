@@ -45,6 +45,8 @@ public class StationServerHandler extends ChannelInboundHandlerAdapter {
 //    @Autowired
     private KafkaClient kafkaClient;
 
+    public static Integer offNum=0;
+
     private OfflineStationMapper offlineStationMapper;
     private TerminalUpdateIpMapper  terminalUpdateIpMapper;
 
@@ -164,6 +166,7 @@ public class StationServerHandler extends ChannelInboundHandlerAdapter {
                         System.out.println("--------------心跳回复开始-----------");
                         System.out.println(reqMsg.toString());
                         System.out.println("--------------心跳回复结束-----------");
+                        log.info("基站断线次数："+offNum);
                         resp.setCustomMsg(reqMsg);
                         SingletonStationClient.getSingletonStationClient().sendCmd(resp);
                         break;
@@ -207,7 +210,8 @@ public class StationServerHandler extends ChannelInboundHandlerAdapter {
      **/
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
-
+        offNum++;
+        log.info("基站断线次数："+offNum);
         InetSocketAddress inSocket = (InetSocketAddress) ctx.channel().remoteAddress();
         String clientIP = inSocket.getAddress().getHostAddress();
         int port = inSocket.getPort();

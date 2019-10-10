@@ -176,8 +176,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                                 SingletonClient.getSingletonClient().sendCmd(resp);//返回气体成功标记
                                 log.info("返回气体确认结束");
 
-                                log.info("终端短线数量："+offNum);
-                                log.info("终端短线数量："+offNum);
+                                log.info("终端断线数量："+offNum);
+                                log.info("终端断线数量："+offNum);
 
                                 //upLoadService.sendGasInfoToQueue(customMsg);
                                 terminalMonitorService.sendGasInfoToQueue(customMsg);

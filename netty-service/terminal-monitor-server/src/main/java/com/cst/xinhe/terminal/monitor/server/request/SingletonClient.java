@@ -53,6 +53,7 @@ public class SingletonClient {
 //        int channelNum = ChannelMap.channelNum;
 
         String ip = ip_prefix + t_ip + ":" + responseData.getCustomMsg().getTerminalPort();
+        logger.info("ip和端口："+ip);
         Channel channel = ChannelMap.getChannelByName(ip);
         logger.info("终端发送数据完成！");
         try {

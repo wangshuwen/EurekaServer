@@ -636,7 +636,7 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
         gasPosition.setPositionY(road.getPositionY());
         gasPosition.setPositionZ(road.getPositionZ());
         road.setStationId(gasPosition.getStationId());
-        if(road.getTempPositionName()!=null||!"".equals(road.getTempPositionName())){
+        if(road.getTempPositionName()!=null&&!"".equals(road.getTempPositionName())){
             sendTempRoadName(customMsg.getTerminalId(),customMsg.getTerminalIp(),customMsg.getTerminalPort(),road.getTempPositionName());
         }
 

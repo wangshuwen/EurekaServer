@@ -38,8 +38,7 @@ public class ProcessVoice {
     @Resource
     private KafkaClient kafkaClient;
 
-
-
+    private Date date=new Date();
     @PostConstruct //通过@PostConstruct实现初始化bean之前进行的操作
     public void init() {
         processVoice = this;
@@ -106,35 +105,44 @@ public class ProcessVoice {
             FileUtils.createFile(folderName.toString(), fileName.toString(), FileType.ogg);
             WriteFileUtil.writeByteToFile(folderName.toString() + fileName.toString() + FileType.ogg, body, 0, bodyLength , true);
         } else {
-            // logger.info("当前终端: ID>[" + terminalId + "] || IP>[" + terminalIp + "] 当前语音队列中已存在终端语音信息，持续接收中......");
-            if (length == 38) {
-                // 执行 PCM ==> WAV 函数
-                //  logger.info("当前终端: ID>[" + terminalId + "] || IP>[" + terminalIp + "] 接收语音结束，执行PCM转WAV");
-                //  logger.info("当前终端: ID>[" + terminalId + "] || IP>[" + terminalIp + "] 已被移除语音队列");
-                String v = mapOfSequenceId.get(key);
-                StringBuilder real = new StringBuilder(folderName);
-                real.append(File.separator).append(v).append(terminalId).append(sequenceId).append(".").append(FileType.ogg);
-                try {
-                    FileUtils.createFile(folderName.toString(), v + terminalId + sequenceId, FileType.ogg);
-                   // PcmToWavConvert.convert(temp.toString(), real.toString());
-                    //FileUtils.removeFile(temp.toString());
-                    ChatMsg chatMsg = new ChatMsg();
-                    chatMsg.setPostIp(terminalIp);
-                    chatMsg.setStationIp(stationIp);
-                    chatMsg.setPostTime(postTime);
-                    chatMsg.setConvertTime(new Date());
-                    chatMsg.setPostMsg(real.toString());
-                    chatMsg.setStatus(false);
-                    chatMsg.setTerminalId(terminalId);
-                    //存储序列号：时间+终端编号+序列号
-                    chatMsg.setSequenceId(DateConvert.convert(postTime, 15)+terminalId+sequenceId);
-                    kafkaClient.sendChatMsgData("receiveVoice.tut",JSON.toJSONString(chatMsg));
-                    return real.toString();
-                } catch (Exception e) {
-                    e.printStackTrace();
+
+            Date currentDate = new Date();
+            //避免终端设备发两次66778899
+            if(currentDate.getTime()-date.getTime()>1000){
+                date=new Date();
+                if (length == 38) {
+                    logger.info("接收到单条语音得55667788");
+                    // 执行 PCM ==> WAV 函数
+                    //  logger.info("当前终端: ID>[" + terminalId + "] || IP>[" + terminalIp + "] 接收语音结束，执行PCM转WAV");
+                    //  logger.info("当前终端: ID>[" + terminalId + "] || IP>[" + terminalIp + "] 已被移除语音队列");
+                    String v = mapOfSequenceId.get(key);
+                    StringBuilder real = new StringBuilder(folderName);
+                    real.append(File.separator).append(v).append(terminalId).append(sequenceId).append(".").append(FileType.ogg);
+                    try {
+                        FileUtils.createFile(folderName.toString(), v + terminalId + sequenceId, FileType.ogg);
+                        // PcmToWavConvert.convert(temp.toString(), real.toString());
+                        //FileUtils.removeFile(temp.toString());
+                        ChatMsg chatMsg = new ChatMsg();
+                        chatMsg.setPostIp(terminalIp);
+                        chatMsg.setStationIp(stationIp);
+                        chatMsg.setPostTime(postTime);
+                        chatMsg.setConvertTime(new Date());
+                        chatMsg.setPostMsg(real.toString());
+                        chatMsg.setStatus(false);
+                        chatMsg.setTerminalId(terminalId);
+                        //存储序列号：时间+终端编号+序列号
+                        chatMsg.setSequenceId(DateConvert.convert(postTime, 15)+terminalId+sequenceId);
+                        kafkaClient.sendChatMsgData("receiveVoice.tut",JSON.toJSONString(chatMsg));
+                        return real.toString();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    mapOfSequenceId.remove(Integer.toString(sequenceId) + terminalId);
                 }
-                mapOfSequenceId.remove(Integer.toString(sequenceId) + terminalId);
             }
+
+            // logger.info("当前终端: ID>[" + terminalId + "] || IP>[" + terminalIp + "] 当前语音队列中已存在终端语音信息，持续接收中......");
+
             String val = mapOfSequenceId.get(key);
 
 

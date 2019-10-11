@@ -55,7 +55,7 @@ public class NettyConfiguration {
                 @Override
                 protected void initChannel(SocketChannel socketChannel) throws Exception {
                     ChannelPipeline pipe = socketChannel.pipeline();
-                    pipe.addLast(new IdleStateHandler(20, 20, 40, TimeUnit.SECONDS));
+                    pipe.addLast(new IdleStateHandler(40, 40, 80, TimeUnit.SECONDS));
                     pipe.addLast(new StationDecoder(548, 18, 2, -26, 0, true));
                     pipe.addLast(new StationEncoder());
                     pipe.addLast(new StationServerHandler());

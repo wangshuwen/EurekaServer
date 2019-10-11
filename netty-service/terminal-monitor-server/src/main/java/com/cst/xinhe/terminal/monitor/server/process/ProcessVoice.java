@@ -106,12 +106,15 @@ public class ProcessVoice {
             WriteFileUtil.writeByteToFile(folderName.toString() + fileName.toString() + FileType.ogg, body, 0, bodyLength , true);
         } else {
 
-            Date currentDate = new Date();
-            //避免终端设备发两次66778899
-            if(currentDate.getTime()-date.getTime()>1000){
-                date=new Date();
+
+
                 if (length == 38) {
                     logger.info("接收到单条语音得55667788");
+                    Date currentDate = new Date();
+                    //避免终端设备发两次66778899
+                    if(currentDate.getTime()-date.getTime()>1000){
+                        date=new Date();
+
                     // 执行 PCM ==> WAV 函数
                     //  logger.info("当前终端: ID>[" + terminalId + "] || IP>[" + terminalIp + "] 接收语音结束，执行PCM转WAV");
                     //  logger.info("当前终端: ID>[" + terminalId + "] || IP>[" + terminalIp + "] 已被移除语音队列");

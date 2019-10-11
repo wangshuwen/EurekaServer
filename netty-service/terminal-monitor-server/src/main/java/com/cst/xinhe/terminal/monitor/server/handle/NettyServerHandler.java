@@ -421,7 +421,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 System.out.println("-------------------------------");
 
                 offNum++;
-                log.info("终端短线数量："+offNum);
+                log.info("终端断线数量："+offNum);
 
 
                 if (null != staffId) {

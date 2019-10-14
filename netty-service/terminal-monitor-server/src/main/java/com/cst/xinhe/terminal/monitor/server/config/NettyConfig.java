@@ -61,8 +61,9 @@ public class NettyConfig {
                 @Override
                 protected void initChannel(SocketChannel socketChannel) throws Exception {
                     ChannelPipeline pipe = socketChannel.pipeline();
-                    pipe.addLast(new IdleStateHandler(80, 80, 160, TimeUnit.SECONDS));
-                    pipe.addLast(new CustomDecoder(548, 18, 2, -26, 0, true));
+                   // pipe.addLast(new IdleStateHandler(80, 80, 160, TimeUnit.SECONDS));
+                 //   pipe.addLast(new CustomDecoder(548, 18, 2, -26, 0, true));
+                    pipe.addLast(new CustomDecoder(1000, 18, 2, -26, 0, true));
                     pipe.addLast(new CustomEncoder());
                     pipe.addLast(new NettyServerHandler());
                 }
@@ -78,7 +79,7 @@ public class NettyConfig {
             //参数TCP设置
 //            ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.ADVANCED);
             serverBootstrap.option(ChannelOption.SO_BACKLOG, 4096);     // serverSocketChannel连接缓冲池大小
-            serverBootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);   //socketChannel true维持连接活跃 默认2小时，无操作断开
+            //serverBootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);   //socketChannel true维持连接活跃 默认2小时，无操作断开
             serverBootstrap.childOption(ChannelOption.TCP_NODELAY, true);    //socketChannel 关闭缓冲=关闭延迟发送
             ChannelFuture future = serverBootstrap.bind(port);
             log.info("终端》》服务端已启动，端口号 [" + port + "]");

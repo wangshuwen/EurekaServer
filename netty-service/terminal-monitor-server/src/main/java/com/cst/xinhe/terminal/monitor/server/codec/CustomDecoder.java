@@ -86,10 +86,12 @@ public class CustomDecoder extends LengthFieldBasedFrameDecoder {
     @Override
     protected Object decode(ChannelHandlerContext ctx, ByteBuf in) throws Exception {
         if (in == null) {
+            logger.info("执行了A");
             return null;
         }
         if (in.readableBytes() < HEADER_SIZE) {
             //throw new Exception("可读信息小于数据头部信息长度");
+            logger.info("执行了B");
             return null;
         }
 //        int beginIndex = in.readerIndex();
@@ -97,8 +99,10 @@ public class CustomDecoder extends LengthFieldBasedFrameDecoder {
         //注意在读的过程中，readIndex的指针也在移动  -16
         type = (((in.readByte() & 0xff) << 8) + (in.readByte() & 0xff));
         if (type != ConstantValue.MSG_HEADER_FREAME_HEAD){
+            logger.info("执行了C");
+
             in.clear();
-            ctx.channel().close();
+           // ctx.channel().close();
             return null;
 //            ctx.channel().closeFuture();
         }
@@ -155,6 +159,7 @@ public class CustomDecoder extends LengthFieldBasedFrameDecoder {
         logger.info("剩余可读取长度：" + c);
         int len = length - 34;
         if (c < (len)) {
+            logger.info("剩余可读取长度,返回了null");
             //重置当前的readerIndex为beginIndex
 //            in.readerIndex(beginIndex);
             in.resetReaderIndex();

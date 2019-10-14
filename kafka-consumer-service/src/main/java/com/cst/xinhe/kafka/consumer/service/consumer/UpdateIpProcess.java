@@ -150,7 +150,8 @@ public class UpdateIpProcess {
                 map.put("code",1);
                 wsPushServiceClient.sendWebsocketServer(JSON.toJSONString(new WebSocketData(12, map)));
 
-
+                logger.info("推送终端在线");
+                logger.info("推送终端在线");
 
 
                 // 根据ID 查找当前人的考勤标准，根据标准计算具体考勤情况

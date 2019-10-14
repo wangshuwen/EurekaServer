@@ -51,6 +51,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
     private volatile static int gasNum = 0;
     private volatile static int offNum = 0;
+    private volatile  static  int exceptNum=0;
+    private volatile  static  int removeNum=0;
     /**
      * 日志
      */
@@ -142,12 +144,20 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                             log.error("非法语音数据包");
                             break;
                         }
-                        log.info("处理语音数据");
-                        String wavPath = processVoice.process(customMsg);
-                        if (!("error").equals(wavPath)) {
-                            log.info("接收并转码成功");
-                            log.info("生成文件路径" + wavPath);
+                        try{
+                            log.info("处理语音数据");
+                            String wavPath = processVoice.process(customMsg);
+                            if (!("error").equals(wavPath)) {
+                                log.info("接收并转码成功");
+                                log.info("生成文件路径" + wavPath);
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            log.info("单条语音接收失败");
+                            log.info("单条语音接收失败");
                         }
+
+
                         //向终端响应信息
                         /*customMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_RESPONSE);
                         customMsg.setLength(34);
@@ -178,7 +188,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
                                 log.info("终端断线数量："+offNum);
                                 log.info("终端断线数量："+offNum);
-
+                                log.info("终端异常数量："+exceptNum);
+                                log.info("终端被移除数量："+removeNum);
                                 //upLoadService.sendGasInfoToQueue(customMsg);
                                 terminalMonitorService.sendGasInfoToQueue(customMsg);
                                 break;
@@ -299,7 +310,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                             case ConstantValue.MSG_BODY_NODE_NAME_REAL_TIME_CALL: // 发起呼叫
                                 terminalMonitorService.sendCallInfo(customMsg);
 //                                processRealTimeVoice.sendCallInfo(customMsg);
-                                log.info("下面对上面发起呼叫");
+                                log.info("收到下面对上面发起呼叫");
                                 break;
                             case ConstantValue.MSG_BODY_NODE_NAME_PERSON_INFO_SEARCH://个人消息查询
                                 terminalMonitorService.searchPersonInfoByTerminalId(customMsg);
@@ -494,6 +505,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         InetSocketAddress inSocket = (InetSocketAddress) ctx.channel().remoteAddress();
         String clientIP = inSocket.getAddress().getHostAddress();
         int port = inSocket.getPort();
+        log.info("已经很长时间没有收到消息了userEventTriggered");
         String str = clientIP + ":" +
                 port;
         if (evt instanceof IdleStateEvent) {
@@ -501,6 +513,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             if (event.state() == IdleState.READER_IDLE) {
                 //TODO 读超时
                 log.info("已经很长时间没有收到消息了");
+                removeNum++;
                 ctx.channel().close();
                 ChannelMap.removeChannelByName(str);
             }
@@ -540,6 +553,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         String clientIP = inSocket.getAddress().getHostAddress();
         int port = inSocket.getPort();
         String str = clientIP + ":" + port;
+        exceptNum++;
         log.error("终端[" + str + "] 出现异常" + cause.getLocalizedMessage());
         ChannelMap.removeChannelByName(str);
         cause.printStackTrace();

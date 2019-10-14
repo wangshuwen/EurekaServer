@@ -16,6 +16,8 @@ import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiOperation;
 
 import org.apache.ibatis.annotations.Param;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,6 +48,8 @@ public class ChatMsgController {
 
      @Resource
     private StaffTerminalMapper staffTerminalMapper;
+
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
 
     @PutMapping("call/updateMsgByChatMsgId")
@@ -159,6 +163,9 @@ public class ChatMsgController {
     public String chatRecord( @RequestParam(name = "staffId") Integer staffId,
                              @RequestParam(name = "startPage", defaultValue = "1", required = false) Integer startPage,
                              @RequestParam(name = "pageSize", defaultValue = "5", required = false) Integer pageSize) {
+
+        logger.info("startPage:"+startPage);
+        logger.info("pageSize:"+pageSize);
         Page page = chatMsgService.findChatRecord(staffId,startPage,pageSize);
         List<HashMap<String,Object>> result = page.getResult();
         Collections.reverse(result);

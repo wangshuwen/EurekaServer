@@ -33,6 +33,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class ProcessVoice {
 
+    private static Integer dataNum=0;
+    private static Integer voiceNum=0;
 
     private volatile static ProcessVoice processVoice;
     @Resource
@@ -105,15 +107,23 @@ public class ProcessVoice {
             FileUtils.createFile(folderName.toString(), fileName.toString(), FileType.ogg);
             WriteFileUtil.writeByteToFile(folderName.toString() + fileName.toString() + FileType.ogg, body, 0, bodyLength , true);
         } else {
+            dataNum++;
+            logger.info("接收到终端发送的第"+dataNum+"个语音包");
+            logger.info("接收到终端发送length语音包长度为"+length);
+            logger.info("接收到终端发送实际语音包长度为"+(requestData.getBody().length+34));
+            logger.info("接收到终端发送语音包数据为"+requestData.toString());
 
-
+                if(length!=546){
+                    logger.info("接收到最后一条单条语音数据：长度为"+length);
+                }
 
                 if (length == 38) {
+                    voiceNum=0;
                     logger.info("接收到单条语音得55667788");
                     Date currentDate = new Date();
                     //避免终端设备发两次66778899
                     if(currentDate.getTime()-date.getTime()>1000){
-                        date=new Date();
+                        date=currentDate;
 
                     // 执行 PCM ==> WAV 函数
                     //  logger.info("当前终端: ID>[" + terminalId + "] || IP>[" + terminalIp + "] 接收语音结束，执行PCM转WAV");
@@ -135,20 +145,20 @@ public class ProcessVoice {
                         chatMsg.setTerminalId(terminalId);
                         //存储序列号：时间+终端编号+序列号
                         chatMsg.setSequenceId(DateConvert.convert(postTime, 15)+terminalId+sequenceId);
+                        mapOfSequenceId.remove(Integer.toString(sequenceId) + terminalId);
                         kafkaClient.sendChatMsgData("receiveVoice.tut",JSON.toJSONString(chatMsg));
                         return real.toString();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    mapOfSequenceId.remove(Integer.toString(sequenceId) + terminalId);
                 }
             }
 
             // logger.info("当前终端: ID>[" + terminalId + "] || IP>[" + terminalIp + "] 当前语音队列中已存在终端语音信息，持续接收中......");
 
             String val = mapOfSequenceId.get(key);
-
-
+            voiceNum+=requestData.getBody().length;
+            logger.info("语音总字节数："+voiceNum);
             WriteFileUtil.writeByteToFile(folderName + File.separator + val + terminalId + sequenceId + "." + FileType.ogg, body, 0, bodyLength, true);
         }
         return "error";

@@ -16,6 +16,7 @@ import com.cst.xinhe.terminal.monitor.server.utils.SequenceIdGenerate;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -131,7 +132,7 @@ public class ProcessSettingGasLevel {
 //            list.add(ch4Len);
                     for (GasWarnSettingDto gasWarnSetting : ch4WarnSettingDto) {
                         double val = ch4Standard * gasWarnSetting.getMultiple();
-                        Integer t = (int) changeValToDouble2(val) * 10;
+                        Integer t = (int) (changeValToDouble2(val) * 10);
                         byte[] tt = NettyDataUtils.intToByteArray(t);
                         body[index] = tt[2];
                         index = index + 1;
@@ -144,7 +145,7 @@ public class ProcessSettingGasLevel {
                     index = index + 1;
                     for (GasWarnSettingDto gasWarnSetting : coWarnSettingDto) {
                         double val = coStandard * gasWarnSetting.getMultiple();
-                        Integer t = (int) changeValToDouble2(val) * 10;
+                        Integer t = (int) (changeValToDouble2(val) * 10);
                         byte[] tt = NettyDataUtils.intToByteArray(t);
                         body[index] = tt[2];
                         index = index + 1;
@@ -153,9 +154,12 @@ public class ProcessSettingGasLevel {
                     }
                     body[index] = (byte) (o2Len & 0xff);
                     index = index + 1;
+
+                    Collections.reverse(o2WarnSettingDto);
+
                     for (GasWarnSettingDto gasWarnSetting : o2WarnSettingDto) {
                         double val = o2Standard * gasWarnSetting.getMultiple();
-                        Integer t = (int) changeValToDouble2(val) * 10;
+                        Integer t = (int) (changeValToDouble2(val) * 10);
                         byte[] tt = NettyDataUtils.intToByteArray(t);
                         body[index] = tt[2];
                         index = index + 1;
@@ -166,7 +170,7 @@ public class ProcessSettingGasLevel {
                     index = index + 1;
                     for (GasWarnSettingDto gasWarnSetting : tWarnSettingDto) {
                         double val = tStandard * gasWarnSetting.getMultiple();
-                        Integer t = (int) changeValToDouble2(val) * 10;
+                        Integer t = (int) (changeValToDouble2(val) * 10);
                         byte[] tt = NettyDataUtils.intToByteArray(t);
                         body[index] = tt[2];
                         index = index + 1;
@@ -177,7 +181,7 @@ public class ProcessSettingGasLevel {
                     index = index + 1;
                     for (GasWarnSettingDto gasWarnSetting : hWarnSettingDto) {
                         double val = hStandard * gasWarnSetting.getMultiple();
-                        Integer t = (int) changeValToDouble2(val) * 10;
+                        Integer t = (int) (changeValToDouble2(val) * 10);
                         byte[] tt = NettyDataUtils.intToByteArray(t);
                         body[index] = tt[2];
                         index = index + 1;

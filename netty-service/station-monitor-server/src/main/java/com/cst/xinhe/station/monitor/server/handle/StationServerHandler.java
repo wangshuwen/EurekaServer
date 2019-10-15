@@ -24,7 +24,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -37,6 +39,8 @@ import java.util.Date;
 public class StationServerHandler extends ChannelInboundHandlerAdapter {
 
     private volatile static StationServerHandler stationServerHandler;
+
+    private static List<Date> dateList=new ArrayList<>();
     /**
      * 日志
      */
@@ -167,6 +171,7 @@ public class StationServerHandler extends ChannelInboundHandlerAdapter {
                         System.out.println(reqMsg.toString());
                         System.out.println("--------------心跳回复结束-----------");
                         log.info("基站断线次数："+offNum);
+                        log.info("基站断线时间："+dateList.toString());
                         resp.setCustomMsg(reqMsg);
                         SingletonStationClient.getSingletonStationClient().sendCmd(resp);
                         break;
@@ -220,6 +225,9 @@ public class StationServerHandler extends ChannelInboundHandlerAdapter {
         sb.append(port);
         String str = sb.toString();
         log.info("基站[" + str + "] 已断开连接");
+        dateList.add(new Date());
+        log.info("基站断线时间："+dateList.toString());
+
 
 
         //基站的掉线处理      去掉注释

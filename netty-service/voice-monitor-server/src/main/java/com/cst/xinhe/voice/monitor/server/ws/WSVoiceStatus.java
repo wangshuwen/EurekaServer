@@ -167,7 +167,7 @@ public class WSVoiceStatus {
             TerminalIpPort terminalIpPort = terminalIpPortMapper.selectByPrimaryKey(terminalId);
             if(terminalIpPort!=null){
                 String terminalIp = terminalIpPort.getTerminalIp();
-                if(terminalId!=null&&!"".equals(terminalIp)){
+                if(terminalIp!=null&&!"".equals(terminalIp)){
                     Integer terminalPort = terminalIpPort.getTerminalPort();
                     customMsg.setTerminalPort(terminalPort);
                     String ip[] = terminalIp.split("\\.");

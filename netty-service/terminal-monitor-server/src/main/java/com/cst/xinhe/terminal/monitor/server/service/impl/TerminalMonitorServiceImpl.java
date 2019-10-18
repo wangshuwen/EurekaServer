@@ -7,6 +7,7 @@ import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
 import com.cst.xinhe.common.ws.WebSocketData;
 import com.cst.xinhe.persistence.dao.base_station.BaseStationMapper;
+import com.cst.xinhe.persistence.dao.chat.ChatMsgMapper;
 import com.cst.xinhe.persistence.dao.chat.TemporarySendListMapper;
 import com.cst.xinhe.persistence.dao.e_call.ECallMapper;
 import com.cst.xinhe.persistence.dao.rang_setting.RangSettingMapper;
@@ -15,6 +16,7 @@ import com.cst.xinhe.persistence.dao.staff.StaffOrganizationMapper;
 import com.cst.xinhe.persistence.dao.terminal.StaffTerminalMapper;
 import com.cst.xinhe.persistence.dao.updateIp.TerminalIpPortMapper;
 import com.cst.xinhe.persistence.dto.voice.VoiceDto;
+import com.cst.xinhe.persistence.model.chat.ChatMsg;
 import com.cst.xinhe.persistence.model.chat.TemporarySendList;
 import com.cst.xinhe.persistence.model.e_call.ECall;
 import com.cst.xinhe.persistence.model.lack_electric.LackElectric;
@@ -98,6 +100,10 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
     @Resource
     private StaffTerminalMapper staffTerminalMapper;
 
+
+    @Resource
+    private ChatMsgMapper chatMsgMapper;
+
     @Override
     public void terminalHangUp(RequestData customMsg) {
         String ip = customMsg.getTerminalIp();
@@ -124,6 +130,18 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
         String keyStr= JSON.toJSONString(new WebSocketData(3,map));
         voiceMonitorServerClient.sendInfoToWs(keyStr);
         //WSVoiceStatusServer.sendInfo(keyStr);
+
+        //type=3的语音通话插入数据库，12456，前端访问插入
+        ChatMsg chatMsg = new ChatMsg();
+        chatMsg.setTerminalId(terminalId);
+        chatMsg.setStatus(false);
+        chatMsg.setPostUserId((Integer)staffInfo.get("staff_id"));
+        chatMsg.setLengthMsg(3);
+        chatMsg.setPostTime(new Date());
+        chatMsg.setReceiceUserId(0);
+        chatMsgMapper.insertSelective(chatMsg);
+
+
 
     }
 

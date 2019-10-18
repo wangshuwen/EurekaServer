@@ -114,21 +114,17 @@ public class ChatMsgController {
         return result == 1 ? ResultUtil.jsonToStringSuccess() : ResultUtil.jsonToStringError(ResultEnum.FAILED);
     }*/
 
-   static Date currentDate = new Date();
+
     @PostMapping ("call/newCallRecordNew")
     @ApiOperation(value = "新增实时语音通话记录", notes = ".0")
     public String newCallRecord(@RequestBody ChatMsg chatMsg) {
-        if(new Date().getTime()-currentDate.getTime()<5000){
-            currentDate=new Date();
-            return  null;
-        }
-
         Integer postUserId = chatMsg.getPostUserId();
 
         Integer receiceUserId = chatMsg.getReceiceUserId();
         Integer type = chatMsg.getType();
-
-
+        if(type==3){
+            return null;
+        }
         Integer terminalId;
         if(postUserId!=null&&postUserId!=0){
             terminalId = staffTerminalMapper.selectTerminalIdByStaffId(postUserId);
@@ -143,9 +139,9 @@ public class ChatMsgController {
 
 
 
-        if(type==3){
+       /* if(type==3){
             chatMsg.setStatus(false);
-        }
+        }*/
         if(terminalId!=null){
             chatMsg.setTerminalId(terminalId);
         }
@@ -155,7 +151,6 @@ public class ChatMsgController {
 
         return result == 1 ? ResultUtil.jsonToStringSuccess() : ResultUtil.jsonToStringError(ResultEnum.FAILED);
     }
-
 
 
 

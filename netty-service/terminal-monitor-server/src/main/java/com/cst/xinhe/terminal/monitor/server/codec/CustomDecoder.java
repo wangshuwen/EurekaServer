@@ -85,6 +85,10 @@ public class CustomDecoder extends LengthFieldBasedFrameDecoder {
 
     @Override
     protected Object decode(ChannelHandlerContext ctx, ByteBuf in) throws Exception {
+
+
+        logger.info("收到客户端可读信息数据头部信息长度："+in.readableBytes());
+
         if (in == null) {
             logger.info("执行了A");
             return null;
@@ -99,6 +103,7 @@ public class CustomDecoder extends LengthFieldBasedFrameDecoder {
         //注意在读的过程中，readIndex的指针也在移动  -16
         type = (((in.readByte() & 0xff) << 8) + (in.readByte() & 0xff));
         if (type != ConstantValue.MSG_HEADER_FREAME_HEAD){
+            logger.info("type的值为:"+type);
             logger.info("执行了C");
 
             in.clear();

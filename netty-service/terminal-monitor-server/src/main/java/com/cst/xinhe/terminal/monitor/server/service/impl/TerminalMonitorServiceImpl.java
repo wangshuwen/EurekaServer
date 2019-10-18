@@ -308,6 +308,8 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
             map.put("result","22");
             //发送给浏览器，终端已接听
 //            WSVoiceStatusServer.
+        }else if(result==0x66){
+            map.put("result","66");
         }else{
             map.put("result","88");
         }

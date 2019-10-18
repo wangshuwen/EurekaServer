@@ -181,6 +181,9 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
                                 customMsg.setTime(new Date());
                                 resp.setCustomMsg(customMsg);
+                                log.info("终端断线数量："+offNum);
+                                log.info("终端断线数量："+offNum);
+                                log.info("终端异常数量："+exceptNum);
                                 resp.setCode((byte) 0x55);
                                 System.out.println("接收到的气体数量：" + ++gasNum);
                                 SingletonClient.getSingletonClient().sendCmd(resp);//返回气体成功标记
@@ -332,6 +335,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                                 // 检查在线情况
                                 break;
                             case ConstantValue.MSG_BODY_NODE_NAME_CHECK_ONLINE:
+                                //result  55表示成功， 66表示终端设备繁忙
 //                                upLoadService.processResponse(customMsg);
                                 terminalMonitorService.processResponse(customMsg);
                                 log.info("终端设备应答：响应状态值处理已经接听");
@@ -555,7 +559,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         String str = clientIP + ":" + port;
         exceptNum++;
         log.error("终端[" + str + "] 出现异常" + cause.getLocalizedMessage());
-        ChannelMap.removeChannelByName(str);
+        //ChannelMap.removeChannelByName(str);
         cause.printStackTrace();
     }
 }

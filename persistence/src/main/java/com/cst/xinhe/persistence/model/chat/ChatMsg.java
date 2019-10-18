@@ -48,6 +48,26 @@ public class ChatMsg extends BaseEntity {
 
     private String sequenceId;
 
+    private Integer type;
+
+    private String timeLong;
+
+    public String getTimeLong() {
+        return timeLong;
+    }
+
+    public void setTimeLong(String timeLong) {
+        this.timeLong = timeLong;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
     public Integer getIsDel() {
         return isDel;
     }

@@ -52,7 +52,7 @@ public class ChatMsgController {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
 
-    @PutMapping("call/updateMsgByChatMsgId")
+   /* @PutMapping("call/updateMsgByChatMsgId")
     @ApiOperation(value = "更新实时语音通话，type=3的已读未读状态", notes = "更新实时通话的已读未读状态")
     public String updateMsgByChatMsgId(@RequestParam(name = "msgIds") Integer[] msgIds ) {
         Integer result=0;
@@ -68,29 +68,80 @@ public class ChatMsgController {
 
         return result > 0 ? ResultUtil.jsonToStringSuccess() : ResultUtil.jsonToStringError(ResultEnum.FAILED);
     }
+*/
 
 
 
 
-
-    @GetMapping ("call/newCallRecord")
+    /*Date currentDate = new Date();
+    @PostMapping ("call/newCallRecord")
     @ApiOperation(value = "新增实时语音通话记录", notes = ".0")
     public String newCallRecord(@RequestParam(name = "postUserId") Integer postUserId,
                                 @RequestParam(name = "receiceUserId") Integer receiceUserId,
                                 @RequestParam(name = "timeLong",required = false)  String  timeLong,@RequestParam(name = "type") Integer type) {
+        if(new Date().getTime()-currentDate.getTime()<5000){
+            currentDate=new Date();
+            return  null;
+        }
+
+
         Integer terminalId;
         if(postUserId!=null&&postUserId!=0){
             terminalId = staffTerminalMapper.selectTerminalIdByStaffId(postUserId);
         }else{
             terminalId = staffTerminalMapper.selectTerminalIdByStaffId(receiceUserId);
         }
-
+        logger.info("");
         ChatMsg chatMsg = new ChatMsg();
         chatMsg.setPostUserId(postUserId);
         chatMsg.setReceiceUserId(receiceUserId);
         chatMsg.setPostMsg(timeLong);
         chatMsg.setPostTime(new Date());
         chatMsg.setLengthMsg(type);
+
+
+
+        if(type==3){
+            chatMsg.setStatus(false);
+        }
+        if(terminalId!=null){
+            chatMsg.setTerminalId(terminalId);
+        }
+
+        Integer result = chatMsgService.insertRecord(chatMsg);
+
+
+        return result == 1 ? ResultUtil.jsonToStringSuccess() : ResultUtil.jsonToStringError(ResultEnum.FAILED);
+    }*/
+
+   static Date currentDate = new Date();
+    @PostMapping ("call/newCallRecordNew")
+    @ApiOperation(value = "新增实时语音通话记录", notes = ".0")
+    public String newCallRecord(@RequestBody ChatMsg chatMsg) {
+        if(new Date().getTime()-currentDate.getTime()<5000){
+            currentDate=new Date();
+            return  null;
+        }
+
+        Integer postUserId = chatMsg.getPostUserId();
+
+        Integer receiceUserId = chatMsg.getReceiceUserId();
+        Integer type = chatMsg.getType();
+
+
+        Integer terminalId;
+        if(postUserId!=null&&postUserId!=0){
+            terminalId = staffTerminalMapper.selectTerminalIdByStaffId(postUserId);
+        }else{
+            terminalId = staffTerminalMapper.selectTerminalIdByStaffId(receiceUserId);
+        }
+        logger.info("newCallRecord方法执行了");
+
+        chatMsg.setPostMsg(chatMsg.getTimeLong());
+        chatMsg.setPostTime(new Date());
+        chatMsg.setLengthMsg(type);
+
+
 
         if(type==3){
             chatMsg.setStatus(false);
@@ -104,6 +155,7 @@ public class ChatMsgController {
 
         return result == 1 ? ResultUtil.jsonToStringSuccess() : ResultUtil.jsonToStringError(ResultEnum.FAILED);
     }
+
 
 
 
@@ -207,7 +259,7 @@ public class ChatMsgController {
 
     private Date date=new Date();
     @PostMapping("call/addChatRecord")
-    @ApiOperation(value = "新增聊天列表，无聊天记录", notes = ".0")
+    @ApiOperation(value = "把员工新增聊天列表，无聊天记录", notes = ".0")
     public String addChatRecord(@RequestBody ChatMsg chatMsg) {
         if(chatMsg.getPostUserId()==null){
             return ResultUtil.jsonToStringSuccess();

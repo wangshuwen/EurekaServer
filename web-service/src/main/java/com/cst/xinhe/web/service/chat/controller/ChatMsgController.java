@@ -243,6 +243,46 @@ public class ChatMsgController {
         return pageInfo.getSize() > 0 ?ResultUtil.jsonToStringSuccess(pageInfo):ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
     }
 
+
+
+    @GetMapping("call/chatRecordTwo")
+    @ApiOperation(value = "获取聊天记录", notes = "根据员工id，分页查询聊天记录")
+    public String chatRecordTwo( @RequestParam(name = "staffId") Integer staffId,
+                              @RequestParam(name = "startPage", defaultValue = "1", required = false) Integer startPage,
+                              @RequestParam(name = "pageSize", defaultValue = "5", required = false) Integer pageSize) {
+
+        logger.info("startPage:"+startPage);
+        logger.info("pageSize:"+pageSize);
+        Page page = chatMsgService.findChatRecord(staffId,startPage,pageSize);
+        List<HashMap<String,Object>> result = page.getResult();
+
+        for (HashMap<String, Object> map : result) {
+            Date postTime = (Date) map.get("postTime");
+
+            //两条消息记录时间大于10分钟，不显示时间
+            long nowTime = postTime.getTime();
+            if(nowTime-tempTime<10*60*1000){
+                map.put("isShow",false);
+            }else{
+                map.put("isShow",true);
+            }
+            tempTime=nowTime;
+
+
+            String postMsg = (String) map.get("postMsg");
+            if(null != postMsg){
+                postMsg = postMsg.replace(ConstantUrl.basePath,ConstantUrl.webBaseUrl);
+                map.put("postMsg",postMsg);
+            }
+        }
+
+        tempTime=0;
+
+        PageInfo pageInfo = new PageInfo(page);
+        return pageInfo.getSize() > 0 ?ResultUtil.jsonToStringSuccess(pageInfo):ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
+    }
+
+
     @DeleteMapping("call/deleteChatRecord")
     @ApiOperation(value = "删除聊天记录", notes = "根据员工id，删除员工聊天记录")
     public String deleteChatRecord(Integer staffId) {

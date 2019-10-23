@@ -102,7 +102,7 @@ public interface ChatMsgMapper {
     List<Map<String, Object>> findChatList(@Param("keyWord") String keyWord, @Param("deptIds") List<Integer> deptIds);
 
 
-    List<Map<String,Object>> findChatRecord(Integer staffId);
+    List<Map<String,Object>> findChatRecord(@Param("staffId") Integer staffId,@Param("startTime") String startTime,@Param("endTime") String endTime);
 
     Integer deleteChatRecord(@Param("staffId") Integer staffId);
 

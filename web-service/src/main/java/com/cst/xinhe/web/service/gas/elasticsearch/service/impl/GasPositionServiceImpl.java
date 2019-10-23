@@ -17,14 +17,9 @@ import com.github.pagehelper.PageInfo;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.aggregations.AggregationBuilder;
-import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
-import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
-import org.reflections.util.FilterBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -75,7 +70,9 @@ public class GasPositionServiceImpl implements GasPositionService {
     }
 
     @Override
-    public List<Map<String, Object>> findRoadByStaffIdAndTime(int staffId, String currentTime) throws ParseException {
+    public List<Map<String, Object>> findRoadByStaffIdAndTime(int staffId, String currentTime, Integer startPage, Integer pageSize) throws ParseException {
+        Pageable pageable = new PageRequest(startPage - 1,pageSize);
+
         BoolQueryBuilder builder = QueryBuilders.boolQuery();
         builder.must(QueryBuilders.termQuery("staffid", staffId));
 
@@ -88,7 +85,7 @@ public class GasPositionServiceImpl implements GasPositionService {
 
         builder.must(QueryBuilders.rangeQuery("createtime").format("yyyy-MM-dd").gte(currentTime).lt(endtime));
         SortBuilder sortBuilder = SortBuilders.fieldSort("createtime").order(SortOrder.ASC);
-        NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withQuery(builder).withSort(sortBuilder);
+        NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withQuery(builder).withSort(sortBuilder).withPageable(pageable);
         Iterable<GasPositionEntity> iterable = gasPositionRepository.search(searchQueryBuilder.build());
 
         List<Map<String, Object>> result = new ArrayList<>();

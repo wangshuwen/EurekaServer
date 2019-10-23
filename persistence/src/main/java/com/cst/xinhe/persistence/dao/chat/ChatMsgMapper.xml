@@ -500,7 +500,16 @@
         from chat_msg  c
         left join staff s
         on s.staff_id=(select staff_id  from staff_terminal t where  t.terminal_id=c.terminal_id)
-        where (post_user_id=#{staffId} or receice_user_id=#{staffId}) and is_del=0 and c.terminal_id is not  null
+        <where>
+            (post_user_id=#{staffId} or receice_user_id=#{staffId}) and is_del=0 and c.terminal_id is not  null
+            <if test="startTime != null  and endTime != null and  '' neq startTime and '' neq endTime">
+                AND #{startTime} &lt;= post_time
+                AND
+                #{endTime} &gt; post_time
+            </if>
+
+        </where>
+
         order by post_time desc
     </select>
 

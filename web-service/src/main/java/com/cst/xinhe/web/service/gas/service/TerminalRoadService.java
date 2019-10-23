@@ -19,7 +19,7 @@ public interface TerminalRoadService {
 
     Page findTimeList(int staffId, Integer pageSize, Integer startPage);
 
-    List<Map<String,Object>> findTerminalRoadByTime(int staffId, String currentTime) throws ParseException;
+    List<Map<String,Object>> findTerminalRoadByTime(int staffId, String currentTime, Integer pageSize, Integer startPage) throws ParseException;
 
     org.springframework.data.domain.Page<GasPositionEntity> findTerminalRoadByInOreTime(int staffId, Date inOre, String startTime, String endTime, Integer startPage, Integer pageSize);
 

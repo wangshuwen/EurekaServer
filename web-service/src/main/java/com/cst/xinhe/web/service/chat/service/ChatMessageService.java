@@ -11,7 +11,7 @@ public interface ChatMessageService {
 
     Page findChatList(String keyWord, Integer startPage, Integer pageSize);
 
-    Page findChatRecord(Integer staffId, Integer startPage, Integer pageSize);
+    Page findChatRecord(Integer staffId, Integer startPage, Integer pageSize, String startTime, String endTime);
 
     Integer deleteChatRecord(Integer staffId);
 

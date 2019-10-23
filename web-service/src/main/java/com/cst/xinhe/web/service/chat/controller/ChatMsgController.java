@@ -18,7 +18,6 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -213,7 +212,7 @@ public class ChatMsgController {
 
         logger.info("startPage:"+startPage);
         logger.info("pageSize:"+pageSize);
-        Page page = chatMsgService.findChatRecord(staffId,startPage,pageSize);
+        Page page = chatMsgService.findChatRecord(staffId,startPage,pageSize, null, null);
         List<HashMap<String,Object>> result = page.getResult();
         Collections.reverse(result);
 
@@ -249,11 +248,23 @@ public class ChatMsgController {
     @ApiOperation(value = "获取聊天记录", notes = "根据员工id，分页查询聊天记录")
     public String chatRecordTwo( @RequestParam(name = "staffId") Integer staffId,
                               @RequestParam(name = "startPage", defaultValue = "1", required = false) Integer startPage,
-                              @RequestParam(name = "pageSize", defaultValue = "5", required = false) Integer pageSize) {
+                              @RequestParam(name = "pageSize", defaultValue = "5", required = false) Integer pageSize,
+                                 @RequestParam(name = "startTime", required = false) String startTime,
+                                 @RequestParam(name = "endTime", required = false) String endTime) {
+        String t1=" 00:00:00";
+        String t2=" 23:59:59";
+
+        if(startTime!=null&&!"".equals(startTime)){
+            startTime+=t1;
+        }
+        if(endTime!=null&&!"".equals(endTime)){
+            endTime+=t2;
+        }
+
 
         logger.info("startPage:"+startPage);
         logger.info("pageSize:"+pageSize);
-        Page page = chatMsgService.findChatRecord(staffId,startPage,pageSize);
+        Page page = chatMsgService.findChatRecord(staffId,startPage,pageSize,startTime,endTime);
         List<HashMap<String,Object>> result = page.getResult();
 
         for (HashMap<String, Object> map : result) {

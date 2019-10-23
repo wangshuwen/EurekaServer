@@ -63,11 +63,14 @@ public class TerminalRoadController {
     @ApiOperation(value = "根据员工id和时间获取历史轨迹列表", notes = "根据时间查询轨迹列表")
     public String findTerminalRoadByTime(
             @RequestParam(name ="staffId",required = false) int staffId,
-            @RequestParam(name = "currentTime", required = false) String currentTime) throws ParseException {
+            @RequestParam(name = "currentTime", required = false) String currentTime,
+            @RequestParam(name = "pageSize",required = false,defaultValue = "12")Integer pageSize,
+            @RequestParam(name = "startPage",required = false,defaultValue = "1")Integer startPage
+            ) throws ParseException {
         if(currentTime==null||"".equals(currentTime))
            return  ResultUtil.jsonToStringSuccess();
 
-        List<Map<String,Object>> list=terminalRoadService.findTerminalRoadByTime(staffId,currentTime);
+        List<Map<String,Object>> list=terminalRoadService.findTerminalRoadByTime(staffId,currentTime,pageSize,startPage);
         return !list.isEmpty() ? ResultUtil.jsonToStringSuccess(list): ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
     }
 

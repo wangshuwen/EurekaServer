@@ -6,7 +6,6 @@ import com.cst.xinhe.persistence.dto.chat_msg.ChatMsgHistoryDto;
 import com.cst.xinhe.persistence.model.chat.ChatMsg;
 import com.cst.xinhe.web.service.chat.service.ChatMessageService;
 import com.cst.xinhe.web.service.staff_group_terminal.service.StaffOrganizationService;
-import com.cst.xinhe.web.service.staff_group_terminal.service.StaffTerminalRelationService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -117,9 +116,9 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     }
 
     @Override
-    public Page findChatRecord(Integer staffId, Integer startPage, Integer pageSize) {
+    public Page findChatRecord(Integer staffId, Integer startPage, Integer pageSize, String startTime, String endTime) {
         Page page = PageHelper.startPage(startPage, pageSize);
-        List<Map<String, Object>> lists = chatMsgMapper.findChatRecord(staffId);
+        List<Map<String, Object>> lists = chatMsgMapper.findChatRecord(staffId,startTime,endTime);
         return page;
     }
 

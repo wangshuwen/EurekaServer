@@ -68,9 +68,9 @@ public class TerminalRoadServiceImpl implements TerminalRoadService {
     }
 
     @Override
-    public List<Map<String,Object>> findTerminalRoadByTime(int staffId, String currentTime) throws ParseException {
+    public List<Map<String,Object>> findTerminalRoadByTime(int staffId, String currentTime, Integer pageSize, Integer startPage) throws ParseException {
 
-        List<Map<String, Object>> result = gasPositionService.findRoadByStaffIdAndTime(staffId,currentTime);
+        List<Map<String, Object>> result = gasPositionService.findRoadByStaffIdAndTime(staffId,currentTime,startPage,pageSize);
 
 //        return terminalRoadMapper.findTerminalRoadByTime(staffId,currentTime);
         return result;

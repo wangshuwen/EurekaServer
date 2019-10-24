@@ -1,5 +1,6 @@
 package com.cst.xinhe.terminal.monitor.server.client;
 
+import com.cst.xinhe.base.result.ResultUtil;
 import com.cst.xinhe.terminal.monitor.server.client.callback.WsPushServiceFallback;
 import com.cst.xinhe.terminal.monitor.server.client.config.FeignConfig;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -7,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.io.IOException;
 
 @FeignClient(value = "ws-push-service",
         configuration = FeignConfig.class,
@@ -34,4 +37,7 @@ public interface WsPushServiceClient {
 
     @GetMapping("setZoneIdIsNull")
     void setZoneIdIsNull();
+
+    @PostMapping("sendWSPersonNumberServer")
+     String sendWSPersonNumberServer(@RequestBody String jsonObject);
 }

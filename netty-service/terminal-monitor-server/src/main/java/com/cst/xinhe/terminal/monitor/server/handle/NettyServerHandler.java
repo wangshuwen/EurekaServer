@@ -485,6 +485,12 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         }
         data.setType(3);
         System.out.println("推送井下总人数："+attendanceCount);
+        try {
+//                    WSPersonNumberServer.sendInfo(JSON.toJSONString(data));
+            wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         /*为演示做准备结束*/
 
 

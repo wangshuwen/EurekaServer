@@ -108,6 +108,9 @@ public class StationMonitorServerServiceImpl implements StationMonitorServerServ
               if (flag) {
                   macStationMapper.deleteByMac(mac);
               }
+              if("00-95-69-FA-96-00".equals(mac)){
+                  item.setStationId(3);
+              }
               macStationMapper.insert(item);
           }
 

@@ -6,7 +6,6 @@ import com.cst.xinhe.persistence.model.terminal_road.TerminalRoad;
 import com.cst.xinhe.web.service.gas.elasticsearch.entity.GasPositionEntity;
 import com.cst.xinhe.web.service.gas.elasticsearch.service.GasPositionService;
 import com.cst.xinhe.web.service.gas.service.TerminalRoadService;
-import com.github.pagehelper.Page;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -28,10 +27,9 @@ public class TerminalRoadServiceImpl implements TerminalRoadService {
 
     Set set= new HashSet<String>();
     @Override
-    public Page findTimeList(int staffId, Integer pageSize, Integer startPage) {
+    public List<String> findTimeList(int staffId, String startTime, String endTime) {
 
-        Page page = new Page();
-        Iterable<GasPositionEntity> timeFlag = gasPositionService.findTimeFlag(startPage, pageSize, staffId);
+        Iterable<GasPositionEntity> timeFlag = gasPositionService.findTimeFlag(staffId,startTime,endTime);
         for (GasPositionEntity item : timeFlag) {
             String convert = DateConvert.convert(item.getCreatetime(), 10);
             set.add(convert);
@@ -41,30 +39,8 @@ public class TerminalRoadServiceImpl implements TerminalRoadService {
         //清空set，防止set存储数据过多，大量占用内存
         set.clear();
         Collections.sort(sumList);
-        //计算当前页，开始到结束的索引位置
-        int start=(startPage-1)*pageSize;
-        int end=startPage*pageSize-1;
-         page.setTotal(sumList.size());
-        page.setPageSize(pageSize);
-        page.setPageNum(startPage);
-        List list = page.getResult();
-        list.clear();
-        //取分页的数据
-        if(end>(sumList.size()-1))
-            end=sumList.size()-1;
-        for(int i=0;i<sumList.size();i++){
-            if(i>=start&&i<=end){
-                list.add(sumList.get(i));
-            }
-        }
 
-       /* List<String> result = new ArrayList<>();
-        for (GasPositionEntity item: gasPositionEntities.getContent()){
-            result.add(DateConvert.convert(item.getCreatetime(),10));
-        }*/
-
-       // list.addAll(result);
-        return page;
+        return sumList;
     }
 
     @Override

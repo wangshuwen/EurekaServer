@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -40,12 +42,32 @@ public class TerminalRoadController {
     @GetMapping("findTimeList")
     @ApiOperation(value = "获取员工id获取历史轨迹时间列表", notes = "根据员工id查询详细时间列表")
     public String findTimeList(
-            @RequestParam(name ="staffId",required = false) int staffId,
-            @RequestParam(name = "limit", defaultValue = "6", required = false) Integer pageSize,
-            @RequestParam(name = "page", defaultValue = "1", required = false) Integer startPage) {
-        Page page = terminalRoadService.findTimeList(staffId,pageSize,startPage);
-        PageInfo pageInfo = new PageInfo(page);
-        return pageInfo.getSize() > 0 ?ResultUtil.jsonToStringSuccess(pageInfo):ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
+            @RequestParam(name ="staffId",required = false) int staffId,@RequestParam(name ="currentMonth",required = false) String currentMonth) {
+        SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM");
+
+
+        String startTime="";
+        String endTime="";
+        Calendar instance = Calendar.getInstance();
+        int year = instance.get(Calendar.YEAR);
+        int month = instance.get(Calendar.MONTH)+1;
+        int day=instance.get(Calendar.DAY_OF_MONTH);
+
+        if(currentMonth==null||"".equals(currentMonth)){
+            endTime=""+year+"-"+month+"-"+day;
+            startTime=""+year+"-"+month+"-"+1;
+        }else{
+            try {
+                instance.setTime(simpleDate.parse(currentMonth));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            int maxDay = instance.getActualMaximum(Calendar.DAY_OF_MONTH);
+            startTime=currentMonth+"-"+1;
+            endTime=currentMonth+"-"+maxDay;
+        }
+        List<String> list = terminalRoadService.findTimeList(staffId,startTime,endTime);
+        return list.size() > 0 ?ResultUtil.jsonToStringSuccess(list):ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
     }
 
     @GetMapping("findNowSiteByStaffId")

@@ -59,11 +59,12 @@ public class GasPositionServiceImpl implements GasPositionService {
     private EsManager esManager;*/
 
     @Override
-    public Iterable<GasPositionEntity> findTimeFlag(Integer startPage, Integer pageSize, Integer staffId) {
+    public Iterable<GasPositionEntity> findTimeFlag(Integer staffId, String startTime, String endtime) {
 
 
         BoolQueryBuilder builder = QueryBuilders.boolQuery();
         builder.must(QueryBuilders.termQuery("staffid",staffId));
+        builder.must(QueryBuilders.rangeQuery("createtime").format("yyyy-MM-dd").gte(startTime).lte(endtime));
 
         Iterable<GasPositionEntity> search = gasPositionRepository.search(builder);
         return search;

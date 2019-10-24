@@ -3,7 +3,6 @@ package com.cst.xinhe.web.service.gas.service;
 
 import com.cst.xinhe.persistence.model.terminal_road.TerminalRoad;
 import com.cst.xinhe.web.service.gas.elasticsearch.entity.GasPositionEntity;
-import com.github.pagehelper.Page;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -17,7 +16,7 @@ import java.util.Map;
  */
 public interface TerminalRoadService {
 
-    Page findTimeList(int staffId, Integer pageSize, Integer startPage);
+    List<String> findTimeList(int staffId, String startTime, String endTime);
 
     List<Map<String,Object>> findTerminalRoadByTime(int staffId, String currentTime, Integer pageSize, Integer startPage) throws ParseException;
 

@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface GasPositionService {
-    Iterable<GasPositionEntity> findTimeFlag(Integer startPage, Integer pageSize, Integer staffId);
+    Iterable<GasPositionEntity> findTimeFlag(Integer staffId, String startTime, String currentMonth);
 
     List<Map<String, Object>> findRoadByStaffIdAndTime(int staffId, String currentTime, Integer startPage, Integer pageSize) throws ParseException;
 

@@ -1,12 +1,11 @@
 package com.cst.xinhe.kafka.consumer.service.service;
 
-import ICT.Position;
-import ICT.RSSI2;
-import com.cst.xinhe.kafka.consumer.service.client.WebServiceClient;
+
 import com.cst.xinhe.persistence.dao.base_station.BaseStationMapper;
 import com.cst.xinhe.persistence.model.base_station.BaseStation;
 import com.cst.xinhe.persistence.model.terminal_road.TerminalRoad;
 import org.springframework.stereotype.Component;
+import sensorHelper.Position;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -52,9 +51,10 @@ public class RSTL {
         double positionX2 = station2.getPositionX();
         double positionY2 = station2.getPositionY();
 
-        Position position = RSSI2.locationCal(positionX1, positionY1, positionX2, positionY2, wifiStrength1, wifiStrength2);
-        teminalRoad.setPositionX(position.x);
-        teminalRoad.setPositionY(position.y);
+        //Position position = RSSI2.locationCal(positionX1, positionY1, positionX2, positionY2, wifiStrength1, wifiStrength2);
+        Position position = sensorHelper.sensorHelper.locationCal(positionX1, positionY1, positionX2, positionY2, wifiStrength1, wifiStrength2);
+        teminalRoad.setPositionX(position.getX());
+        teminalRoad.setPositionY(position.getY());
         teminalRoad.setPositionZ(station1.getPositionZ());
 
         StringBuffer stringBuffer = new StringBuffer();

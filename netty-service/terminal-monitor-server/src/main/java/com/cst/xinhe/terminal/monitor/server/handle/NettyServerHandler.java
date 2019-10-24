@@ -6,11 +6,18 @@ import com.cst.xinhe.base.exception.RuntimeServiceException;
 import com.cst.xinhe.common.constant.ConstantValue;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
+import com.cst.xinhe.common.utils.GetUUID;
 import com.cst.xinhe.common.ws.WebSocketData;
+import com.cst.xinhe.persistence.dao.attendance.AttendanceMapper;
+import com.cst.xinhe.persistence.dao.attendance.StaffAttendanceRealRuleMapper;
+import com.cst.xinhe.persistence.dao.attendance.TimeStandardMapper;
 import com.cst.xinhe.persistence.dao.staff.StaffMapper;
 import com.cst.xinhe.persistence.dao.terminal.TerminalUpdateIpMapper;
 import com.cst.xinhe.persistence.dao.updateIp.TerminalIpPortMapper;
+import com.cst.xinhe.persistence.model.attendance.Attendance;
+import com.cst.xinhe.persistence.model.attendance.StaffAttendanceRealRule;
 import com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp;
+import com.cst.xinhe.persistence.vo.req.TimeStandardVO;
 import com.cst.xinhe.terminal.monitor.server.channel.ChannelMap;
 import com.cst.xinhe.terminal.monitor.server.client.WsPushServiceClient;
 import com.cst.xinhe.terminal.monitor.server.context.SpringContextUtil;
@@ -77,6 +84,12 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     private TerminalIpPortMapper terminalIpPortMapper;
 
     private WsPushServiceClient  wsPushServiceClient;
+
+    //为演示做准备开始
+    private TimeStandardMapper timeStandardMapper;
+    private StaffAttendanceRealRuleMapper staffAttendanceRealRuleMapper;
+    private AttendanceMapper  attendanceMapper;
+    //为演示做准备结束
 
     //    private static NettyServerHandler nettyServerHandler;
 //
@@ -380,6 +393,40 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 port;
         ChannelMap.addChannel(str, ctx.channel());
 
+            /*为演示准备开始*/
+        TimeStandardVO standard =  timeStandardMapper.selectTimeStandardInfoByStaffId(2);
+        Integer timeStandardId = standard.getTimeStandardId();
+
+        StaffAttendanceRealRule realRule =staffAttendanceRealRuleMapper.selectByPrimaryKey(2);
+        //StaffAttendanceRealRule realRule = attendanceServiceClient.findStaffAttendanceRealRuleById(2);
+        Attendance attendance = new Attendance();
+        attendance.setAttendanceId(GetUUID.getUuid());
+        attendance.setStaffId(2);
+        attendance.setRuleId(timeStandardId);
+        attendance.setStartTime(new Date());
+        attendance.setInOre(new Date());
+        attendance.setBaseStationId(3);
+        //员工上班
+        realRule.setIsAttendance(1);
+        realRule.setFinalTime(null);
+        staffAttendanceRealRuleMapper.updateByPrimaryKeySelective(realRule);
+        attendanceMapper.insertSelective(attendance);
+
+        WebSocketData data = new WebSocketData();
+//                List<HashMap<String, Object>> attendanceCount = staffAttendanceRealRuleMapper.getAttendanceStaff(null, null);
+      //  staffAttendanceRealRuleMapper.getAttendanceStaffCount(deptIds,staffName);
+        Long attendanceCount = staffAttendanceRealRuleMapper.getAttendanceStaffCount(null,null);
+
+        if (null != attendanceCount) {
+            data.setData(attendanceCount);
+        } else {
+            data.setData(0);
+        }
+        data.setType(3);
+        System.out.println("推送井下总人数："+attendanceCount);
+
+
+        /*为演示准备结束*/
 
         log.info("终端[" + str + "] 连接成功");
         log.info("终端[" + str + "] 加入session");
@@ -406,6 +453,30 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             ChannelMap.removeChannelByName(str);
             log.info("终端[" + str + "] 被移出session");
             log.info("当前数量[" + ChannelMap.getChannelNum() + "] 个");
+
+
+            /*为演示做准备开始*/
+
+        Attendance attendance = attendanceMapper.findAttendanceByStaffIdAndEndTimeIsNull(2);
+        if (attendance != null) {
+            attendance.setEndTime(new Date());
+            attendance.setOutOre(new Date());
+            attendanceMapper.updateByPrimaryKeySelective(attendance);
+        }
+
+        WebSocketData data = new WebSocketData();
+//                List<HashMap<String, Object>> attendanceCount = staffAttendanceRealRuleMapper.getAttendanceStaff(null, null);
+        //  staffAttendanceRealRuleMapper.getAttendanceStaffCount(deptIds,staffName);
+        Long attendanceCount = staffAttendanceRealRuleMapper.getAttendanceStaffCount(null,null);
+
+        if (null != attendanceCount) {
+            data.setData(attendanceCount);
+        } else {
+            data.setData(0);
+        }
+        data.setType(3);
+        System.out.println("推送井下总人数："+attendanceCount);
+        /*为演示做准备结束*/
 
 
             //实时查询：根据IP和端口到终端ip更新表查找,移除断开连接的人或车

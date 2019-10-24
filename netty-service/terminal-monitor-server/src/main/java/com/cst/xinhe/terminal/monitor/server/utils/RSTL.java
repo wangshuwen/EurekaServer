@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import sensorHelper.Position;
 
 import javax.annotation.Resource;
+import java.text.DecimalFormat;
 import java.util.Date;
 
 /**
@@ -52,16 +53,25 @@ public class RSTL {
         //Position position = RSSI2.locationCal(positionX1, positionY1, positionX2, positionY2, wifiStrength1, wifiStrength2);
 
         Position position = sensorHelper.sensorHelper.locationCal(positionX1, positionY1, positionX2, positionY2, wifiStrength1, wifiStrength2);
+        //计算两点之间的距离
+        double distance1 = LocationUtils.getDistance(positionX1, positionY1, position.getX(), position.getY());
+        double distance2 = LocationUtils.getDistance(positionX2, positionY2, position.getX(), position.getY());
+
+
         teminalRoad.setPositionX(position.getX());
         teminalRoad.setPositionY(position.getY());
         teminalRoad.setPositionZ(station1.getPositionZ());
 
         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append(station1.getBaseStationName());
+        /*stringBuffer.append(station1.getBaseStationName());
         stringBuffer.append("#").append(station2.getBaseStationName());
-        stringBuffer.append("#");
-        float a = (float) (distance - positionY1);
-        stringBuffer.append(a);
+        stringBuffer.append("#");*/
+        DecimalFormat df = new DecimalFormat("#.00");
+        System.out.println(df.format(distance1));
+        stringBuffer.append("距离基站"+station1.getBaseStationNum()+"#"+df.format(distance1));
+        stringBuffer.append("#距离基站"+station2.getBaseStationNum()+"#"+df.format(distance2));
+        /*float a = (float) (distance - positionY1);
+        stringBuffer.append(a);*/
         teminalRoad.setTempPositionName(stringBuffer.toString());
         return teminalRoad;
     }

@@ -8,6 +8,8 @@ import io.netty.channel.Channel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * @program: demo
  * @description: 单例Client响应类
@@ -54,6 +56,10 @@ public class SingletonClient {
 
         String ip = ip_prefix + t_ip + ":" + responseData.getCustomMsg().getTerminalPort();
         logger.info("ip和端口："+ip);
+        ConcurrentHashMap<String, Channel> channelHashMap = ChannelMap.channelHashMap;
+        for (String s : channelHashMap.keySet()) {
+            logger.info("channelKey"+s);
+        }
         Channel channel = ChannelMap.getChannelByName(ip);
         logger.info("终端发送数据完成！");
         try {

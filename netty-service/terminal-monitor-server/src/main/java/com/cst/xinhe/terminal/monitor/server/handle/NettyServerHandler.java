@@ -126,6 +126,12 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
         this.wsPushServiceClient=SpringContextUtil.getBean(WsPushServiceClient.class);
 //        this.processRealTimeVoice = ProcessRealTimeVoice.getProcessRealTimeVoice();
+
+        //为演示做准备开始
+        this.timeStandardMapper=SpringContextUtil.getBean(TimeStandardMapper.class);
+        this.staffAttendanceRealRuleMapper=SpringContextUtil.getBean(StaffAttendanceRealRuleMapper.class);
+        this.attendanceMapper=SpringContextUtil.getBean(AttendanceMapper.class);
+        //为演示做准备结束
     }
 
     //注入Kafka
@@ -456,7 +462,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
 
             /*为演示做准备开始*/
-
+        StaffAttendanceRealRule realRule =staffAttendanceRealRuleMapper.selectByPrimaryKey(2);
         Attendance attendance = attendanceMapper.findAttendanceByStaffIdAndEndTimeIsNull(2);
         if (attendance != null) {
             attendance.setEndTime(new Date());
@@ -464,6 +470,9 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             attendanceMapper.updateByPrimaryKeySelective(attendance);
         }
 
+        realRule.setIsAttendance(0);
+        realRule.setFinalTime(null);
+        staffAttendanceRealRuleMapper.updateByPrimaryKeySelective(realRule);
         WebSocketData data = new WebSocketData();
 //                List<HashMap<String, Object>> attendanceCount = staffAttendanceRealRuleMapper.getAttendanceStaff(null, null);
         //  staffAttendanceRealRuleMapper.getAttendanceStaffCount(deptIds,staffName);

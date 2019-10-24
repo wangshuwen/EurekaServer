@@ -51,7 +51,7 @@ public class ChannelMap {
 
 
     //定义线程安全的 Map集合
-    private static ConcurrentHashMap<String, Channel> channelHashMap = new ConcurrentHashMap<>();
+    public static ConcurrentHashMap<String, Channel> channelHashMap = new ConcurrentHashMap<>();
 
     /**
      * @param [name]

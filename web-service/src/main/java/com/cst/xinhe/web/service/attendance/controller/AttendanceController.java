@@ -130,7 +130,10 @@ public class AttendanceController {
             Integer count= attendanceService.getUnAttendanceDept(deptIds);
             Map<String, Object> map = new HashMap<>();
             map.put("deptName",org.getName());
-            map.put("count",count);
+            //开始为演示做准备开始
+            map.put("count",0);
+            //开始为演示做准备结束
+            //map.put("count",count);
             map.put("deptId",org.getId());
             resultList.add(map);
         }

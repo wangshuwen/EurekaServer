@@ -117,16 +117,21 @@ public class GasPositionServiceImpl implements GasPositionService {
                 if(staffList.size()==1){
                     builder.must(QueryBuilders.termQuery("staffid",staffList.get(0).getStaffId()));
                 }else{
+                   // BoolQueryBuilder query = QueryBuilders.boolQuery();
                     for (Staff staff : staffList) {
                         builder.should(QueryBuilders.termQuery("staffid",staff.getStaffId()));
                     }
+                    //builder.must(query);
                 }
             }else{
                 builder.must(QueryBuilders.termQuery("staffid",0));
             }
         }
-        if(null != gasFlag){
+       /* if(null != gasFlag){
             builder.must(QueryBuilders.termQuery("gasflag",gasFlag));
+        }*/
+        if(gasFlag==1){
+            builder.mustNot(QueryBuilders.termQuery("gasflag",0));
         }
 
 

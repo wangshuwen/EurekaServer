@@ -15,7 +15,7 @@ import java.util.Map;
 public interface GasPositionService {
     Iterable<GasPositionEntity> findTimeFlag(Integer staffId, String startTime, String currentMonth);
 
-    List<Map<String, Object>> findRoadByStaffIdAndTime(int staffId, String currentTime, Integer startPage, Integer pageSize) throws ParseException;
+    List<Map<String, Object>> findRoadByStaffIdAndTime(int staffId,  Integer startPage, Integer pageSize,String startTime,String endTime,Integer isOre) throws ParseException;
 
     Page<GasPositionEntity> searchGasPositionWarnInfoByStaffId(Integer gasFlag, String staffName, Integer startPage, Integer pageSize);
 

@@ -71,20 +71,22 @@ public class GasPositionServiceImpl implements GasPositionService {
     }
 
     @Override
-    public List<Map<String, Object>> findRoadByStaffIdAndTime(int staffId, String currentTime, Integer startPage, Integer pageSize) throws ParseException {
+    public List<Map<String, Object>> findRoadByStaffIdAndTime(int staffId,  Integer startPage, Integer pageSize,String startTime,String endTime,Integer isOre) throws ParseException {
         Pageable pageable = new PageRequest(startPage - 1,pageSize);
 
         BoolQueryBuilder builder = QueryBuilders.boolQuery();
         builder.must(QueryBuilders.termQuery("staffid", staffId));
+        if(isOre!=null){
+            builder.must(QueryBuilders.termQuery("isore", isOre));
+        }
 
-        Date s = DateConvert.convertStringToDate(currentTime,10);
+        /*Date s = DateConvert.convertStringToDate(currentTime,10);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(s);
         calendar.add(Calendar.DAY_OF_MONTH, + 1);//+1今天的时间加一天
         Date date = calendar.getTime();
-        String endtime = DateConvert.convert(date, 10);
-
-        builder.must(QueryBuilders.rangeQuery("createtime").format("yyyy-MM-dd").gte(currentTime).lt(endtime));
+        String endtime = DateConvert.convert(date, 10);*/
+        builder.must(QueryBuilders.rangeQuery("createtime").format("yyyy-MM-dd HH:mm:ss").gte(startTime).lte(endTime));
         SortBuilder sortBuilder = SortBuilders.fieldSort("createtime").order(SortOrder.ASC);
         NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withQuery(builder).withSort(sortBuilder).withPageable(pageable);
         Iterable<GasPositionEntity> iterable = gasPositionRepository.search(searchQueryBuilder.build());

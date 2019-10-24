@@ -86,13 +86,19 @@ public class TerminalRoadController {
     public String findTerminalRoadByTime(
             @RequestParam(name ="staffId",required = false) int staffId,
             @RequestParam(name = "currentTime", required = false) String currentTime,
+            @RequestParam(name = "startTime", required = false,defaultValue = "00:00:00") String startTime,
+            @RequestParam(name = "endTime", required = false,defaultValue = "23:59:59") String endTime,
+            @RequestParam(name = "isOre", required = false) Integer isOre,
             @RequestParam(name = "pageSize",required = false,defaultValue = "12")Integer pageSize,
             @RequestParam(name = "startPage",required = false,defaultValue = "1")Integer startPage
             ) throws ParseException {
         if(currentTime==null||"".equals(currentTime))
            return  ResultUtil.jsonToStringSuccess();
 
-        List<Map<String,Object>> list=terminalRoadService.findTerminalRoadByTime(staffId,currentTime,pageSize,startPage);
+        startTime=currentTime+" "+startTime;
+        endTime=currentTime+" "+endTime;
+
+        List<Map<String,Object>> list=terminalRoadService.findTerminalRoadByTime(staffId,pageSize,startPage,startTime,endTime,isOre);
         return !list.isEmpty() ? ResultUtil.jsonToStringSuccess(list): ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
     }
 

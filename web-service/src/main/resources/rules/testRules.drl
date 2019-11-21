@@ -1,0 +1,40 @@
+package rules;
+dialect  "java"
+
+import com.cst.xinhe.web.service.drool.entity.Message;
+
+rule "testRules1"
+    when
+    $message : Message(command==1)
+    then
+    System.out.println("警报！警报！ 一氧化碳超标了");
+
+end
+rule "testRules2"
+    when
+    $message : Message(command==2)
+    then
+    System.out.println("警报！警报！ 甲烷超标了");
+
+end
+rule "testRules3"
+    when
+    $message : Message(command==3)
+    then
+    System.out.println("警报！警报！ 氧气过低了");
+
+end
+rule "testRules4"
+    when
+    $message : Message(command==4)
+    then
+    System.out.println("警报！警报！ 温度过高了");
+
+end
+rule "testRules5"
+    when
+    $message : Message(command==5)
+    then
+    System.out.println("警报！  警报！湿度过低了");
+
+end

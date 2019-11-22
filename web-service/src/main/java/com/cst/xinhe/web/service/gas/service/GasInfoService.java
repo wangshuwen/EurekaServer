@@ -19,6 +19,8 @@ public interface GasInfoService {
 
     /**
      * @param [staffName, startPage, pageSize]  员工姓名， 分页查询参数的起始页数 ，每页显示的数量
+     * @param startTime
+     * @param endTime
      * @return java.lang.String
      * @description 通过员工姓名查询气体信息
      * @date 17:36 2018/10/26
@@ -27,7 +29,7 @@ public interface GasInfoService {
 //    String findGasInfoByStaffName(String staffName, Integer startPage, Integer pageSize);
 
 
-    Page findGasInfoByStaffName(Integer gasFlag, String staffName, Integer startPage, Integer pageSize);
+    Page findGasInfoByStaffName(Integer gasFlag, String staffName, Integer startPage, Integer pageSize, String startTime, String endTime);
     /**
      * @param [terminalId] 终端Id
      * @return com.cst.xinhe.persistence.vo.resp.GasWSRespVO

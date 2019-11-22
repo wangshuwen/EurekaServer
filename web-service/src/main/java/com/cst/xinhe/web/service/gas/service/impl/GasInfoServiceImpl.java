@@ -1,7 +1,6 @@
 package com.cst.xinhe.web.service.gas.service.impl;
 
 
-import com.cst.xinhe.persistence.dao.rt_gas.RtGasInfoMapper;
 import com.cst.xinhe.persistence.dao.staff.StaffMapper;
 import com.cst.xinhe.persistence.model.staff.Staff;
 import com.cst.xinhe.persistence.vo.resp.GasWSRespVO;
@@ -41,13 +40,13 @@ public class GasInfoServiceImpl implements GasInfoService {
     private GasPositionService gasPositionService;
 
     @Override
-    public Page findGasInfoByStaffName(Integer gasFlag, String staffName, Integer startPage, Integer pageSize) {
+    public Page findGasInfoByStaffName(Integer gasFlag, String staffName, Integer startPage, Integer pageSize, String startTime, String endTime) {
         Integer startCount=(startPage-1)*pageSize+1;
 
 
         Page page = new Page();
         //todo es分页查询
-        org.springframework.data.domain.Page<GasPositionEntity> gasPositionList = gasPositionService.searchGasPositionWarnInfoByStaffId(gasFlag, staffName, startPage, pageSize);
+        org.springframework.data.domain.Page<GasPositionEntity> gasPositionList = gasPositionService.searchGasPositionWarnInfoByStaffId(gasFlag, staffName, startPage, pageSize,startTime,endTime);
 //                gasPositionWarnEntityList.getContent(); //分页内的数据
 //                gasPositionWarnEntityList.getSize();
 //                System.out.println(gasPositionWarnEntityList.toString());

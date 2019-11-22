@@ -55,9 +55,11 @@ public class GasController {
     @GetMapping("findRtGasInfoByStaffName")
     public String getRtGasInfoByStaffName(@RequestParam(required = false,name = "gasFlag") Integer gasFlag,
             @RequestParam(required = false,name = "staffName",defaultValue = "") String staffName,
+            @RequestParam(required = false,name = "startTime",defaultValue = "") String startTime,
+            @RequestParam(required = false,name = "endTime",defaultValue = "") String endTime,
             @RequestParam(required = false, defaultValue = "8", name = "limit") Integer pageSize,
             @RequestParam(required = false, defaultValue = "1", name = "page") Integer startPage) {
-        Page page = gasInfoService.findGasInfoByStaffName(gasFlag,staffName, startPage, pageSize);
+        Page page = gasInfoService.findGasInfoByStaffName(gasFlag,staffName, startPage, pageSize,startTime,endTime);
         PageInfo pageInfo = new PageInfo(page);
         return pageInfo.getSize() > 0 ? ResultUtil.jsonToStringSuccess(pageInfo): ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
     }

@@ -1,7 +1,5 @@
 package com.cst.xinhe.web.service.gas.elasticsearch.service.impl;
 
-import com.cst.xinhe.common.utils.convert.DateConvert;
-
 import com.cst.xinhe.persistence.dao.e_msg.ExceptionMessageMapper;
 import com.cst.xinhe.persistence.dao.staff.StaffMapper;
 import com.cst.xinhe.persistence.dao.staff.StaffOrganizationMapper;
@@ -29,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -106,9 +105,9 @@ public class GasPositionServiceImpl implements GasPositionService {
     }
 
     @Override
-    public Page<GasPositionEntity> searchGasPositionWarnInfoByStaffId(Integer gasFlag, String staffName, Integer startPage, Integer pageSize) {
+    public Page<GasPositionEntity> searchGasPositionWarnInfoByStaffId(Integer gasFlag, String staffName, Integer startPage, Integer pageSize, String startTime, String endTime) {
         Pageable pageable = new PageRequest(startPage - 1,pageSize);
-
+        QueryBuilder queryBuilder1 = null;
         BoolQueryBuilder builder = QueryBuilders.boolQuery();
        // builder.filter(QueryBuilders.termQuery("gasflag",1));
         if(null != staffName &&!"".equals(staffName)){
@@ -129,31 +128,44 @@ public class GasPositionServiceImpl implements GasPositionService {
                 builder.must(QueryBuilders.termQuery("staffid",0));
             }
         }
-       /* if(null != gasFlag){
-            builder.must(QueryBuilders.termQuery("gasflag",gasFlag));
-        }*/
+
+
+
+        if (null != startTime && null != endTime && !"".equals(startTime) && !"".equals(endTime)){
+            //添加时间查询
+            //到es中查询，需要减8个小时才等于es中的时间
+            SimpleDateFormat sf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date startDate=null;
+            Date endDate=null;
+            try {
+                startDate=sf1.parse(startTime);
+                endDate=sf1.parse(endTime);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            Calendar instance = Calendar.getInstance();
+            instance.setTime(startDate);
+            instance.add(Calendar.HOUR_OF_DAY, -8);
+            startDate = instance.getTime();
+            startTime=sf1.format(startDate);
+
+            instance.setTime(endDate);
+            instance.add(Calendar.HOUR_OF_DAY, -8);
+            endDate = instance.getTime();
+            endTime=sf1.format(endDate);
+
+            queryBuilder1 = QueryBuilders.rangeQuery("createtime").format("yyyy-MM-dd HH:mm:ss").gte(startTime).lte(endTime);
+        }
+
+
         if(gasFlag==1){
             builder.mustNot(QueryBuilders.termQuery("gasflag",0));
         }
 
 
-
-
-
-      /*  SearchQuery query = new NativeSearchQuery(builder);
-        query.setPageable(pageable);
-
-
-        Page<GasPositionEntity> page = elasticsearchTemplate.startScroll(500000, query, GasPositionEntity.class);
-
-        for (int i = 0; i < startPage - 1; i++) {
-            elasticsearchTemplate.continueScroll(((ScrolledPage) page).getScrollId(), 500000, GasPositionEntity.class);
-           }*/
-
-
-
         SortBuilder sortBuilder = SortBuilders.fieldSort("createtime").order(SortOrder.DESC);
-        NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder().withSort(sortBuilder).withQuery(builder).withPageable(pageable);
+        NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder().withSort(sortBuilder).withQuery(builder).withQuery(queryBuilder1).withPageable(pageable);
         Page<GasPositionEntity> page = gasPositionRepository.search(nativeSearchQueryBuilder.build());
         return page;
     }
@@ -163,31 +175,16 @@ public class GasPositionServiceImpl implements GasPositionService {
         List<Map<String, Object>> result = new ArrayList<>();
         Map<String, Object> itemMap = null;
         QueryBuilder queryBuilder = QueryBuilders.termQuery("staffid", staffId);
-//        QueryBuilder queryBuilder0 = null;
         QueryBuilder queryBuilder1 = null;
-//        QueryBuilder queryBuilder2 = null;
-//        if (null != inOreTime){
-//            queryBuilder0 = QueryBuilders.rangeQuery("createtime").format("yyyy-MM-dd").gte(inOreTime);
-//        }
+
         if (null != startTime && null != endTime && !"".equals(startTime) && !"".equals(endTime)){
             queryBuilder1 = QueryBuilders.rangeQuery("createtime").format("yyyy-MM-dd").from(startTime).to(endTime);
-//            gte(startTime).lte(endTime);
         }
-//        if (null != endTime){
-//            queryBuilder2 = QueryBuilders.rangeQuery("createtime").format("yyyy-MM-dd").lte(endTime);
-//        }
+
         SortBuilder sortBuilder = SortBuilders.fieldSort("createtime").order(SortOrder.DESC);
         Pageable pageable = new PageRequest(startPage - 1,pageSize);
         NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withPageable(pageable).withQuery(queryBuilder).withQuery(queryBuilder1).withSort(sortBuilder).withFields("createtime","temppositionname", "isore");
         Page<GasPositionEntity> iterable = gasPositionRepository.search(searchQueryBuilder.build());
-//        for (GasPositionEntity item: iterable.getContent()){
-//            itemMap = new HashMap<>();
-//            itemMap.put("tempPositionName",item.getTemppositionname());
-//            itemMap.put("isSore",item.getIsore());
-//            itemMap.put("createTime",item.getCreatetime());
-//            result.add(itemMap);
-//        }
-//        return result;
         return iterable;
     }
 
@@ -304,14 +301,6 @@ public class GasPositionServiceImpl implements GasPositionService {
             result.put("sequence_id", gasPositionEntity.getSequenceid());
             list.add(result);
         }
-//         <select id="selectGasInfoLastTenData" resultType="java.util.HashMap">
-//                SELECT  a.rt_gas_info_id AS rtGasInfoId,  a.co,  a.co_unit,  a.ch4,  a.ch4_unit,  a.o2,  a.o2_unit,  a.co2,  a.co2_unit,  a.temperature,
-//                a.temperature_unit,  a.humidity,  a.humidity_unit,  a.field_3,  a.field_3_unit,  a.create_time,  a.terminal_id,
-//                a.station_id,  a.terminal_ip,  a.station_ip,  a.terminal_real_time,  a.info_type,  a.sequence_id,
-//                a.position_id
-//        FROM rt_gas_info a
-//        ORDER BY a.rt_gas_info_id DESC LIMIT #{number}
-//    </select>
         return list;
     }
 
@@ -322,9 +311,7 @@ public class GasPositionServiceImpl implements GasPositionService {
         params.put("staffName", staffName);
         params.put("staffId", staffId);
         params.put("type", type);
-//        List<Map<String, Object>> mapList = eCallMapper.selectByParams(params);
         com.github.pagehelper.Page<Map<String, Object>> page = PageHelper.startPage(startPage,pageSize);
-        List<Map<String, Object>> mapList = exceptionMessageMapper.selectByParams(params);
         for (Map<String, Object> item : page.getResult()){
             Integer groupId = (Integer) item.get("group_id");
             String deptName = getDeptNameByGroupId(groupId);

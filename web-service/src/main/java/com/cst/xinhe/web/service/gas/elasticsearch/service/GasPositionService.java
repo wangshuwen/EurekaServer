@@ -17,7 +17,7 @@ public interface GasPositionService {
 
     List<Map<String, Object>> findRoadByStaffIdAndTime(int staffId,  Integer startPage, Integer pageSize,String startTime,String endTime,Integer isOre) throws ParseException;
 
-    Page<GasPositionEntity> searchGasPositionWarnInfoByStaffId(Integer gasFlag, String staffName, Integer startPage, Integer pageSize);
+    Page<GasPositionEntity> searchGasPositionWarnInfoByStaffId(Integer gasFlag, String staffName, Integer startPage, Integer pageSize, String startTime, String endTime);
 
     Page<GasPositionEntity> findTerminalRoadByInOreTime(int staffId, Date inOreTime, String startTime, String endTime, Integer startPage, Integer pageSize);
 

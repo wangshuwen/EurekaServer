@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.Null;
 import java.text.ParseException;
 import java.util.*;
 
@@ -38,6 +39,11 @@ public class StaffController {
 
     @Resource
     private StaffOrganizationService staffOrganizationService;
+
+
+
+
+
 
 
     @PostMapping("staff/addStaff")
@@ -110,8 +116,10 @@ public class StaffController {
             , @RequestParam(required = false, defaultValue = "1", name = "page") Integer startPage
             , @RequestParam(name = "staffName", required = false) String staffName
             ,@RequestParam(name = "orgId", required = false) Integer orgId
-            ,@RequestParam(name = "isPerson", required = false) Integer isPerson) {
-        PageInfo<StaffInfoDto> staffList = staffService.getStaffInfoByStaff(staffName, startPage, pageSize, orgId, isPerson);
+            ,@RequestParam(name = "isPerson", required = false) Integer isPerson
+            ,@RequestParam(name = "staffJobId",required = false) Integer staffJobId
+                                        ) {
+        PageInfo<StaffInfoDto> staffList = staffService.getStaffInfoByStaff(staffName, startPage, pageSize, orgId, isPerson,staffJobId);
         return staffList.getSize() > 0 ? ResultUtil.jsonToStringSuccess(staffList): ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
     }
 

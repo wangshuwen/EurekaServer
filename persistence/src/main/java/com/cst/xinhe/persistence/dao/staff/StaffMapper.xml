@@ -557,6 +557,14 @@
           <if test="isPerson != null and isPerson == 0">
             AND  a.is_person = 0
           </if>
+
+          <if test="staffJobId != null and staffJobId != 0">
+            AND  a.staff_job_id =  #{staffJobId}
+          </if>
+
+
+
+
           <!--<if test="isPerson != null and isPerson == 0">-->
             <!--AND   <![CDATA[  is_person <> 3   ]]>-->
           <!--</if>-->

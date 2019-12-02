@@ -148,7 +148,7 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public PageInfo<StaffInfoDto> getStaffInfoByStaff(String staffName, Integer startPage, Integer pageSize, Integer orgId,Integer isPerson) {
+    public PageInfo<StaffInfoDto> getStaffInfoByStaff(String staffName,  Integer startPage, Integer pageSize, Integer orgId, Integer isPerson,Integer staffJobId) {
 
         List<Integer> orgList=null;
 
@@ -156,7 +156,7 @@ public class StaffServiceImpl implements StaffService {
             orgList = staffOrganizationService.findSonIdsByDeptId(orgId);
         }
         Page<StaffInfoDto> page = PageHelper.startPage(startPage, pageSize);
-        List<StaffInfoDto> staffInfoDTOs = staffMapper.selectStaffByParams(staffName,orgList,isPerson);
+        List<StaffInfoDto> staffInfoDTOs = staffMapper.selectStaffByParams(staffName,orgList,isPerson,staffJobId);
 
         //设置部门名称
         List<StaffInfoDto> result = page.getResult();

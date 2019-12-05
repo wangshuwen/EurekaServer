@@ -40,6 +40,8 @@ public class StaffInfoVO {
 
     private String jobName;
 
+    private Integer partitionId;
+
 
     public Integer getDeptId() {
         return deptId;
@@ -159,5 +161,13 @@ public class StaffInfoVO {
 
     public void setGroupId(Integer groupId) {
         this.groupId = groupId;
+    }
+
+    public Integer getPartitionId() {
+        return partitionId;
+    }
+
+    public void setPartitionId(Integer partitionId) {
+        this.partitionId = partitionId;
     }
 }

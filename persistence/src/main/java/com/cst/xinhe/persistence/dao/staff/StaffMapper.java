@@ -21,7 +21,7 @@ public interface StaffMapper {
 
     List<StaffDto> selectStaffsByGroupId(Integer groupId);
 
-    List<StaffInfoDto> selectStaffByParams(@Param("staffName") String staffName, @Param("orgList") List<Integer> orgList,  @Param("isPerson") Integer isPerson,@Param("staffJobId") Integer staffJobId);
+    List<StaffInfoDto> selectStaffByParams(@Param("staffName") String staffName, @Param("orgList") List<Integer> orgList,  @Param("isPerson") Integer isPerson, @Param("staffJobId") Integer staffJobId, @Param("remark")String remark);
 
     Map<String, Object> selectGroupAndDeptByStaffId(Integer staffId);
 

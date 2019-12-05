@@ -324,12 +324,15 @@ public class TerminalMonitorServiceImpl implements TerminalMonitorService {
         byte result = customMsg.getResult();
         if(result==0x55){
             map.put("result","22");
+            voiceMonitorServerClient.setBusyLineIsF(true);
             //发送给浏览器，终端已接听
-//            WSVoiceStatusServer.
+        //            WSVoiceStatusServer.
         }else if(result==0x66){
             map.put("result","66");
+            voiceMonitorServerClient.setBusyLineIsF(false);
         }else{
-            map.put("result","88");
+            map.put("result","88");//拒接
+            voiceMonitorServerClient.setBusyLineIsF(false);
         }
 
             String keyStr= JSON.toJSONString(new WebSocketData(3,map));

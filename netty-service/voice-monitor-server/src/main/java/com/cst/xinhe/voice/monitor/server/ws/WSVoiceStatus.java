@@ -194,6 +194,7 @@ public class WSVoiceStatus {
                     customMsg.setResult(ConstantValue.MSG_BODY_RESULT_SUCCESS);  //成功  //55命令表示成功，可以进行语音传输
                     customMsg.setNdName(ConstantValue.MSG_BODY_NODE_NAME_REAL_TIME_CALL);
                     responseData.setCustomMsg(customMsg);
+                    ProcessRtVoice.setBusyLine(true);
 //                    SingletonClient.getSingletonClient().sendCmd(responseData);
                     voiceMonitorService.sendDataToTerminalMonitorServer(responseData);
                     break;
@@ -203,6 +204,7 @@ public class WSVoiceStatus {
                     responseData.setCustomMsg(customMsg);
 //                    SingletonClient.getSingletonClient().sendCmd(responseData);
                     voiceMonitorService.sendDataToTerminalMonitorServer(responseData);
+                    ProcessRtVoice.setBusyLine(false);
                     break;
                 case "99":
                     System.out.println("s设置voiceStatus为true,接收到99");
@@ -216,16 +218,19 @@ public class WSVoiceStatus {
                         VoiceChannelMap.removeChannelByName("channel");//挂断
                         System.out.println("把9999端口从终端移除");
                     }
+                    ProcessRtVoice.setBusyLine(false);
 
                     break;
                 case "77":
                     customMsg.setCmd(ConstantValue.MSG_HEADER_COMMAND_ID_CONTROL);
                     customMsg.setNdName(ConstantValue.MSG_BODY_NODE_NAME_REAL_TIME_server);   //服务端呼叫终端，终端未响应，服务端挂断
                     responseData.setCustomMsg(customMsg);
+                    ProcessRtVoice.setBusyLine(false);
 //                    SingletonClient.getSingletonClient().sendCmd(responseData);
                     voiceMonitorService.sendDataToTerminalMonitorServer(responseData);
                     break;
                 case "33":
+                    ProcessRtVoice.setBusyLine(true);
                     ProcessRtVoice.checkOnline(staffId);  //上面呼叫下面查询：  返回55成功   66终端语音占线，77终端不在线
                     break;
                 case "44":

@@ -101,7 +101,8 @@ public class BaseStationController extends BaseController {
             @ApiImplicitParam(dataType = "java.util.Date", name = "startTime", value = "开始时间"),
             @ApiImplicitParam(dataType = "java.util.Date", name = "endTime", value = "结束时间"),
             @ApiImplicitParam(dataType = "java.lang.Integer", name = "zoneId", value = "分站ID"),
-            @ApiImplicitParam(dataType = "java.lang.Integer", name = "type", value = "基站类型")
+            @ApiImplicitParam(dataType = "java.lang.Integer", name = "type", value = "基站类型"),
+            @ApiImplicitParam(dataType = "java.lang.String", name = "stationName", value = "基站名称")
     })
     public String findStationInfoByParams(@RequestParam(required = false) Map<String, Object> params,
                                           @RequestParam(name = "limit", defaultValue = "12", required = false) Integer pageSize,
@@ -116,6 +117,9 @@ public class BaseStationController extends BaseController {
         }
             List<Integer> zoneIds = partitionService.getSonIdsById(zoneId);
             params.put("zoneIds", zoneIds);
+
+
+
 
         String startTime = (String) params.get("startTime");
         String endTime = (String) params.get("endTime");

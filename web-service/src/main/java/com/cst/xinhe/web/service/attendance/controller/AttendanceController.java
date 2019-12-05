@@ -131,9 +131,9 @@ public class AttendanceController {
             Map<String, Object> map = new HashMap<>();
             map.put("deptName",org.getName());
             //开始为演示做准备开始
-            map.put("count",0);
+            //map.put("count",0);
             //开始为演示做准备结束
-            //map.put("count",count);
+            map.put("count",count);
             map.put("deptId",org.getId());
             resultList.add(map);
         }
@@ -273,9 +273,9 @@ public class AttendanceController {
 
         List<HashMap<String,Object>> result = page.getResult();
         for (HashMap<String, Object> map : result) {
+
             Integer groupId= (Integer) map.get("groupId");
             String deptName = staffOrganizationService.getDeptNameByGroupId(groupId);
-            //String deptName =  staffOrganizationService.getDeptNameByGroupId(deptId);
             map.put("deptName",deptName);
             //入矿时间
             Integer staffId = (Integer) map.get("staffId");
@@ -283,6 +283,13 @@ public class AttendanceController {
             if(attendance!=null){
                 Date inOre = attendance.getInOre();
                 map.put("inOreTime",inOre);
+
+                //计算超时的起始时间
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(inOre);
+                cal.add(Calendar.HOUR_OF_DAY,9);
+                map.put("startOverTime",cal.getTime());
+
                 //封装时长
                 long nd = 1000 * 24 * 60 * 60;
                 long nh = 1000 * 60 * 60;

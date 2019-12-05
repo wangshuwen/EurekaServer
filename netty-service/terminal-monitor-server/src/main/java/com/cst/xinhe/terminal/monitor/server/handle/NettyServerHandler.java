@@ -6,25 +6,22 @@ import com.cst.xinhe.base.exception.RuntimeServiceException;
 import com.cst.xinhe.common.constant.ConstantValue;
 import com.cst.xinhe.common.netty.data.request.RequestData;
 import com.cst.xinhe.common.netty.data.response.ResponseData;
-import com.cst.xinhe.common.utils.GetUUID;
 import com.cst.xinhe.common.ws.WebSocketData;
-import com.cst.xinhe.persistence.dao.attendance.AttendanceMapper;
-import com.cst.xinhe.persistence.dao.attendance.StaffAttendanceRealRuleMapper;
-import com.cst.xinhe.persistence.dao.attendance.TimeStandardMapper;
+
+
 import com.cst.xinhe.persistence.dao.staff.StaffMapper;
-import com.cst.xinhe.persistence.dao.terminal.TerminalUpdateIpMapper;
+
 import com.cst.xinhe.persistence.dao.updateIp.TerminalIpPortMapper;
-import com.cst.xinhe.persistence.model.attendance.Attendance;
-import com.cst.xinhe.persistence.model.attendance.StaffAttendanceRealRule;
-import com.cst.xinhe.persistence.model.terminal.TerminalUpdateIp;
-import com.cst.xinhe.persistence.vo.req.TimeStandardVO;
+
 import com.cst.xinhe.terminal.monitor.server.channel.ChannelMap;
+import com.cst.xinhe.terminal.monitor.server.client.VoiceMonitorServerClient;
 import com.cst.xinhe.terminal.monitor.server.client.WsPushServiceClient;
 import com.cst.xinhe.terminal.monitor.server.context.SpringContextUtil;
 import com.cst.xinhe.terminal.monitor.server.process.ProcessVoice;
 import com.cst.xinhe.terminal.monitor.server.request.SingletonClient;
 import com.cst.xinhe.terminal.monitor.server.service.TerminalMonitorService;
 import com.cst.xinhe.terminal.monitor.server.service.impl.TerminalMonitorServiceImpl;
+
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler.Sharable;
@@ -85,10 +82,12 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
     private WsPushServiceClient  wsPushServiceClient;
 
+    private VoiceMonitorServerClient  voiceMonitorServerClient;
+
     //为演示做准备开始
-    private TimeStandardMapper timeStandardMapper;
+    /*private TimeStandardMapper timeStandardMapper;
     private StaffAttendanceRealRuleMapper staffAttendanceRealRuleMapper;
-    private AttendanceMapper  attendanceMapper;
+    private AttendanceMapper  attendanceMapper;*/
     //为演示做准备结束
 
     //    private static NettyServerHandler nettyServerHandler;
@@ -125,12 +124,13 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         this.terminalIpPortMapper = SpringContextUtil.getBean(TerminalIpPortMapper.class);
 
         this.wsPushServiceClient=SpringContextUtil.getBean(WsPushServiceClient.class);
+        this.voiceMonitorServerClient=SpringContextUtil.getBean(VoiceMonitorServerClient.class);
 //        this.processRealTimeVoice = ProcessRealTimeVoice.getProcessRealTimeVoice();
 
         //为演示做准备开始
-        this.timeStandardMapper=SpringContextUtil.getBean(TimeStandardMapper.class);
+        /*this.timeStandardMapper=SpringContextUtil.getBean(TimeStandardMapper.class);
         this.staffAttendanceRealRuleMapper=SpringContextUtil.getBean(StaffAttendanceRealRuleMapper.class);
-        this.attendanceMapper=SpringContextUtil.getBean(AttendanceMapper.class);
+        this.attendanceMapper=SpringContextUtil.getBean(AttendanceMapper.class);*/
         //为演示做准备结束
     }
 
@@ -330,8 +330,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 //                                processRealTimeVoice.sendCheckOnline(customMsg);
                                 break;
                             case ConstantValue.MSG_BODY_NODE_NAME_REAL_TIME_CALL: // 发起呼叫
+                                voiceMonitorServerClient.setBusyLineIsF(true);
                                 terminalMonitorService.sendCallInfo(customMsg);
-//                                processRealTimeVoice.sendCallInfo(customMsg);
                                 log.info("收到下面对上面发起呼叫");
                                 break;
                             case ConstantValue.MSG_BODY_NODE_NAME_PERSON_INFO_SEARCH://个人消息查询
@@ -340,6 +340,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                                 break;
                             case   ConstantValue.MSG_BODY_NODE_NAME_REAL_TIME_client://终端呼叫服务端，服务端未响应，终端挂断
                                 terminalMonitorService.terminalHangUp(customMsg);
+                                voiceMonitorServerClient.setBusyLineIsF(false);
                                 log.info("终端呼叫服务端，服务端未响应，终端挂断");
                         }
                         break;
@@ -400,7 +401,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         ChannelMap.addChannel(str, ctx.channel());
 
             /*为演示准备开始*/
-        TimeStandardVO standard =  timeStandardMapper.selectTimeStandardInfoByStaffId(2);
+       /* TimeStandardVO standard =  timeStandardMapper.selectTimeStandardInfoByStaffId(2);
         Integer timeStandardId = standard.getTimeStandardId();
 
         StaffAttendanceRealRule realRule =staffAttendanceRealRuleMapper.selectByPrimaryKey(2);
@@ -429,7 +430,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             data.setData(0);
         }
         data.setType(3);
-        System.out.println("推送井下总人数："+attendanceCount);
+        System.out.println("推送井下总人数："+attendanceCount);*/
 
 
         /*为演示准备结束*/
@@ -462,7 +463,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
 
             /*为演示做准备开始*/
-        StaffAttendanceRealRule realRule =staffAttendanceRealRuleMapper.selectByPrimaryKey(2);
+        /*StaffAttendanceRealRule realRule =staffAttendanceRealRuleMapper.selectByPrimaryKey(2);
         Attendance attendance = attendanceMapper.findAttendanceByStaffIdAndEndTimeIsNull(2);
         if (attendance != null) {
             attendance.setEndTime(new Date());
@@ -490,7 +491,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             wsPushServiceClient.sendWSPersonNumberServer(JSON.toJSONString(data));
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
         /*为演示做准备结束*/
 
 

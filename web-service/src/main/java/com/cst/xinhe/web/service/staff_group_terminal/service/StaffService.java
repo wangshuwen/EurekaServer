@@ -30,7 +30,7 @@ public interface StaffService {
 
     int updateStaffInfo(StaffInfoVO staffInfoVO);
 
-    PageInfo<StaffInfoDto> getStaffInfoByStaff(String staffName,  Integer startPage, Integer pageSize, Integer orgId, Integer isPerson,Integer staffJobId);
+    PageInfo<StaffInfoDto> getStaffInfoByStaff(String staffName, Integer startPage, Integer pageSize, Integer orgId, Integer isPerson, Integer staffJobId, String remark);
 
     GasWSRespVO findStaffNameByTerminalId(Integer terminalId);
 

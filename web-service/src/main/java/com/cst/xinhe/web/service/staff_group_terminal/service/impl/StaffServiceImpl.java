@@ -14,6 +14,7 @@ import com.cst.xinhe.persistence.vo.resp.GasWSRespVO;
 import com.cst.xinhe.web.service.staff_group_terminal.service.StaffJobService;
 import com.cst.xinhe.web.service.staff_group_terminal.service.StaffOrganizationService;
 import com.cst.xinhe.web.service.staff_group_terminal.service.StaffService;
+import com.cst.xinhe.web.service.station_partition.service.PartitionService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -49,6 +50,9 @@ public class StaffServiceImpl implements StaffService {
     @Resource
     private StaffTerminalRelationMapper staffTerminalRelationMapper;
 
+    @Resource
+    private PartitionService partitionService;
+
 
     @Override
     public int addStaff(StaffInfoVO staffInfoVO) {
@@ -64,6 +68,7 @@ public class StaffServiceImpl implements StaffService {
         staff.setStaffName(staffInfoVO.getStaffName());
         staff.setStaffPhone(staffInfoVO.getStaffPhone());
         staff.setStaffSex(staffInfoVO.getStaffSex());
+        staff.setPartitionId(staffInfoVO.getPartitionId());
 
         int result = staffMapper.insertSelective(staff);
 
@@ -136,6 +141,7 @@ public class StaffServiceImpl implements StaffService {
         staff.setStaffJobId(staffInfoVO.getJobId());
 
        // staff.setStaffTypeId(staffInfoVO.getTerminalId());
+        staff.setPartitionId(staffInfoVO.getPartitionId());
 
         //TODO  更新员工信息
         int res = staffMapper.updateByPrimaryKeySelective(staff);
@@ -148,7 +154,7 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public PageInfo<StaffInfoDto> getStaffInfoByStaff(String staffName,  Integer startPage, Integer pageSize, Integer orgId, Integer isPerson,Integer staffJobId) {
+    public PageInfo<StaffInfoDto> getStaffInfoByStaff(String staffName, Integer startPage, Integer pageSize, Integer orgId, Integer isPerson, Integer staffJobId, String remark) {
 
         List<Integer> orgList=null;
 
@@ -156,12 +162,13 @@ public class StaffServiceImpl implements StaffService {
             orgList = staffOrganizationService.findSonIdsByDeptId(orgId);
         }
         Page<StaffInfoDto> page = PageHelper.startPage(startPage, pageSize);
-        List<StaffInfoDto> staffInfoDTOs = staffMapper.selectStaffByParams(staffName,orgList,isPerson,staffJobId);
+        List<StaffInfoDto> staffInfoDTOs = staffMapper.selectStaffByParams(staffName,orgList,isPerson,staffJobId,remark);
 
         //设置部门名称
         List<StaffInfoDto> result = page.getResult();
         for (StaffInfoDto staffInfoDto : result) {
             staffInfoDto.setDeptName(staffOrganizationService.getDeptNameByGroupId(staffInfoDto.getGroupId()));
+            staffInfoDto.setPartitionName(partitionService.geParentNamesById(staffInfoDto.getPartitionId()));
         }
 
         PageInfo pageInfo = new PageInfo<>(page);

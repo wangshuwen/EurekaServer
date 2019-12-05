@@ -25,6 +25,7 @@
     <result column="staff_native_place" jdbcType="VARCHAR" property="staffNativePlace" />
     <result column="attendance_station_id" jdbcType="INTEGER" property="attendanceStationId" />
     <result column="time_standard_id" jdbcType="INTEGER" property="timeStandardId" />
+    <result column="partition_id" jdbcType="INTEGER" property="partitionId" />
   </resultMap>
 
 
@@ -101,7 +102,7 @@
     -->
     staff.staff_id, staff_number, staff_name, staff_sex, staff_birthday, staff_id_card, staff_wedlock,
     staff_email, staff_address, staff_phone, staff_job_id, staff_native_place, staff_type_id,
-    is_person, staff.create_time, group_id,attendance_station_id,staff.time_standard_id
+    is_person, staff.create_time, group_id,attendance_station_id,staff.time_standard_id,staff.partition_id
   </sql>
   <select id="selectByExample" parameterType="com.cst.xinhe.persistence.model.staff.StaffExample" resultMap="BaseResultMap" useCache="true">
     <!--
@@ -160,14 +161,14 @@
       group_id, staff_wedlock, staff_number,
       staff_email, staff_type_id, staff_address,
       staff_native_place, attendance_station_id,
-      time_standard_id)
+      time_standard_id,partition_id)
     values (#{staffId,jdbcType=INTEGER}, #{staffName,jdbcType=VARCHAR}, #{staffSex,jdbcType=INTEGER},
       #{staffBirthday,jdbcType=DATE}, #{staffIdCard,jdbcType=VARCHAR}, #{staffPhone,jdbcType=VARCHAR},
       #{staffJobId,jdbcType=INTEGER}, #{isPerson,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
       #{groupId,jdbcType=INTEGER}, #{staffWedlock,jdbcType=VARCHAR}, #{staffNumber,jdbcType=VARCHAR},
       #{staffEmail,jdbcType=VARCHAR}, #{staffTypeId,jdbcType=INTEGER}, #{staffAddress,jdbcType=VARCHAR},
       #{staffNativePlace,jdbcType=VARCHAR}, #{attendanceStationId,jdbcType=INTEGER},
-      #{timeStandardId,jdbcType=INTEGER})
+      #{timeStandardId,jdbcType=INTEGER}, #{partitionId,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.cst.xinhe.persistence.model.staff.Staff">
     <!--
@@ -230,6 +231,10 @@
       <if test="timeStandardId != null">
         time_standard_id,
       </if>
+      <if test="partitionId != null">
+        partition_id,
+      </if>
+
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="staffId != null">
@@ -286,6 +291,10 @@
       <if test="timeStandardId != null">
         #{timeStandardId,jdbcType=INTEGER},
       </if>
+      <if test="partitionId != null">
+        #{partitionId,jdbcType=INTEGER},
+      </if>
+
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.cst.xinhe.persistence.model.staff.StaffExample" resultType="java.lang.Long" useCache="true">
@@ -359,6 +368,9 @@
       <if test="record.timeStandardId != null">
         time_standard_id = #{record.timeStandardId,jdbcType=INTEGER},
       </if>
+      <if test="record.partitionId != null">
+        partition_id = #{record.partitionId,jdbcType=INTEGER},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -387,7 +399,9 @@
       staff_address = #{record.staffAddress,jdbcType=VARCHAR},
       staff_native_place = #{record.staffNativePlace,jdbcType=VARCHAR},
       attendance_station_id = #{record.attendanceStationId,jdbcType=INTEGER},
-      time_standard_id = #{record.timeStandardId,jdbcType=INTEGER}
+      time_standard_id = #{record.timeStandardId,jdbcType=INTEGER},
+      partition_id = #{record.partitionId,jdbcType=INTEGER}
+
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -450,6 +464,9 @@
       <if test="timeStandardId != null">
         time_standard_id = #{timeStandardId,jdbcType=INTEGER}
       </if>
+      <if test="partitionId != null">
+        partition_id = #{partitionId,jdbcType=INTEGER}
+      </if>
     </set>
     where staff_id = #{staffId,jdbcType=INTEGER}
   </update>
@@ -475,7 +492,8 @@
     create_time = #{createTime,jdbcType=TIMESTAMP},
     group_id = #{groupId,jdbcType=INTEGER},
     attendance_station_id = #{attendanceStationId,jdbcType=INTEGER},
-    time_standard_id = #{timeStandardId,jdbcType=INTEGER}
+    time_standard_id = #{timeStandardId,jdbcType=INTEGER},
+    partition_id = #{ partitionId,jdbcType=INTEGER}
     where staff_id = #{staffId,jdbcType=INTEGER}
   </update>
   <resultMap id="rM" type="com.cst.xinhe.persistence.dto.staff.StaffDto">
@@ -510,6 +528,7 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
     <result column="attendance_station_id" jdbcType="INTEGER" property="attendanceStationId"/>
     <result column="time_standard_id" jdbcType="INTEGER" property="timeStandardId"/>
+    <result column="partition_id" jdbcType="INTEGER" property="partitionId"/>
     <result column="base_station_name" jdbcType="VARCHAR" property="baseStationName"/>
 
 
@@ -530,7 +549,7 @@
   </resultMap>
     <select id="selectStaffByParams" parameterType="com.cst.xinhe.persistence.model.staff.Staff" resultMap="staffMap" useCache="false">
         SELECT
-        a.staff_id,a.staff_name,a.staff_number,a.create_time,a.staff_birthday,a.staff_id_card,a.staff_sex,
+        a.staff_id,a.staff_name,a.staff_number,a.create_time,a.staff_birthday,a.staff_id_card,a.staff_sex,a.partition_id,
         a.staff_phone,a.group_id,a.is_person,c.terminal_id,a.staff_job_id AS
         job_id,job_name,b.remark,base_station.base_station_name
         FROM staff a LEFT JOIN staff_job b ON a.staff_job_id = b.job_id  LEFT JOIN staff_terminal c ON a.staff_id =
@@ -561,6 +580,10 @@
           <if test="staffJobId != null and staffJobId != 0">
             AND  a.staff_job_id =  #{staffJobId}
           </if>
+          <if test="remark != null and remark neq ''">
+            AND  b.remark =  #{remark}
+          </if>
+
 
 
 
@@ -657,12 +680,12 @@
   </select>
 
   <insert id="insertStaffs" parameterType="java.util.List" >
-    INSERT INTO staff (staff_name, staff_sex, staff_birthday, staff_id_card, staff_phone, staff_job_id, is_person, create_time, group_id)
+    INSERT INTO staff (staff_name, staff_sex, staff_birthday, staff_id_card, staff_phone, staff_job_id, is_person, create_time, group_id,partition_id)
     VALUES
 
     <foreach collection="list" item="item" index="index" separator=",">
       (#{item.staffName}, #{item.staffSex},#{item.staffBirthday},#{item.staffIdCard},#{item.staffPhone},#{item.jobId},
-      #{item.isPerson},#{item.createTime},#{item.groupId})
+      #{item.isPerson},#{item.createTime},#{item.groupId},#{item.partitionId})
     </foreach>
   </insert>
 

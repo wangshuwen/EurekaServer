@@ -57,6 +57,26 @@ public class StaffInfoDto {
 
     private String remark;
 
+    //候补
+    private Integer partitionId;
+    private  String partitionName;
+
+    public Integer getPartitionId() {
+        return partitionId;
+    }
+
+    public void setPartitionId(Integer partitionId) {
+        this.partitionId = partitionId;
+    }
+
+    public String getPartitionName() {
+        return partitionName;
+    }
+
+    public void setPartitionName(String partitionName) {
+        this.partitionName = partitionName;
+    }
+
     public String getRemark() {
         return remark;
     }

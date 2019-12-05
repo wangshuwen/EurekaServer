@@ -5,10 +5,14 @@ import com.cst.xinhe.base.exception.ErrorCode;
 import com.cst.xinhe.base.exception.RuntimeWebException;
 import com.cst.xinhe.base.result.ResultUtil;
 import com.cst.xinhe.common.utils.convert.DateConvert;
+import com.cst.xinhe.persistence.dao.terminal.StaffTerminalMapper;
 import com.cst.xinhe.persistence.dto.staff.StaffInfoDto;
+import com.cst.xinhe.persistence.model.terminal.StaffTerminal;
 import com.cst.xinhe.persistence.vo.req.StaffInfoVO;
 import com.cst.xinhe.web.service.staff_group_terminal.service.StaffOrganizationService;
 import com.cst.xinhe.web.service.staff_group_terminal.service.StaffService;
+import com.cst.xinhe.web.service.staff_group_terminal.service.TerminalService;
+import com.cst.xinhe.web.service.station_partition.service.PartitionService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
@@ -40,7 +44,11 @@ public class StaffController {
     @Resource
     private StaffOrganizationService staffOrganizationService;
 
+    @Resource
+    private PartitionService partitionService;
 
+    @Resource
+    private StaffTerminalMapper staffTerminalMapper;
 
 
 
@@ -69,17 +77,37 @@ public class StaffController {
                 Object staffIdCard = item.get("身份证号");
                 Object staffBirthday = item.get("出生日期");
                 Object staffPhone = item.get("电话");
-                Object staffGroupId = item.get("分组");
+                Object dept = item.get("部门");
                 Object staffIsPerson = item.get("类型");
-                Object staffJobId = item.get("工作内容");
+                Object terminalId = item.get("绑定终端");
+                Object staffJobId = item.get("工种");
+                Object partitionName = String.valueOf(item.get("工作地点"));
+                if(partitionName!=null&&!partitionName.equals("")){
+                    List<Integer> sonIdsById = partitionService.getSonIdsById(0);
+                    for (Integer sonId : sonIdsById) {
+                        String s = partitionService.geParentNamesById(sonId);
+                        if(partitionName.equals(s)){
+                            staffInfoVO.setPartitionId(sonId);
+                        }
+                    }
+                }
+
+                //todo 插入员工终端绑定
+              /*  StaffTerminal teminal = staffTerminalMapper.getTeminalByNum((Integer) terminalId);
+                if(teminal!=null){
+                    teminal.setStaffId();
+                }*/
+
                 staffInfoVO.setStaffName(String.valueOf(staffName));
                 staffInfoVO.setStaffBirthday(DateConvert.convertStampToDate(String.valueOf(staffBirthday),10));
                 staffInfoVO.setStaffSex((Integer)staffSex);
                 staffInfoVO.setStaffIdCard(String.valueOf(staffIdCard));
                 staffInfoVO.setStaffPhone(String.valueOf(staffPhone));
-                staffInfoVO.setGroupId((Integer)staffGroupId);
+                staffInfoVO.setGroupId((Integer)dept);
                 staffInfoVO.setIsPerson((Integer)staffIsPerson);
                 staffInfoVO.setJobId((Integer)staffJobId);
+
+                staffInfoVO.setTerminalId((Integer)terminalId);
                 staffInfoVOS.add(staffInfoVO);
             }
         } catch (Exception e){
@@ -118,8 +146,12 @@ public class StaffController {
             ,@RequestParam(name = "orgId", required = false) Integer orgId
             ,@RequestParam(name = "isPerson", required = false) Integer isPerson
             ,@RequestParam(name = "staffJobId",required = false) Integer staffJobId
-                                        ) {
-        PageInfo<StaffInfoDto> staffList = staffService.getStaffInfoByStaff(staffName, startPage, pageSize, orgId, isPerson,staffJobId);
+            ,@RequestParam(name = "remark",required = false) Integer remark) {
+        String s="";
+        if(remark!=null){
+             s = String.valueOf(remark);
+        }
+        PageInfo<StaffInfoDto> staffList = staffService.getStaffInfoByStaff(staffName, startPage, pageSize, orgId, isPerson,staffJobId,s);
         return staffList.getSize() > 0 ? ResultUtil.jsonToStringSuccess(staffList): ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
     }
 

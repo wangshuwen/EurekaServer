@@ -719,6 +719,10 @@
           <if test="type != null and type neq ''">
             AND a.type =#{type}
           </if>
+          <if test="stationName != null and stationName neq ''">
+            AND a.base_station_name LIKE CONCAT ( '%', #{stationName}, '%' )
+          </if>
+
         </where>
     </select>
 

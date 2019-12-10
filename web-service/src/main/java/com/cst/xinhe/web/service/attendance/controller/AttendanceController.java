@@ -82,8 +82,10 @@ public class AttendanceController {
         if (null != startTime && !"".equals(startTime) && !"0".equals(startTime))
             attendanceParamsVO.setStartTime1(startTime);
 
-        org.springframework.data.domain.Page<EsAttendanceEntity> page = esAttendanceService.searchAttendanceByParams(attendanceParamsVO);
+      //  org.springframework.data.domain.Page<EsAttendanceEntity> page = esAttendanceService.searchAttendanceByParams(attendanceParamsVO);
 
+        //系统认证修改：数据从数据库查询
+        Page page = attendanceService.findAttendanceInfo(attendanceParamsVO);
 
         return  ResultUtil.jsonToStringSuccess(page);
     }
@@ -355,8 +357,12 @@ public class AttendanceController {
                                            @RequestParam(name = "staffName", required = false) String staffName,
                                            @RequestParam(name = "inOre", required = false) String currentDate
                                            ){
+        //系统认证修改：数据从数据库查询
+        //org.springframework.data.domain.Page<EsAttendanceEntity> page=esAttendanceService.searchAttendanceByStaffType(startPage,pageSize,staffType,staffName,currentDate);
 
-        org.springframework.data.domain.Page<EsAttendanceEntity> page=esAttendanceService.searchAttendanceByStaffType(startPage,pageSize,staffType,staffName,currentDate);
+        Page page=attendanceService.searchAttendanceByStaffType(startPage,pageSize,staffType,staffName,currentDate);
+
+
 
 
         return   ResultUtil.jsonToStringSuccess(page);

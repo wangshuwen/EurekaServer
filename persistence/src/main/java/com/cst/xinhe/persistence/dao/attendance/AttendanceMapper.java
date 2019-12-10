@@ -2,8 +2,11 @@ package com.cst.xinhe.persistence.dao.attendance;
 
 import com.cst.xinhe.persistence.model.attendance.Attendance;
 import com.cst.xinhe.persistence.model.attendance.AttendanceExample;
+
+import java.util.Date;
 import java.util.List;
 
+import com.cst.xinhe.persistence.model.elasticsearch.EsAttendanceEntity;
 import com.cst.xinhe.persistence.vo.req.AttendanceParamsVO;
 import com.cst.xinhe.persistence.vo.resp.AttendanceInfoVO;
 import org.apache.ibatis.annotations.Param;
@@ -100,6 +103,9 @@ public interface AttendanceMapper {
 
     Attendance findAttendanceByStaffIdAndEndTimeIsNull(Integer staffId);
 
-    List<AttendanceInfoVO> selectAttendanceInfoByParams(AttendanceParamsVO attendanceParamsVO);
+    List<EsAttendanceEntity> selectAttendanceInfoByParams(AttendanceParamsVO attendanceParamsVO);
 
+    List<EsAttendanceEntity> searchAttendanceByStaffType(@Param("staffType") Integer staffType,@Param("staffName") String staffName, @Param("startTime")Date startTime,@Param("endTime") Date endTime);
+
+    Integer selectAttendanceByStaffId(@Param("staffId")Integer staffId, @Param("startTime")String firstDay1,@Param("endTime") String lastDay1);
 }

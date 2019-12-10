@@ -396,19 +396,19 @@ INNER JOIN base_station ON attendance.base_station_id = base_station.base_statio
 
   <select id="selectAttendanceInfoByParams" parameterType="com.cst.xinhe.persistence.vo.req.AttendanceParamsVO" resultType="com.cst.xinhe.persistence.vo.resp.AttendanceInfoVO">
     SELECT
-    time_standard.time_standard_name AS timeStandardName,
+    time_standard.time_standard_name AS timestandardname,
     backup1 AS backUp1,
     backup2 AS backUp2,
-	attendance_id AS attendanceId,
-	staff.staff_id AS staffId,
-	staff_job.job_name AS jobName,
-	staff_name AS staffName,
-	base_station.base_station_name AS stationName,
-	attendance.start_time AS startTime,
-	attendance.end_time AS endTime,
-	attendance.in_ore AS inOre,
-	attendance.out_ore AS outOre,
-	staff.group_id AS orgId
+	attendance_id AS attendanceid,
+	staff.staff_id AS staffid,
+	staff_job.job_name AS jobname,
+	staff_name AS staffname,
+	base_station.base_station_name AS stationname,
+	attendance.start_time AS starttime,
+	attendance.end_time AS endtime,
+	attendance.in_ore AS inore,
+	attendance.out_ore AS outore,
+	staff.group_id AS orgid
     FROM
 	  attendance
     INNER JOIN staff ON staff.staff_id = attendance.staff_id
@@ -449,4 +449,54 @@ INNER JOIN base_station ON attendance.base_station_id = base_station.base_statio
       </if>
     </where>
   </select>
+
+
+
+  <select id="searchAttendanceByStaffType"  resultType="com.cst.xinhe.persistence.model.elasticsearch.EsAttendanceEntity">
+    SELECT   staff_id as staffid,staff_name as staffname, in_ore  as inore , out_ore as outore
+    FROM
+    attendance
+    INNER JOIN staff ON staff.staff_id = attendance.staff_id
+
+    <where>
+      <if test="startTime != null  and endTime != null  ">
+        AND #{startTime} &lt;= attendance.in_ore
+        AND
+        #{endTime} &gt; attendance.in_ore
+      </if>
+
+
+      <if test="staffName != null and staffName neq '' ">
+        AND staff.staff_name LIKE CONCAT('%',#{staffName},'%')
+      </if>
+
+      <if test="staffType != null ">
+        AND staff.is_person =#{staffType}
+      </if>
+    </where>
+  </select>
+
+  <select id="selectAttendanceByStaffId"  resultType="com.cst.xinhe.persistence.model.elasticsearch.EsAttendanceEntity">
+    SELECT   count(*)
+    FROM
+    attendance
+    INNER JOIN staff ON staff.staff_id = attendance.staff_id
+
+    <where>
+      <if test="staffId != null   ">
+        staff.staff_id=#{staffId}
+      </if>
+      <if test="startTime != null  and endTime != null  ">
+        AND #{startTime} &lt;= attendance.in_ore
+        AND
+        #{endTime} &gt; attendance.in_ore
+      </if>
+    </where>
+  </select>
+
+
+
+
+
+
 </mapper>

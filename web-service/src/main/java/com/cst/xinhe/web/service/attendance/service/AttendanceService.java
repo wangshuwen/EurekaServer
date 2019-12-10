@@ -67,4 +67,5 @@ public interface AttendanceService {
     Long getAttendanceStaffCount(List<Integer> deptIds, String staffName);
 
 
+    Page searchAttendanceByStaffType(Integer startPage, Integer pageSize, Integer staffType, String staffName, String currentDate);
 }

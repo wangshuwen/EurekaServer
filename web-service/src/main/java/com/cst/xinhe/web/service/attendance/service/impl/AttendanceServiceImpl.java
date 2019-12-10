@@ -13,6 +13,7 @@ import com.cst.xinhe.persistence.model.attendance.Attendance;
 import com.cst.xinhe.persistence.model.attendance.StaffAttendanceRealRule;
 import com.cst.xinhe.persistence.model.attendance.StaffAttendanceRealRuleExample;
 import com.cst.xinhe.persistence.model.attendance.TimeStandard;
+import com.cst.xinhe.persistence.model.elasticsearch.EsAttendanceEntity;
 import com.cst.xinhe.persistence.vo.req.AttendanceParamsVO;
 import com.cst.xinhe.persistence.vo.req.TimeStandardVO;
 import com.cst.xinhe.persistence.vo.resp.AttendanceInfoVO;
@@ -21,6 +22,8 @@ import com.cst.xinhe.web.service.attendance.service.AttendanceService;
 import com.cst.xinhe.web.service.staff_group_terminal.service.StaffOrganizationService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +31,7 @@ import javax.annotation.Resource;
 import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -160,7 +164,7 @@ public class AttendanceServiceImpl implements AttendanceService, AttendanceRules
                 attendanceParamsVO.setStaffIdOfList(list);
         }
         Page page = PageHelper.startPage(attendanceParamsVO.getStartPage(),attendanceParamsVO.getPageSize());
-        List<AttendanceInfoVO> infoVOList = attendanceMapper.selectAttendanceInfoByParams(attendanceParamsVO);
+        List<com.cst.xinhe.persistence.model.elasticsearch.EsAttendanceEntity> infoVOList = attendanceMapper.selectAttendanceInfoByParams(attendanceParamsVO);
 
         return page;
     }
@@ -295,6 +299,89 @@ public class AttendanceServiceImpl implements AttendanceService, AttendanceRules
     @Override
     public Long getAttendanceStaffCount(List<Integer> deptIds, String staffName) {
         return staffAttendanceRealRuleMapper.getAttendanceStaffCount(deptIds,staffName);
+    }
+
+    @Override
+    public Page searchAttendanceByStaffType(Integer startPage, Integer pageSize, Integer staffType, String staffName, String currentDate) {
+
+        Date startTime=null;
+        Date endTime=null;
+        if(currentDate!=null&&!"".equals(currentDate)) {
+
+            SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM");
+            try {
+                Date parse = sf.parse(currentDate);
+                Calendar instance = Calendar.getInstance();
+                instance.setTime(parse);
+                instance.set(Calendar.DAY_OF_MONTH, 1);//设置当前时间为本月第一天
+                 startTime = instance.getTime();
+                //获取当前月最后一天
+                instance.set(Calendar.DAY_OF_MONTH, instance.getActualMaximum(Calendar.DAY_OF_MONTH));
+                 endTime = instance.getTime();
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        Page page=PageHelper.startPage(startPage,pageSize);
+        List<EsAttendanceEntity> attendances=attendanceMapper.searchAttendanceByStaffType(staffType,staffName,startTime,endTime);
+        List<Integer> set=staffMapper.findStaffIdByStaffType(staffType);
+
+        if(attendances!=null&&attendances.size()>0){
+            for (EsAttendanceEntity esAttendanceEntity : attendances) {
+                if(set!=null){
+                    esAttendanceEntity.setLeaderSum(set.size());
+                }else{
+                    esAttendanceEntity.setLeaderSum(0);
+                }
+
+                Date inore = esAttendanceEntity.getInore();
+                Date outore = esAttendanceEntity.getOutore();
+                if(outore==null){
+                    outore=new Date();
+                }
+                //封装时长
+                long nd = 1000 * 24 * 60 * 60;
+                long nh = 1000 * 60 * 60;
+                long nm = 1000 * 60;
+                long diff = outore.getTime()-inore.getTime();
+                long day = diff / nd;
+                long hour = diff % nd / nh;
+                long min = diff % nd % nh / nm;
+                esAttendanceEntity.setTimeLong(day + "天" + hour + "小时" + min + "分钟");
+
+                //封装每月下井次数
+                Calendar c = Calendar.getInstance();
+                c.setTime(inore);
+                c.set(Calendar.DAY_OF_MONTH,1);//设置当前时间为本月第一天
+                Date firstDay = c.getTime();
+                //获取当前月最后一天
+                c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+                Date lastDay = c.getTime();
+
+                SimpleDateFormat simple = new SimpleDateFormat("yyyy-MM-dd");
+                String firstDay1 = simple.format(firstDay);
+                String lastDay1 = simple.format(lastDay);
+
+                /*BoolQueryBuilder builder1 = QueryBuilders.boolQuery();
+                builder1.must(QueryBuilders.termQuery("staffid",staffid));
+                builder1.must(QueryBuilders.rangeQuery("inore").format("yyyy-MM-dd").gte(firstDay1).lte(lastDay1));
+                Iterable<com.cst.xinhe.web.service.attendance.elasticsrearch.entity.EsAttendanceEntity> search = attendanceRepository.search(builder1);
+                Iterator<com.cst.xinhe.web.service.attendance.elasticsrearch.entity.EsAttendanceEntity> iterator = search.iterator();
+                int sum=0;
+                while (iterator.hasNext()) {
+                    iterator.next();
+                    sum++;
+                }*/
+
+               Integer count= attendanceMapper.selectAttendanceByStaffId(esAttendanceEntity.getStaffid(),firstDay1,lastDay1);
+
+                esAttendanceEntity.setInOreSum(count);
+            }
+        }
+
+
+        return page;
     }
 
 

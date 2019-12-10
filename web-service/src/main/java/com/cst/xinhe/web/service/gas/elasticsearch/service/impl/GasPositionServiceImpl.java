@@ -54,8 +54,7 @@ public class GasPositionServiceImpl implements GasPositionService {
 
     @Resource
     ElasticsearchTemplate elasticsearchTemplate;
-    /*@Resource
-    private EsManager esManager;*/
+
 
     @Override
     public Iterable<GasPositionEntity> findTimeFlag(Integer staffId, String startTime, String endtime) {

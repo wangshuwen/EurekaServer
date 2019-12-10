@@ -61,6 +61,16 @@ public class StaffInfoDto {
     private Integer partitionId;
     private  String partitionName;
 
+    private  Integer age;
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
     public Integer getPartitionId() {
         return partitionId;
     }

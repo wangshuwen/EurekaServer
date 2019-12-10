@@ -42,6 +42,15 @@ public class StaffInfoVO {
 
     private Integer partitionId;
 
+    private  Integer age;
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
 
     public Integer getDeptId() {
         return deptId;

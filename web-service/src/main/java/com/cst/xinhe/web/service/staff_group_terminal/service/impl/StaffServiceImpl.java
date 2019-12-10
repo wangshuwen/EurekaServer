@@ -169,6 +169,28 @@ public class StaffServiceImpl implements StaffService {
         for (StaffInfoDto staffInfoDto : result) {
             staffInfoDto.setDeptName(staffOrganizationService.getDeptNameByGroupId(staffInfoDto.getGroupId()));
             staffInfoDto.setPartitionName(partitionService.geParentNamesById(staffInfoDto.getPartitionId()));
+            Date birthday = staffInfoDto.getStaffBirthday();
+            if(birthday!=null){
+                Integer age=0;
+                Calendar cal = Calendar.getInstance();
+                int yearNow = cal.get(Calendar.YEAR);  //当前年份
+                int monthNow = cal.get(Calendar.MONTH);  //当前月份
+                int dayOfMonthNow = cal.get(Calendar.DAY_OF_MONTH); //当前日期
+                cal.setTime(birthday);
+                int yearBirth = cal.get(Calendar.YEAR);
+                int monthBirth = cal.get(Calendar.MONTH);
+                int dayOfMonthBirth = cal.get(Calendar.DAY_OF_MONTH);
+                age = yearNow - yearBirth;   //计算整岁数
+                if (monthNow <= monthBirth) {
+                    if (monthNow == monthBirth) {
+                        if (dayOfMonthNow < dayOfMonthBirth) age--;//当前日期在生日之前，年龄减一
+                    } else {
+                        age--;//当前月份在生日之前，年龄减一
+                    }
+                }
+                staffInfoDto.setAge(age);
+            }
+
         }
 
         PageInfo pageInfo = new PageInfo<>(page);

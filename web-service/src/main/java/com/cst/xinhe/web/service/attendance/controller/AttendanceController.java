@@ -356,7 +356,7 @@ public class AttendanceController {
                                       @RequestParam(name = "limit", defaultValue = "10", required = false)Integer pageSize,
                                            @RequestParam(name = "staffType") Integer staffType,
                                            @RequestParam(name = "staffName", required = false) String staffName,
-                                           @RequestParam(name = "inOre", required = false) String currentDate
+                                           @RequestParam(name = "inore", required = false) String currentDate
                                            ){
         //系统认证修改：数据从数据库查询
         //org.springframework.data.domain.Page<EsAttendanceEntity> page=esAttendanceService.searchAttendanceByStaffType(startPage,pageSize,staffType,staffName,currentDate);
@@ -365,19 +365,7 @@ public class AttendanceController {
         Page page=attendanceService.searchAttendanceByStaffType(startPage,pageSize,staffType,staffName,currentDate);
         PageInfo pageInfo = new PageInfo(page);
 
-
-
-
         return   ResultUtil.jsonToStringSuccess(pageInfo);
     }
-
-
-
-
-
-
-
-
-
 
 }

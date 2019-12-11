@@ -96,5 +96,5 @@ public interface OperationLogMapper {
      */
     int updateByPrimaryKey(OperationLog record);
 
-    List<OperationLog> getOperationLog(Date starTime1, Date endTime1);
+    List<OperationLog> getOperationLog(@Param("startTime") Date starTime1,@Param("endTime") Date endTime1);
 }

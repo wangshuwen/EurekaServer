@@ -165,6 +165,12 @@ public class AttendanceServiceImpl implements AttendanceService, AttendanceRules
         }
         Page page = PageHelper.startPage(attendanceParamsVO.getStartPage(),attendanceParamsVO.getPageSize());
         List<com.cst.xinhe.persistence.model.elasticsearch.EsAttendanceEntity> infoVOList = attendanceMapper.selectAttendanceInfoByParams(attendanceParamsVO);
+        for (EsAttendanceEntity entity : infoVOList) {
+            Integer groupid = entity.getGroupid();
+            String deptName = staffOrganizationService.getDeptNameByGroupId(groupid);
+            entity.setDeptname(deptName);
+
+        }
 
         return page;
     }

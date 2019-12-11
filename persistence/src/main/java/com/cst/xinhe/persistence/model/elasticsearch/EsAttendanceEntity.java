@@ -23,12 +23,15 @@ public class EsAttendanceEntity {
     private String jobname;
     private String deptname;
     private String timestandardname;
+    private  Integer groupid;
     //下井时长
     private String timeLong;
     //每月下井总数
     private Integer inOreSum;
     //领导总人数
     private Integer leaderSum;
+
+
 
     /**
      *

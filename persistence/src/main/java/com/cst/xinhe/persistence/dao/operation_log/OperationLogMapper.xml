@@ -340,10 +340,10 @@
     from operation_log
 
     <where>
-      <if test="starTime != null  and endTime != null  ">
-        AND #{starTime} &lt;= o.create_time
+      <if test="startTime != null  and endTime != null  ">
+        AND #{startTime} &lt;= operation_log.create_time
         AND
-        #{endTime} &gt; o.create_time
+        #{endTime} &gt; operation_log.create_time
       </if>
 
     </where>

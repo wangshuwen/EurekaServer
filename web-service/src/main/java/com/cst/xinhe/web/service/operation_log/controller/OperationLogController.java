@@ -31,10 +31,10 @@ public class OperationLogController {
     @GetMapping("getOperationLog")
     public String getOperationLog( @RequestParam(name = "startPage", defaultValue = "1", required = false) Integer startPage,
                                       @RequestParam(name = "pageSize", defaultValue = "5", required = false) Integer pageSize,
-                                      @RequestParam(name = "starTime",  required = false) String starTime,
+                                      @RequestParam(name = "startTime",  required = false) String startTime,
                                       @RequestParam(name = "endTime",  required = false) String endTime) {
 
-        Page page = operationLogService.getOperationLog(startPage,pageSize,starTime,endTime);
+        Page page = operationLogService.getOperationLog(startPage,pageSize,startTime,endTime);
         PageInfo pageInfo = new PageInfo(page);
         return pageInfo.getSize() > 0 ? ResultUtil.jsonToStringSuccess(pageInfo) : ResultUtil.jsonToStringError(ResultEnum.DATA_NOT_FOUND);
     }

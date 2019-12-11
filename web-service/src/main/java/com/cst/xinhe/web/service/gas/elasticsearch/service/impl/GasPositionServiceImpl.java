@@ -36,6 +36,7 @@ import java.util.*;
  * @author: lifeng
  * @create: 2019-04-15 17:41
  **/
+/*
 @Service
 public class GasPositionServiceImpl implements GasPositionService {
 
@@ -78,12 +79,14 @@ public class GasPositionServiceImpl implements GasPositionService {
             builder.must(QueryBuilders.termQuery("isore", isOre));
         }
 
-        /*Date s = DateConvert.convertStringToDate(currentTime,10);
+        */
+/*Date s = DateConvert.convertStringToDate(currentTime,10);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(s);
         calendar.add(Calendar.DAY_OF_MONTH, + 1);//+1今天的时间加一天
         Date date = calendar.getTime();
-        String endtime = DateConvert.convert(date, 10);*/
+        String endtime = DateConvert.convert(date, 10);*//*
+
         builder.must(QueryBuilders.rangeQuery("createtime").format("yyyy-MM-dd HH:mm:ss").from(startTime).to(endTime));
         SortBuilder sortBuilder = SortBuilders.fieldSort("createtime").order(SortOrder.ASC);
         NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder().withQuery(builder).withSort(sortBuilder).withPageable(pageable);
@@ -333,3 +336,4 @@ public class GasPositionServiceImpl implements GasPositionService {
         return deptName;
     }
 }
+*/

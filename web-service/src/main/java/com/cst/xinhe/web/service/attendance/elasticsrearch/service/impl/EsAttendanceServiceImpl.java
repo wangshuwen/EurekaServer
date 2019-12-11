@@ -58,7 +58,7 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
     private StaffOrganizationService staffOrganizationService;
 
 
-    @Override
+   /* @Override
     public org.springframework.data.domain.Page<EsAttendanceEntity> searchAttendanceByStaffType(Integer startPage, Integer pageSize, Integer staffType, String staffName1, String currentDate) {
 
 
@@ -178,10 +178,10 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
 
 
 
-    /**
+    *//**
      * 根据员工ID，查询所有的员工信息
      * @return
-     */
+     *//*
     public Page<EsAttendanceEntity> searchAttendanceByParams(AttendanceParamsVO attendanceParamsVO) {
 
         Integer startCount=(attendanceParamsVO.getStartPage()-1)*attendanceParamsVO.getPageSize()+1;
@@ -295,18 +295,18 @@ public class EsAttendanceServiceImpl implements EsAttendanceService {
 
 
 
-    /**
+    *//**
      * 获取所有的警告信息
      * @param startPage
      * @param pageSize
      * @return
-     */
+     *//*
     @Override
     public Page<EsAttendanceEntity> searchAttendanceInfo(Integer startPage, Integer pageSize) {
         Pageable pageable = new PageRequest(startPage - 1 ,pageSize);
         Page<EsAttendanceEntity> page = attendanceRepository.findAll(pageable);
         return page;
-    }
+    }*/
 
 
 }

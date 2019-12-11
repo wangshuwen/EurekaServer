@@ -86,8 +86,9 @@ public class AttendanceController {
 
         //系统认证修改：数据从数据库查询
         Page page = attendanceService.findAttendanceInfo(attendanceParamsVO);
+        PageInfo pageInfo = new PageInfo(page);
 
-        return  ResultUtil.jsonToStringSuccess(page);
+        return  ResultUtil.jsonToStringSuccess(pageInfo);
     }
 
     @GetMapping("getAttendanceDept")
@@ -360,12 +361,14 @@ public class AttendanceController {
         //系统认证修改：数据从数据库查询
         //org.springframework.data.domain.Page<EsAttendanceEntity> page=esAttendanceService.searchAttendanceByStaffType(startPage,pageSize,staffType,staffName,currentDate);
 
+
         Page page=attendanceService.searchAttendanceByStaffType(startPage,pageSize,staffType,staffName,currentDate);
+        PageInfo pageInfo = new PageInfo(page);
 
 
 
 
-        return   ResultUtil.jsonToStringSuccess(page);
+        return   ResultUtil.jsonToStringSuccess(pageInfo);
     }
 
 

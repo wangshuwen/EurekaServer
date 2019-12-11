@@ -12,7 +12,6 @@ import java.util.Date;
  * @create: 2019-04-10 09:26
  **/
 @Data
-
 public class GasPositionEntity {
 
 
